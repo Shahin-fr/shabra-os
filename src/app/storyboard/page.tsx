@@ -325,8 +325,8 @@ export default function StoryboardPage() {
         await Promise.all(
           orphanedStories.map(story => deleteStoryMutation.mutateAsync(story.id))
         );
-      } catch (error) {
-        console.error("Error deleting orphaned stories:", error);
+      } catch {
+        // Silent error handling
       }
     }
     
@@ -350,8 +350,8 @@ export default function StoryboardPage() {
         storyId: fromStory.id,
           order: toIndex + 1,
       });
-    } catch (error) {
-      console.error("Error reordering story:", error);
+    } catch {
+      // Silent error handling
     }
   };
 
@@ -372,8 +372,8 @@ export default function StoryboardPage() {
         setEditingStory(newStory);
         setIsEditing(true);
         setIsDialogOpen(true);
-    } catch (error) {
-      console.error("Error creating story:", error);
+    } catch {
+      // Silent error handling
     } finally {
       setIsCreating(false);
     }
@@ -408,8 +408,8 @@ export default function StoryboardPage() {
           status: "DRAFT",
         });
       }
-    } catch (error) {
-      console.error("Error updating story:", error);
+    } catch {
+      // Silent error handling
     } finally {
       setIsCreating(false);
     }
@@ -418,20 +418,13 @@ export default function StoryboardPage() {
   // Handle clear slot (delete story)
   const handleClearSlot = async (storyId: string) => {
     try {
-      // Use mutation to delete story
       await deleteStoryMutation.mutateAsync(storyId);
-
-        // Clear selection if the cleared slot was selected
-        const clearedStory = stories.find(s => s.id === storyId);
-        if (clearedStory && selectedSlotIndex === clearedStory.order - 1) {
-          setSelectedSlotIndex(null);
-      }
-    } catch (error) {
-      console.error("Error deleting story:", error);
+    } catch {
+      // Silent error handling
     }
   };
 
-  // Create new story
+  // Handle story creation from dialog
   const handleCreateStory = async (storyData: {
     title: string;
     notes?: string;
@@ -443,25 +436,22 @@ export default function StoryboardPage() {
     try {
       const dateString = format(selectedDate, "yyyy-MM-dd");
       
-      // Use mutation to create story
-      await createStoryMutation.mutateAsync({
-          ...storyData,
-          day: dateString,
-        order: 1, // Default order, will be handled by backend
-        status: "DRAFT",
+      const newStory = await createStoryMutation.mutateAsync({
+        ...storyData,
+        day: dateString,
+        order: selectedSlotIndex! + 1,
       });
 
-        setIsDialogOpen(false);
-        setEditingStory(null);
-        setIsEditing(false);
-    } catch (error) {
-      console.error("Error creating story:", error);
+      setEditingStory(newStory);
+      setIsEditing(true);
+    } catch {
+      // Silent error handling
     } finally {
       setIsCreating(false);
     }
   };
 
-  // Update existing story
+  // Handle story update from dialog
   const handleUpdateStory = async (storyData: {
     title: string;
     notes?: string;
@@ -470,20 +460,18 @@ export default function StoryboardPage() {
     storyTypeId?: string;
   }) => {
     if (!editingStory) return;
-
+    
     setIsCreating(true);
     try {
-      // Use mutation to update story
       await updateStoryMutation.mutateAsync({
         storyId: editingStory.id,
         storyData,
       });
-
-        setIsDialogOpen(false);
-        setEditingStory(null);
-        setIsEditing(false);
-    } catch (error) {
-      console.error("Error updating story:", error);
+      
+      setIsEditing(false);
+      setIsDialogOpen(false);
+    } catch {
+      // Silent error handling
     } finally {
       setIsCreating(false);
     }

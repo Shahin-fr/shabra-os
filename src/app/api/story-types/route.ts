@@ -10,8 +10,7 @@ export async function GET() {
     });
 
     return NextResponse.json(storyTypes);
-  } catch (error) {
-    console.error("Error fetching story types:", error);
+  } catch {
     return NextResponse.json(
       { error: "خطا در دریافت انواع استوری" },
       { status: 500 }

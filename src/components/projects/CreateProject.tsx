@@ -77,7 +77,7 @@ export default function CreateProject() {
       
       return { previousProjects };
     },
-    onSuccess: (newProject) => {
+    onSuccess: () => {
       // Reset form
       setFormData({ name: "", description: "" });
       

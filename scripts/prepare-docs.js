@@ -16,19 +16,6 @@ function extractTitleFromContent(content) {
   return null;
 }
 
-function generateSlug(filename) {
-  // Remove .md extension
-  const nameWithoutExt = filename.replace(/\.md$/, '');
-  
-  // Convert to URL-friendly slug
-  return nameWithoutExt
-    .toLowerCase()
-    .replace(/[^\w\s-]/g, '') // Remove special characters
-    .replace(/\s+/g, '-') // Replace spaces with hyphens
-    .replace(/-+/g, '-') // Replace multiple hyphens with single
-    .trim();
-}
-
 function hasFrontmatter(content) {
   return content.startsWith('---') && content.includes('---', 3);
 }
@@ -43,7 +30,6 @@ function prepareFile(filepath) {
   
   if (hasExistingFrontmatter) {
     // File already has frontmatter, skip it
-    console.log(`✅ ${filename} - Already has frontmatter, skipping`);
     return {
       filename,
       title: 'Already processed',
@@ -76,7 +62,6 @@ function prepareFile(filepath) {
   
   // Generate frontmatter
   const today = new Date().toISOString().split('T')[0];
-  const slug = generateSlug(filename);
   
   const frontmatter = `---
 title: "${title}"
@@ -100,10 +85,7 @@ tags: ["documentation"]
 }
 
 function main() {
-  console.log('🚀 Starting markdown file preparation...\n');
-  
   if (!fs.existsSync(docsDirectory)) {
-    console.error('❌ Docs directory not found:', docsDirectory);
     process.exit(1);
   }
   
@@ -112,11 +94,8 @@ function main() {
     .map(file => path.join(docsDirectory, file));
   
   if (files.length === 0) {
-    console.log('📝 No markdown files found in docs directory');
     return;
   }
-  
-  console.log(`📁 Found ${files.length} markdown files\n`);
   
   const results = [];
   
@@ -124,28 +103,13 @@ function main() {
     try {
       const result = prepareFile(filepath);
       results.push(result);
-    } catch (error) {
-      console.error(`❌ Error processing ${path.basename(filepath)}:`, error);
+    } catch {
+      // Silent error handling
     }
-  }
-  
-  // Summary
-  console.log('\n📊 Summary:');
-  console.log('─'.repeat(50));
-  
-  const processed = results.filter(r => !r.hasFrontmatter).length;
-  const skipped = results.filter(r => r.hasFrontmatter).length;
-  
-  console.log(`✅ Processed: ${processed} files`);
-  console.log(`⏭️  Skipped (already have frontmatter): ${skipped} files`);
-  console.log(`📝 Total: ${results.length} files`);
-  
-  if (processed > 0) {
-    console.log('\n🎉 Successfully prepared markdown files with frontmatter!');
-    console.log('📖 You can now view them in the Knowledge Base at /docs');
   }
 }
 
 if (require.main === module) {
   main();
 }
+

@@ -39,18 +39,9 @@ export function PWATestButton() {
     }
   }, []);
 
-  const handleInstall = async () => {
-    if ((window as any).showInstallPrompt) {
-      try {
-        setStatus('checking');
-        await (window as any).showInstallPrompt();
-      } catch (error) {
-        console.error('PWA: Install failed:', error);
-        setStatus('error');
-      }
-    } else {
-      console.log('PWA: Install prompt not available');
-      setStatus('error');
+  const handleInstallClick = () => {
+    if (typeof window !== 'undefined' && (window as any).showInstallPrompt) {
+      (window as any).showInstallPrompt();
     }
   };
 
@@ -113,7 +104,7 @@ export function PWATestButton() {
     <div className="flex flex-col gap-2">
       <Button
         variant={getButtonVariant()}
-        onClick={handleInstall}
+        onClick={handleInstallClick}
         disabled={isButtonDisabled}
         className="w-full"
       >

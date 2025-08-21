@@ -60,8 +60,11 @@ export default [
     rules: {
       // TypeScript rules
       "@typescript-eslint/no-explicit-any": "off",
-      "@typescript-eslint/no-unused-vars": "warn",
+      "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }],
       "@typescript-eslint/explicit-function-return-type": "off",
+      
+      // Allow unused parameters in function signatures
+      "no-unused-vars": ["error", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }],
       
       // React rules
       "react/jsx-uses-react": "off",

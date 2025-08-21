@@ -55,7 +55,7 @@ interface StorySlotProps {
   index: number;
   isSelected: boolean;
   onClick: () => void;
-  onClearSlot?: (storyId: string) => void;
+  onClearSlot?: (_id: string) => void;
   isLoading?: boolean;
 }
 
@@ -109,10 +109,10 @@ export function StorySlot({ story, index, isSelected, onClick, onClearSlot, isLo
     transition,
   };
 
-  const handleClearSlot = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (story && onClearSlot) {
-      onClearSlot(story.id);
+  const handleClearSlot = (id: string) => {
+    // Use the id parameter to validate before calling the parent function
+    if (id && id.trim() && onClearSlot) {
+      onClearSlot(id);
     }
   };
 
@@ -184,7 +184,7 @@ export function StorySlot({ story, index, isSelected, onClick, onClearSlot, isLo
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={handleClearSlot}
+                      onClick={() => handleClearSlot(story.id)}
                       className="h-6 w-6 p-0 rounded-full bg-red-100 hover:bg-red-200 text-red-600 hover:text-red-700 border border-red-200"
                       title="حذف استوری"
                     >
@@ -239,7 +239,6 @@ export function StorySlot({ story, index, isSelected, onClick, onClearSlot, isLo
               <div className="flex items-center justify-between mt-3 pt-2 border-t border-gray-200/50">
                 {story.visualNotes && (
                   <div className="flex items-center gap-1 text-xs text-gray-600">
-                    {/* eslint-disable-next-line jsx-a11y/alt-text */}
                     <Image className="h-3 w-3 text-[#ff0a54]" />
                     <span>تصویر</span>
                   </div>

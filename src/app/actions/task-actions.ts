@@ -22,8 +22,7 @@ export async function updateTaskStatus(
     revalidatePath("/projects");
 
     return { success: true };
-  } catch (error) {
-    console.error("Error updating task status:", error);
+  } catch {
     return {
       success: false,
       error: "خطا در بروزرسانی وضعیت وظیفه. لطفاً دوباره تلاش کنید.",

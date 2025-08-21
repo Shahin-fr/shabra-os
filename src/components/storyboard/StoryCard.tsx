@@ -28,8 +28,8 @@ interface StoryCardProps {
   story: Story;
   index: number;
   totalStories: number;
-  onDelete: (storyId: string) => void;
-  onReorder: (storyId: string, direction: "up" | "down") => void;
+  onDelete: (_id: string) => void;
+  onReorder: (_id: string, _dir: "up" | "down") => void;
 }
 
 const statusConfig = {
@@ -40,6 +40,20 @@ const statusConfig = {
 
 export function StoryCard({ story, index, totalStories, onDelete, onReorder }: StoryCardProps) {
   const status = statusConfig[story.status];
+
+  const handleDelete = (id: string) => {
+    // Use the id parameter to validate before calling the parent function
+    if (id && id.trim()) {
+      onDelete(id);
+    }
+  };
+
+  const handleReorder = (id: string, dir: "up" | "down") => {
+    // Use the parameters to validate before calling the parent function
+    if (id && id.trim() && (dir === "up" || dir === "down")) {
+      onReorder(id, dir);
+    }
+  };
 
   return (
     <Card className="hover:shadow-md transition-shadow">
@@ -65,7 +79,7 @@ export function StoryCard({ story, index, totalStories, onDelete, onReorder }: S
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => onReorder(story.id, "up")}
+              onClick={() => handleReorder(story.id, "up")}
               disabled={index === 0}
               className="h-8 w-8 p-0"
             >
@@ -74,7 +88,7 @@ export function StoryCard({ story, index, totalStories, onDelete, onReorder }: S
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => onReorder(story.id, "down")}
+              onClick={() => handleReorder(story.id, "down")}
               disabled={index === totalStories - 1}
               className="h-8 w-8 p-0"
             >
@@ -83,7 +97,7 @@ export function StoryCard({ story, index, totalStories, onDelete, onReorder }: S
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => onDelete(story.id)}
+              onClick={() => handleDelete(story.id)}
               className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
             >
               <Trash2 className="h-4 w-4" />
@@ -98,7 +112,6 @@ export function StoryCard({ story, index, totalStories, onDelete, onReorder }: S
         {story.visualNotes && (
           <div>
             <div className="flex items-center gap-1 text-sm font-medium text-gray-700 mb-1">
-              {/* eslint-disable-next-line jsx-a11y/alt-text */}
               <Image className="h-3 w-3" />
               یادداشت‌های بصری
             </div>

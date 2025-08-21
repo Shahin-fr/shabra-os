@@ -14,7 +14,7 @@ interface StoryType {
 interface TemplatePaletteProps {
   storyTypes: StoryType[];
   selectedSlotIndex: number | null;
-  onTemplateClick: (storyTypeId: string) => void;
+  onTemplateClick: (_id: string) => void;
   isLoading?: boolean;
 }
 
@@ -25,6 +25,13 @@ export function TemplatePalette({
   isLoading = false
 }: TemplatePaletteProps) {
   const isSlotSelected = selectedSlotIndex !== null;
+
+  const handleTemplateClick = (id: string) => {
+    // Use the id parameter to validate before calling the parent function
+    if (id && id.trim()) {
+      onTemplateClick(id);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -124,7 +131,7 @@ export function TemplatePalette({
                     inset 0 1px 0 rgba(255, 255, 255, 0.4)
                   `
               }}
-              onClick={() => isSlotSelected && !isLoading && onTemplateClick(storyType.id)}
+              onClick={() => isSlotSelected && !isLoading && handleTemplateClick(storyType.id)}
             >
               <CardContent className="p-4 text-center">
                 <div className="flex flex-col items-center space-y-3">

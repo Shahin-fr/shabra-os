@@ -38,8 +38,7 @@ export async function GET(request: NextRequest) {
       hasNextPage: page < totalPages,
       hasPreviousPage: page > 1
     });
-  } catch (error) {
-    console.error("Error fetching projects:", error);
+  } catch {
     return NextResponse.json(
       { error: "خطا در دریافت پروژه‌ها" },
       { status: 500 }
@@ -78,8 +77,7 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json(project, { status: 201 });
-  } catch (error) {
-    console.error("Error creating project:", error);
+  } catch {
     return NextResponse.json(
       { error: "خطا در ایجاد پروژه" },
       { status: 500 }

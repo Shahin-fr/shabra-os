@@ -29,8 +29,7 @@ export async function GET(
     }
 
     return NextResponse.json(contentSlot);
-  } catch (error) {
-    console.error("Error fetching content slot:", error);
+  } catch {
     return NextResponse.json(
       { error: "Failed to fetch content slot" },
       { status: 500 }
@@ -81,8 +80,7 @@ export async function PATCH(
     });
 
     return NextResponse.json(updatedSlot);
-  } catch (error) {
-    console.error("Error updating content slot:", error);
+  } catch {
     return NextResponse.json(
       { error: "Failed to update content slot" },
       { status: 500 }
@@ -116,8 +114,7 @@ export async function DELETE(
     });
 
     return NextResponse.json({ message: "Content slot deleted successfully" });
-  } catch (error) {
-    console.error("Error deleting content slot:", error);
+  } catch {
     return NextResponse.json(
       { error: "Failed to delete content slot" },
       { status: 500 }

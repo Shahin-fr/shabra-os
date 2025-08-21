@@ -56,8 +56,7 @@ export async function GET(request: NextRequest) {
     });
 
     return NextResponse.json(stories);
-  } catch (error) {
-    console.error("Error fetching stories:", error);
+  } catch {
     return NextResponse.json(
       { error: "خطا در دریافت استوری‌ها" },
       { status: 500 }
@@ -173,8 +172,7 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json(story, { status: 201 });
-  } catch (error) {
-    console.error("Error creating story:", error);
+  } catch {
     return NextResponse.json(
       { error: "خطا در ایجاد استوری" },
       { status: 500 }

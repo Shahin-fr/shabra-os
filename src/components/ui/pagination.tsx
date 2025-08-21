@@ -6,7 +6,7 @@ interface PaginationProps {
   totalPages: number;
   hasNextPage: boolean;
   hasPreviousPage: boolean;
-  onPageChange: (page: number) => void;
+  onPageChange: (_newPage: number) => void;
   isLoading?: boolean;
 }
 
@@ -22,13 +22,20 @@ export function Pagination({
     return null;
   }
 
+  const handlePageChange = (newPage: number) => {
+    // Use the newPage parameter to validate before calling the parent function
+    if (newPage >= 1 && newPage <= totalPages) {
+      onPageChange(newPage);
+    }
+  };
+
   return (
     <div className="flex items-center justify-between px-2 py-4">
       <div className="flex items-center gap-2">
         <Button
           variant="outline"
           size="sm"
-          onClick={() => onPageChange(currentPage - 1)}
+          onClick={() => handlePageChange(currentPage - 1)}
           disabled={!hasPreviousPage || isLoading}
           className="flex items-center gap-2"
         >
@@ -47,7 +54,7 @@ export function Pagination({
         <Button
           variant="outline"
           size="sm"
-          onClick={() => onPageChange(currentPage + 1)}
+          onClick={() => handlePageChange(currentPage + 1)}
           disabled={!hasNextPage || isLoading}
           className="flex items-center gap-2"
         >

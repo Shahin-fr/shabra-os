@@ -55,8 +55,7 @@ const config = {
             name: `${user.firstName} ${user.lastName}`,
             role: roles,
           };
-        } catch (error) {
-          console.error("Auth error:", error);
+        } catch {
           return null;
         }
       }

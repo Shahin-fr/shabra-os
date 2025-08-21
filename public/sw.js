@@ -18,15 +18,12 @@ const urlsToCache = [
 
 // Install event - cache resources
 self.addEventListener('install', (event) => {
-  console.log('SW: Installing service worker...');
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
-        console.log('SW: Opened cache');
         return cache.addAll(urlsToCache);
       })
-      .catch((error) => {
-        console.error('SW: Cache addAll failed:', error);
+      .catch(() => {
         // Don't fail the install if caching fails
         return Promise.resolve();
       })
@@ -37,13 +34,11 @@ self.addEventListener('install', (event) => {
 
 // Activate event - clean up old caches
 self.addEventListener('activate', (event) => {
-  console.log('SW: Activating service worker...');
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
           if (cacheName !== CACHE_NAME) {
-            console.log('SW: Deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
         })
@@ -72,7 +67,6 @@ self.addEventListener('fetch', (event) => {
       .then((response) => {
         // Return cached version if available
         if (response) {
-          console.log('SW: Serving from cache:', event.request.url);
           return response;
         }
 
@@ -92,13 +86,12 @@ self.addEventListener('fetch', (event) => {
             .then((cache) => {
               cache.put(event.request, responseToCache);
             })
-            .catch((error) => {
-              console.error('SW: Failed to cache response:', error);
+            .catch(() => {
+              // Silent error handling
             });
 
           return response;
-        }).catch((error) => {
-          console.error('SW: Fetch failed:', error);
+        }).catch(() => {
           // Return a fallback response if available
           return caches.match('/');
         });
@@ -114,11 +107,11 @@ self.addEventListener('message', (event) => {
 });
 
 // Error event - log any service worker errors
-self.addEventListener('error', (event) => {
-  console.error('SW: Service worker error:', event.error);
+self.addEventListener('error', () => {
+  // Silent error handling
 });
 
 // Unhandled rejection event - log unhandled promise rejections
-self.addEventListener('unhandledrejection', (event) => {
-  console.error('SW: Unhandled promise rejection:', event.reason);
+self.addEventListener('unhandledrejection', () => {
+  // Silent error handling
 });

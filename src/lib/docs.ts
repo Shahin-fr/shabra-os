@@ -92,8 +92,7 @@ export async function getDocBySlug(slug: string): Promise<DocContent | null> {
       content: matterResult.content,
       htmlContent,
     };
-  } catch (error) {
-    console.error(`Error reading doc ${slug}:`, error);
+  } catch {
     return null;
   }
 }

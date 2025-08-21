@@ -19,8 +19,7 @@ export async function GET() {
     });
 
     return NextResponse.json(users);
-  } catch (error) {
-    console.error("Error fetching users:", error);
+  } catch {
     return NextResponse.json(
       { error: "خطا در دریافت لیست کاربران" },
       { status: 500 }

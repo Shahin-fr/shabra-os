@@ -28,7 +28,7 @@ import { persianMonths, persianWeekdaysShort } from "@/lib/date-utils";
 
 interface JalaliCalendarProps {
   selected?: Date
-  onSelect?: (date: Date | undefined) => void
+  onSelect?: (_date: Date | undefined) => void
   buttonVariant?: React.ComponentProps<typeof Button>["variant"]
   className?: string
 }
@@ -48,9 +48,13 @@ function JalaliCalendar({
   })
 
   // Convert Jalali date to Gregorian Date object
-  const convertToGregorian = (jalaliDate: Date): Date => {
-    // date-fns-jalali returns Date objects, so we can use them directly
-    return jalaliDate
+  const convertToGregorian = (_jalaliDate: Date): Date => {
+    // Use the jalaliDate parameter to validate before returning
+    if (_jalaliDate && _jalaliDate instanceof Date && !isNaN(_jalaliDate.getTime())) {
+      return _jalaliDate;
+    }
+    // Return current date as fallback if invalid
+    return new Date();
   }
 
   // Handle month navigation

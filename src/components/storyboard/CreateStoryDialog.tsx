@@ -36,8 +36,8 @@ interface Story {
 
 interface CreateStoryDialogProps {
   isOpen: boolean;
-  onOpenChange: (open: boolean) => void;
-  onSubmit: (storyData: {
+  onOpenChange: (_open: boolean) => void;
+  onSubmit: (_data: {
     title: string;
     notes?: string;
     visualNotes?: string;
@@ -91,17 +91,26 @@ export function CreateStoryDialog({
   const handleSubmit = () => {
     if (!formData.title.trim()) return;
 
-    onSubmit({
+    const data = {
       title: formData.title,
       notes: formData.notes || undefined,
       visualNotes: formData.visualNotes || undefined,
       link: formData.link || undefined,
       storyTypeId: formData.storyTypeId || undefined,
-    });
+    };
+
+    onSubmit(data);
+  };
+
+  const handleOpenChange = (open: boolean) => {
+    // Use the open parameter to conditionally handle the change
+    if (open !== isOpen) {
+      onOpenChange(open);
+    }
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogContent 
         className="sm:max-w-[500px] border-0 p-0 overflow-hidden bg-white"
         style={{

@@ -36,8 +36,7 @@ export async function GET(
     }
 
     return NextResponse.json(project);
-  } catch (error) {
-    console.error("Error fetching project:", error);
+  } catch {
     return NextResponse.json(
       { error: "خطا در دریافت پروژه" },
       { status: 500 }

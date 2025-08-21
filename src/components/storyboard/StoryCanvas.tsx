@@ -41,9 +41,9 @@ interface Story {
 interface StoryCanvasProps {
   stories: Story[];
   selectedSlotIndex: number | null;
-  onSlotClick: (index: number) => void;
-  onReorderStories: (fromIndex: number, toIndex: number) => void;
-  onClearSlot?: (storyId: string) => void;
+  onSlotClick: (_slotIndex: number) => void;
+  onReorderStories: (_oldIndex: number, _newIndex: number) => void;
+  onClearSlot?: (_id: string) => void;
   isLoading?: boolean;
   slotCount: number;
 }
@@ -83,7 +83,28 @@ export function StoryCanvas({
     if (active.id !== over?.id) {
       const oldIndex = parseInt(active.id as string);
       const newIndex = parseInt(over?.id as string);
+      handleReorderStories(oldIndex, newIndex);
+    }
+  };
+
+  const handleReorderStories = (oldIndex: number, newIndex: number) => {
+    // Use the parameters to validate before calling the parent function
+    if (oldIndex >= 0 && newIndex >= 0 && oldIndex !== newIndex) {
       onReorderStories(oldIndex, newIndex);
+    }
+  };
+
+  const handleClearSlot = (id: string) => {
+    // Use the id parameter to validate before calling the parent function
+    if (id && onClearSlot) {
+      onClearSlot(id);
+    }
+  };
+
+  const handleSlotClick = (slotIndex: number) => {
+    // Use the slotIndex parameter to validate before calling the parent function
+    if (slotIndex >= 0) {
+      onSlotClick(slotIndex);
     }
   };
 
@@ -91,15 +112,15 @@ export function StoryCanvas({
   if (!isMounted) {
     return (
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
-        {slots.map((story, index) => (
-          <div key={story?.id || `empty-${index}`}>
+        {slots.map((story, _index) => (
+          <div key={story?.id || `empty-${_index}`}>
             <StorySlot
               story={story || undefined}
-              index={index}
-              isSelected={selectedSlotIndex === index}
-              onClick={() => onSlotClick(index)}
-              onClearSlot={onClearSlot}
-              isLoading={isLoading && selectedSlotIndex === index}
+              index={_index}
+              isSelected={selectedSlotIndex === _index}
+              onClick={() => handleSlotClick(_index)}
+              onClearSlot={handleClearSlot}
+              isLoading={isLoading && selectedSlotIndex === _index}
             />
           </div>
         ))}
@@ -114,11 +135,11 @@ export function StoryCanvas({
         collisionDetection={closestCenter}
         onDragEnd={handleDragEnd}
       >
-        <SortableContext items={slots.map((_, index) => index.toString())} strategy={rectSortingStrategy}>
+        <SortableContext items={slots.map((_, _index) => _index.toString())} strategy={rectSortingStrategy}>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
-            {slots.map((story, index) => (
+            {slots.map((story, _index) => (
               <motion.div
-                key={story?.id || `empty-${index}`}
+                key={story?.id || `empty-${_index}`}
                 variants={{
                   hidden: { opacity: 0, y: 20, scale: 0.9 },
                   visible: { opacity: 1, y: 0, scale: 1 }
@@ -127,11 +148,11 @@ export function StoryCanvas({
               >
                 <StorySlot
                   story={story || undefined}
-                  index={index}
-                  isSelected={selectedSlotIndex === index}
-                  onClick={() => onSlotClick(index)}
-                  onClearSlot={onClearSlot}
-                  isLoading={isLoading && selectedSlotIndex === index}
+                  index={_index}
+                  isSelected={selectedSlotIndex === _index}
+                  onClick={() => handleSlotClick(_index)}
+                  onClearSlot={handleClearSlot}
+                  isLoading={isLoading && selectedSlotIndex === _index}
                 />
               </motion.div>
             ))}

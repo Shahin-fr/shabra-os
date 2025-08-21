@@ -4,8 +4,6 @@ import bcrypt from 'bcryptjs';
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('Starting database seeding...');
-
   // Hash the password
   const password = 'password123';
   const hashedPassword = await bcrypt.hash(password, 12);
@@ -23,8 +21,6 @@ async function main() {
     },
   });
 
-  console.log('Admin user created:', adminUser.email);
-
   // Create admin role for the user
   await prisma.userRole.upsert({
     where: {
@@ -40,8 +36,6 @@ async function main() {
     },
   });
 
-  console.log('Admin role assigned to:', adminUser.email);
-
   // Create a regular user
   const regularUser = await prisma.user.upsert({
     where: { email: 'user@shabra.com' },
@@ -54,8 +48,6 @@ async function main() {
       isActive: true,
     },
   });
-
-  console.log('Regular user created:', regularUser.email);
 
   // Create user role for the regular user
   await prisma.userRole.upsert({
@@ -71,8 +63,6 @@ async function main() {
       role: 'employee',
     },
   });
-
-  console.log('Employee role assigned to:', regularUser.email);
 
   // Create sample projects
   const projects = [
@@ -103,8 +93,6 @@ async function main() {
       data: projectData,
     });
   }
-
-  console.log('Sample projects created successfully!');
 
   // Create sample tasks for the first project
   const firstProject = await prisma.project.findFirst({
@@ -148,8 +136,6 @@ async function main() {
         data: taskData,
       });
     }
-
-    console.log('Sample tasks created successfully!');
   }
 
   // Create story types
@@ -172,15 +158,10 @@ async function main() {
       },
     });
   }
-
-  console.log('Story types created successfully!');
-
-  console.log('Database seeding completed successfully!');
 }
 
 main()
-  .catch((e) => {
-    console.error('Error during seeding:', e);
+  .catch(() => {
     process.exit(1);
   })
   .finally(async () => {

@@ -46,8 +46,7 @@ export async function PATCH(
     });
 
     return NextResponse.json(updatedTask);
-  } catch (error) {
-    console.error("Error updating task:", error);
+  } catch {
     return NextResponse.json(
       { error: "خطا در بروزرسانی وظیفه" },
       { status: 500 }

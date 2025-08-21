@@ -5,7 +5,7 @@ export async function testPrismaClient() {
     await prisma.$connect()
     
     // Test creating a user
-    const user = await prisma.user.create({
+    await prisma.user.create({
       data: {
         email: 'test@example.com',
         password: 'hashedpassword',
@@ -15,20 +15,14 @@ export async function testPrismaClient() {
       }
     })
     
-    console.log('✅ Prisma Client Test Successful')
-    console.log('Created user:', user)
-    
     // Test finding the user
-    const foundUser = await prisma.user.findUnique({
+    await prisma.user.findUnique({
       where: { email: 'test@example.com' }
     })
     
-    console.log('Found user:', foundUser)
-    
     await prisma.$disconnect()
     return true
-  } catch (error) {
-    console.error('❌ Prisma Client Test Failed:', error)
+  } catch {
     return false
   }
 }

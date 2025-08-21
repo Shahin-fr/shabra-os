@@ -33,8 +33,7 @@ export async function GET(request: NextRequest) {
     });
 
     return NextResponse.json(contentSlots);
-  } catch (error) {
-    console.error("Error fetching content slots:", error);
+  } catch {
     return NextResponse.json(
       { error: "Failed to fetch content slots" },
       { status: 500 }
@@ -91,8 +90,7 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json(contentSlot, { status: 201 });
-  } catch (error) {
-    console.error("Error creating content slot:", error);
+  } catch {
     return NextResponse.json(
       { error: "Failed to create content slot" },
       { status: 500 }

@@ -107,8 +107,7 @@ export async function PATCH(
     });
 
     return NextResponse.json(updatedStory);
-  } catch (error) {
-    console.error("Error updating story:", error);
+  } catch {
     return NextResponse.json(
       { error: "خطا در بروزرسانی استوری" },
       { status: 500 }
@@ -141,8 +140,7 @@ export async function DELETE(
     });
 
     return NextResponse.json({ message: "استوری با موفقیت حذف شد" });
-  } catch (error) {
-    console.error("Error deleting story:", error);
+  } catch {
     return NextResponse.json(
       { error: "خطا در حذف استوری" },
       { status: 500 }

@@ -60,8 +60,8 @@ export default function CreateTask({
           const data = await response.json();
           setUsers(data);
         }
-      } catch (error) {
-        console.error("Error fetching users:", error);
+      } catch {
+        // Silent error handling
       }
     };
 
@@ -95,7 +95,7 @@ export default function CreateTask({
     //   console.log("🚀 Starting optimistic update for new task:", newTaskData);
     //   return { previousProject: null };
     // },
-    onSuccess: async (newTask) => {
+    onSuccess: async () => {
       // Reset form
       setFormData({ title: "", description: "", assigneeId: "" });
       
@@ -112,11 +112,11 @@ export default function CreateTask({
           queryKey: projectsKeys.detail(projectId),
           type: 'active' 
         });
-      } catch (error) {
+      } catch {
         // Silent error handling for query invalidation
       }
     },
-    onError: (error, variables, context) => {
+    onError: () => {
       alert("خطا در ایجاد وظیفه. لطفاً دوباره تلاش کنید.");
     },
   });
