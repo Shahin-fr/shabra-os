@@ -8,51 +8,24 @@ import { Plus, Calendar, FileText } from "lucide-react";
 import Link from "next/link";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
-
-interface Project {
-  id: string;
-  name: string;
-  description?: string;
-  status: "ACTIVE" | "COMPLETED" | "PAUSED";
-  createdAt: string;
-  updatedAt: string;
-  _count: {
-    stories: number;
-    tasks: number;
-  };
-}
+import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { fetchProjects, projectsKeys } from "@/lib/queries";
+import { Project } from "@/types/project";
 
 export default function ProjectsPage() {
   const { data: session, status } = useSession();
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+
+  // Use TanStack Query to fetch projects
+  const { data: projects = [], isLoading, isError } = useQuery({
+    queryKey: projectsKeys.all,
+    queryFn: fetchProjects,
+    enabled: status === "authenticated",
+  });
 
   useEffect(() => {
     if (status === "unauthenticated") {
       redirect("/login");
-    }
-  }, [status]);
-
-  useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        const response = await fetch("/api/projects");
-        if (response.ok) {
-          const data = await response.json();
-          setProjects(data);
-        } else {
-          console.error("Failed to fetch projects");
-        }
-      } catch (error) {
-        console.error("Error fetching projects:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (status === "authenticated") {
-      fetchProjects();
     }
   }, [status]);
 
@@ -63,6 +36,30 @@ export default function ProjectsPage() {
           <div className="text-center py-12">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
             <p className="mt-3 text-muted-foreground">در حال بارگذاری پروژه‌ها...</p>
+          </div>
+        </div>
+      </MainLayout>
+    );
+  }
+
+  if (isError) {
+    return (
+      <MainLayout>
+        <div className="container mx-auto max-w-7xl">
+          <div className="text-center py-12">
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <FileText className="h-8 w-8 text-red-600" />
+            </div>
+            <h3 className="text-lg font-semibold text-foreground mb-2">خطا در بارگذاری پروژه‌ها</h3>
+            <p className="text-muted-foreground mb-6">
+              مشکلی در بارگذاری پروژه‌ها پیش آمده است
+            </p>
+            <Button 
+              onClick={() => window.location.reload()} 
+              className="bg-[#ff0a54] hover:bg-[#ff0a54]/90 text-white"
+            >
+              تلاش مجدد
+            </Button>
           </div>
         </div>
       </MainLayout>

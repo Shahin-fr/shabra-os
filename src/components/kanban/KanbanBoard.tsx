@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useCallback } from "react";
 import {
   DndContext,
   DragEndEvent,
@@ -11,9 +10,11 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
+import { useStatusStore } from "@/stores/statusStore";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import DroppableColumn from "./DroppableColumn";
+import { updateTaskStatus } from "@/app/actions/task-actions";
 
 interface Task {
   id: string;
@@ -42,9 +43,12 @@ const columns: Column[] = [
 ];
 
 export default function KanbanBoard({ projectId, tasks }: KanbanBoardProps) {
+  // Local state for optimistic updates
+  const [optimisticTasks, setOptimisticTasks] = useState<Task[]>(tasks);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
-  const [isUpdating, setIsUpdating] = useState(false);
-  const router = useRouter();
+  
+  // Global status store
+  const { setStatus } = useStatusStore();
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -55,13 +59,13 @@ export default function KanbanBoard({ projectId, tasks }: KanbanBoardProps) {
   );
 
   const handleDragStart = (event: DragStartEvent) => {
-    const task = tasks.find((t) => t.id === event.active.id);
+    const task = optimisticTasks.find((t) => t.id === event.active.id);
     if (task) {
       setActiveTask(task);
     }
   };
 
-  const handleDragEnd = async (event: DragEndEvent) => {
+  const handleDragEnd = useCallback(async (event: DragEndEvent) => {
     const { active, over } = event;
     setActiveTask(null);
 
@@ -74,39 +78,45 @@ export default function KanbanBoard({ projectId, tasks }: KanbanBoardProps) {
     if (!column) return;
 
     // Don't update if the task is already in the correct column
-    const task = tasks.find((t) => t.id === taskId);
+    const task = optimisticTasks.find((t) => t.id === taskId);
     if (task && task.status === column.status) return;
 
-    setIsUpdating(true);
+    // Store the original task for potential rollback
+    const originalTask = task;
 
-    try {
-      const response = await fetch(`/api/tasks/${taskId}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          status: column.status,
-        }),
-      });
+    // Show loading state
+    setStatus('loading', 'در حال بروزرسانی وظیفه...');
 
-      if (!response.ok) {
-        throw new Error("خطا در بروزرسانی وظیفه");
-      }
+    // OPTIMISTIC UPDATE: Immediately update the local state
+    setOptimisticTasks((prevTasks) =>
+      prevTasks.map((t) =>
+        t.id === taskId ? { ...t, status: column.status } : t
+      )
+    );
 
-      // Refresh the page to show updated state
-      router.refresh();
-    } catch (error) {
-      console.error("Error updating task:", error);
-      alert("خطا در بروزرسانی وظیفه. لطفاً دوباره تلاش کنید.");
-    } finally {
-      setIsUpdating(false);
+    // Call the server action in the background (non-blocking)
+    const result = await updateTaskStatus(taskId, column.status, projectId);
+
+    // Handle the result
+    if (!result.success) {
+      // ROLLBACK: Revert the optimistic update on error
+      setOptimisticTasks((prevTasks) =>
+        prevTasks.map((t) =>
+          t.id === taskId ? originalTask! : t
+        )
+      );
+      
+      // Show error notification via global status
+      setStatus('error', result.error || "خطا در بروزرسانی وظیفه");
+    } else {
+      // Success notification via global status
+      setStatus('success', "وظیفه با موفقیت بروزرسانی شد");
     }
-  };
+  }, [optimisticTasks, projectId, setStatus]);
 
-  const getTasksForColumn = (status: Task["status"]) => {
-    return tasks.filter((task) => task.status === status);
-  };
+  const getTasksForColumn = useCallback((status: Task["status"]) => {
+    return optimisticTasks.filter((task) => task.status === status);
+  }, [optimisticTasks]);
 
   return (
     <DndContext
@@ -130,13 +140,13 @@ export default function KanbanBoard({ projectId, tasks }: KanbanBoardProps) {
         })}
       </div>
 
-             <DragOverlay>
-         {activeTask ? (
-           <Card className="cursor-pointer shadow-2xl border-pink-400 bg-gradient-to-br from-pink-100 via-white to-pink-50 transform rotate-2">
+      <DragOverlay>
+        {activeTask ? (
+          <Card className="cursor-pointer shadow-2xl border-pink-400 bg-gradient-to-br from-pink-100 via-white to-pink-50 transform rotate-2">
             <CardHeader className="pb-3">
-                             <CardTitle className="text-sm font-medium text-pink-700">
-                 {activeTask.title}
-               </CardTitle>
+              <CardTitle className="text-sm font-medium text-pink-700">
+                {activeTask.title}
+              </CardTitle>
             </CardHeader>
             {activeTask.description && (
               <CardContent className="pt-0">
@@ -148,17 +158,6 @@ export default function KanbanBoard({ projectId, tasks }: KanbanBoardProps) {
           </Card>
         ) : null}
       </DragOverlay>
-
-             {isUpdating && (
-         <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
-           <div className="bg-gradient-to-br from-white to-pink-50 rounded-lg p-6 shadow-xl border border-pink-200">
-             <div className="text-center">
-               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500 mx-auto mb-2"></div>
-               <p className="text-gray-600">در حال بروزرسانی...</p>
-             </div>
-           </div>
-         </div>
-       )}
     </DndContext>
   );
 }

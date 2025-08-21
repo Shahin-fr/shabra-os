@@ -8,9 +8,11 @@ import {
   FileText, 
   BarChart3, 
   Calendar, 
-  Users 
+  Users,
+  Download
 } from 'lucide-react';
 import Link from 'next/link';
+import { PWATestButton } from '@/components/ui/PWATestButton';
 
 const actions = [
   {
@@ -86,6 +88,20 @@ export function QuickActions() {
               </Button>
             </Link>
           ))}
+        </div>
+        
+        {/* PWA Test Section */}
+        <div className="mt-4 pt-4 border-t border-white/20">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-8 h-8 bg-gradient-to-br from-[#ff0a54]/20 to-[#ff0a54]/40 rounded-lg flex items-center justify-center">
+              <Download className="h-4 w-4 text-[#ff0a54]" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-gray-900">PWA تست</p>
+              <p className="text-xs text-gray-600">بررسی قابلیت نصب اپلیکیشن</p>
+            </div>
+          </div>
+          <PWATestButton />
         </div>
       </CardContent>
     </Card>

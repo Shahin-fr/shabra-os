@@ -1,6 +1,7 @@
 import { Header } from "./Header";
 import { Sidebar } from "./Sidebar";
 import { AmbientBubble } from "@/components/ui/AmbientBubble";
+import { GlobalStatusIndicator } from "@/components/ui/GlobalStatusIndicator";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -33,6 +34,9 @@ export function MainLayout({ children }: MainLayoutProps) {
           {children}
         </div>
       </main>
+      
+      {/* Global Status Indicator */}
+      <GlobalStatusIndicator />
     </div>
   );
 }
