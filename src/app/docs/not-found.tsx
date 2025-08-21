@@ -1,12 +1,11 @@
 import Link from 'next/link';
 import { BookOpen, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { MainLayout } from '@/components/layout/MainLayout';
+
 
 export default function DocsNotFound() {
   return (
-    <MainLayout>
-      <div className="container mx-auto px-4 py-16 max-w-2xl text-center">
+    <div className="container mx-auto px-4 py-16 max-w-2xl text-center">
       <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-muted flex items-center justify-center">
         <BookOpen className="h-10 w-10 text-muted-foreground" />
       </div>
@@ -35,6 +34,5 @@ export default function DocsNotFound() {
         </Button>
       </div>
       </div>
-    </MainLayout>
   );
 }

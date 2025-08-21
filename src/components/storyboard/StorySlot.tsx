@@ -239,6 +239,7 @@ export function StorySlot({ story, index, isSelected, onClick, onClearSlot, isLo
               <div className="flex items-center justify-between mt-3 pt-2 border-t border-gray-200/50">
                 {story.visualNotes && (
                   <div className="flex items-center gap-1 text-xs text-gray-600">
+                    {/* eslint-disable-next-line jsx-a11y/alt-text */}
                     <Image className="h-3 w-3 text-[#ff0a54]" />
                     <span>تصویر</span>
                   </div>

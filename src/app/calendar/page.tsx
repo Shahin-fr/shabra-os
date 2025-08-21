@@ -1,11 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { MainLayout } from "@/components/layout/MainLayout";
+
 import { Calendar, Clock, Users, CalendarDays } from "lucide-react";
 
 export default function CalendarPage() {
   return (
-    <MainLayout>
-      <div className="container mx-auto max-w-7xl space-y-8">
+    <div className="container mx-auto max-w-7xl space-y-8">
         {/* Page Header */}
         <div className="text-center space-y-4">
           <h1 className="text-4xl font-bold text-gray-900">
@@ -68,6 +67,5 @@ export default function CalendarPage() {
           </CardContent>
         </Card>
       </div>
-    </MainLayout>
   );
 }

@@ -3,15 +3,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import { Calendar, User, Tag } from 'lucide-react';
-import { MainLayout } from '@/components/layout/MainLayout';
+import { formatJalaliDate } from '@/lib/date-utils';
+
 
 export default function DocsPage() {
   const docs = getAllDocs();
   const tags = getAllTags();
 
   return (
-    <MainLayout>
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
+    <div className="container mx-auto px-4 py-8 max-w-6xl">
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-4xl font-bold text-foreground mb-4">پایگاه دانش</h1>
@@ -58,7 +58,7 @@ export default function DocsPage() {
                 <div className="flex items-center justify-between text-sm text-muted-foreground mb-3">
                   <div className="flex items-center gap-1">
                     <Calendar className="h-4 w-4" />
-                    <span>{new Date(doc.date).toLocaleDateString('fa-IR')}</span>
+                    <span>{formatJalaliDate(new Date(doc.date), 'yyyy/M/d')}</span>
                   </div>
                   <div className="flex items-center gap-1">
                     <User className="h-4 w-4" />
@@ -104,6 +104,5 @@ export default function DocsPage() {
         </div>
       )}
       </div>
-    </MainLayout>
   );
 }

@@ -1,8 +1,9 @@
 "use client";
 
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { TrendingUp } from 'lucide-react';
+import { CardHeaderWithIcon } from '@/components/ui/CardHeaderWithIcon';
 
 const data = [
   { name: 'شنبه', value: 12 },
@@ -17,19 +18,11 @@ const data = [
 export function ActivityChart() {
   return (
     <Card className="backdrop-blur-xl bg-white/10 border border-white/20 shadow-2xl">
-      <CardHeader className="pb-3">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-[#ff0a54]/20 to-[#ff0a54]/40 rounded-lg flex items-center justify-center">
-            <TrendingUp className="h-5 w-5 text-[#ff0a54]" />
-          </div>
-          <div>
-            <CardTitle className="text-lg font-semibold text-gray-900">
-              فعالیت هفتگی
-            </CardTitle>
-            <p className="text-sm text-gray-600">تعداد وظایف تکمیل شده</p>
-          </div>
-        </div>
-      </CardHeader>
+      <CardHeaderWithIcon
+        icon={TrendingUp}
+        title="فعالیت هفتگی"
+        subtitle="تعداد وظایف تکمیل شده"
+      />
       <CardContent>
         <div className="h-64">
           <ResponsiveContainer width="100%" height="100%">

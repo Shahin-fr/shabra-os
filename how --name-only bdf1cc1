@@ -1,0 +1,10 @@
+[33mbdf1cc1[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m feat: Major UX Overhaul with PWA, Loading Skeletons, and Global Status
+[33m5c947f8[m Feat: Implement production-ready Prisma configuration for Vercel
+[33m149f3f1[m Feat: Implement production-ready Prisma configuration for Vercel
+[33m3a024b5[m Feat: Implement production-ready Prisma configuration for Vercel
+[33m1f6687a[m Feat: Implement production-ready Prisma configuration for Vercel
+[33m83c7b0b[m Feat: Implement production-ready Prisma configuration for Vercel
+[33mbbe519d[m Fix: Final correction for production database URL
+[33m84c836e[m Fix: Final correction for production database URL
+[33mb7ba808[m Feat: Use a direct DATABASE_URL for production
+[33m795741a[m Fix: Correct database environment variable name

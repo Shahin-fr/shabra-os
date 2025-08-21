@@ -10,3 +10,12 @@ export interface Project {
     tasks: number;
   };
 }
+
+export interface ProjectsResponse {
+  projects: Project[];
+  totalCount: number;
+  currentPage: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+}

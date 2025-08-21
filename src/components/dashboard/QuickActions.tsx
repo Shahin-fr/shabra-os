@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { 
   Plus, 
@@ -11,6 +11,7 @@ import {
   Users,
   Download
 } from 'lucide-react';
+import { CardHeaderWithIcon } from '@/components/ui/CardHeaderWithIcon';
 import Link from 'next/link';
 import { PWATestButton } from '@/components/ui/PWATestButton';
 
@@ -55,19 +56,11 @@ const actions = [
 export function QuickActions() {
   return (
     <Card className="backdrop-blur-xl bg-white/10 border border-white/20 shadow-2xl">
-      <CardHeader className="pb-3">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-[#ff0a54]/20 to-[#ff0a54]/40 rounded-lg flex items-center justify-center">
-            <Plus className="h-5 w-5 text-[#ff0a54]" />
-          </div>
-          <div>
-            <CardTitle className="text-lg font-semibold text-gray-900">
-              اقدامات سریع
-            </CardTitle>
-            <p className="text-sm text-gray-600">دسترسی سریع به ابزارها</p>
-          </div>
-        </div>
-      </CardHeader>
+      <CardHeaderWithIcon
+        icon={Plus}
+        title="اقدامات سریع"
+        subtitle="دسترسی سریع به ابزارها"
+      />
       <CardContent>
         <div className="grid grid-cols-2 gap-3">
           {actions.map((action) => (

@@ -5,9 +5,7 @@ import bcrypt from "bcryptjs";
 
 // Ensure environment variables are set
 if (!process.env.NEXTAUTH_SECRET) {
-  console.warn("NEXTAUTH_SECRET is not set. Please set it in your .env.local file.");
-  // Use a fallback secret for development (DO NOT USE IN PRODUCTION)
-  process.env.NEXTAUTH_SECRET = "your-secret-key-here-change-in-production";
+  throw new Error("NEXTAUTH_SECRET environment variable is required");
 }
 
 const config = {

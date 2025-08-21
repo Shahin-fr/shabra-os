@@ -4,24 +4,45 @@ import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, Calendar, FileText } from "lucide-react";
+import { Calendar, FileText } from "lucide-react";
 import Link from "next/link";
-import { MainLayout } from "@/components/layout/MainLayout";
+
 import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { fetchProjects, projectsKeys } from "@/lib/queries";
-import { Project } from "@/types/project";
+import { Pagination } from "@/components/ui/pagination";
+import CreateProject from "@/components/projects/CreateProject";
+import { cn } from "@/lib/utils";
+import { formatJalaliDate } from "@/lib/date-utils";
+
 
 export default function ProjectsPage() {
   const { data: session, status } = useSession();
+  const [currentPage, setCurrentPage] = useState(1);
 
-  // Use TanStack Query to fetch projects
-  const { data: projects = [], isLoading, isError } = useQuery({
-    queryKey: projectsKeys.all,
-    queryFn: fetchProjects,
+  // Use TanStack Query to fetch projects with pagination
+  const { data: projectsData, isLoading, isError } = useQuery({
+    queryKey: projectsKeys.byPage(currentPage),
+    queryFn: () => fetchProjects(currentPage),
     enabled: status === "authenticated",
   });
+
+  // Extract projects and pagination data
+  const projects = projectsData?.projects || [];
+  const pagination = {
+    currentPage: projectsData?.currentPage || 1,
+    totalPages: projectsData?.totalPages || 1,
+    hasNextPage: projectsData?.hasNextPage || false,
+    hasPreviousPage: projectsData?.hasPreviousPage || false,
+  };
+
+  // Handle page changes
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    // Scroll to top when page changes
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -31,38 +52,34 @@ export default function ProjectsPage() {
 
   if (status === "loading" || isLoading) {
     return (
-      <MainLayout>
-        <div className="container mx-auto max-w-7xl">
-          <div className="text-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-            <p className="mt-3 text-muted-foreground">در حال بارگذاری پروژه‌ها...</p>
-          </div>
+      <div className="container mx-auto max-w-7xl">
+        <div className="text-center py-12">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-3 text-muted-foreground">در حال بارگذاری پروژه‌ها...</p>
         </div>
-      </MainLayout>
+      </div>
     );
   }
 
   if (isError) {
     return (
-      <MainLayout>
-        <div className="container mx-auto max-w-7xl">
-          <div className="text-center py-12">
-            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <FileText className="h-8 w-8 text-red-600" />
-            </div>
-            <h3 className="text-lg font-semibold text-foreground mb-2">خطا در بارگذاری پروژه‌ها</h3>
-            <p className="text-muted-foreground mb-6">
-              مشکلی در بارگذاری پروژه‌ها پیش آمده است
-            </p>
-            <Button 
-              onClick={() => window.location.reload()} 
-              className="bg-[#ff0a54] hover:bg-[#ff0a54]/90 text-white"
-            >
-              تلاش مجدد
-            </Button>
+      <div className="container mx-auto max-w-7xl">
+        <div className="text-center py-12">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <FileText className="h-8 w-8 text-red-600" />
           </div>
+          <h3 className="text-lg font-semibold text-foreground mb-2">خطا در بارگذاری پروژه‌ها</h3>
+          <p className="text-muted-foreground mb-6">
+            مشکلی در بارگذاری پروژه‌ها پیش آمده است
+          </p>
+          <Button 
+            onClick={() => window.location.reload()} 
+            className="bg-[#ff0a54] hover:bg-[#ff0a54]/90 text-white"
+          >
+            تلاش مجدد
+          </Button>
         </div>
-      </MainLayout>
+      </div>
     );
   }
 
@@ -71,13 +88,12 @@ export default function ProjectsPage() {
   }
 
   return (
-    <MainLayout>
-      <motion.div 
-        className="container mx-auto max-w-7xl"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-      >
+    <motion.div 
+      className="container mx-auto max-w-7xl"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+    >
         {/* Enhanced Page Header */}
         <motion.div 
           className="mb-8"
@@ -85,10 +101,15 @@ export default function ProjectsPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
-          <h1 className="text-4xl font-bold text-foreground mb-3">
-            پروژه‌ها
-          </h1>
-          <p className="text-lg text-muted-foreground">مدیریت پروژه‌ها و محتوای دیجیتال</p>
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h1 className="text-4xl font-bold text-foreground mb-3">
+                پروژه‌ها
+              </h1>
+              <p className="text-lg text-muted-foreground">مدیریت پروژه‌ها و محتوای دیجیتال</p>
+            </div>
+            <CreateProject />
+          </div>
         </motion.div>
 
         {/* Projects Grid */}
@@ -171,7 +192,7 @@ export default function ProjectsPage() {
 
                         {/* Last Updated */}
                         <div className="text-xs text-muted-foreground/70">
-                          آخرین بروزرسانی: {new Date(project.updatedAt).toLocaleDateString("fa-IR")}
+                          آخرین بروزرسانی: {formatJalaliDate(new Date(project.updatedAt), 'yyyy/M/d')}
                         </div>
                       </div>
                     </CardContent>
@@ -209,19 +230,45 @@ export default function ProjectsPage() {
                 <p className="text-muted-foreground mb-6">
                   اولین پروژه خود را ایجاد کنید تا شروع کنید
                 </p>
-                <Button className="bg-[#ff0a54] hover:bg-[#ff0a54]/90 text-white">
-                  <Plus className="h-4 w-4 mr-2" />
-                  ایجاد پروژه جدید
-                </Button>
+                <CreateProject />
               </CardContent>
             </Card>
           </motion.div>
         )}
+
+        {/* Pagination */}
+        {projects.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="mt-8"
+          >
+            <Card
+              style={{
+                background: 'rgba(255, 255, 255, 0.95)',
+                backdropFilter: 'blur(20px)',
+                border: '1px solid rgba(255, 255, 255, 0.3)',
+                boxShadow: `
+                  0 8px 25px rgba(0, 0, 0, 0.1),
+                  0 4px 15px rgba(253, 214, 232, 0.1),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.8)
+                `
+              }}
+            >
+              <Pagination
+                currentPage={pagination.currentPage}
+                totalPages={pagination.totalPages}
+                hasNextPage={pagination.hasNextPage}
+                hasPreviousPage={pagination.hasPreviousPage}
+                onPageChange={handlePageChange}
+                isLoading={isLoading}
+              />
+            </Card>
+          </motion.div>
+        )}
       </motion.div>
-    </MainLayout>
   );
 }
 
-function cn(...classes: string[]) {
-  return classes.filter(Boolean).join(" ");
-}
+

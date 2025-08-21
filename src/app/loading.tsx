@@ -1,11 +1,10 @@
-import { MainLayout } from "@/components/layout/MainLayout";
+
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function DashboardLoading() {
   return (
-    <MainLayout>
-      <div className="container mx-auto max-w-7xl space-y-8">
+    <div className="container mx-auto max-w-7xl space-y-8">
         {/* Page Header Skeleton */}
         <div className="text-center space-y-4">
           <Skeleton className="h-12 w-96 mx-auto mb-3" />
@@ -120,6 +119,5 @@ export default function DashboardLoading() {
           </div>
         </div>
       </div>
-    </MainLayout>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import {
   DndContext,
   DragEndEvent,
@@ -46,6 +46,11 @@ export default function KanbanBoard({ projectId, tasks }: KanbanBoardProps) {
   // Local state for optimistic updates
   const [optimisticTasks, setOptimisticTasks] = useState<Task[]>(tasks);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
+  
+  // Sync optimistic tasks with props when tasks change
+  useEffect(() => {
+    setOptimisticTasks(tasks);
+  }, [tasks]);
   
   // Global status store
   const { setStatus } = useStatusStore();
@@ -114,9 +119,12 @@ export default function KanbanBoard({ projectId, tasks }: KanbanBoardProps) {
     }
   }, [optimisticTasks, projectId, setStatus]);
 
-  const getTasksForColumn = useCallback((status: Task["status"]) => {
-    return optimisticTasks.filter((task) => task.status === status);
-  }, [optimisticTasks]);
+  // Memoize column tasks to prevent recalculation on every render
+  const columnTasks = useMemo(() => ({
+    PENDING: optimisticTasks.filter(t => t.status === "PENDING"),
+    IN_PROGRESS: optimisticTasks.filter(t => t.status === "IN_PROGRESS"),
+    COMPLETED: optimisticTasks.filter(t => t.status === "COMPLETED")
+  }), [optimisticTasks]);
 
   return (
     <DndContext
@@ -126,14 +134,14 @@ export default function KanbanBoard({ projectId, tasks }: KanbanBoardProps) {
     >
       <div className="flex gap-6 h-full">
         {columns.map((column) => {
-          const columnTasks = getTasksForColumn(column.status);
+          const tasksForColumn = columnTasks[column.status];
           
           return (
             <DroppableColumn
               key={column.id}
               id={column.id}
               title={column.title}
-              tasks={columnTasks}
+              tasks={tasksForColumn}
               projectId={projectId}
             />
           );

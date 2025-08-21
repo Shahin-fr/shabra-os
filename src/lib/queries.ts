@@ -1,4 +1,4 @@
-import { Project } from "@/types/project";
+import { Project, ProjectsResponse } from "@/types/project";
 import { Story, StoryType } from "@/types/story";
 
 // Projects queries
@@ -8,10 +8,11 @@ export const projectsKeys = {
   list: (filters: string) => [...projectsKeys.lists(), { filters }] as const,
   details: () => [...projectsKeys.all, "detail"] as const,
   detail: (id: string) => [...projectsKeys.details(), id] as const,
+  byPage: (page: number) => [...projectsKeys.all, "page", page] as const,
 };
 
-export const fetchProjects = async (): Promise<Project[]> => {
-  const response = await fetch("/api/projects");
+export const fetchProjects = async (page: number = 1): Promise<ProjectsResponse> => {
+  const response = await fetch(`/api/projects?page=${page}&limit=20`);
   if (!response.ok) {
     throw new Error("Failed to fetch projects");
   }
@@ -82,6 +83,24 @@ export const fetchStoryTypes = async (): Promise<StoryType[]> => {
   const response = await fetch("/api/story-types");
   if (!response.ok) {
     throw new Error("Failed to fetch story types");
+  }
+  return response.json();
+};
+
+// Content Calendar queries
+export const contentCalendarKeys = {
+  all: ["contentCalendar"] as const,
+  lists: () => [...contentCalendarKeys.all, "list"] as const,
+  list: (filters: string) => [...contentCalendarKeys.lists(), { filters }] as const,
+  byWeek: (weekStart: string) => [...contentCalendarKeys.all, "week", weekStart] as const,
+  details: () => [...contentCalendarKeys.all, "detail"] as const,
+  detail: (id: string) => [...contentCalendarKeys.details(), id] as const,
+};
+
+export const fetchContentSlotsByWeek = async (weekStart: string): Promise<any[]> => {
+  const response = await fetch(`/api/content-slots?weekStart=${weekStart}`);
+  if (!response.ok) {
+    throw new Error("Failed to fetch content slots for the specified week");
   }
   return response.json();
 };

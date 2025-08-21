@@ -98,6 +98,7 @@ export function StoryCard({ story, index, totalStories, onDelete, onReorder }: S
         {story.visualNotes && (
           <div>
             <div className="flex items-center gap-1 text-sm font-medium text-gray-700 mb-1">
+              {/* eslint-disable-next-line jsx-a11y/alt-text */}
               <Image className="h-3 w-3" />
               یادداشت‌های بصری
             </div>

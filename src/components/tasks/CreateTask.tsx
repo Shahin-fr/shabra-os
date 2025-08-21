@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -15,13 +14,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { projectsKeys } from "@/lib/queries";
 
 interface User {
   id: string;
@@ -33,11 +28,10 @@ interface User {
 interface CreateTaskProps {
   projectId: string;
   trigger?: React.ReactNode;
-  mode?: "create" | "view";
+  mode?: "create" | "view" | "edit";
   taskData?: {
-    id: string;
     title: string;
-    description?: string;
+    description: string;
     assignedTo?: string;
   };
 }
@@ -49,14 +43,13 @@ export default function CreateTask({
   taskData 
 }: CreateTaskProps) {
   const [open, setOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [users, setUsers] = useState<User[]>([]);
   const [formData, setFormData] = useState({
     title: taskData?.title || "",
     description: taskData?.description || "",
     assigneeId: taskData?.assignedTo || "",
   });
-  const router = useRouter();
+  const queryClient = useQueryClient();
 
   // Fetch users when component mounts
   useEffect(() => {
@@ -77,18 +70,16 @@ export default function CreateTask({
     }
   }, [open]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-
-    try {
+  // Use TanStack Query mutation for creating tasks
+  const createTaskMutation = useMutation({
+    mutationFn: async (taskData: { title: string; description: string; assigneeId: string }) => {
       const response = await fetch("/api/tasks", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          ...formData,
+          ...taskData,
           projectId,
         }),
       });
@@ -97,20 +88,42 @@ export default function CreateTask({
         throw new Error("خطا در ایجاد وظیفه");
       }
 
+      return response.json();
+    },
+    // Simplified approach - no optimistic updates for now, focus on cache invalidation
+    // onMutate: async (newTaskData) => {
+    //   console.log("🚀 Starting optimistic update for new task:", newTaskData);
+    //   return { previousProject: null };
+    // },
+    onSuccess: async (newTask) => {
       // Reset form
       setFormData({ title: "", description: "", assigneeId: "" });
       
       // Close dialog
       setOpen(false);
       
-      // Refresh the page to show the new task
-      router.refresh();
-    } catch (error) {
-      console.error("Error creating task:", error);
+      // Invalidate and refetch to get the real data from the server
+      try {
+        // Invalidate all related queries
+        await queryClient.invalidateQueries({ queryKey: projectsKeys.detail(projectId) });
+        
+        // Force a refetch to ensure fresh data
+        await queryClient.refetchQueries({ 
+          queryKey: projectsKeys.detail(projectId),
+          type: 'active' 
+        });
+      } catch (error) {
+        // Silent error handling for query invalidation
+      }
+    },
+    onError: (error, variables, context) => {
       alert("خطا در ایجاد وظیفه. لطفاً دوباره تلاش کنید.");
-    } finally {
-      setIsLoading(false);
-    }
+    },
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    createTaskMutation.mutate(formData);
   };
 
   const handleInputChange = (
@@ -161,7 +174,7 @@ export default function CreateTask({
                 className="col-span-3"
                 placeholder="عنوان وظیفه را وارد کنید"
                 required
-                disabled={mode === "view"}
+                disabled={mode === "view" || createTaskMutation.isPending}
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
@@ -176,7 +189,7 @@ export default function CreateTask({
                 className="col-span-3"
                 placeholder="توضیحات وظیفه را وارد کنید"
                 rows={3}
-                disabled={mode === "view"}
+                disabled={mode === "view" || createTaskMutation.isPending}
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
@@ -186,7 +199,7 @@ export default function CreateTask({
               <Select
                 value={formData.assigneeId}
                 onValueChange={handleSelectChange}
-                disabled={mode === "view"}
+                disabled={mode === "view" || createTaskMutation.isPending}
               >
                 <SelectTrigger className="col-span-3">
                   <SelectValue placeholder="انتخاب مسئول" />
@@ -207,12 +220,12 @@ export default function CreateTask({
                 type="button"
                 variant="outline"
                 onClick={() => setOpen(false)}
-                disabled={isLoading}
+                disabled={createTaskMutation.isPending}
               >
                 انصراف
               </Button>
-                           <Button type="submit" disabled={isLoading} className="bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700">
-               {isLoading ? "در حال ایجاد..." : "ایجاد وظیفه"}
+                           <Button type="submit" disabled={createTaskMutation.isLoading} className="bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700">
+                               {createTaskMutation.isPending ? "در حال ایجاد..." : "ایجاد وظیفه"}
              </Button>
             </DialogFooter>
           )}

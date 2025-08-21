@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 
 export function PWARegistration() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
@@ -9,8 +9,35 @@ export function PWARegistration() {
   const [swStatus, setSwStatus] = useState<'unregistered' | 'installing' | 'waiting' | 'active' | 'redundant'>('unregistered');
 
   useEffect(() => {
+    // DEVELOPMENT: Completely disable Service Worker and unregister existing ones
+    if (process.env.NODE_ENV === 'development') {
+      console.log('PWA: Development mode detected - disabling Service Worker');
+      
+      // Unregister any existing service workers to clean up the environment
+      if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then((registrations) => {
+          registrations.forEach((registration) => {
+            console.log('PWA: Unregistering service worker in development:', registration);
+            registration.unregister();
+          });
+        });
+        
+        // Also try to unregister by scope
+        navigator.serviceWorker.getRegistration('/').then((registration) => {
+          if (registration) {
+            console.log('PWA: Unregistering service worker by scope in development');
+            registration.unregister();
+          }
+        });
+      }
+      
+      // Skip all PWA functionality in development
+      return;
+    }
+
+    // PRODUCTION: Full PWA functionality
     if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
-      console.log('PWA: Service Worker supported, starting registration...');
+      console.log('PWA: Production mode - Service Worker supported, starting registration...');
       
       // Check if service worker is already registered
       navigator.serviceWorker.getRegistration()
@@ -81,6 +108,12 @@ export function PWARegistration() {
   }, []);
 
   const registerServiceWorker = () => {
+    // Safety check - only register in production
+    if (process.env.NODE_ENV === 'development') {
+      console.log('PWA: Skipping service worker registration in development');
+      return;
+    }
+
     navigator.serviceWorker
       .register('/sw.js', { scope: '/' })
       .then((registration) => {
@@ -116,7 +149,13 @@ export function PWARegistration() {
   };
 
   // Function to show install prompt
-  const showInstallPrompt = async () => {
+  const showInstallPrompt = useCallback(async () => {
+    // Safety check - only show prompt in production
+    if (process.env.NODE_ENV === 'development') {
+      console.log('PWA: Install prompt disabled in development');
+      return;
+    }
+
     if (deferredPrompt) {
       console.log('PWA: Showing install prompt...');
       deferredPrompt.prompt();
@@ -131,15 +170,21 @@ export function PWARegistration() {
     } else {
       console.log('PWA: No install prompt available');
     }
-  };
+  }, [deferredPrompt]);
 
   // Function to update service worker
-  const updateServiceWorker = () => {
+  const updateServiceWorker = useCallback(() => {
+    // Safety check - only update in production
+    if (process.env.NODE_ENV === 'development') {
+      console.log('PWA: Service worker update disabled in development');
+      return;
+    }
+
     if (swRegistration && swRegistration.waiting) {
       console.log('PWA: Updating service worker...');
       swRegistration.waiting.postMessage({ type: 'SKIP_WAITING' });
     }
-  };
+  }, [swRegistration]);
 
   // Expose functions globally for testing
   useEffect(() => {
@@ -154,9 +199,15 @@ export function PWARegistration() {
         swRegistration,
         showInstallPrompt,
         updateServiceWorker,
+        environment: process.env.NODE_ENV,
       };
     }
-  }, [isInstallable, deferredPrompt, swStatus, swRegistration]);
+  }, [isInstallable, deferredPrompt, swStatus, swRegistration, showInstallPrompt, updateServiceWorker]);
+
+  // Don't render anything in development
+  if (process.env.NODE_ENV === 'development') {
+    return null;
+  }
 
   return null; // This component doesn't render anything
 }

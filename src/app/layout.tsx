@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import Providers from "./providers";
+import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { PWARegistration } from "@/components/ui/PWARegistration";
 
 const vazirmatn = localFont({
@@ -68,7 +69,9 @@ export default function RootLayout({
         className={`${vazirmatn.variable} font-sans antialiased`}
       >
         <Providers>
-          {children}
+          <DashboardLayout>
+            {children}
+          </DashboardLayout>
         </Providers>
         <PWARegistration />
       </body>

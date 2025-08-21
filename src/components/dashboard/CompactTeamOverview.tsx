@@ -1,31 +1,10 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Users } from 'lucide-react';
-
-const teamMembers = [
-  {
-    id: 1,
-    name: "شاهین",
-    status: "online"
-  },
-  {
-    id: 2,
-    name: "سارا",
-    status: "online"
-  },
-  {
-    id: 3,
-    name: "علی",
-    status: "away"
-  },
-  {
-    id: 4,
-    name: "فاطمه",
-    status: "online"
-  }
-];
+import { CardHeaderWithIcon } from '@/components/ui/CardHeaderWithIcon';
+import { mockCompactTeamMembers } from '@/lib/mock-data';
 
 export function CompactTeamOverview() {
   const getStatusColor = (status: string) => {
@@ -43,24 +22,18 @@ export function CompactTeamOverview() {
 
   return (
     <Card className="backdrop-blur-xl bg-white/10 border border-white/20 shadow-2xl h-full">
-      <CardHeader className="pb-3">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-gradient-to-br from-[#ff0a54]/20 to-[#ff0a54]/40 rounded-lg flex items-center justify-center">
-            <Users className="h-4 w-4 text-[#ff0a54]" />
-          </div>
-          <div>
-            <CardTitle className="text-sm font-semibold text-gray-900">
-              اعضای تیم
-            </CardTitle>
-          </div>
-        </div>
-      </CardHeader>
+      <CardHeaderWithIcon
+        icon={Users}
+        title="اعضای تیم"
+        subtitle=""
+        iconBgColor="from-[#ff0a54]/20 to-[#ff0a54]/40"
+      />
       <CardContent>
         <div className="space-y-3">
           {/* Compact Avatar Display */}
           <div className="flex items-center justify-center">
             <div className="flex -space-x-2">
-              {teamMembers.map((member) => (
+              {mockCompactTeamMembers.map((member) => (
                 <div key={member.id} className="relative group">
                   <Avatar className="w-8 h-8 border-2 border-white/20 hover:scale-110 transition-transform duration-200 cursor-pointer">
                     <AvatarImage src={`/api/placeholder/32/32?name=${member.name}`} alt={member.name} />
@@ -77,12 +50,12 @@ export function CompactTeamOverview() {
           {/* Team Stats */}
           <div className="flex justify-center gap-4 text-center">
             <div>
-              <div className="text-lg font-bold text-gray-900">{teamMembers.length}</div>
+              <div className="text-lg font-bold text-gray-900">{mockCompactTeamMembers.length}</div>
               <div className="text-xs text-gray-600">کل اعضا</div>
             </div>
             <div>
               <div className="text-lg font-bold text-green-600">
-                {teamMembers.filter(m => m.status === 'online').length}
+                {mockCompactTeamMembers.filter(m => m.status === 'online').length}
               </div>
               <div className="text-xs text-gray-600">آنلاین</div>
             </div>

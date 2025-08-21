@@ -1,8 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    const { searchParams } = new URL(request.url);
+    const page = parseInt(searchParams.get('page') || '1');
+    const limit = parseInt(searchParams.get('limit') || '20');
+    const offset = (page - 1) * limit;
+
+    // Get total count for pagination
+    const totalProjects = await prisma.project.count();
+    const totalPages = Math.ceil(totalProjects / limit);
+
+    // Get paginated projects
     const projects = await prisma.project.findMany({
       orderBy: {
         createdAt: 'desc'
@@ -14,10 +24,20 @@ export async function GET() {
             tasks: true
           }
         }
-      }
+      },
+      skip: offset,
+      take: limit
     });
     
-    return NextResponse.json(projects);
+    // Return paginated response
+    return NextResponse.json({
+      projects,
+      currentPage: page,
+      totalPages,
+      totalProjects,
+      hasNextPage: page < totalPages,
+      hasPreviousPage: page > 1
+    });
   } catch (error) {
     console.error("Error fetching projects:", error);
     return NextResponse.json(
@@ -47,6 +67,14 @@ export async function POST(request: NextRequest) {
         description: description?.trim() || null,
         status: "active", // Default status
       },
+      include: {
+        _count: {
+          select: {
+            stories: true,
+            tasks: true
+          }
+        }
+      }
     });
 
     return NextResponse.json(project, { status: 201 });

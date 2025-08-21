@@ -3,18 +3,19 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
+import { formatJalaliDate } from "@/lib/date-utils";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
-import { CalendarIcon, Plus, Minus, XCircle } from "lucide-react";
+import { JalaliCalendar } from "@/components/ui/jalali-calendar";
+import { CalendarIcon, Plus, Minus } from "lucide-react";
 
 import { CreateStoryDialog } from "@/components/storyboard/CreateStoryDialog";
 import { StoryCanvas } from "@/components/storyboard/StoryCanvas";
 import { TemplatePalette } from "@/components/storyboard/TemplatePalette";
-import { MainLayout } from "@/components/layout/MainLayout";
+
 import { motion } from "framer-motion";
 import { fetchStoriesByDay, fetchStoryTypes, storiesKeys, storyTypesKeys } from "@/lib/queries";
 import { Story } from "@/types/story";
@@ -509,13 +510,12 @@ export default function StoryboardPage() {
   };
 
   return (
-    <MainLayout>
-      <motion.div 
-        className="container mx-auto max-w-7xl"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-      >
+    <motion.div 
+      className="container mx-auto max-w-7xl"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+    >
         {/* Enhanced Date Selection and Controls */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -548,15 +548,13 @@ export default function StoryboardPage() {
                           className="w-48 justify-start text-left font-normal border-primary/30 hover:border-primary/50 hover:bg-primary/5"
                         >
                           <CalendarIcon className="mr-2 h-4 w-4 text-[#ff0a54]" />
-                          {format(selectedDate, "yyyy/M/d")}
+                          {formatJalaliDate(selectedDate, 'yyyy/M/d')}
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
+                        <JalaliCalendar
                           selected={selectedDate}
                           onSelect={(date) => date && setSelectedDate(date)}
-                          initialFocus
                         />
                       </PopoverContent>
                     </Popover>
@@ -770,6 +768,5 @@ export default function StoryboardPage() {
           </motion.div>
         </div>
       </motion.div>
-    </MainLayout>
   );
 }

@@ -1,11 +1,10 @@
-import { MainLayout } from "@/components/layout/MainLayout";
+
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function StoryboardLoading() {
   return (
-    <MainLayout>
-      <div className="container mx-auto max-w-7xl">
+    <div className="container mx-auto max-w-7xl">
         {/* Page Header Skeleton */}
         <div className="mb-8">
           <Skeleton className="h-12 w-48 mb-3" />
@@ -79,6 +78,5 @@ export default function StoryboardLoading() {
           </div>
         </div>
       </div>
-    </MainLayout>
   );
 }

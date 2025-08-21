@@ -11,11 +11,11 @@ const AmbientBubble = dynamic(() => import("@/components/ui/AmbientBubble").then
   loading: () => null
 });
 
-interface MainLayoutProps {
+interface DashboardLayoutProps {
   children: React.ReactNode;
 }
 
-export function MainLayout({ children }: MainLayoutProps) {
+export function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
     <div className="relative flex min-h-screen flex-col bg-gradient-to-br from-slate-50 via-pink-50/50 to-purple-50/30 overflow-hidden">
       {/* Optimized Ambient Bubbles Background - Reduced from 14 to 6 for better performance */}

@@ -17,6 +17,7 @@ export function Sidebar() {
     { href: "/", label: "داشبورد", icon: LayoutDashboard },
     { href: "/projects", label: "پروژه‌ها", icon: FolderOpen },
     { href: "/storyboard", label: "استوری‌بورد", icon: Instagram },
+    { href: "/content-calendar", label: "تقویم محتوا", icon: Calendar },
     { href: "/docs", label: "پایگاه دانش", icon: BookOpen },
     { href: "/team", label: "تیم", icon: Users },
     { href: "/calendar", label: "تقویم", icon: Calendar },
@@ -29,9 +30,9 @@ export function Sidebar() {
       {/* Floating Logo - Enhanced spacing */}
       <motion.div 
         className="flex justify-center pt-8 pb-8"
-        initial={{ opacity: 0, y: -20 }}
+        initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
+        transition={{ duration: 0.3, delay: 0.1 }}
       >
         <Link href="/" className="block">
           <motion.div 
@@ -80,9 +81,9 @@ export function Sidebar() {
               inset 0 1px 0 rgba(255, 255, 255, 0.3)
             `
           }}
-          initial={{ opacity: 0, scale: 0.9 }}
+          initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
+          transition={{ duration: 0.3, delay: 0.15 }}
         >
           <nav className="flex flex-col gap-3">
             {navigationItems.map((item, index) => {
@@ -92,9 +93,9 @@ export function Sidebar() {
               return (
                 <motion.div
                   key={item.href}
-                  initial={{ opacity: 0, x: 50 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.4, delay: 0.4 + index * 0.1 }}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.2, delay: 0.1 + index * 0.05 }}
                 >
                   <MotionLink
                     href={item.href}

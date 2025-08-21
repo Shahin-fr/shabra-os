@@ -398,3 +398,55 @@ body {
     @apply max-w-full h-auto rounded-lg my-4;
   }
 }
+
+/* Custom Jalali Calendar Styles */
+.jalali-calendar {
+  direction: rtl;
+}
+
+.jalali-calendar .calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.25rem;
+}
+
+/* Line clamp utilities */
+.line-clamp-1 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+.line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.line-clamp-3 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+/* Custom scrollbar for content calendar */
+.content-calendar-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.content-calendar-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.content-calendar-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 10, 84, 0.3);
+  border-radius: 3px;
+}
+
+.content-calendar-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 10, 84, 0.5);
+}

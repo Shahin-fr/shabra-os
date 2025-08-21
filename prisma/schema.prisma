@@ -1,6 +1,6 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
+generator client {
+  provider = "prisma-client-js"
+}
 
 datasource db {
   provider  = "postgresql"
@@ -8,28 +8,22 @@ datasource db {
   directUrl = env("POSTGRES_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
-}
-
 model User {
-  id            String    @id @default(cuid())
-  email         String    @unique
+  id            String         @id @default(cuid())
+  email         String         @unique
   password      String
   firstName     String
   lastName      String
   avatar        String?
-  isActive      Boolean   @default(true)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-
-  // Relations
-  userRoles     UserRole[]
-  tasks         Task[]
-  documents     Document[]
+  isActive      Boolean        @default(true)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
   documentReads DocumentRead[]
+  documents     Document[]
   ideas         Idea[]
   leaveRequests LeaveRequest[]
+  tasks         Task[]
+  userRoles     UserRole[]
 
   @@map("users")
 }
@@ -37,29 +31,26 @@ model User {
 model UserRole {
   id        String   @id @default(cuid())
   userId    String
-  role      String   // 'admin', 'manager', 'employee'
+  role      String
   createdAt DateTime @default(now())
-
-  // Relations
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, role])
   @@map("user_roles")
 }
 
 model Project {
-  id          String   @id @default(cuid())
-  name        String
-  description String?
-  status      String   @default("active") // 'active', 'completed', 'on-hold'
-  startDate   DateTime?
-  endDate     DateTime?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // Relations
-  tasks   Task[]
-  stories Story[]
+  id           String        @id @default(cuid())
+  name         String
+  description  String?
+  status       String        @default("active")
+  startDate    DateTime?
+  endDate      DateTime?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  contentSlots ContentSlot[]
+  stories      Story[]
+  tasks        Task[]
 
   @@map("projects")
 }
@@ -69,39 +60,28 @@ model Task {
   title       String
   description String?
   status      TaskStatus @default(PENDING)
-  priority    String     @default("medium") // 'low', 'medium', 'high', 'urgent'
+  priority    String     @default("medium")
   dueDate     DateTime?
   assignedTo  String?
   projectId   String?
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
-
-  // Relations
-  user    User?    @relation(fields: [assignedTo], references: [id])
-  project Project? @relation(fields: [projectId], references: [id])
+  user        User?      @relation(fields: [assignedTo], references: [id])
+  project     Project?   @relation(fields: [projectId], references: [id])
 
   @@map("tasks")
 }
 
-enum TaskStatus {
-  PENDING    @map("pending")
-  IN_PROGRESS @map("in_progress")
-  COMPLETED  @map("completed")
-  CANCELLED  @map("cancelled")
-}
-
 model Document {
-  id          String   @id @default(cuid())
-  title       String
-  content     String
-  authorId    String
-  isPublic    Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // Relations
-  author       User           @relation(fields: [authorId], references: [id])
+  id            String         @id @default(cuid())
+  title         String
+  content       String
+  authorId      String
+  isPublic      Boolean        @default(false)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
   documentReads DocumentRead[]
+  author        User           @relation(fields: [authorId], references: [id])
 
   @@map("documents")
 }
@@ -111,10 +91,8 @@ model DocumentRead {
   documentId String
   userId     String
   readAt     DateTime @default(now())
-
-  // Relations
-  document Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
-  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([documentId, userId])
   @@map("document_reads")
@@ -125,30 +103,82 @@ model Idea {
   title       String
   description String
   authorId    String
-  status      String   @default("pending") // 'pending', 'approved', 'rejected', 'implemented'
+  status      String   @default("pending")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-
-  // Relations
-  author User @relation(fields: [authorId], references: [id])
+  author      User     @relation(fields: [authorId], references: [id])
 
   @@map("ideas")
 }
 
 model LeaveRequest {
-  id          String      @id @default(cuid())
-  userId      String
-  startDate   DateTime
-  endDate     DateTime
-  reason      String
-  status      LeaveStatus @default(PENDING)
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-
-  // Relations
-  user User @relation(fields: [userId], references: [id])
+  id        String      @id @default(cuid())
+  userId    String
+  startDate DateTime
+  endDate   DateTime
+  reason    String
+  status    LeaveStatus @default(PENDING)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  user      User        @relation(fields: [userId], references: [id])
 
   @@map("leave_requests")
+}
+
+model StoryType {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  stories   Story[]
+
+  @@map("story_types")
+}
+
+model Story {
+  id          String      @id @default(cuid())
+  title       String
+  notes       String?
+  visualNotes String?
+  link        String?
+  day         DateTime
+  order       Int         @default(0)
+  status      StoryStatus @default(DRAFT)
+  projectId   String?
+  storyTypeId String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  project     Project?    @relation(fields: [projectId], references: [id])
+  storyType   StoryType?  @relation(fields: [storyTypeId], references: [id])
+
+  @@index([day])
+  @@index([projectId, day])
+  @@map("stories")
+}
+
+model ContentSlot {
+  id        String        @id @default(cuid())
+  title     String
+  type      ContentType   @default(STORY)
+  dayOfWeek Int
+  weekStart DateTime
+  order     Int           @default(0)
+  notes     String?
+  projectId String?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  project   Project?      @relation(fields: [projectId], references: [id])
+
+  @@index([weekStart, dayOfWeek])
+  @@index([projectId])
+  @@map("content_slots")
+}
+
+enum TaskStatus {
+  PENDING     @map("pending")
+  IN_PROGRESS @map("in_progress")
+  COMPLETED   @map("completed")
+  CANCELLED   @map("cancelled")
 }
 
 enum LeaveStatus {
@@ -159,40 +189,14 @@ enum LeaveStatus {
 }
 
 enum StoryStatus {
-  DRAFT      @map("draft")
-  READY      @map("ready")
-  PUBLISHED  @map("published")
+  DRAFT     @map("draft")
+  READY     @map("ready")
+  PUBLISHED @map("published")
 }
 
-model StoryType {
-  id        String   @id @default(cuid())
-  name      String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // Relations
-  stories Story[]
-
-  @@map("story_types")
+enum ContentType {
+  STORY @map("story")
+  POST  @map("post")
 }
 
-model Story {
-  id           String      @id @default(cuid())
-  title        String
-  notes        String?
-  visualNotes  String?
-  link         String?
-  day          DateTime
-  order        Int         @default(0)
-  status       StoryStatus @default(DRAFT)
-  projectId    String?
-  storyTypeId  String?
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
 
-  // Relations
-  project   Project?   @relation(fields: [projectId], references: [id], onDelete: SetNull)
-  storyType StoryType? @relation(fields: [storyTypeId], references: [id], onDelete: SetNull)
-
-  @@map("stories")
-}

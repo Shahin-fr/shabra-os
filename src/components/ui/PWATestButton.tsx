@@ -5,8 +5,6 @@ import { Button } from './button';
 import { Download, CheckCircle, XCircle, Info } from 'lucide-react';
 
 export function PWATestButton() {
-  const [isInstallable, setIsInstallable] = useState(false);
-  const [isInstalled, setIsInstalled] = useState(false);
   const [status, setStatus] = useState<'idle' | 'checking' | 'installable' | 'installed' | 'error'>('idle');
 
   useEffect(() => {
@@ -14,10 +12,8 @@ export function PWATestButton() {
     if (typeof window !== 'undefined') {
       const checkInstallStatus = () => {
         if (window.matchMedia('(display-mode: standalone)').matches) {
-          setIsInstalled(true);
           setStatus('installed');
         } else {
-          setIsInstalled(false);
           setStatus('idle');
         }
       };
@@ -28,7 +24,6 @@ export function PWATestButton() {
       // Listen for PWA installable state
       const checkInstallable = () => {
         if ((window as any).isInstallable) {
-          setIsInstallable(true);
           setStatus('installable');
         }
       };

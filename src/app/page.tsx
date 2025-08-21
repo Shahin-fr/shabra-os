@@ -16,7 +16,7 @@ import {
   Target
 } from "lucide-react";
 import Link from "next/link";
-import { MainLayout } from "@/components/layout/MainLayout";
+
 import { motion } from "framer-motion";
 import { useEffect } from "react";
 import { 
@@ -39,14 +39,12 @@ export default function HomePage() {
 
   if (status === "loading") {
     return (
-      <MainLayout>
-        <div className="container mx-auto max-w-7xl space-y-10">
-          <div className="text-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-            <p className="mt-3 text-muted-foreground">در حال بارگذاری...</p>
-          </div>
+      <div className="container mx-auto max-w-7xl space-y-10">
+        <div className="text-center py-12">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-3 text-muted-foreground">در حال بارگذاری...</p>
         </div>
-      </MainLayout>
+      </div>
     );
   }
 
@@ -54,16 +52,30 @@ export default function HomePage() {
     return null; // Will redirect via useEffect
   }
 
+  // Simplified animation variants for better performance
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.2
+      }
+    }
+  };
 
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.4 } }
+  };
 
   return (
-    <MainLayout>
-      <motion.div 
-        className="container mx-auto max-w-7xl space-y-8"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-      >
+    <motion.div 
+      className="container mx-auto max-w-7xl space-y-8"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+    >
         {/* Enhanced Personalized Header */}
         <motion.div 
           className="text-center space-y-4"
@@ -82,27 +94,14 @@ export default function HomePage() {
         {/* Main Dashboard Grid */}
         <motion.div 
           className="grid grid-cols-1 lg:grid-cols-4 gap-6"
+          variants={containerVariants}
           initial="hidden"
           animate="visible"
-          variants={{
-            hidden: { opacity: 0 },
-            visible: {
-              opacity: 1,
-              transition: {
-                staggerChildren: 0.1,
-                delayChildren: 0.2
-              }
-            }
-          }}
         >
           {/* Main Content Area - Left Side */}
           <motion.div 
             className="lg:col-span-3 space-y-6"
-            variants={{
-              hidden: { opacity: 0, x: -20 },
-              visible: { opacity: 1, x: 0 }
-            }}
-            transition={{ duration: 0.5 }}
+            variants={itemVariants}
           >
             {/* Activity Chart */}
             <div className="w-full [&>*]:w-full">
@@ -145,21 +144,17 @@ export default function HomePage() {
             </div>
           </motion.div>
 
-                        {/* Sidebar - Right Side */}
-              <motion.div 
-                className="space-y-6"
-                variants={{
-                  hidden: { opacity: 0, x: 20 },
-                  visible: { opacity: 1, x: 0 }
-                }}
-                transition={{ duration: 0.5 }}
-              >
-                {/* Quick Actions */}
-                <QuickActions />
-                
-                {/* Team Overview */}
-                <TeamOverview />
-              </motion.div>
+          {/* Sidebar - Right Side */}
+          <motion.div 
+            className="space-y-6"
+            variants={itemVariants}
+          >
+            {/* Quick Actions */}
+            <QuickActions />
+            
+            {/* Team Overview */}
+            <TeamOverview />
+          </motion.div>
         </motion.div>
 
         {/* Legacy Feature Cards - Now as Secondary Section */}
@@ -339,6 +334,5 @@ export default function HomePage() {
           </div>
         </motion.div>
       </motion.div>
-    </MainLayout>
   );
 }

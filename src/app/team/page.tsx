@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { MainLayout } from "@/components/layout/MainLayout";
+
 import { prisma } from "@/lib/prisma";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Users, Mail, User } from "lucide-react";
@@ -12,8 +12,7 @@ export default async function TeamPage() {
   });
 
   return (
-    <MainLayout>
-      <div className="container mx-auto max-w-7xl space-y-8">
+    <div className="container mx-auto max-w-7xl space-y-8">
         {/* Page Header */}
         <div className="text-center space-y-4">
           <h1 className="text-4xl font-bold text-gray-900">
@@ -79,6 +78,5 @@ export default async function TeamPage() {
           </CardContent>
         </Card>
       </div>
-    </MainLayout>
   );
 }
