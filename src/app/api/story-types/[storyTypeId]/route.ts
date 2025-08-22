@@ -98,7 +98,7 @@ export async function PUT(
 
     // Parse and validate request body
     const body = await request.json();
-    const { name } = body;
+    const { name, icon } = body;
 
     // Basic validation
     if (!name || typeof name !== "string" || name.trim().length === 0) {
@@ -140,6 +140,7 @@ export async function PUT(
       where: { id: storyTypeId },
       data: {
         name: name.trim(),
+        icon: icon || null,
       },
     });
 

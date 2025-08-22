@@ -28,6 +28,11 @@ export async function GET() {
       orderBy: {
         name: "asc",
       },
+      include: {
+        _count: {
+          select: { stories: true }
+        }
+      }
     });
 
     return NextResponse.json(storyTypes);
@@ -62,7 +67,7 @@ export async function POST(request: NextRequest) {
 
     // Parse and validate request body
     const body = await request.json();
-    const { name } = body;
+    const { name, icon } = body;
 
     // Basic validation
     if (!name || typeof name !== "string" || name.trim().length === 0) {
@@ -88,6 +93,7 @@ export async function POST(request: NextRequest) {
     const storyType = await prisma.storyType.create({
       data: {
         name: name.trim(),
+        icon: icon || null,
       },
     });
 

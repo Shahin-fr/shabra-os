@@ -9,6 +9,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { IconPicker } from "@/components/ui/IconPicker";
+import { DynamicLucideIcon } from "@/components/ui/DynamicLucideIcon";
 import { 
   Settings, 
   Plus, 
@@ -24,19 +26,34 @@ import {
 import { isAdmin } from "@/lib/utils";
 
 // Mock icon mapping - you can expand this based on your needs
-const iconMap: Record<string, React.ReactNode> = {
-  "news": <FileText className="h-4 w-4" />,
-  "feature": <Sparkles className="h-4 w-4" />,
-  "event": <Calendar className="h-4 w-4" />,
-  "team": <Users className="h-4 w-4" />,
-  "analytics": <BarChart3 className="h-4 w-4" />,
-  "goal": <Target className="h-4 w-4" />,
-  "default": <FileText className="h-4 w-4" />
+const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
+  "news": FileText,
+  "feature": Sparkles,
+  "event": Calendar,
+  "team": Users,
+  "analytics": BarChart3,
+  "goal": Target,
+  "default": FileText
+};
+
+// Helper function to get fallback icon based on story type name
+const getFallbackIcon = (storyTypeName: string): React.ComponentType<{ className?: string }> => {
+  const name = storyTypeName.toLowerCase();
+  
+  if (name.includes('خبر') || name.includes('news')) return FileText;
+  if (name.includes('ویژگی') || name.includes('feature')) return Sparkles;
+  if (name.includes('رویداد') || name.includes('event')) return Calendar;
+  if (name.includes('تیم') || name.includes('team')) return Users;
+  if (name.includes('تحلیل') || name.includes('analytics')) return BarChart3;
+  if (name.includes('هدف') || name.includes('goal')) return Target;
+  
+  return FileText; // default fallback
 };
 
 interface StoryType {
   id: string;
   name: string;
+  icon?: string;
   createdAt: string;
   updatedAt: string;
   _count?: {
@@ -80,7 +97,7 @@ export default function StoryTypeManager() {
 
   // Create story type mutation
   const createStoryTypeMutation = useMutation({
-    mutationFn: async (data: { name: string }) => {
+    mutationFn: async (data: { name: string; icon?: string }) => {
       const response = await fetch('/api/story-types', {
         method: 'POST',
         headers: {
@@ -105,7 +122,7 @@ export default function StoryTypeManager() {
 
   // Update story type mutation
   const updateStoryTypeMutation = useMutation({
-    mutationFn: async ({ id, data }: { id: string; data: { name: string } }) => {
+    mutationFn: async ({ id, data }: { id: string; data: { name: string; icon?: string } }) => {
       const response = await fetch(`/api/story-types/${id}`, {
         method: 'PUT',
         headers: {
@@ -158,7 +175,10 @@ export default function StoryTypeManager() {
   // Handle edit button click
   const handleEdit = (storyType: StoryType) => {
     setEditingStoryType(storyType);
-    setFormData({ name: storyType.name, icon: '' }); // You can add icon field later
+    setFormData({ 
+      name: storyType.name, 
+      icon: (storyType as any).icon || '' // Load existing icon if available
+    });
   };
 
   // Handle form submission
@@ -178,12 +198,16 @@ export default function StoryTypeManager() {
         // Update existing story type
         await updateStoryTypeMutation.mutateAsync({
           id: editingStoryType.id,
-          data: { name: formData.name.trim() }
+          data: { 
+            name: formData.name.trim(),
+            icon: formData.icon || undefined
+          }
         });
       } else {
         // Create new story type
         await createStoryTypeMutation.mutateAsync({
-          name: formData.name.trim()
+          name: formData.name.trim(),
+          icon: formData.icon || undefined
         });
       }
     } catch (error) {
@@ -288,7 +312,11 @@ export default function StoryTypeManager() {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <div className="p-2 bg-primary/10 rounded-lg">
-                            {iconMap[storyType.name.toLowerCase()] || iconMap.default}
+                                                         <DynamicLucideIcon 
+                               iconName={storyType.icon} 
+                               className="h-4 w-4" 
+                               fallbackIcon={getFallbackIcon(storyType.name)}
+                             />
                           </div>
                           <div>
                             <h4 className="font-medium">{storyType.name}</h4>
@@ -361,14 +389,12 @@ export default function StoryTypeManager() {
 
               <div className="space-y-2">
                 <Label htmlFor="icon">آیکون (اختیاری)</Label>
-                <Input
-                  id="icon"
-                  value={formData.icon}
-                  onChange={(e) => handleInputChange('icon', e.target.value)}
-                  placeholder="نام آیکون یا کد"
+                <IconPicker
+                  currentIcon={formData.icon}
+                  onSelectIcon={(iconName) => handleInputChange('icon', iconName)}
                 />
                 <p className="text-xs text-muted-foreground">
-                  می‌توانید از آیکون‌های موجود استفاده کنید یا آیکون جدیدی تعریف کنید
+                  آیکون مورد نظر خود را از لیست انتخاب کنید
                 </p>
               </div>
 
@@ -407,7 +433,10 @@ export default function StoryTypeManager() {
                 <Label className="text-sm font-medium">پیش‌نمایش آیکون:</Label>
                 <div className="mt-2 p-3 bg-muted rounded-lg">
                   <div className="flex items-center gap-2">
-                    {iconMap[formData.icon.toLowerCase()] || iconMap.default}
+                                         <DynamicLucideIcon 
+                       iconName={formData.icon} 
+                       className="h-5 w-5" 
+                     />
                     <span className="text-sm">{formData.icon}</span>
                   </div>
                 </div>

@@ -204,7 +204,10 @@ export default function StoryboardPage() {
         day: storyData.day,
         order: storyData.order,
         status: "DRAFT", // Default status for new stories
-        storyType: storyData.storyTypeId ? { id: storyData.storyTypeId, name: "" } : undefined,
+        storyType: storyData.storyTypeId ? 
+          storyTypes.find(st => st.id === storyData.storyTypeId) || 
+          { id: storyData.storyTypeId, name: "Unknown", icon: undefined }
+          : undefined,
       };
 
       // Optimistically add the story

@@ -7,29 +7,13 @@ import {
   Plus, 
   FileText, 
   Image, 
-  ShoppingBag, 
-  Sun, 
-  Heart, 
-  Star, 
-  Users, 
-  Calendar, 
-  Gift, 
-  TrendingUp, 
-  Award,
-  Zap,
-  Coffee,
-  Music,
-  Camera,
-  MapPin,
-  Clock,
-  Target,
-  Lightbulb,
   Trash2
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { motion } from "framer-motion";
+import { DynamicLucideIcon } from "@/components/ui/DynamicLucideIcon";
 
 interface Story {
   id: string;
@@ -43,6 +27,7 @@ interface Story {
   storyType?: {
     id: string;
     name: string;
+    icon?: string;
   };
   project?: {
     id: string;
@@ -65,35 +50,10 @@ const statusConfig = {
   PUBLISHED: { label: "منتشر شده", color: "bg-green-100 text-green-800 border border-green-200 dark:bg-green-900/20 dark:text-green-200 dark:border-yellow-800" },
 };
 
-// Map story type names to relevant icons
-const getStoryTypeIcon = (storyTypeName: string) => {
-  const name = storyTypeName.toLowerCase();
-  
-  if (name.includes('محصول') || name.includes('product')) return ShoppingBag;
-  if (name.includes('سلام') || name.includes('صبح') || name.includes('morning')) return Sun;
-  if (name.includes('عشق') || name.includes('love') || name.includes('heart')) return Heart;
-  if (name.includes('ستاره') || name.includes('star') || name.includes('featured')) return Star;
-  if (name.includes('کاربر') || name.includes('user') || name.includes('community')) return Users;
-  if (name.includes('رویداد') || name.includes('event') || name.includes('calendar')) return Calendar;
-  if (name.includes('هدیه') || name.includes('gift') || name.includes('offer')) return Gift;
-  if (name.includes('روند') || name.includes('trend') || name.includes('popular')) return TrendingUp;
-  if (name.includes('جایزه') || name.includes('award') || name.includes('achievement')) return Award;
-  if (name.includes('انرژی') || name.includes('energy') || name.includes('power')) return Zap;
-  if (name.includes('قهوه') || name.includes('coffee') || name.includes('break')) return Coffee;
-  if (name.includes('موسیقی') || name.includes('music') || name.includes('song')) return Music;
-  if (name.includes('عکس') || name.includes('photo') || name.includes('image')) return Camera;
-  if (name.includes('مکان') || name.includes('location') || name.includes('place')) return MapPin;
-  if (name.includes('زمان') || name.includes('time') || name.includes('schedule')) return Clock;
-  if (name.includes('هدف') || name.includes('goal') || name.includes('target')) return Target;
-  if (name.includes('ایده') || name.includes('idea') || name.includes('creative')) return Lightbulb;
-  
-  // Default icon
-  return FileText;
-};
+
 
 export function StorySlot({ story, index, isSelected, onClick, onClearSlot, isLoading = false }: StorySlotProps) {
   const status = story ? statusConfig[story.status] : null;
-  const StoryTypeIcon = story?.storyType ? getStoryTypeIcon(story.storyType.name) : FileText;
 
   const {
     attributes,
@@ -219,7 +179,11 @@ export function StorySlot({ story, index, isSelected, onClick, onClearSlot, isLo
                   whileHover={{ scale: 1.05, rotate: 5 }}
                   transition={{ type: "spring", stiffness: 300, damping: 10 }}
                 >
-                  <StoryTypeIcon className="h-10 w-10 text-white" />
+                  <DynamicLucideIcon 
+                    iconName={story.storyType?.icon} 
+                    className="h-10 w-10 text-white" 
+                    fallbackIcon={FileText}
+                  />
                 </motion.div>
                 
                 {/* Story type name - Most prominent text */}

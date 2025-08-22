@@ -1,6 +1,7 @@
 export interface StoryType {
   id: string;
   name: string;
+  icon?: string;
 }
 
 export interface Story {
@@ -15,6 +16,7 @@ export interface Story {
   storyType?: {
     id: string;
     name: string;
+    icon?: string;
   };
   project?: {
     id: string;

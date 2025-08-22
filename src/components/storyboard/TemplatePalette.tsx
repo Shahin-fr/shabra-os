@@ -5,10 +5,12 @@ import { Badge } from "@/components/ui/badge";
 import { FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
+import { DynamicLucideIcon } from "@/components/ui/DynamicLucideIcon";
 
 interface StoryType {
   id: string;
   name: string;
+  icon?: string;
 }
 
 interface TemplatePaletteProps {
@@ -141,7 +143,11 @@ export function TemplatePalette({
                       `
                     }}
                   >
-                    <FileText className="h-6 w-6 text-white" />
+                    <DynamicLucideIcon 
+                      iconName={storyType.icon} 
+                      className="h-6 w-6 text-white" 
+                      fallbackIcon={FileText}
+                    />
                   </div>
                   <div className="space-y-1">
                     <h3 className="text-sm font-semibold text-gray-900 truncate w-full">
