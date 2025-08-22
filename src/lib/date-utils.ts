@@ -28,7 +28,7 @@ export function formatJalaliDate(date: Date, format: string = 'yyyy/MM/dd'): str
  * @returns Persian month name
  */
 export function getPersianMonthName(date: Date): string {
-  const monthIndex = formatJalali(date, 'M') - 1; // date-fns-jalali returns 1-based month
+  const monthIndex = parseInt(formatJalali(date, 'M')) - 1; // date-fns-jalali returns 1-based month
   return persianMonths[monthIndex];
 }
 
@@ -38,7 +38,7 @@ export function getPersianMonthName(date: Date): string {
  * @returns Persian day name
  */
 export function getPersianDayName(date: Date): string {
-  const dayIndex = formatJalali(date, 'E') - 1; // date-fns-jalali returns 1-based day
+  const dayIndex = parseInt(formatJalali(date, 'E')) - 1; // date-fns-jalali returns 1-based day
   return persianDays[dayIndex];
 }
 

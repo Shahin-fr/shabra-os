@@ -224,7 +224,7 @@ export default function CreateTask({
               >
                 انصراف
               </Button>
-                           <Button type="submit" disabled={createTaskMutation.isLoading} className="bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700">
+                           <Button type="submit" disabled={createTaskMutation.isPending} className="bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700">
                                {createTaskMutation.isPending ? "در حال ایجاد..." : "ایجاد وظیفه"}
              </Button>
             </DialogFooter>

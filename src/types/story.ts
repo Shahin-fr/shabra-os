@@ -11,7 +11,6 @@ export interface Story {
   link?: string;
   day: string;
   order: number;
-  status: "DRAFT" | "READY" | "PUBLISHED";
   storyType?: {
     id: string;
     name: string;

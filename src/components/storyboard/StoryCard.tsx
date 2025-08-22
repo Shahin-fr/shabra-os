@@ -2,27 +2,10 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+
 import { ChevronUp, ChevronDown, Trash2, ExternalLink, FileText, Image } from "lucide-react";
 
-interface Story {
-  id: string;
-  title: string;
-  notes?: string;
-  visualNotes?: string;
-  link?: string;
-  day: string;
-  order: number;
-  status: "DRAFT" | "READY" | "PUBLISHED";
-  storyType?: {
-    id: string;
-    name: string;
-  };
-  project?: {
-    id: string;
-    name: string;
-  };
-}
+import { Story } from "@/types/story";
 
 interface StoryCardProps {
   story: Story;
@@ -32,14 +15,9 @@ interface StoryCardProps {
   onReorder: (_id: string, _dir: "up" | "down") => void;
 }
 
-const statusConfig = {
-  DRAFT: { label: "پیش‌نویس", color: "bg-gray-100 text-gray-800" },
-  READY: { label: "آماده", color: "bg-yellow-100 text-yellow-800" },
-  PUBLISHED: { label: "منتشر شده", color: "bg-green-100 text-green-800" },
-};
+
 
 export function StoryCard({ story, index, totalStories, onDelete, onReorder }: StoryCardProps) {
-  const status = statusConfig[story.status];
 
   const handleDelete = (id: string) => {
     // Use the id parameter to validate before calling the parent function
@@ -62,9 +40,6 @@ export function StoryCard({ story, index, totalStories, onDelete, onReorder }: S
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-2">
               <CardTitle className="text-lg truncate">{story.title}</CardTitle>
-              <Badge className={status.color}>
-                {status.label}
-              </Badge>
             </div>
             
             {story.storyType && (

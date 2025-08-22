@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { StorySlot } from "./StorySlot";
 import { Palette } from "lucide-react";
 import { motion } from "framer-motion";
+import { Story } from "@/types/story";
 import {
   DndContext,
   closestCenter,
@@ -18,25 +19,6 @@ import {
   sortableKeyboardCoordinates,
   rectSortingStrategy,
 } from '@dnd-kit/sortable';
-
-interface Story {
-  id: string;
-  title: string;
-  notes?: string;
-  visualNotes?: string;
-  link?: string;
-  day: string;
-  order: number;
-  status: "DRAFT" | "READY" | "PUBLISHED";
-  storyType?: {
-    id: string;
-    name: string;
-  };
-  project?: {
-    id: string;
-    name: string;
-  };
-}
 
 interface StoryCanvasProps {
   stories: Story[];

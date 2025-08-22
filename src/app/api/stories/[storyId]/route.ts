@@ -8,7 +8,7 @@ export async function PATCH(
   try {
     const { storyId } = await params;
     const body = await request.json();
-    const { title, notes, visualNotes, link, order, status, storyTypeId } = body;
+    const { title, notes, visualNotes, link, order, storyTypeId } = body;
 
     // Check if story exists
     const existingStory = await prisma.story.findUnique({
@@ -49,15 +49,7 @@ export async function PATCH(
       updateData.link = link?.trim() || null;
     }
 
-    if (status !== undefined) {
-      if (!["DRAFT", "READY", "PUBLISHED"].includes(status)) {
-        return NextResponse.json(
-          { error: "وضعیت نامعتبر است" },
-          { status: 400 }
-        );
-      }
-      updateData.status = status;
-    }
+
 
     if (storyTypeId !== undefined) {
       if (storyTypeId) {

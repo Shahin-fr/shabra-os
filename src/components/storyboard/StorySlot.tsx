@@ -1,54 +1,19 @@
 "use client";
 
+
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { 
-  Plus, 
-  FileText, 
-  Image, 
-  ShoppingBag, 
-  Sun, 
-  Heart, 
-  Star, 
-  Users, 
-  Calendar, 
-  Gift, 
-  TrendingUp, 
-  Award,
-  Zap,
-  Coffee,
-  Music,
-  Camera,
-  MapPin,
-  Clock,
-  Target,
-  Lightbulb,
-  Trash2
-} from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { Story } from "@/types/story";
+import { 
+  ShoppingBag, Sun, Heart, Star, Users, Calendar, Gift, 
+  TrendingUp, Award, Zap, Coffee, Music, Camera, MapPin, 
+  Clock, Target, Lightbulb, FileText, X, Image, ExternalLink, Folder
+} from "lucide-react";
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { motion } from "framer-motion";
-
-interface Story {
-  id: string;
-  title: string;
-  notes?: string;
-  visualNotes?: string;
-  link?: string;
-  day: string;
-  order: number;
-  status: "DRAFT" | "READY" | "PUBLISHED";
-  storyType?: {
-    id: string;
-    name: string;
-  };
-  project?: {
-    id: string;
-    name: string;
-  };
-}
 
 interface StorySlotProps {
   story?: Story;
@@ -58,12 +23,6 @@ interface StorySlotProps {
   onClearSlot?: (_id: string) => void;
   isLoading?: boolean;
 }
-
-const statusConfig = {
-  DRAFT: { label: "پیش‌نویس", color: "bg-muted text-muted-foreground border border-border" },
-  READY: { label: "آماده", color: "bg-yellow-100 text-yellow-800 border border-yellow-200 dark:bg-yellow-900/20 dark:text-yellow-200 dark:border-yellow-800" },
-  PUBLISHED: { label: "منتشر شده", color: "bg-green-100 text-green-800 border border-green-200 dark:bg-green-900/20 dark:text-green-200 dark:border-yellow-800" },
-};
 
 // Map story type names to relevant icons
 const getStoryTypeIcon = (storyTypeName: string) => {
@@ -92,12 +51,10 @@ const getStoryTypeIcon = (storyTypeName: string) => {
 };
 
 export function StorySlot({ story, index, isSelected, onClick, onClearSlot, isLoading = false }: StorySlotProps) {
-  const status = story ? statusConfig[story.status] : null;
   const StoryTypeIcon = story?.storyType ? getStoryTypeIcon(story.storyType.name) : FileText;
 
   const {
     attributes,
-    listeners,
     setNodeRef,
     transform,
     transition,
@@ -161,127 +118,87 @@ export function StorySlot({ story, index, isSelected, onClick, onClearSlot, isLo
           {story ? (
             // Story content - Refined layout
             <div className="flex flex-col h-full">
-              {/* Top row - Status badge in corner and Order number */}
+              {/* Top row - Order number and clear button */}
               <div className="flex items-start justify-between mb-3">
-                {status && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <Badge className={cn("text-xs font-medium px-2 py-1", status.color)}>
-                      {status.label}
-                    </Badge>
-                  </motion.div>
-                )}
                 <div className="flex items-center gap-2">
-                  {/* Clear slot button */}
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.3, delay: 0.1 }}
+                  <Badge variant="secondary" className="text-xs font-medium">
+                    #{story.order}
+                  </Badge>
+                  {story.storyType && (
+                    <Badge variant="outline" className="text-xs">
+                      {story.storyType.name}
+                    </Badge>
+                  )}
+                </div>
+                
+                {onClearSlot && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleClearSlot(story.id)}
+                    className="h-6 w-6 p-0 rounded-full bg-red-100 hover:bg-red-200 text-red-600 hover:text-red-700 border border-red-200"
+                    title="حذف استوری"
                   >
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleClearSlot(story.id)}
-                      className="h-6 w-6 p-0 rounded-full bg-red-100 hover:bg-red-200 text-red-600 hover:text-red-700 border border-red-200"
-                      title="حذف استوری"
-                    >
-                      <Trash2 className="h-3 w-3" />
-                    </Button>
-                  </motion.div>
-                  <motion.div 
-                    {...listeners}
-                    className="w-8 h-8 bg-[#ff0a54]/30 rounded-full flex items-center justify-center text-sm font-medium text-[#ff0a54] cursor-grab active:cursor-grabbing"
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                  >
-                    {index + 1}
-                  </motion.div>
+                    <X className="h-3 w-3" />
+                  </Button>
+                )}
+              </div>
+
+              {/* Story title */}
+              <h3 className="text-lg font-bold text-gray-900 mb-3 line-clamp-2">
+                {story.title}
+              </h3>
+
+              {/* Story type icon */}
+              <div className="flex items-center justify-center flex-1">
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-pink-100 to-purple-100 flex items-center justify-center">
+                  <StoryTypeIcon className="h-8 w-8 text-[#ff0a54]" />
                 </div>
               </div>
 
-              {/* Main content - Large centered icon */}
-              <div className="flex-1 flex flex-col items-center justify-center text-center">
-                <motion.div 
-                  className={cn(
-                    "w-20 h-20 rounded-full flex items-center justify-center mb-6",
-                    "bg-gradient-to-br from-[#ff0a54]/40 to-[#ff0a54]/60",
-                    "border-2 border-[#ff0a54]/50"
-                  )}
-                  style={{
-                    boxShadow: `
-                      0 8px 25px rgba(255, 10, 84, 0.3),
-                      inset 0 1px 0 rgba(255, 255, 255, 0.6)
-                    `
-                  }}
-                  whileHover={{ scale: 1.05, rotate: 5 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 10 }}
-                >
-                  <StoryTypeIcon className="h-10 w-10 text-white" />
-                </motion.div>
-                
-                {/* Story type name - Most prominent text */}
-                <h3 className="text-lg font-bold text-gray-900 mb-3 leading-tight line-clamp-2">
-                  {story.storyType?.name || story.title}
-                </h3>
-                
-                {/* Story title (if different from type name) - Smaller and muted */}
-                {story.storyType && story.title !== story.storyType.name && (
-                  <p className="text-sm text-gray-700 leading-tight line-clamp-2">
-                    {story.title}
-                  </p>
+              {/* Bottom section - Notes and metadata */}
+              <div className="mt-auto space-y-2">
+                {story.notes && (
+                  <div className="flex items-center gap-1 text-xs text-gray-600">
+                    <FileText className="h-3 w-3 text-[#ff0a54]" />
+                    <span className="line-clamp-1">{story.notes}</span>
+                  </div>
                 )}
-              </div>
 
-              {/* Bottom indicators - Smaller and less prominent */}
-              <div className="flex items-center justify-between mt-3 pt-2 border-t border-gray-200/50">
                 {story.visualNotes && (
                   <div className="flex items-center gap-1 text-xs text-gray-600">
                     <Image className="h-3 w-3 text-[#ff0a54]" />
                     <span>تصویر</span>
                   </div>
                 )}
+
+                {story.link && (
+                  <div className="flex items-center gap-1 text-xs text-gray-600">
+                    <ExternalLink className="h-3 w-3 text-[#ff0a54]" />
+                    <span>لینک</span>
+                  </div>
+                )}
+
+                {story.project && (
+                  <div className="flex items-center gap-1 text-xs text-gray-600">
+                    <Folder className="h-3 w-3 text-[#ff0a54]" />
+                    <span className="line-clamp-1">{story.project.name}</span>
+                  </div>
+                )}
               </div>
             </div>
           ) : (
-            // Empty slot - Refined layout
-            <div className="flex flex-col items-center justify-center h-full text-gray-600">
-              {/* Order number */}
-              <div className="absolute top-3 right-3">
-                <motion.div 
-                  {...listeners}
-                  className="w-8 h-8 bg-[#ff0a54]/30 rounded-full flex items-center justify-center text-sm font-medium text-[#ff0a54] cursor-grab active:cursor-grabbing"
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                >
-                  {index + 1}
-                </motion.div>
+            // Empty slot - Show template selection prompt
+            <div className="flex flex-col items-center justify-center h-full text-center">
+              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center mb-3">
+                <FileText className="h-8 w-8 text-gray-400" />
               </div>
-              
-              {/* Main content */}
-              <div className="flex flex-col items-center">
-                <motion.div 
-                  className={cn(
-                    "w-20 h-20 rounded-full flex items-center justify-center mb-6",
-                    "bg-gradient-to-br from-[#ff0a54]/30 to-[#ff0a54]/40",
-                    "border-2 border-dashed border-[#ff0a54]/50"
-                  )}
-                  style={{
-                    boxShadow: `
-                      0 6px 20px rgba(255, 10, 84, 0.2),
-                      inset 0 1px 0 rgba(255, 255, 255, 0.4)
-                    `
-                  }}
-                  whileHover={{ scale: 1.05, rotate: 5 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 10 }}
-                >
-                  <Plus className="h-10 w-10 text-[#ff0a54]" />
-                </motion.div>
-                <p className="text-base text-center font-medium text-gray-800 mb-2">اسلات خالی</p>
-                <p className="text-sm text-center text-gray-600">کلیک برای انتخاب</p>
-              </div>
+              <p className="text-sm text-gray-500 font-medium">
+                اسلات {index + 1}
+              </p>
+              <p className="text-xs text-gray-400 mt-1">
+                برای ایجاد استوری کلیک کنید
+              </p>
             </div>
           )}
         </CardContent>

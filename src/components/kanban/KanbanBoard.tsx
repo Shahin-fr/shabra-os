@@ -123,7 +123,8 @@ export default function KanbanBoard({ projectId, tasks }: KanbanBoardProps) {
   const columnTasks = useMemo(() => ({
     PENDING: optimisticTasks.filter(t => t.status === "PENDING"),
     IN_PROGRESS: optimisticTasks.filter(t => t.status === "IN_PROGRESS"),
-    COMPLETED: optimisticTasks.filter(t => t.status === "COMPLETED")
+    COMPLETED: optimisticTasks.filter(t => t.status === "COMPLETED"),
+    CANCELLED: optimisticTasks.filter(t => t.status === "CANCELLED")
   }), [optimisticTasks]);
 
   return (

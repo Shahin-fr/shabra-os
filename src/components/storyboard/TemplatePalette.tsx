@@ -6,10 +6,7 @@ import { FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 
-interface StoryType {
-  id: string;
-  name: string;
-}
+import { StoryType } from "@/types/story";
 
 interface TemplatePaletteProps {
   storyTypes: StoryType[];

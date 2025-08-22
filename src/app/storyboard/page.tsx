@@ -159,7 +159,6 @@ export default function StoryboardPage() {
       title: string;
       day: string;
       order: number;
-      status: string;
       storyTypeId?: string;
       notes?: string;
       visualNotes?: string;
@@ -196,7 +195,6 @@ export default function StoryboardPage() {
         link: storyData.link,
         day: storyData.day,
         order: storyData.order,
-        status: storyData.status as "DRAFT" | "READY" | "PUBLISHED",
         storyType: storyData.storyTypeId ? { id: storyData.storyTypeId, name: "" } : undefined,
       };
 
@@ -366,7 +364,6 @@ export default function StoryboardPage() {
           title: "استوری جدید",
           day: dateString,
           order: slotIndex + 1,
-          status: "DRAFT",
       });
 
         setEditingStory(newStory);
@@ -405,7 +402,6 @@ export default function StoryboardPage() {
             day: dateString,
             storyTypeId: storyTypeId,
             order: selectedSlotIndex + 1,
-          status: "DRAFT",
         });
       }
     } catch {

@@ -40,10 +40,9 @@ export default function DraggableTask({ task, projectId }: DraggableTaskProps) {
         projectId={projectId}
         mode="view"
         taskData={{
-          id: task.id,
           title: task.title,
-          description: task.description || undefined,
-          assignedTo: task.assignedTo || undefined,
+          description: task.description || "",
+          assignedTo: task.assignedTo || "",
         }}
         trigger={
                      <Card 

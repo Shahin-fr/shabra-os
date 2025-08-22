@@ -143,7 +143,6 @@ model Story {
   link        String?
   day         DateTime
   order       Int         @default(0)
-  status      StoryStatus @default(DRAFT)
   projectId   String?
   storyTypeId String?
   createdAt   DateTime    @default(now())
@@ -188,11 +187,7 @@ enum LeaveStatus {
   CANCELLED @map("cancelled")
 }
 
-enum StoryStatus {
-  DRAFT     @map("draft")
-  READY     @map("ready")
-  PUBLISHED @map("published")
-}
+
 
 enum ContentType {
   STORY @map("story")
