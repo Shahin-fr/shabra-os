@@ -9,8 +9,9 @@ export interface Story {
   notes?: string;
   visualNotes?: string;
   link?: string;
-  day: string;
+  day: string; // This comes as ISO string from API
   order: number;
+  status: "DRAFT" | "READY" | "PUBLISHED";
   storyType?: {
     id: string;
     name: string;

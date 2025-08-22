@@ -143,6 +143,7 @@ model Story {
   link        String?
   day         DateTime
   order       Int         @default(0)
+  status      String      @default("DRAFT")
   projectId   String?
   storyTypeId String?
   createdAt   DateTime    @default(now())

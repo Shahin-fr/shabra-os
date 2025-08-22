@@ -55,7 +55,7 @@ interface StorySlotProps {
   index: number;
   isSelected: boolean;
   onClick: () => void;
-  onClearSlot?: (_storyId: string) => void;
+  onClearSlot?: (storyId: string) => void;
   isLoading?: boolean;
 }
 

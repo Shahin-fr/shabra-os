@@ -131,6 +131,7 @@ CREATE TABLE "public"."stories" (
     "link" TEXT,
     "day" TIMESTAMP(3) NOT NULL,
     "order" INTEGER NOT NULL DEFAULT 0,
+    "status" TEXT NOT NULL DEFAULT 'DRAFT',
     "projectId" TEXT,
     "storyTypeId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,

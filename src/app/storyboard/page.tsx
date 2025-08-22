@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { JalaliCalendar } from "@/components/ui/jalali-calendar";
-import { CalendarIcon, Plus, Minus } from "lucide-react";
+import { CalendarIcon, Plus, Minus, Palette } from "lucide-react";
 
 import { CreateStoryDialog } from "@/components/storyboard/CreateStoryDialog";
 import { StoryCanvas } from "@/components/storyboard/StoryCanvas";
@@ -48,10 +48,17 @@ export default function StoryboardPage() {
   });
 
   // Use TanStack Query to fetch stories for the selected date
-  const { data: stories = [], isLoading: storiesLoading, isError: storiesError } = useQuery({
+  const { data: stories = [], isLoading: storiesLoading, isError: storiesError, error: storiesErrorDetails } = useQuery({
     queryKey: storiesKeys.byDay(format(selectedDate, "yyyy-MM-dd")),
     queryFn: () => fetchStoriesByDay(format(selectedDate, "yyyy-MM-dd")),
+    retry: 2,
+    retryDelay: 1000,
   });
+
+  // Debug logging for stories error
+  if (storiesError) {
+    console.error("Stories error detected:", storiesErrorDetails);
+  }
 
   // Mutation for deleting stories
   const deleteStoryMutation = useMutation({
@@ -195,6 +202,7 @@ export default function StoryboardPage() {
         link: storyData.link,
         day: storyData.day,
         order: storyData.order,
+        status: "DRAFT", // Default status for new stories
         storyType: storyData.storyTypeId ? { id: storyData.storyTypeId, name: "" } : undefined,
       };
 
@@ -629,6 +637,14 @@ export default function StoryboardPage() {
                     <p className="text-muted-foreground mb-6">
                       مشکلی در بارگذاری استوری‌ها پیش آمده است
                     </p>
+                    {storiesErrorDetails && (
+                      <details className="text-xs text-red-600 mb-4">
+                        <summary>جزئیات خطا (برای توسعه‌دهنده)</summary>
+                        <pre className="mt-2 text-left direction-ltr">
+                          {JSON.stringify(storiesErrorDetails, null, 2)}
+                        </pre>
+                      </details>
+                    )}
                     <Button 
                       onClick={() => window.location.reload()} 
                       className="bg-[#ff0a54] hover:bg-[#ff0a54]/90 text-white"
@@ -652,6 +668,35 @@ export default function StoryboardPage() {
                       }
                     }}
                   >
+                    {/* No stories found message */}
+                    {stories.length === 0 && (
+                      <motion.div 
+                        className="text-center py-8 mb-6"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 0.2 }}
+                      >
+                        <motion.div 
+                          className="rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4"
+                          style={{
+                            background: 'rgba(255, 255, 255, 0.25)',
+                            backdropFilter: 'blur(40px)',
+                            border: '1px solid rgba(255, 255, 255, 0.3)',
+                            boxShadow: `
+                              0 12px 35px rgba(255, 10, 84, 0.25),
+                              inset 0 1px 0 rgba(255, 255, 255, 0.4)
+                            `
+                          }}
+                        >
+                          <Palette className="h-8 w-8 text-[#ff0a54]" />
+                        </motion.div>
+                        <p className="text-gray-800 text-lg mb-2">هیچ استوری برای این تاریخ یافت نشد</p>
+                        <p className="text-sm text-gray-600">
+                          یک اسلات انتخاب کنید و قالب انتخاب کنید تا شروع کنید
+                        </p>
+                      </motion.div>
+                    )}
+                    
                     <StoryCanvas
                       stories={stories}
                       selectedSlotIndex={selectedSlotIndex}

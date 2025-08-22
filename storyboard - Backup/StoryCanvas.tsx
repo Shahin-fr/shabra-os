@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { StorySlot } from "./StorySlot";
+import { Palette } from "lucide-react";
 import { motion } from "framer-motion";
 import {
   DndContext,
@@ -40,9 +41,9 @@ interface Story {
 interface StoryCanvasProps {
   stories: Story[];
   selectedSlotIndex: number | null;
-  onSlotClick: (_index: number) => void;
-  onReorderStories: (_fromIndex: number, _toIndex: number) => void;
-  onClearSlot?: (_storyId: string) => void;
+  onSlotClick: (index: number) => void;
+  onReorderStories: (fromIndex: number, toIndex: number) => void;
+  onClearSlot?: (storyId: string) => void;
   isLoading?: boolean;
   slotCount: number;
 }
@@ -137,6 +138,34 @@ export function StoryCanvas({
           </div>
         </SortableContext>
       </DndContext>
+
+      {stories.length === 0 && (
+        <motion.div 
+          className="text-center py-12"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          <motion.div 
+            className="rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4"
+            style={{
+              background: 'rgba(255, 255, 255, 0.25)',
+              backdropFilter: 'blur(40px)',
+              border: '1px solid rgba(255, 255, 255, 0.3)',
+              boxShadow: `
+                0 12px 35px rgba(255, 10, 84, 0.25),
+                inset 0 1px 0 rgba(255, 255, 255, 0.4)
+              `
+            }}
+          >
+            <Palette className="h-8 w-8 text-[#ff0a54]" />
+          </motion.div>
+          <p className="text-gray-800 text-lg mb-2">هیچ استوری برای این تاریخ یافت نشد</p>
+          <p className="text-sm text-gray-600">
+            یک اسلات انتخاب کنید و قالب انتخاب کنید تا شروع کنید
+          </p>
+        </motion.div>
+      )}
     </div>
   );
 }

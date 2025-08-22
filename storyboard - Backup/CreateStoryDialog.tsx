@@ -36,8 +36,8 @@ interface Story {
 
 interface CreateStoryDialogProps {
   isOpen: boolean;
-  onOpenChange: (_open: boolean) => void;
-  onSubmit: (_storyData: {
+  onOpenChange: (open: boolean) => void;
+  onSubmit: (storyData: {
     title: string;
     notes?: string;
     visualNotes?: string;

@@ -138,15 +138,56 @@ async function main() {
     }
   }
 
-  // Create story types
+  // Create comprehensive story types with icon-friendly names
   const storyTypes = [
+    // Morning/Wellness
     "سلام و صبح بخیر",
+    "وارم آپ صبحگاهی",
+    "انرژی مثبت",
+    
+    // Product & Business
     "معرفی محصول",
-    "اعلام ساعت کاری",
     "خدمات پیرسینگ",
     "فضای داخلی فروشگاه",
-    "وارم آپ",
-    "اتمام موجودی"
+    "اعلام ساعت کاری",
+    "اتمام موجودی",
+    "پیشنهاد ویژه",
+    
+    // Community & Events
+    "رویداد ویژه",
+    "جشنواره",
+    "کارگاه آموزشی",
+    
+    // Lifestyle & Inspiration
+    "نکته روز",
+    "ایده خلاقانه",
+    "موفقیت",
+    "انگیزه",
+    
+    // Coffee & Break
+    "قهوه و استراحت",
+    "زنگ تفریح",
+    "گپ دوستانه",
+    
+    // Music & Entertainment
+    "موسیقی روز",
+    "سرگرمی",
+    "خنده و شادی",
+    
+    // Visual & Creative
+    "عکس روز",
+    "طراحی خلاقانه",
+    "هنر و زیبایی",
+    
+    // Location & Time
+    "مکان جدید",
+    "سفر و ماجراجویی",
+    "زمان طلایی",
+    
+    // Goals & Achievement
+    "هدف روزانه",
+    "دستاورد",
+    "پیشرفت"
   ];
 
   for (const storyTypeName of storyTypes) {
