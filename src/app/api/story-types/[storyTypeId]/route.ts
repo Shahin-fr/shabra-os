@@ -5,7 +5,7 @@ import { isAdmin } from "@/lib/utils";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { storyTypeId: string } }
+  { params }: { params: Promise<{ storyTypeId: string }> }
 ) {
   try {
     // Get the user session
@@ -26,7 +26,7 @@ export async function GET(
       );
     }
 
-    const { storyTypeId } = params;
+    const { storyTypeId } = await params;
 
     // Validate storyTypeId
     if (!storyTypeId || typeof storyTypeId !== "string") {
@@ -65,7 +65,7 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { storyTypeId: string } }
+  { params }: { params: Promise<{ storyTypeId: string }> }
 ) {
   try {
     // Get the user session
@@ -86,7 +86,7 @@ export async function PUT(
       );
     }
 
-    const { storyTypeId } = params;
+    const { storyTypeId } = await params;
 
     // Validate storyTypeId
     if (!storyTypeId || typeof storyTypeId !== "string") {
@@ -164,7 +164,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { storyTypeId: string } }
+  { params }: { params: Promise<{ storyTypeId: string }> }
 ) {
   try {
     // Get the user session
@@ -185,7 +185,7 @@ export async function DELETE(
       );
     }
 
-    const { storyTypeId } = params;
+    const { storyTypeId } = await params;
 
     // Validate storyTypeId
     if (!storyTypeId || typeof storyTypeId !== "string") {
