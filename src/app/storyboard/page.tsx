@@ -15,6 +15,7 @@ import { CalendarIcon, Plus, Minus, Palette } from "lucide-react";
 import { CreateStoryDialog } from "@/components/storyboard/CreateStoryDialog";
 import { StoryCanvas } from "@/components/storyboard/StoryCanvas";
 import { TemplatePalette } from "@/components/storyboard/TemplatePalette";
+import StoryTypeManager from "@/components/storyboard/StoryTypeManager";
 
 import { motion } from "framer-motion";
 import { fetchStoriesByDay, fetchStoryTypes, storiesKeys, storyTypesKeys } from "@/lib/queries";
@@ -748,8 +749,13 @@ export default function StoryboardPage() {
             >
               <CardContent className="p-8">
                 <div className="mb-6">
-                  <h2 className="text-2xl font-bold text-foreground mb-2">پالت قالب‌ها</h2>
-                  <p className="text-muted-foreground">قالب‌های آماده برای استوری‌های مختلف</p>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h2 className="text-2xl font-bold text-foreground mb-2">پالت قالب‌ها</h2>
+                      <p className="text-muted-foreground">قالب‌های آماده برای استوری‌های مختلف</p>
+                    </div>
+                    <StoryTypeManager />
+                  </div>
                 </div>
                 
                 {storyTypesLoading ? (
