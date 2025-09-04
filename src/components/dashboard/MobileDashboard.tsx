@@ -189,7 +189,11 @@ export function MobileDashboard({ className }: MobileDashboardProps) {
                 </div>
                 <div className='flex-1'>
                   <h1 className='text-xl font-bold text-gray-900'>
-                    سلام، {'firstName' in (user || {}) ? (user as any)?.firstName : user?.name || 'کاربر'}! 👋
+                    سلام،{' '}
+                    {'firstName' in (user || {})
+                      ? (user as any)?.firstName
+                      : user?.name || 'کاربر'}
+                    ! 👋
                   </h1>
                   <p className='text-gray-600'>
                     {new Date().toLocaleDateString('fa-IR', {

@@ -6,10 +6,11 @@
  */
 
 import React, { Component, ErrorInfo, ReactNode } from 'react';
+
+import { ErrorHandler, ErrorNotification } from '@/lib/error-handler';
 import { logger } from '@/lib/logger';
 import { useAppStore } from '@/stores/consolidated-store';
 import { ErrorCategory, ErrorPriority } from '@/types/error';
-import { ErrorHandler, ErrorNotification } from '@/lib/error-handler';
 
 interface Props {
   children: ReactNode;

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+
 import { useSetIsMobile } from '@/stores/uiStore';
 
 export interface ResponsiveState {

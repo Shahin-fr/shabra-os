@@ -166,10 +166,10 @@ export function useAuth() {
       });
 
       if (result?.error) {
-        logError('Login error occurred', new Error(result.error), { 
+        logError('Login error occurred', new Error(result.error), {
           email,
           error: result.error,
-          result: result
+          result,
         });
         setUserLoading(false);
         return { success: false, error: result.error };
@@ -189,10 +189,10 @@ export function useAuth() {
       logError(
         'Login exception occurred',
         error instanceof Error ? error : new Error(String(error)),
-        { 
+        {
           email,
           error: error instanceof Error ? error.message : String(error),
-          stack: error instanceof Error ? error.stack : undefined
+          stack: error instanceof Error ? error.stack : undefined,
         }
       );
       setUserLoading(false);

@@ -1,13 +1,6 @@
 'use client';
 
-import { useState } from 'react';
-
 import { motion, AnimatePresence } from 'framer-motion';
-
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-
 import {
   Clock,
   Calendar,
@@ -17,7 +10,11 @@ import {
   TrendingUp,
   Download,
 } from 'lucide-react';
+import { useState } from 'react';
 
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Select,
   SelectContent,

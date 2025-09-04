@@ -1,8 +1,8 @@
 import bcrypt from 'bcryptjs';
 import NextAuth from 'next-auth';
-import CredentialsProvider from 'next-auth/providers/credentials';
-import type { JWT } from 'next-auth/jwt';
 import type { Session } from 'next-auth';
+import type { JWT } from 'next-auth/jwt';
+import CredentialsProvider from 'next-auth/providers/credentials';
 
 import { logAuth, logUser, logError } from '@/lib/logger';
 import { prisma } from '@/lib/prisma';
@@ -89,7 +89,7 @@ const authConfig = {
               email: credentials.email,
               operation: 'authorize',
               error: error instanceof Error ? error.message : String(error),
-              stack: error instanceof Error ? error.stack : undefined
+              stack: error instanceof Error ? error.stack : undefined,
             }
           );
           return null;

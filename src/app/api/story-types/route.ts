@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import { NextRequest, NextResponse } from 'next/server';
 
 const prisma = new PrismaClient();
 
@@ -15,10 +15,7 @@ export async function GET(request: NextRequest) {
 
     const storyTypes = await prisma.storyType.findMany({
       where,
-      orderBy: [
-        { isActive: 'desc' },
-        { name: 'asc' },
-      ],
+      orderBy: [{ isActive: 'desc' }, { name: 'asc' }],
     });
 
     return NextResponse.json(storyTypes);

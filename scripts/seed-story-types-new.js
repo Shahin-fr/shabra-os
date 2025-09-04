@@ -7,55 +7,55 @@ const storyTypes = [
     name: 'شروع/پایان روز',
     icon: 'Sunrise',
     isActive: true,
-    description: 'استوری‌های مربوط به شروع یا پایان روز کاری'
+    description: 'استوری‌های مربوط به شروع یا پایان روز کاری',
   },
   {
     name: 'معرفی محصول',
     icon: 'Package',
     isActive: true,
-    description: 'معرفی محصولات و خدمات جدید'
+    description: 'معرفی محصولات و خدمات جدید',
   },
   {
     name: 'تعامل با مخاطب',
     icon: 'MessageCircle',
     isActive: true,
-    description: 'نظرسنجی، پرسش و پاسخ و تعامل با فالوورها'
+    description: 'نظرسنجی، پرسش و پاسخ و تعامل با فالوورها',
   },
   {
     name: 'آموزشی',
     icon: 'BookOpen',
     isActive: true,
-    description: 'محتوای آموزشی و راهنما'
+    description: 'محتوای آموزشی و راهنما',
   },
   {
     name: 'پشت صحنه',
     icon: 'Camera',
     isActive: true,
-    description: 'نمایش فرآیند کار و پشت صحنه'
+    description: 'نمایش فرآیند کار و پشت صحنه',
   },
   {
     name: 'فروش ویژه',
     icon: 'Tag',
     isActive: true,
-    description: 'تخفیفات و پیشنهادات ویژه'
+    description: 'تخفیفات و پیشنهادات ویژه',
   },
   {
     name: 'سرگرمی',
     icon: 'Smile',
     isActive: true,
-    description: 'محتوای سرگرم‌کننده و جذاب'
+    description: 'محتوای سرگرم‌کننده و جذاب',
   },
   {
     name: 'اخبار و رویداد',
     icon: 'Newspaper',
     isActive: true,
-    description: 'اخبار شرکت و رویدادهای مهم'
-  }
+    description: 'اخبار شرکت و رویدادهای مهم',
+  },
 ];
 
 async function main() {
   console.log('🌱 شروع به کاشت انواع استوری جدید...');
-  
+
   try {
     // Clear existing story types
     await prisma.storyType.deleteMany({});
@@ -67,19 +67,20 @@ async function main() {
         data: {
           name: type.name,
           icon: type.icon,
-          isActive: type.isActive
-        }
+          isActive: type.isActive,
+        },
       });
     }
-    
+
     console.log(`✅ ${storyTypes.length} نوع استوری با موفقیت ایجاد شدند`);
-    
+
     // Log created types
     console.log('\n📋 انواع استوری ایجاد شده:');
     storyTypes.forEach((type, index) => {
-      console.log(`${index + 1}. ${type.name} (${type.icon}) - ${type.description}`);
+      console.log(
+        `${index + 1}. ${type.name} (${type.icon}) - ${type.description}`
+      );
     });
-    
   } catch (error) {
     console.error('❌ خطا در ایجاد انواع استوری:', error);
     throw error;
@@ -88,7 +89,7 @@ async function main() {
   }
 }
 
-main().catch((e) => {
+main().catch(e => {
   console.error(e);
   process.exit(1);
 });

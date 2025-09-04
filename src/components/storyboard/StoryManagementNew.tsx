@@ -2,24 +2,22 @@
 
 import { useMutation } from '@tanstack/react-query';
 import { format } from 'date-fns-jalali';
-
 import { motion } from 'framer-motion';
 import { Palette } from 'lucide-react';
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
-import { showStatusMessage } from '@/lib/utils';
-
-import { Story } from '@/types/story';
 import { useStoryboardOperationsNew } from '@/hooks/useStoryboardOperationsNew';
+import { useStoryIdeas } from '@/hooks/useStoryIdeas';
+import { showStatusMessage } from '@/lib/utils';
+import { Story } from '@/types/story';
 
+import { CompleteEditStoryModal } from './CompleteEditStoryModal';
 import { CreateStoryDialog } from './CreateStoryDialog';
+import { IdeaBank } from './IdeaBank';
 import { StoryboardCanvas } from './StoryboardCanvas';
 import { StoryboardPalette } from './StoryboardPalette';
 import { StoryTypePalette } from './StoryTypePalette';
-import { IdeaBank } from './IdeaBank';
-import { CompleteEditStoryModal } from './CompleteEditStoryModal';
-import { useStoryIdeas } from '@/hooks/useStoryIdeas';
 
 interface StoryManagementProps {
   selectedDate: Date;
@@ -64,10 +62,13 @@ export function StoryManagementNew({
   const [isIdeaBankOpen, setIsIdeaBankOpen] = useState(false);
   const [isCompleteEditModalOpen, setIsCompleteEditModalOpen] = useState(false);
   const [selectedIdea, setSelectedIdea] = useState<any>(null);
-  const [selectedStoryType, setSelectedStoryType] = useState<string | null>(null);
+  const [selectedStoryType, setSelectedStoryType] = useState<string | null>(
+    null
+  );
 
   // Fetch story ideas
-  const { data: storyIdeas = [], isLoading: storyIdeasLoading } = useStoryIdeas();
+  const { data: storyIdeas = [], isLoading: storyIdeasLoading } =
+    useStoryIdeas();
 
   // Simplified create story mutation
   const createStoryMutation = useMutation({
@@ -243,7 +244,7 @@ export function StoryManagementNew({
   // Handle story type selection from palette
   const handleStoryTypeSelect = async (storyType: any) => {
     if (_selectedSlotIndex === null) return;
-    
+
     setIsCreating(true);
     try {
       // Create story with story type - include required fields
@@ -256,9 +257,9 @@ export function StoryManagementNew({
         projectId: 'cmf5o9m110001u35cldria860', // Default project ID
         storyTypeId: storyType.id, // Use the actual story type ID
       };
-      
+
       await createStoryMutation.mutateAsync(storyData);
-      
+
       // Clear selection
       onSelectedSlotIndexChange(null);
       setSelectedStoryType(null);
@@ -397,7 +398,7 @@ export function StoryManagementNew({
           projectId: 'cmf5o9m110001u35cldria860', // Default project ID
           storyTypeId: 'cmf5qm8790002u38cwtdzuw1p', // Default story type ID (تعامل با مخاطب)
         };
-        
+
         await createStoryMutation.mutateAsync(newStoryData);
         setIsCompleteEditModalOpen(false);
         onSelectedSlotIndexChange(null);

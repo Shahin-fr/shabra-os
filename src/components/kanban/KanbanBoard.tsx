@@ -14,9 +14,9 @@ import { useState, useMemo } from 'react';
 
 import { updateTaskStatus } from '@/app/actions/task-actions';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useMobile } from '@/hooks/useResponsive';
 import { tasksKeys } from '@/lib/queries';
 import { showStatusMessage } from '@/lib/utils';
-import { useMobile } from '@/hooks/useResponsive';
 
 import DroppableColumn from './DroppableColumn';
 

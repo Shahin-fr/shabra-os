@@ -4,13 +4,13 @@ import { motion } from 'framer-motion';
 import { Edit3, Lightbulb, X, Save, Trash2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import { DynamicLucideIcon } from '@/components/ui/DynamicLucideIcon';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
-import { DynamicLucideIcon } from '@/components/ui/DynamicLucideIcon';
 import { cn } from '@/lib/utils';
 
 interface StoryIdea {

@@ -7,8 +7,6 @@
 
 'use client';
 
-import { useEffect, useState } from 'react';
-
 import {
   BarChart3,
   Database,
@@ -20,6 +18,7 @@ import {
   AlertTriangle,
   CheckCircle,
 } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';

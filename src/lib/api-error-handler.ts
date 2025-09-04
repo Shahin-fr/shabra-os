@@ -6,8 +6,9 @@
  */
 
 import { NextResponse } from 'next/server';
-import { logger } from '@/lib/logger';
+
 import { ErrorHandler } from '@/lib/error-handler';
+import { logger } from '@/lib/logger';
 import { ErrorCategory, ErrorPriority, ErrorContext } from '@/types/error';
 
 export interface ApiErrorResponse {

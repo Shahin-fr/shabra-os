@@ -213,7 +213,9 @@ export function extractUserContext(request: NextRequest): AuthContext | null {
  * Simple authentication middleware for API routes
  * Returns success status and user context
  */
-export async function authMiddleware(request: NextRequest): Promise<{ success: boolean; context?: AuthContext }> {
+export async function authMiddleware(
+  request: NextRequest
+): Promise<{ success: boolean; context?: AuthContext }> {
   try {
     const session = await auth();
 

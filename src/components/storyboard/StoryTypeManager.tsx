@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   Settings,
@@ -14,7 +13,7 @@ import {
   Target,
   Sparkles,
 } from 'lucide-react';
-
+import React from 'react';
 import { useState } from 'react';
 
 import { Badge } from '@/components/ui/badge';
@@ -31,10 +30,10 @@ import { DynamicLucideIcon } from '@/components/ui/DynamicLucideIcon';
 import { IconPicker } from '@/components/ui/IconPicker';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useAuth } from '@/hooks/useAuth';
+import { isAdminOrManager } from '@/lib/auth-utils';
 import { logger } from '@/lib/logger';
 import { showStatusMessage } from '@/lib/utils';
-import { isAdminOrManager } from '@/lib/auth-utils';
-import { useAuth } from '@/hooks/useAuth';
 
 // Mock icon mapping - you can expand this based on your needs
 // TODO: _iconMap not used - needs to be restored or removed

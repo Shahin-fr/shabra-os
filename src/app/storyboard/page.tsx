@@ -1,15 +1,14 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
-
 import { motion } from 'framer-motion';
 import { Palette, CalendarIcon, Settings } from 'lucide-react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
+import { useState, useEffect } from 'react';
 
 import { StoryManagementNew as StoryManagement } from '@/components/storyboard/StoryManagementNew';
-import { useStoryboardData } from '@/hooks/useStoryboardData';
 import { Button } from '@/components/ui/button';
+import { ClientOnly } from '@/components/ui/ClientOnly';
 import { JalaliCalendar } from '@/components/ui/jalali-calendar';
 import { Label } from '@/components/ui/label';
 import {
@@ -17,7 +16,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { ClientOnly } from '@/components/ui/ClientOnly';
+import { useStoryboardData } from '@/hooks/useStoryboardData';
 import { formatJalaliDate } from '@/lib/date-utils';
 
 export default function StoryboardPage() {
@@ -97,9 +96,7 @@ export default function StoryboardPage() {
           <div className='flex items-center gap-4'>
             {/* Settings Button */}
             <Link href='/admin/storyboard'>
-              <Button
-                className='flex items-center gap-2 bg-gradient-to-r from-[#ff0a54] to-[#ff0a54]/80 hover:from-[#ff0a54]/90 hover:to-[#ff0a54]/70 text-white px-6 py-3 text-base font-semibold shadow-lg hover:shadow-xl transition-all duration-200'
-              >
+              <Button className='flex items-center gap-2 bg-gradient-to-r from-[#ff0a54] to-[#ff0a54]/80 hover:from-[#ff0a54]/90 hover:to-[#ff0a54]/70 text-white px-6 py-3 text-base font-semibold shadow-lg hover:shadow-xl transition-all duration-200'>
                 <Settings className='h-5 w-5' />
                 تنظیمات
               </Button>

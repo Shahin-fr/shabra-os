@@ -6,53 +6,53 @@ const storyTypes = [
   {
     name: 'خبر و اطلاع‌رسانی',
     icon: 'Newspaper',
-    isActive: true
+    isActive: true,
   },
   {
     name: 'محتوای آموزشی',
     icon: 'BookOpen',
-    isActive: true
+    isActive: true,
   },
   {
     name: 'معرفی محصول',
     icon: 'Package',
-    isActive: true
+    isActive: true,
   },
   {
     name: 'پشت صحنه',
     icon: 'Camera',
-    isActive: true
+    isActive: true,
   },
   {
     name: 'نظرسنجی',
     icon: 'MessageCircle',
-    isActive: true
+    isActive: true,
   },
   {
     name: 'رویداد و مناسبت',
     icon: 'Calendar',
-    isActive: true
+    isActive: true,
   },
   {
     name: 'داستان برند',
     icon: 'Heart',
-    isActive: true
+    isActive: true,
   },
   {
     name: 'محتوی سرگرمی',
     icon: 'Smile',
-    isActive: true
+    isActive: true,
   },
   {
     name: 'نکات و ترفند',
     icon: 'Lightbulb',
-    isActive: true
+    isActive: true,
   },
   {
     name: 'مقایسه و بررسی',
     icon: 'BarChart3',
-    isActive: true
-  }
+    isActive: true,
+  },
 ];
 
 async function main() {
@@ -66,17 +66,16 @@ async function main() {
     // Create new story types
     for (const storyType of storyTypes) {
       await prisma.storyType.create({
-        data: storyType
+        data: storyType,
       });
     }
 
     console.log(`✅ ${storyTypes.length} نوع استوری با موفقیت ایجاد شدند`);
     console.log('📊 انواع استوری:');
-    
+
     storyTypes.forEach(storyType => {
       console.log(`   - ${storyType.name} (${storyType.icon})`);
     });
-
   } catch (error) {
     console.error('❌ خطا در ایجاد انواع استوری:', error);
     throw error;
@@ -84,7 +83,7 @@ async function main() {
 }
 
 main()
-  .catch((e) => {
+  .catch(e => {
     console.error(e);
     process.exit(1);
   })

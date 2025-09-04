@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
 import { useDraggable } from '@dnd-kit/core';
 import { motion } from 'framer-motion';
 import { Calendar, User, GripVertical } from 'lucide-react';
+import React, { useState } from 'react';
 
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';

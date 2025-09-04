@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   User,
@@ -14,6 +13,7 @@ import {
   Users,
   FileText,
 } from 'lucide-react';
+import { useState } from 'react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -147,32 +147,45 @@ export default function ProfilePage() {
                   <Avatar className='h-20 w-20'>
                     <AvatarImage src={currentUser.avatar || undefined} />
                     <AvatarFallback className='bg-[#ff0a54]/10 text-[#ff0a54] text-xl'>
-                      {'firstName' in currentUser ? currentUser.firstName?.[0] : currentUser.name?.[0]}
-                      {'lastName' in currentUser ? currentUser.lastName?.[0] : ''}
+                      {'firstName' in currentUser
+                        ? currentUser.firstName?.[0]
+                        : currentUser.name?.[0]}
+                      {'lastName' in currentUser
+                        ? currentUser.lastName?.[0]
+                        : ''}
                     </AvatarFallback>
                   </Avatar>
                   <div className='flex-1'>
                     <div className='flex items-center gap-3 mb-2'>
                       <h2 className='text-xl font-bold text-gray-900'>
-                        {'firstName' in currentUser ? `${currentUser.firstName} ${currentUser.lastName}` : currentUser.name}
+                        {'firstName' in currentUser
+                          ? `${currentUser.firstName} ${currentUser.lastName}`
+                          : currentUser.name}
                       </h2>
                       <Badge
                         className={
                           roleColors[
-                            ('role' in currentUser ? currentUser.role : currentUser.roles[0]) as keyof typeof roleColors
+                            ('role' in currentUser
+                              ? currentUser.role
+                              : currentUser.roles[0]) as keyof typeof roleColors
                           ]
                         }
                       >
                         {
                           roleLabels[
-                            ('role' in currentUser ? currentUser.role : currentUser.roles[0]) as keyof typeof roleLabels
+                            ('role' in currentUser
+                              ? currentUser.role
+                              : currentUser.roles[0]) as keyof typeof roleLabels
                           ]
                         }
                       </Badge>
                     </div>
                     <p className='text-gray-600 mb-1'>{currentUser.email}</p>
                     <p className='text-sm text-gray-500'>
-                      عضو از {'joinDate' in currentUser ? currentUser.joinDate : 'نامشخص'}
+                      عضو از{' '}
+                      {'joinDate' in currentUser
+                        ? currentUser.joinDate
+                        : 'نامشخص'}
                     </p>
                   </div>
                   <Button

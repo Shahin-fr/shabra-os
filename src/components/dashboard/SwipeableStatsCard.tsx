@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
 import { motion, AnimatePresence, PanInfo } from 'framer-motion';
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import React, { useState } from 'react';
 
 interface StatData {
   id: string;
@@ -108,7 +108,7 @@ export function SwipeableStatsCard({
 
   const currentStat = stats[currentIndex];
   if (!currentStat) return null;
-  
+
   const colors = getColorClasses(currentStat.color);
   const StatIcon = currentStat.icon;
 

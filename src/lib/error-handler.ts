@@ -2,6 +2,7 @@
 // See: docs/ROADMAP/PHASE_2_STRATEGIC_PLAN.md, Section 3.2
 
 import { logger } from '@/lib/logger';
+
 import { ErrorCategory, ErrorPriority, ErrorContext } from '../types/error';
 
 export interface ErrorHandlerOptions {

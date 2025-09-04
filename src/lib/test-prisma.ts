@@ -1,6 +1,6 @@
-import { prisma } from './prisma';
-
 import { logDB, logError } from '@/lib/logger';
+
+import { prisma } from './prisma';
 
 export async function testPrismaConnection() {
   try {

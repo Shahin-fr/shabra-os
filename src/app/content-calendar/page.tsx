@@ -16,9 +16,16 @@ import { CSS } from '@dnd-kit/utilities';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { format, startOfWeek, addDays } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Calendar, FileText, Image, Trash2, ArrowRight } from 'lucide-react';
-import { useState, useEffect, FormEvent } from 'react';
+import {
+  Plus,
+  Calendar,
+  FileText,
+  Image,
+  Trash2,
+  ArrowRight,
+} from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useState, useEffect, FormEvent } from 'react';
 
 import { MobileContentCalendar } from '@/components/calendar/MobileContentCalendar';
 import { Badge } from '@/components/ui/badge';
@@ -41,12 +48,12 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { useMobile } from '@/hooks/useResponsive';
 import {
   formatJalaliDate,
   formatJalaliMonthYear,
   persianDays,
 } from '@/lib/date-utils';
-import { useMobile } from '@/hooks/useResponsive';
 import { logger } from '@/lib/logger';
 import { showStatusMessage } from '@/lib/utils';
 
@@ -819,7 +826,7 @@ function ContentCard({
             <Button
               variant='outline'
               size='sm'
-              onClick={(e) => {
+              onClick={e => {
                 e.stopPropagation();
                 handleGoToStoryboard();
               }}

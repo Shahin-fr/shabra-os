@@ -208,11 +208,9 @@ class Logger {
             console.info(formattedMessage, sanitizedContext);
             break;
           case 'warn':
-            // eslint-disable-next-line no-console
             console.warn(formattedMessage, sanitizedContext);
             break;
           case 'error':
-            // eslint-disable-next-line no-console
             console.error(formattedMessage, sanitizedContext);
             break;
         }

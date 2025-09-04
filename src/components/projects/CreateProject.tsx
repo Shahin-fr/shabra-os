@@ -16,11 +16,10 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { useAuth } from '@/hooks/useAuth';
 import { isAdminOrManager } from '@/lib/auth-utils';
 import { projectsKeys } from '@/lib/queries';
 import { showStatusMessage } from '@/lib/utils';
-
-import { useAuth } from '@/hooks/useAuth';
 
 export default function CreateProject() {
   const { user } = useAuth();

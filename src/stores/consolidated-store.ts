@@ -12,11 +12,11 @@
  * - Error State: Global error tracking and management
  */
 
+import { enableMapSet } from 'immer';
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import { immer } from 'zustand/middleware/immer';
 import { subscribeWithSelector } from 'zustand/middleware';
-import { enableMapSet } from 'immer';
+import { immer } from 'zustand/middleware/immer';
 
 import { logApp } from '@/lib/logger';
 import { ErrorCategory, ErrorPriority } from '@/types/error';

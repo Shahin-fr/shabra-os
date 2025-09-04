@@ -14,9 +14,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useToggleMobileSidebar } from '@/stores/uiStore';
 import { useAuth } from '@/hooks/useAuth';
 import { useMobile } from '@/hooks/useResponsive';
+import { useToggleMobileSidebar } from '@/stores/uiStore';
 
 // Simple status message component - memoized to prevent unnecessary re-renders
 const StatusMessage = memo(

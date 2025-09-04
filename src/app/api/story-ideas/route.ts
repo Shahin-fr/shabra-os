@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import { NextRequest, NextResponse } from 'next/server';
 
 const prisma = new PrismaClient();
 
@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
 
     // Build where clause
     const where: any = {};
-    
+
     if (!includeInactive) {
       where.isActive = true;
     }
@@ -45,11 +45,7 @@ export async function GET(request: NextRequest) {
 
     const storyIdeas = await prisma.storyIdea.findMany({
       where,
-      orderBy: [
-        { isActive: 'desc' },
-        { category: 'asc' },
-        { title: 'asc' },
-      ],
+      orderBy: [{ isActive: 'desc' }, { category: 'asc' }, { title: 'asc' }],
     });
 
     return NextResponse.json(storyIdeas);
@@ -67,11 +63,23 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { title, description, category, storyType, template, guidelines, icon } = body;
+    const {
+      title,
+      description,
+      category,
+      storyType,
+      template,
+      guidelines,
+      icon,
+    } = body;
 
     if (!title || !description || !category || !storyType) {
       return NextResponse.json(
-        { error: { message: 'Title, description, category, and storyType are required' } },
+        {
+          error: {
+            message: 'Title, description, category, and storyType are required',
+          },
+        },
         { status: 400 }
       );
     }

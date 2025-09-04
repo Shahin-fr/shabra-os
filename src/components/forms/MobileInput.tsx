@@ -1,11 +1,9 @@
 'use client';
 
+import { motion } from 'framer-motion';
 import { forwardRef } from 'react';
 
-import { motion } from 'framer-motion';
-
 import { Input } from '@/components/ui/input';
-
 import { cn } from '@/lib/utils';
 
 interface MobileInputProps extends React.InputHTMLAttributes<HTMLInputElement> {

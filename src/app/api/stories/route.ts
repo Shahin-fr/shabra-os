@@ -6,9 +6,9 @@ import {
   HTTP_STATUS_CODES,
   getHttpStatusForErrorCode,
 } from '@/lib/api/response-utils';
-import { logger } from '@/lib/logger';
 import { DatabasePerformanceMonitor } from '@/lib/database/query-optimizer';
 import { StoryQueryOptimizer } from '@/lib/database/query-optimizer';
+import { logger } from '@/lib/logger';
 
 // GET /api/stories - Get stories for a specific day
 export async function GET(request: NextRequest) {
@@ -158,7 +158,7 @@ export async function POST(request: NextRequest) {
           notes: notes?.trim() || null,
           visualNotes: visualNotes?.trim() || null,
           link: link?.trim() || null,
-          day: day,
+          day,
           order: order || 0,
           status: status || 'DRAFT',
           projectId,

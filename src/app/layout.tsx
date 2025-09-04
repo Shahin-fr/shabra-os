@@ -4,8 +4,8 @@ import React from 'react';
 
 import './globals.css';
 import './navigation-states.css';
-import { ResponsiveProvider } from '@/components/providers/ResponsiveProvider';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
+import { ResponsiveProvider } from '@/components/providers/ResponsiveProvider';
 import { PWARegistration } from '@/components/ui/PWARegistration';
 
 import Providers from './providers';

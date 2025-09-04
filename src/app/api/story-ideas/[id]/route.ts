@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import { NextRequest, NextResponse } from 'next/server';
 
 const prisma = new PrismaClient();
 
@@ -39,7 +39,16 @@ export async function PATCH(
   try {
     const { id } = await params;
     const body = await request.json();
-    const { title, description, category, storyType, template, guidelines, icon, isActive } = body;
+    const {
+      title,
+      description,
+      category,
+      storyType,
+      template,
+      guidelines,
+      icon,
+      isActive,
+    } = body;
 
     const storyIdea = await prisma.storyIdea.update({
       where: { id },
@@ -80,7 +89,11 @@ export async function DELETE(
 
     if (storiesCount > 0) {
       return NextResponse.json(
-        { error: { message: 'Cannot delete story idea that is being used by stories' } },
+        {
+          error: {
+            message: 'Cannot delete story idea that is being used by stories',
+          },
+        },
         { status: 400 }
       );
     }

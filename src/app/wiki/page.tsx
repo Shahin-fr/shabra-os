@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+
 import { WikiContent } from '@/components/wiki/WikiContent';
 import { WikiSidebar } from '@/components/wiki/WikiSidebar';
 

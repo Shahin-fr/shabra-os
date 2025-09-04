@@ -1,11 +1,9 @@
 'use client';
 
+import { motion } from 'framer-motion';
 import { forwardRef } from 'react';
 
-import { motion } from 'framer-motion';
-
 import { Textarea } from '@/components/ui/textarea';
-
 import { cn } from '@/lib/utils';
 
 interface MobileTextareaProps

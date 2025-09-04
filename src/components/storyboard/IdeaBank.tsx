@@ -4,12 +4,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Search, Filter, Lightbulb, ArrowLeft } from 'lucide-react';
 import { useState, useMemo } from 'react';
 
-import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { DynamicLucideIcon } from '@/components/ui/DynamicLucideIcon';
+import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 
 interface StoryIdea {

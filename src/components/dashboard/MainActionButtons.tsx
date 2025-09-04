@@ -1,6 +1,13 @@
 'use client';
 
-import { Plus, Palette, FileText, BarChart3, Calendar, CheckCircle } from 'lucide-react';
+import {
+  Plus,
+  Palette,
+  FileText,
+  BarChart3,
+  Calendar,
+  CheckCircle,
+} from 'lucide-react';
 import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';

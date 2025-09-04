@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import { NextRequest, NextResponse } from 'next/server';
 
 const prisma = new PrismaClient();
 
@@ -76,7 +76,11 @@ export async function DELETE(
 
     if (storiesCount > 0) {
       return NextResponse.json(
-        { error: { message: 'Cannot delete story type that is being used by stories' } },
+        {
+          error: {
+            message: 'Cannot delete story type that is being used by stories',
+          },
+        },
         { status: 400 }
       );
     }

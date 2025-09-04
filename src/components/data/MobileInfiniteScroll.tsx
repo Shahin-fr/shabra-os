@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useEffect, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Loader2 } from 'lucide-react';
+import React, { useEffect, useRef, useCallback } from 'react';
 
 interface MobileInfiniteScrollProps {
   hasMore: boolean;

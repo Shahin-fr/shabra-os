@@ -82,10 +82,10 @@ export default function LoginPage() {
     }
 
     if (result.error) {
-      logError('Login failed with error', new Error(result.error), { 
+      logError('Login failed with error', new Error(result.error), {
         email,
         error: result.error,
-        result: result
+        result,
       });
       setError(result.error);
     }

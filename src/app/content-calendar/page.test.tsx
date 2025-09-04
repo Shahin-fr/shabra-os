@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
-import { vi, describe, it, expect, beforeEach } from 'vitest';
-import { useSession } from 'next-auth/react';
 import { Plus, FileText } from 'lucide-react';
+import { useSession } from 'next-auth/react';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
 
 // Mock NextAuth
 vi.mock('next-auth/react', () => ({

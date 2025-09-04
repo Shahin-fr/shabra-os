@@ -2,14 +2,14 @@
 
 import React from 'react';
 
+import { OfflineIndicator } from '@/components/ui/offline-indicator';
 import { useAuth } from '@/hooks/useAuth';
 import { useMobile } from '@/hooks/useResponsive';
 
-import { Header } from './Header';
-import { Sidebar } from './Sidebar';
-import { MobileBottomNavigation } from './MobileBottomNavigation';
 import { FloatingActionButton } from './FloatingActionButton';
-import { OfflineIndicator } from '@/components/ui/offline-indicator';
+import { Header } from './Header';
+import { MobileBottomNavigation } from './MobileBottomNavigation';
+import { Sidebar } from './Sidebar';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;

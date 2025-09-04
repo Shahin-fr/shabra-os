@@ -1,12 +1,8 @@
 'use client';
 
-import { forwardRef } from 'react';
-
-import { ChevronDown } from 'lucide-react';
-
 import { motion } from 'framer-motion';
-
-import { cn } from '@/lib/utils';
+import { ChevronDown } from 'lucide-react';
+import { forwardRef } from 'react';
 
 import {
   Select,
@@ -15,6 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { cn } from '@/lib/utils';
 
 interface MobileSelectProps {
   value?: string;

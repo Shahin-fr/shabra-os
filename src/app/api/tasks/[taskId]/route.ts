@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+import { auth } from '@/auth';
 import {
   createValidationErrorResponse,
   createNotFoundErrorResponse,
@@ -9,7 +10,6 @@ import {
   HTTP_STATUS_CODES,
 } from '@/lib/api/response-utils';
 import { prisma } from '@/lib/prisma';
-import { auth } from '@/auth';
 
 export async function PATCH(
   request: NextRequest,
@@ -131,10 +131,13 @@ export async function DELETE(
     // Check if user is the creator or has admin/manager role
     const userRoles = session.user.roles || [];
     const isCreator = existingTask.createdBy === session.user.id;
-    const isManagerOrAdmin = userRoles.includes('MANAGER') || userRoles.includes('ADMIN');
+    const isManagerOrAdmin =
+      userRoles.includes('MANAGER') || userRoles.includes('ADMIN');
 
     if (!isCreator && !isManagerOrAdmin) {
-      const errorResponse = createValidationErrorResponse('شما مجاز به حذف این وظیفه نیستید');
+      const errorResponse = createValidationErrorResponse(
+        'شما مجاز به حذف این وظیفه نیستید'
+      );
       return NextResponse.json(errorResponse, {
         status: getHttpStatusForErrorCode(errorResponse.error.code),
       });
@@ -145,7 +148,9 @@ export async function DELETE(
       where: { id: taskId },
     });
 
-    const successResponse = createSuccessResponse({ message: 'وظیفه با موفقیت حذف شد' });
+    const successResponse = createSuccessResponse({
+      message: 'وظیفه با موفقیت حذف شد',
+    });
     return NextResponse.json(successResponse, {
       status: HTTP_STATUS_CODES.OK,
     });

@@ -6,9 +6,10 @@
  */
 
 import { useCallback, useState, useRef, useEffect } from 'react';
+
 import { ErrorHandler, ErrorHandlingResult } from '@/lib/error-handler';
-import { ErrorCategory, ErrorPriority, ErrorContext } from '@/types/error';
 import { useAppStore } from '@/stores/consolidated-store';
+import { ErrorCategory, ErrorPriority, ErrorContext } from '@/types/error';
 
 export interface UseErrorHandlerOptions {
   component: string;

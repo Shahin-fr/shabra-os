@@ -1,49 +1,58 @@
 'use client';
 
-import { useSession } from 'next-auth/react';
+import {
+  DndContext,
+  DragEndEvent,
+  DragOverlay,
+  DragStartEvent,
+  useDroppable,
+} from '@dnd-kit/core';
 import { useQuery } from '@tanstack/react-query';
-import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, useDroppable } from '@dnd-kit/core';
-import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { CheckSquare, Plus, Loader2 } from 'lucide-react';
+import { useSession } from 'next-auth/react';
+import { useState } from 'react';
 
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { useMobile } from '@/hooks/useResponsive';
-import { useUpdateTaskStatus } from '@/hooks/useUpdateTaskStatus';
-import { TaskCard } from '@/components/tasks/TaskCard';
 import { CreateTaskModal } from '@/components/tasks/CreateTaskModal';
 import { EditTaskModal } from '@/components/tasks/EditTaskModal';
+import { TaskCard } from '@/components/tasks/TaskCard';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { useMobile } from '@/hooks/useResponsive';
+import { useUpdateTaskStatus } from '@/hooks/useUpdateTaskStatus';
 
 // DroppableColumn component for drag & drop
-function DroppableColumn({ 
-  id, 
-  title, 
-  count, 
-  color, 
-  children 
-}: { 
-  id: string; 
-  title: string; 
-  count: number; 
-  color: string; 
-  children: React.ReactNode; 
+function DroppableColumn({
+  id,
+  title,
+  count,
+  color,
+  children,
+}: {
+  id: string;
+  title: string;
+  count: number;
+  color: string;
+  children: React.ReactNode;
 }) {
   const { isOver, setNodeRef } = useDroppable({
     id,
   });
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center gap-2 mb-4">
+    <div className='space-y-4'>
+      <div className='flex items-center gap-2 mb-4'>
         <div className={`w-3 h-3 rounded-full ${color}`}></div>
-        <h3 className="font-semibold text-gray-900">{title}</h3>
-        <Badge variant="secondary" className={`${color.replace('bg-', 'bg-').replace('500', '100')} ${color.replace('bg-', 'text-').replace('500', '800')}`}>
+        <h3 className='font-semibold text-gray-900'>{title}</h3>
+        <Badge
+          variant='secondary'
+          className={`${color.replace('bg-', 'bg-').replace('500', '100')} ${color.replace('bg-', 'text-').replace('500', '800')}`}
+        >
           {count}
         </Badge>
       </div>
-      <div 
+      <div
         ref={setNodeRef}
         className={`space-y-3 min-h-[400px] p-2 rounded-lg transition-colors ${
           isOver ? 'bg-pink-50 border-2 border-dashed border-pink-300' : ''
@@ -100,7 +109,11 @@ export default function TasksPage() {
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const isMobile = useMobile();
 
-  const { data: tasks = [], isLoading, error } = useQuery({
+  const {
+    data: tasks = [],
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ['tasks'],
     queryFn: fetchTasks,
     enabled: status === 'authenticated',
@@ -148,9 +161,9 @@ export default function TasksPage() {
 
   if (status === 'loading') {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="flex items-center gap-2">
-          <Loader2 className="h-6 w-6 animate-spin" />
+      <div className='min-h-screen bg-gray-50 flex items-center justify-center'>
+        <div className='flex items-center gap-2'>
+          <Loader2 className='h-6 w-6 animate-spin' />
           <span>در حال بارگذاری...</span>
         </div>
       </div>
@@ -159,12 +172,12 @@ export default function TasksPage() {
 
   if (status === 'unauthenticated') {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <Card className="w-full max-w-md">
-          <CardContent className="pt-6">
-            <div className="text-center">
-              <h2 className="text-xl font-semibold mb-2">دسترسی غیرمجاز</h2>
-              <p className="text-gray-600">لطفاً وارد حساب کاربری خود شوید</p>
+      <div className='min-h-screen bg-gray-50 flex items-center justify-center'>
+        <Card className='w-full max-w-md'>
+          <CardContent className='pt-6'>
+            <div className='text-center'>
+              <h2 className='text-xl font-semibold mb-2'>دسترسی غیرمجاز</h2>
+              <p className='text-gray-600'>لطفاً وارد حساب کاربری خود شوید</p>
             </div>
           </CardContent>
         </Card>
@@ -174,12 +187,12 @@ export default function TasksPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <Card className="w-full max-w-md">
-          <CardContent className="pt-6">
-            <div className="text-center">
-              <h2 className="text-xl font-semibold mb-2 text-red-600">خطا</h2>
-              <p className="text-gray-600">خطا در بارگذاری وظایف</p>
+      <div className='min-h-screen bg-gray-50 flex items-center justify-center'>
+        <Card className='w-full max-w-md'>
+          <CardContent className='pt-6'>
+            <div className='text-center'>
+              <h2 className='text-xl font-semibold mb-2 text-red-600'>خطا</h2>
+              <p className='text-gray-600'>خطا در بارگذاری وظایف</p>
             </div>
           </CardContent>
         </Card>
@@ -188,39 +201,42 @@ export default function TasksPage() {
   }
 
   const userRoles = session?.user?.roles || [];
-  const isManager = userRoles.includes('MANAGER') || userRoles.includes('ADMIN');
+  const isManager =
+    userRoles.includes('MANAGER') || userRoles.includes('ADMIN');
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-pink-50/50 to-purple-50/30">
-      <div className="container mx-auto px-4 py-6">
+    <div className='min-h-screen bg-gradient-to-br from-slate-50 via-pink-50/50 to-purple-50/30'>
+      <div className='container mx-auto px-4 py-6'>
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-6"
+          className='mb-6'
         >
-          <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 bg-[#ff0a54]/10 rounded-xl">
-              <CheckSquare className="h-6 w-6 text-[#ff0a54]" />
+          <div className='flex items-center gap-3 mb-4'>
+            <div className='p-2 bg-[#ff0a54]/10 rounded-xl'>
+              <CheckSquare className='h-6 w-6 text-[#ff0a54]' />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">مدیریت وظایف</h1>
-                                <p className="text-gray-600">
-                    {isManager ? 'مدیریت و پیگیری تسک‌های تیم' : 'تسک‌های محول شده به شما'}
-                  </p>
+              <h1 className='text-2xl font-bold text-gray-900'>مدیریت وظایف</h1>
+              <p className='text-gray-600'>
+                {isManager
+                  ? 'مدیریت و پیگیری تسک‌های تیم'
+                  : 'تسک‌های محول شده به شما'}
+              </p>
             </div>
           </div>
 
           {/* Actions */}
-          <div className="flex justify-end">
+          <div className='flex justify-end'>
             {isManager && (
-                                <Button
-                    onClick={() => setIsCreateModalOpen(true)}
-                    className="bg-[#ff0a54] hover:bg-[#ff0a54]/90"
-                  >
-                    <Plus className="h-4 w-4 ml-2" />
-                    تسک جدید
-                  </Button>
+              <Button
+                onClick={() => setIsCreateModalOpen(true)}
+                className='bg-[#ff0a54] hover:bg-[#ff0a54]/90'
+              >
+                <Plus className='h-4 w-4 ml-2' />
+                تسک جدید
+              </Button>
             )}
           </div>
         </motion.div>
@@ -231,14 +247,14 @@ export default function TasksPage() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="flex items-center justify-center min-h-[60vh]"
+            className='flex items-center justify-center min-h-[60vh]'
           >
-            <div className="text-center">
-              <CheckSquare className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
+            <div className='text-center'>
+              <CheckSquare className='h-16 w-16 text-gray-300 mx-auto mb-4' />
+              <h3 className='text-lg font-medium text-gray-900 mb-2'>
                 هیچ تسکی یافت نشد
               </h3>
-              <p className="text-gray-500 mb-4">
+              <p className='text-gray-500 mb-4'>
                 {isManager
                   ? 'هنوز هیچ تسکی ایجاد نشده است'
                   : 'هنوز هیچ تسکی به شما محول نشده است'}
@@ -246,9 +262,9 @@ export default function TasksPage() {
               {isManager && (
                 <Button
                   onClick={() => setIsCreateModalOpen(true)}
-                  className="bg-[#ff0a54] hover:bg-[#ff0a54]/90"
+                  className='bg-[#ff0a54] hover:bg-[#ff0a54]/90'
                 >
-                  <Plus className="h-4 w-4 ml-2" />
+                  <Plus className='h-4 w-4 ml-2' />
                   ایجاد تسک جدید
                 </Button>
               )}
@@ -259,7 +275,7 @@ export default function TasksPage() {
           <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
             {isMobile ? (
               // Mobile view - simple list
-              <div className="space-y-4">
+              <div className='space-y-4'>
                 {tasks.map(task => (
                   <TaskCard
                     key={task.id}
@@ -274,13 +290,13 @@ export default function TasksPage() {
               </div>
             ) : (
               // Desktop view - Kanban board
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
                 {/* Todo Column */}
                 <DroppableColumn
-                  id="Todo"
-                  title="انجام نشده"
+                  id='Todo'
+                  title='انجام نشده'
                   count={tasksByStatus.Todo.length}
-                  color="bg-gray-500"
+                  color='bg-gray-500'
                 >
                   {tasksByStatus.Todo.map(task => (
                     <TaskCard
@@ -297,10 +313,10 @@ export default function TasksPage() {
 
                 {/* In Progress Column */}
                 <DroppableColumn
-                  id="InProgress"
-                  title="در حال انجام"
+                  id='InProgress'
+                  title='در حال انجام'
                   count={tasksByStatus.InProgress.length}
-                  color="bg-yellow-500"
+                  color='bg-yellow-500'
                 >
                   {tasksByStatus.InProgress.map(task => (
                     <TaskCard
@@ -317,10 +333,10 @@ export default function TasksPage() {
 
                 {/* Done Column */}
                 <DroppableColumn
-                  id="Done"
-                  title="انجام شده"
+                  id='Done'
+                  title='انجام شده'
                   count={tasksByStatus.Done.length}
-                  color="bg-green-500"
+                  color='bg-green-500'
                 >
                   {tasksByStatus.Done.map(task => (
                     <TaskCard
@@ -340,7 +356,7 @@ export default function TasksPage() {
             {/* Drag Overlay */}
             <DragOverlay>
               {activeTask ? (
-                <div className="transition-transform duration-75 ease-out">
+                <div className='transition-transform duration-75 ease-out'>
                   <TaskCard
                     task={activeTask}
                     onStatusChange={(taskId, status) =>
