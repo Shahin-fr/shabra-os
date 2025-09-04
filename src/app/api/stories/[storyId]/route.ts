@@ -1,14 +1,32 @@
-import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { NextRequest, NextResponse } from 'next/server';
+
+import {
+  createValidationErrorResponse,
+  createNotFoundErrorResponse,
+  createServerErrorResponse,
+  HTTP_STATUS_CODES,
+  getHttpStatusForErrorCode,
+} from '@/lib/api/response-utils';
+import { prisma } from '@/lib/prisma';
 
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ storyId: string }> }
 ) {
   try {
+    // Add authorization check
+    const { withAuth } = await import('@/lib/middleware/auth-middleware');
+
+    // Check authentication
+    const authResult = await withAuth(request);
+    if (authResult.response) {
+      return authResult.response;
+    }
+
     const { storyId } = await params;
     const body = await request.json();
-    const { title, notes, visualNotes, link, order, storyTypeId } = body;
+    const { title, notes, visualNotes, link, order, storyTypeId, status } =
+      body;
 
     // Check if story exists
     const existingStory = await prisma.story.findUnique({
@@ -16,21 +34,31 @@ export async function PATCH(
     });
 
     if (!existingStory) {
-      return NextResponse.json(
-        { error: "استوری مورد نظر یافت نشد" },
-        { status: 404 }
-      );
+      const errorResponse = createNotFoundErrorResponse();
+      return NextResponse.json(errorResponse, {
+        status: getHttpStatusForErrorCode(errorResponse.error.code),
+      });
     }
 
     // Prepare update data
-    const updateData: any = {};
-    
+    const updateData: {
+      title?: string;
+      notes?: string | null;
+      visualNotes?: string | null;
+      link?: string | null;
+      storyTypeId?: string | null;
+      order?: number;
+      status?: string;
+    } = {};
+
     if (title !== undefined) {
-      if (typeof title !== "string" || title.trim().length === 0) {
-        return NextResponse.json(
-          { error: "عنوان استوری نمی‌تواند خالی باشد" },
-          { status: 400 }
+      if (typeof title !== 'string' || title.trim().length === 0) {
+        const errorResponse = createValidationErrorResponse(
+          'عنوان استوری نمی‌تواند خالی باشد'
         );
+        return NextResponse.json(errorResponse, {
+          status: getHttpStatusForErrorCode(errorResponse.error.code),
+        });
       }
       updateData.title = title.trim();
     }
@@ -38,8 +66,6 @@ export async function PATCH(
     if (notes !== undefined) {
       updateData.notes = notes?.trim() || null;
     }
-
-
 
     if (visualNotes !== undefined) {
       updateData.visualNotes = visualNotes?.trim() || null;
@@ -49,8 +75,6 @@ export async function PATCH(
       updateData.link = link?.trim() || null;
     }
 
-
-
     if (storyTypeId !== undefined) {
       if (storyTypeId) {
         // Verify story type exists
@@ -59,23 +83,40 @@ export async function PATCH(
         });
 
         if (!storyType) {
-          return NextResponse.json(
-            { error: "نوع استوری مورد نظر یافت نشد" },
-            { status: 404 }
-          );
+          const errorResponse = createNotFoundErrorResponse();
+          return NextResponse.json(errorResponse, {
+            status: getHttpStatusForErrorCode(errorResponse.error.code),
+          });
         }
       }
       updateData.storyTypeId = storyTypeId || null;
     }
 
     if (order !== undefined) {
-      if (typeof order !== "number" || order < 0) {
-        return NextResponse.json(
-          { error: "ترتیب باید عدد مثبت باشد" },
-          { status: 400 }
+      if (typeof order !== 'number' || order < 0) {
+        const errorResponse = createValidationErrorResponse(
+          'ترتیب باید عدد مثبت باشد'
         );
+        return NextResponse.json(errorResponse, {
+          status: getHttpStatusForErrorCode(errorResponse.error.code),
+        });
       }
       updateData.order = order;
+    }
+
+    if (status !== undefined) {
+      if (
+        typeof status !== 'string' ||
+        !['DRAFT', 'READY', 'PUBLISHED'].includes(status)
+      ) {
+        const errorResponse = createValidationErrorResponse(
+          'وضعیت باید یکی از مقادیر DRAFT، READY یا PUBLISHED باشد'
+        );
+        return NextResponse.json(errorResponse, {
+          status: getHttpStatusForErrorCode(errorResponse.error.code),
+        });
+      }
+      updateData.status = status;
     }
 
     // Update the story
@@ -83,12 +124,6 @@ export async function PATCH(
       where: { id: storyId },
       data: updateData,
       include: {
-        project: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
         storyType: {
           select: {
             id: true,
@@ -96,15 +131,21 @@ export async function PATCH(
             icon: true,
           },
         },
+        project: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
       },
     });
 
     return NextResponse.json(updatedStory);
   } catch {
-    return NextResponse.json(
-      { error: "خطا در بروزرسانی استوری" },
-      { status: 500 }
-    );
+    const errorResponse = createServerErrorResponse('خطا در بروزرسانی استوری');
+    return NextResponse.json(errorResponse, {
+      status: getHttpStatusForErrorCode(errorResponse.error.code),
+    });
   }
 }
 
@@ -113,6 +154,15 @@ export async function DELETE(
   { params }: { params: Promise<{ storyId: string }> }
 ) {
   try {
+    // Add authorization check
+    const { withAuth } = await import('@/lib/middleware/auth-middleware');
+
+    // Check authentication
+    const authResult = await withAuth(request);
+    if (authResult.response) {
+      return authResult.response;
+    }
+
     const { storyId } = await params;
 
     // Check if story exists
@@ -121,10 +171,10 @@ export async function DELETE(
     });
 
     if (!existingStory) {
-      return NextResponse.json(
-        { error: "استوری مورد نظر یافت نشد" },
-        { status: 404 }
-      );
+      const errorResponse = createNotFoundErrorResponse();
+      return NextResponse.json(errorResponse, {
+        status: getHttpStatusForErrorCode(errorResponse.error.code),
+      });
     }
 
     // Delete the story
@@ -132,11 +182,19 @@ export async function DELETE(
       where: { id: storyId },
     });
 
-    return NextResponse.json({ message: "استوری با موفقیت حذف شد" });
-  } catch {
+    // Return success response with the deleted story ID
     return NextResponse.json(
-      { error: "خطا در حذف استوری" },
-      { status: 500 }
+      {
+        success: true,
+        message: 'استوری با موفقیت حذف شد',
+        deletedId: storyId,
+      },
+      { status: HTTP_STATUS_CODES.OK }
     );
+  } catch (error) {
+    const errorResponse = createServerErrorResponse('خطا در حذف استوری');
+    return NextResponse.json(errorResponse, {
+      status: getHttpStatusForErrorCode(errorResponse.error.code),
+    });
   }
 }

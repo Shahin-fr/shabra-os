@@ -1,0 +1,107 @@
+/* Navigation States CSS - Performance optimized */
+
+/* Base navigation item styles */
+.nav-item {
+  transition: all 0.2s ease-in-out;
+  color: rgb(156 163 175); /* text-muted-foreground */
+}
+
+/* Active state styles */
+.nav-item.active {
+  color: white;
+  background-color: rgba(255, 10, 84, 0.2);
+  border: 1px solid rgba(255, 10, 84, 0.3);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Clicked state styles */
+.nav-item.clicked {
+  transform: scale(0.95);
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* When navigation is active, apply styles to all nav items */
+.is-navigating .nav-item {
+  opacity: 0.6;
+  pointer-events: none;
+  transform: scale(0.98);
+  transition: all 0.2s ease-in-out;
+}
+
+/* Ensure active items remain fully visible during navigation */
+.is-navigating .nav-item.active,
+.is-navigating .nav-item[data-active='true'] {
+  opacity: 1;
+  pointer-events: auto;
+  transform: scale(1);
+}
+
+/* Hover effects disabled during navigation */
+.is-navigating .nav-item:hover {
+  transform: scale(0.98) !important;
+  background-color: transparent !important;
+}
+
+/* Priority-based styling */
+.nav-item[data-priority='low'] {
+  opacity: 0.8;
+}
+
+.nav-item[data-priority='low']:hover {
+  opacity: 1;
+}
+
+/* Disabled state during navigation */
+.is-navigating .nav-item:not(.active) {
+  cursor: not-allowed;
+}
+
+/* Smooth transitions for all states */
+.nav-item,
+.is-navigating .nav-item {
+  transition:
+    opacity 0.2s ease-in-out,
+    transform 0.2s ease-in-out,
+    background-color 0.2s ease-in-out,
+    pointer-events 0.1s ease-in-out;
+}
+
+/* High priority items get enhanced hover effects */
+.nav-item[data-priority='high']:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Medium priority items get moderate hover effects */
+.nav-item[data-priority='medium']:hover {
+  transform: scale(1.03);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Low priority items get subtle hover effects */
+.nav-item[data-priority='low']:hover {
+  transform: scale(1.01);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Hover states for non-navigating items */
+.nav-item:hover:not(.is-navigating *) {
+  color: white;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Icon and text color transitions */
+.nav-item .icon,
+.nav-item span {
+  transition: color 0.2s ease-in-out;
+}
+
+.nav-item.active .icon,
+.nav-item.active span {
+  color: #ff0a54;
+}
+
+.nav-item:hover .icon,
+.nav-item:hover span {
+  color: white;
+}

@@ -1,0 +1,20 @@
+[
+  {
+    "timestamp": "2025-08-26T10:08:50.189Z",
+    "bundleSize": {
+      "total": 0,
+      "js": 0,
+      "css": 0,
+      "images": 0
+    },
+    "buildTime": 0,
+    "lighthouseScores": {
+      "performance": 0,
+      "accessibility": 0,
+      "bestPractices": 0,
+      "seo": 0
+    },
+    "memoryUsage": 0,
+    "renderTime": 0
+  }
+]

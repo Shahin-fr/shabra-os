@@ -1,34 +1,31 @@
-"use client";
+'use client';
 
-import { SessionProvider } from "next-auth/react";
-import { Toaster } from "sonner";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useState } from "react";
+import React, { useState } from 'react';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { SessionProvider } from 'next-auth/react';
+import { Toaster } from 'sonner';
+
+import { createIntegratedQueryClient } from '@/lib/query-cache-integration';
 
 export default function Providers({ children }: { children: React.ReactNode }) {
-  const [queryClient] = useState(
-    () =>
-      new QueryClient({
-        defaultOptions: {
-          queries: {
-            staleTime: 5 * 60 * 1000, // 5 minutes - Queries stay fresh longer, reducing unnecessary refetches
-            gcTime: 10 * 60 * 1000,   // 10 minutes - Cached data persists longer in memory for better performance
-            retry: 1,                  // Only retry failed queries once to avoid excessive retry loops
-          },
-        },
-      })
+  const [queryClient] = useState(() =>
+    createIntegratedQueryClient({
+      strategy: 'balanced',
+      enablePersistentCache: true,
+      enableBackgroundSync: false, // Disable for performance
+      enableOptimisticUpdates: true,
+    })
   );
 
   return (
     <QueryClientProvider client={queryClient}>
-      <SessionProvider>
+      <SessionProvider
+        refetchInterval={0} // Don't auto-refetch session
+        refetchOnWindowFocus={false} // Prevent unnecessary refetches
+        refetchWhenOffline={false} // Don't refetch when offline
+      >
         {children}
-        <Toaster 
-          position="top-right"
-          richColors
-          closeButton
-          duration={4000}
-        />
+        <Toaster position='top-center' richColors />
       </SessionProvider>
     </QueryClientProvider>
   );

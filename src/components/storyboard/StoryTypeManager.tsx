@@ -1,52 +1,66 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useSession } from "next-auth/react";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { IconPicker } from "@/components/ui/IconPicker";
-import { DynamicLucideIcon } from "@/components/ui/DynamicLucideIcon";
-import { 
-  Settings, 
-  Plus, 
-  Edit, 
-  Trash2, 
+import React from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import {
+  Settings,
+  Plus,
+  Edit,
+  Trash2,
   FileText,
   Calendar,
   Users,
   BarChart3,
   Target,
-  Sparkles
-} from "lucide-react";
-import { isAdmin } from "@/lib/utils";
+  Sparkles,
+} from 'lucide-react';
+
+import { useState } from 'react';
+
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { DynamicLucideIcon } from '@/components/ui/DynamicLucideIcon';
+import { IconPicker } from '@/components/ui/IconPicker';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { logger } from '@/lib/logger';
+import { showStatusMessage } from '@/lib/utils';
+import { isAdminOrManager } from '@/lib/auth-utils';
+import { useAuth } from '@/hooks/useAuth';
 
 // Mock icon mapping - you can expand this based on your needs
-const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
-  "news": FileText,
-  "feature": Sparkles,
-  "event": Calendar,
-  "team": Users,
-  "analytics": BarChart3,
-  "goal": Target,
-  "default": FileText
-};
+// TODO: _iconMap not used - needs to be restored or removed
+// const _iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
+//   news: FileText,
+//   feature: Sparkles,
+//   event: Calendar,
+//   team: Users,
+//   analytics: BarChart3,
+//   goal: Target,
+//   default: FileText,
+// };
 
 // Helper function to get fallback icon based on story type name
-const getFallbackIcon = (storyTypeName: string): React.ComponentType<{ className?: string }> => {
+const getFallbackIcon = (
+  storyTypeName: string
+): React.ComponentType<{ className?: string }> => {
   const name = storyTypeName.toLowerCase();
-  
+
   if (name.includes('خبر') || name.includes('news')) return FileText;
   if (name.includes('ویژگی') || name.includes('feature')) return Sparkles;
   if (name.includes('رویداد') || name.includes('event')) return Calendar;
   if (name.includes('تیم') || name.includes('team')) return Users;
   if (name.includes('تحلیل') || name.includes('analytics')) return BarChart3;
   if (name.includes('هدف') || name.includes('goal')) return Target;
-  
+
   return FileText; // default fallback
 };
 
@@ -71,24 +85,36 @@ const fetchStoryTypes = async (): Promise<StoryType[]> => {
 };
 
 export default function StoryTypeManager() {
-  const { data: session } = useSession();
+  const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
-  const [editingStoryType, setEditingStoryType] = useState<StoryType | null>(null);
+  const [editingStoryType, setEditingStoryType] = useState<StoryType | null>(
+    null
+  );
   const [formData, setFormData] = useState({ name: '', icon: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
-  
+
   const queryClient = useQueryClient();
 
-  // Check if user has admin role
-  const hasAdminAccess = session?.user && (session.user as any).role && isAdmin((session.user as any).role);
+  // Check if user has admin role - create a mock session object for compatibility
+  const hasAdminAccess =
+    user &&
+    isAdminOrManager({
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        avatar: user.avatar,
+        roles: user.roles || [],
+      },
+    } as any);
 
   // Fetch story types using TanStack Query
-  const { 
-    data: storyTypes = [], 
-    isLoading, 
-    isError, 
-    error 
+  const {
+    data: storyTypes = [],
+    isLoading,
+    isError,
+    error,
   } = useQuery({
     queryKey: ['storyTypes'],
     queryFn: fetchStoryTypes,
@@ -111,18 +137,34 @@ export default function StoryTypeManager() {
       }
       return response.json();
     },
+    onMutate: async () => {
+      showStatusMessage('در حال ایجاد نوع استوری...', 2000);
+    },
     onSuccess: () => {
+      showStatusMessage('نوع استوری با موفقیت ایجاد شد!', 3000);
       // Invalidate and refetch story types
       queryClient.invalidateQueries({ queryKey: ['storyTypes'] });
       // Reset form
       setFormData({ name: '', icon: '' });
       setEditingStoryType(null);
     },
+    onError: _error => {
+      showStatusMessage(
+        'خطا در ایجاد نوع استوری. لطفاً دوباره تلاش کنید.',
+        4000
+      );
+    },
   });
 
   // Update story type mutation
   const updateStoryTypeMutation = useMutation({
-    mutationFn: async ({ id, data }: { id: string; data: { name: string; icon?: string } }) => {
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: string;
+      data: { name: string; icon?: string };
+    }) => {
       const response = await fetch(`/api/story-types/${id}`, {
         method: 'PUT',
         headers: {
@@ -136,12 +178,22 @@ export default function StoryTypeManager() {
       }
       return response.json();
     },
+    onMutate: async () => {
+      showStatusMessage('در حال بروزرسانی نوع استوری...', 2000);
+    },
     onSuccess: () => {
+      showStatusMessage('نوع استوری با موفقیت بروزرسانی شد!', 3000);
       // Invalidate and refetch story types
       queryClient.invalidateQueries({ queryKey: ['storyTypes'] });
       // Reset form
       setFormData({ name: '', icon: '' });
       setEditingStoryType(null);
+    },
+    onError: _error => {
+      showStatusMessage(
+        'خطا در بروزرسانی نوع استوری. لطفاً دوباره تلاش کنید.',
+        4000
+      );
     },
   });
 
@@ -151,15 +203,40 @@ export default function StoryTypeManager() {
       const response = await fetch(`/api/story-types/${id}`, {
         method: 'DELETE',
       });
+
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to delete story type');
+        let errorData;
+        try {
+          const responseText = await response.text();
+          errorData = responseText ? JSON.parse(responseText) : {};
+        } catch (parseError) {
+          errorData = { error: 'Failed to parse error response' };
+        }
+        const errorMessage =
+          errorData.error || `Failed to delete story type (${response.status})`;
+        throw new Error(errorMessage);
       }
+
       return response.json();
     },
-    onSuccess: () => {
+    onMutate: async () => {
+      showStatusMessage('در حال حذف نوع استوری...', 2000);
+    },
+    onSuccess: data => {
+      if (data.softDelete) {
+        showStatusMessage(
+          `نوع استوری از پالت حذف شد اما همچنان برای استوری‌های موجود (${data.storyCount} عدد) در دسترس است.`,
+          5000
+        );
+      } else {
+        showStatusMessage('نوع استوری با موفقیت حذف شد!', 3000);
+      }
       // Invalidate and refetch story types
       queryClient.invalidateQueries({ queryKey: ['storyTypes'] });
+    },
+    onError: error => {
+      console.log('Mutation onError called with:', error);
+      showStatusMessage('خطا در حذف نوع استوری. لطفاً دوباره تلاش کنید.', 4000);
     },
   });
 
@@ -175,16 +252,16 @@ export default function StoryTypeManager() {
   // Handle edit button click
   const handleEdit = (storyType: StoryType) => {
     setEditingStoryType(storyType);
-    setFormData({ 
-      name: storyType.name, 
-      icon: (storyType as any).icon || '' // Load existing icon if available
+    setFormData({
+      name: storyType.name,
+      icon: (storyType as any).icon || '', // Load existing icon if available
     });
   };
 
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.name.trim()) {
       setFormError('نام نوع استوری الزامی است');
       return;
@@ -192,26 +269,26 @@ export default function StoryTypeManager() {
 
     setIsSubmitting(true);
     setFormError(null);
-    
+
     try {
       if (editingStoryType) {
         // Update existing story type
         await updateStoryTypeMutation.mutateAsync({
           id: editingStoryType.id,
-          data: { 
+          data: {
             name: formData.name.trim(),
-            icon: formData.icon || undefined
-          }
+            icon: formData.icon || undefined,
+          },
         });
       } else {
         // Create new story type
         await createStoryTypeMutation.mutateAsync({
           name: formData.name.trim(),
-          icon: formData.icon || undefined
+          icon: formData.icon || undefined,
         });
       }
     } catch (error) {
-      console.error('Error submitting form:', error);
+      logger.error('Error submitting form:', error as Error);
       setFormError(error instanceof Error ? error.message : 'خطای ناشناخته');
     } finally {
       setIsSubmitting(false);
@@ -226,14 +303,17 @@ export default function StoryTypeManager() {
 
   // Handle delete
   const handleDelete = async (storyType: StoryType) => {
-    if (!window.confirm(`آیا مطمئن هستید که می‌خواهید نوع استوری "${storyType.name}" را حذف کنید؟`)) {
+    if (
+      !window.confirm(
+        `آیا مطمئن هستید که می‌خواهید نوع استوری "${storyType.name}" را حذف کنید؟`
+      )
+    ) {
       return;
     }
 
     try {
       await deleteStoryTypeMutation.mutateAsync(storyType.id);
     } catch (error) {
-      console.error('Error deleting story type:', error);
       // Error is already handled by the mutation's onError
     }
   };
@@ -246,112 +326,121 @@ export default function StoryTypeManager() {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button 
-          variant="outline" 
-          size="sm"
-          className="flex items-center gap-2"
-        >
-          <Settings className="h-4 w-4" />
+        <Button variant='outline' size='sm' className='flex items-center gap-2'>
+          <Settings className='h-4 w-4' />
           مدیریت قالب‌ها
         </Button>
       </DialogTrigger>
-      
-      <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+
+      <DialogContent className='max-w-4xl max-h-[80vh] overflow-y-auto'>
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Settings className="h-5 w-5" />
+          <DialogTitle className='flex items-center gap-2'>
+            <Settings className='h-5 w-5' />
             مدیریت انواع استوری
           </DialogTitle>
         </DialogHeader>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
           {/* Story Types List */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold">انواع موجود</h3>
-              <Button 
+          <div className='space-y-4'>
+            <div className='flex items-center justify-between'>
+              <h3 className='text-lg font-semibold'>انواع موجود</h3>
+              <Button
                 onClick={() => {
                   setEditingStoryType(null);
                   setFormData({ name: '', icon: '' });
                 }}
-                size="sm"
-                className="flex items-center gap-2"
+                size='sm'
+                className='flex items-center gap-2'
               >
-                <Plus className="h-4 w-4" />
+                <Plus className='h-4 w-4' />
                 افزودن نوع جدید
               </Button>
             </div>
 
             {isLoading && (
-              <div className="text-center py-8">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-                <p className="mt-2 text-sm text-muted-foreground">در حال بارگذاری...</p>
+              <div className='text-center py-8'>
+                <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto'></div>
+                <p className='mt-2 text-sm text-muted-foreground'>
+                  در حال بارگذاری...
+                </p>
               </div>
             )}
 
             {isError && (
-              <div className="text-center py-8">
-                <p className="text-destructive">خطا در بارگذاری انواع استوری</p>
-                <p className="text-sm text-muted-foreground">{error?.message}</p>
+              <div className='text-center py-8'>
+                <p className='text-destructive'>خطا در بارگذاری انواع استوری</p>
+                <p className='text-sm text-muted-foreground'>
+                  {error?.message}
+                </p>
               </div>
             )}
 
             {!isLoading && !isError && storyTypes.length === 0 && (
-              <div className="text-center py-8">
-                <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">هیچ نوع استوری تعریف نشده است</p>
-                <p className="text-sm text-muted-foreground">برای شروع، نوع جدیدی اضافه کنید</p>
+              <div className='text-center py-8'>
+                <FileText className='h-12 w-12 text-muted-foreground mx-auto mb-4' />
+                <p className='text-muted-foreground'>
+                  هیچ نوع استوری تعریف نشده است
+                </p>
+                <p className='text-sm text-muted-foreground'>
+                  برای شروع، نوع جدیدی اضافه کنید
+                </p>
               </div>
             )}
 
             {!isLoading && !isError && storyTypes.length > 0 && (
-              <div className="space-y-3">
-                {storyTypes.map((storyType) => (
-                  <Card key={storyType.id} className="hover:shadow-md transition-shadow">
-                    <CardContent className="p-4">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className="p-2 bg-primary/10 rounded-lg">
-                                                         <DynamicLucideIcon 
-                               iconName={storyType.icon} 
-                               className="h-4 w-4" 
-                               fallbackIcon={getFallbackIcon(storyType.name)}
-                             />
+              <div className='space-y-3'>
+                {storyTypes.map(storyType => (
+                  <Card
+                    key={storyType.id}
+                    className='hover:shadow-md transition-shadow'
+                  >
+                    <CardContent className='p-4'>
+                      <div className='flex items-center justify-between'>
+                        <div className='flex items-center gap-3'>
+                          <div className='p-2 bg-primary/10 rounded-lg'>
+                            <DynamicLucideIcon
+                              iconName={storyType.icon}
+                              className='h-4 w-4'
+                              fallbackIcon={getFallbackIcon(storyType.name)}
+                            />
                           </div>
                           <div>
-                            <h4 className="font-medium">{storyType.name}</h4>
-                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                              <Badge variant="secondary" className="text-xs">
+                            <h4 className='font-medium'>{storyType.name}</h4>
+                            <div className='flex items-center gap-2 text-sm text-muted-foreground'>
+                              <Badge variant='secondary' className='text-xs'>
                                 {storyType._count?.stories || 0} استوری
                               </Badge>
                               <span>•</span>
                               <span>
-                                {new Date(storyType.updatedAt).toLocaleDateString('fa-IR')}
+                                {new Date(
+                                  storyType.updatedAt
+                                ).toLocaleDateString('fa-IR')}
                               </span>
                             </div>
                           </div>
                         </div>
-                        
-                        <div className="flex items-center gap-2">
+
+                        <div className='flex items-center gap-2'>
                           <Button
-                            variant="ghost"
-                            size="sm"
+                            variant='ghost'
+                            size='sm'
                             onClick={() => handleEdit(storyType)}
-                            className="h-8 w-8 p-0"
+                            className='h-8 w-8 p-0'
                           >
-                            <Edit className="h-4 w-4" />
+                            <Edit className='h-4 w-4' />
                           </Button>
                           <Button
-                            variant="ghost"
-                            size="sm"
+                            variant='ghost'
+                            size='sm'
                             onClick={() => handleDelete(storyType)}
-                            className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+                            className='h-8 w-8 p-0 text-destructive hover:text-destructive'
                             disabled={deleteStoryTypeMutation.isPending}
                           >
                             {deleteStoryTypeMutation.isPending ? (
-                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-destructive"></div>
+                              <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-destructive'></div>
                             ) : (
-                              <Trash2 className="h-4 w-4" />
+                              <Trash2 className='h-4 w-4' />
                             )}
                           </Button>
                         </div>
@@ -364,60 +453,64 @@ export default function StoryTypeManager() {
           </div>
 
           {/* Create/Edit Form */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold">
+          <div className='space-y-4'>
+            <h3 className='text-lg font-semibold'>
               {editingStoryType ? 'ویرایش نوع استوری' : 'افزودن نوع جدید'}
             </h3>
-            
-            <form onSubmit={handleSubmit} className="space-y-4">
+
+            <form onSubmit={handleSubmit} className='space-y-4'>
               {formError && (
-                <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-                  <p className="text-red-600 text-sm">{formError}</p>
+                <div className='p-3 bg-red-50 border border-red-200 rounded-lg'>
+                  <p className='text-red-600 text-sm'>{formError}</p>
                 </div>
               )}
-              
-              <div className="space-y-2">
-                <Label htmlFor="name">نام نوع استوری</Label>
+
+              <div className='space-y-2'>
+                <Label htmlFor='name'>نام نوع استوری</Label>
                 <Input
-                  id="name"
+                  id='name'
                   value={formData.name}
-                  onChange={(e) => handleInputChange('name', e.target.value)}
-                  placeholder="مثال: اخبار، ویژگی، رویداد"
+                  onChange={e => handleInputChange('name', e.target.value)}
+                  placeholder='مثال: اخبار، ویژگی، رویداد'
                   required
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="icon">آیکون (اختیاری)</Label>
+              <div className='space-y-2'>
+                <Label htmlFor='icon'>آیکون (اختیاری)</Label>
                 <IconPicker
                   currentIcon={formData.icon}
-                  onSelectIcon={(iconName) => handleInputChange('icon', iconName)}
+                  onSelectIcon={iconName => handleInputChange('icon', iconName)}
                 />
-                <p className="text-xs text-muted-foreground">
+                <p className='text-xs text-muted-foreground'>
                   آیکون مورد نظر خود را از لیست انتخاب کنید
                 </p>
               </div>
 
-              <div className="flex items-center gap-2 pt-4">
-                <Button 
-                  type="submit" 
-                  className="flex-1"
+              <div className='flex items-center gap-2 pt-4'>
+                <Button
+                  type='submit'
+                  className='flex-1'
                   disabled={isSubmitting || !formData.name.trim()}
                 >
                   {isSubmitting ? (
-                    <div className="flex items-center gap-2">
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                      {editingStoryType ? 'در حال بروزرسانی...' : 'در حال افزودن...'}
+                    <div className='flex items-center gap-2'>
+                      <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-white'></div>
+                      {editingStoryType
+                        ? 'در حال بروزرسانی...'
+                        : 'در حال افزودن...'}
                     </div>
+                  ) : editingStoryType ? (
+                    'بروزرسانی'
                   ) : (
-                    editingStoryType ? 'بروزرسانی' : 'افزودن'
+                    'افزودن'
                   )}
                 </Button>
-                
+
                 {editingStoryType && (
-                  <Button 
-                    type="button" 
-                    variant="outline" 
+                  <Button
+                    type='button'
+                    variant='outline'
                     onClick={handleCancelEdit}
                     disabled={isSubmitting}
                   >
@@ -429,15 +522,15 @@ export default function StoryTypeManager() {
 
             {/* Icon Preview */}
             {formData.icon && (
-              <div className="pt-4 border-t">
-                <Label className="text-sm font-medium">پیش‌نمایش آیکون:</Label>
-                <div className="mt-2 p-3 bg-muted rounded-lg">
-                  <div className="flex items-center gap-2">
-                                         <DynamicLucideIcon 
-                       iconName={formData.icon} 
-                       className="h-5 w-5" 
-                     />
-                    <span className="text-sm">{formData.icon}</span>
+              <div className='pt-4 border-t'>
+                <Label className='text-sm font-medium'>پیش‌نمایش آیکون:</Label>
+                <div className='mt-2 p-3 bg-muted rounded-lg'>
+                  <div className='flex items-center gap-2'>
+                    <DynamicLucideIcon
+                      iconName={formData.icon}
+                      className='h-5 w-5'
+                    />
+                    <span className='text-sm'>{formData.icon}</span>
                   </div>
                 </div>
               </div>

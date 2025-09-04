@@ -4,47 +4,50 @@ A modern, comprehensive project management and team collaboration platform built
 
 ## 🚀 Tech Stack
 
-| Category | Technology |
-|----------|------------|
-| **Framework** | Next.js 15.4.6 (App Router) |
-| **Language** | TypeScript |
-| **Database** | PostgreSQL with Prisma ORM |
-| **Authentication** | NextAuth.js v5 |
-| **Styling** | Tailwind CSS |
-| **State Management** | Zustand |
-| **Data Fetching** | TanStack Query |
-| **UI Components** | Radix UI |
-| **Animations** | Framer Motion |
-| **Drag & Drop** | @dnd-kit |
-| **Date Handling** | date-fns |
-| **Icons** | Lucide React |
+| Category             | Technology                  |
+| -------------------- | --------------------------- |
+| **Framework**        | Next.js 15.4.6 (App Router) |
+| **Language**         | TypeScript                  |
+| **Database**         | PostgreSQL with Prisma ORM  |
+| **Authentication**   | NextAuth.js v5              |
+| **Styling**          | Tailwind CSS                |
+| **State Management** | Zustand                     |
+| **Data Fetching**    | TanStack Query              |
+| **UI Components**    | Radix UI                    |
+| **Animations**       | Framer Motion               |
+| **Drag & Drop**      | @dnd-kit                    |
+| **Date Handling**    | date-fns                    |
+| **Icons**            | Lucide React                |
 
 ## 🛠️ Getting Started
 
 ### Prerequisites
 
-- Node.js 18+ 
+- Node.js 18+
 - PostgreSQL database
 - npm or yarn package manager
 
 ### Local Setup
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/your-username/shabra-os.git
    cd shabra-os
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Environment Configuration**
+
    ```bash
    # Copy the environment template
    cp .env.example .env.local
-   
+
    # Edit .env.local with your configuration
    # Required variables:
    # - NEXTAUTH_SECRET (generate a strong secret)
@@ -54,18 +57,20 @@ A modern, comprehensive project management and team collaboration platform built
    ```
 
 4. **Database Setup**
+
    ```bash
    # Generate Prisma client
    npx prisma generate
-   
+
    # Run database migrations
    npx prisma migrate dev
-   
+
    # (Optional) Seed the database with sample data
    npm run prisma:seed
    ```
 
 5. **Start Development Server**
+
    ```bash
    npm run dev
    ```
@@ -75,14 +80,14 @@ A modern, comprehensive project management and team collaboration platform built
 
 ## 📜 Available Scripts
 
-| Script | Description |
-|--------|-------------|
-| `npm run dev` | Starts the development server with Turbopack |
-| `npm run build` | Builds the application for production |
-| `npm run start` | Starts the production server |
-| `npm run lint` | Runs ESLint to check code quality |
-| `npm run lint:fix` | Automatically fixes ESLint issues |
-| `npm run prepare-docs` | Prepares documentation files |
+| Script                 | Description                                  |
+| ---------------------- | -------------------------------------------- |
+| `npm run dev`          | Starts the development server with Turbopack |
+| `npm run build`        | Builds the application for production        |
+| `npm run start`        | Starts the production server                 |
+| `npm run lint`         | Runs ESLint to check code quality            |
+| `npm run lint:fix`     | Automatically fixes ESLint issues            |
+| `npm run prepare-docs` | Prepares documentation files                 |
 
 ## 🏗️ Project Structure
 
@@ -102,13 +107,13 @@ shabra-os/
 
 ## 🔐 Environment Variables
 
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `NEXTAUTH_SECRET` | Secret key for NextAuth.js | ✅ |
-| `NEXTAUTH_URL` | Base URL of your application | ✅ |
-| `PRISMA_DATABASE_URL` | PostgreSQL connection string | ✅ |
-| `POSTGRES_URL` | Direct database connection | ✅ |
-| `NODE_ENV` | Environment (development/production) | ✅ |
+| Variable              | Description                          | Required |
+| --------------------- | ------------------------------------ | -------- |
+| `NEXTAUTH_SECRET`     | Secret key for NextAuth.js           | ✅       |
+| `NEXTAUTH_URL`        | Base URL of your application         | ✅       |
+| `PRISMA_DATABASE_URL` | PostgreSQL connection string         | ✅       |
+| `POSTGRES_URL`        | Direct database connection           | ✅       |
+| `NODE_ENV`            | Environment (development/production) | ✅       |
 
 ## 🚀 Deployment
 

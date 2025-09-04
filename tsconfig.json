@@ -1,7 +1,10 @@
 {
   "compilerOptions": {
-    "target": "ES2017",
+    // Target modern JavaScript for better performance
+    "target": "ES2020",
     "lib": ["dom", "dom.iterable", "esnext"],
+
+    // Module and resolution settings
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -12,16 +15,82 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
+
+    // Performance optimizations
     "incremental": true,
+    "tsBuildInfoFile": "./tsconfig.tsbuildinfo",
+
+    // Enhanced type checking
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+
+    // Path mapping for better imports
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@/components/*": ["./src/components/*"],
+      "@/lib/*": ["./src/lib/*"],
+      "@/types/*": ["./src/types/*"],
+      "@/stores/*": ["./src/stores/*"],
+      "@/hooks/*": ["./src/hooks/*"]
+    },
+
+    // Next.js specific settings
     "plugins": [
       {
         "name": "next"
       }
     ],
-    "paths": {
-      "@/*": ["./src/*"]
-    }
+
+    // Additional optimizations
+    "forceConsistentCasingInFileNames": true,
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+
+    // Performance settings
+    "assumeChangesOnlyAffectDirectDependencies": true,
+    "disableSourceOfProjectReferenceRedirect": true,
+
+    // Development vs Production settings
+    "removeComments": false,
+    "sourceMap": true,
+    "declaration": false,
+    "declarationMap": false
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "src/**/*",
+    "scripts/**/*"
+  ],
+
+  "exclude": [
+    "node_modules",
+    ".next",
+    "out",
+    "dist",
+    "build",
+    "coverage",
+    "*.config.js",
+    "*.config.ts"
+  ],
+
+  // TypeScript project references for better performance
+  "references": [],
+
+  // Compiler performance settings
+  "ts-node": {
+    "compilerOptions": {
+      "module": "commonjs"
+    },
+    "transpileOnly": true,
+    "files": true
+  }
 }

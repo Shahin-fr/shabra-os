@@ -9,6 +9,7 @@ The Story Type Management API provides CRUD operations for managing story types 
 ## Authentication
 
 All endpoints require:
+
 - Valid NextAuth session
 - User must have "admin" role
 
@@ -21,6 +22,7 @@ All endpoints require:
 Retrieves all story types in the system.
 
 **Response:**
+
 ```json
 [
   {
@@ -33,6 +35,7 @@ Retrieves all story types in the system.
 ```
 
 **Status Codes:**
+
 - `200` - Success
 - `401` - Unauthorized (no valid session)
 - `403` - Forbidden (user doesn't have admin role)
@@ -45,6 +48,7 @@ Retrieves all story types in the system.
 Creates a new story type.
 
 **Request Body:**
+
 ```json
 {
   "name": "Feature Story"
@@ -52,6 +56,7 @@ Creates a new story type.
 ```
 
 **Response:**
+
 ```json
 {
   "id": "clx1234567890",
@@ -62,6 +67,7 @@ Creates a new story type.
 ```
 
 **Status Codes:**
+
 - `201` - Created successfully
 - `400` - Bad request (missing or invalid name)
 - `401` - Unauthorized (no valid session)
@@ -76,6 +82,7 @@ Creates a new story type.
 Retrieves a specific story type by ID.
 
 **Response:**
+
 ```json
 {
   "id": "clx1234567890",
@@ -89,6 +96,7 @@ Retrieves a specific story type by ID.
 ```
 
 **Status Codes:**
+
 - `200` - Success
 - `400` - Bad request (invalid story type ID)
 - `401` - Unauthorized (no valid session)
@@ -103,6 +111,7 @@ Retrieves a specific story type by ID.
 Updates an existing story type.
 
 **Request Body:**
+
 ```json
 {
   "name": "Updated News"
@@ -110,6 +119,7 @@ Updates an existing story type.
 ```
 
 **Response:**
+
 ```json
 {
   "id": "clx1234567890",
@@ -120,6 +130,7 @@ Updates an existing story type.
 ```
 
 **Status Codes:**
+
 - `200` - Updated successfully
 - `400` - Bad request (missing or invalid name, invalid story type ID)
 - `401` - Unauthorized (no valid session)
@@ -135,6 +146,7 @@ Updates an existing story type.
 Deletes a story type. Only works if no stories are using this type.
 
 **Response:**
+
 ```json
 {
   "message": "Story type deleted successfully"
@@ -142,6 +154,7 @@ Deletes a story type. Only works if no stories are using this type.
 ```
 
 **Status Codes:**
+
 - `200` - Deleted successfully
 - `400` - Bad request (invalid story type ID)
 - `401` - Unauthorized (no valid session)
@@ -175,6 +188,7 @@ All endpoints return consistent error responses:
 ## Example Usage
 
 ### Creating a Story Type
+
 ```bash
 curl -X POST /api/story-types \
   -H "Content-Type: application/json" \
@@ -183,6 +197,7 @@ curl -X POST /api/story-types \
 ```
 
 ### Updating a Story Type
+
 ```bash
 curl -X PUT /api/story-types/clx1234567890 \
   -H "Content-Type: application/json" \
@@ -191,6 +206,7 @@ curl -X PUT /api/story-types/clx1234567890 \
 ```
 
 ### Deleting a Story Type
+
 ```bash
 curl -X DELETE /api/story-types/clx1234567890 \
   -H "Cookie: next-auth.session-token=your-session-token"
@@ -222,6 +238,7 @@ model StoryType {
 ## Future Enhancements
 
 Potential future features:
+
 - Bulk operations (create/update/delete multiple story types)
 - Soft delete functionality
 - Story type categories or hierarchies

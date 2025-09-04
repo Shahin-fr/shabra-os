@@ -26,6 +26,7 @@
 We've implemented a mock Prisma client that provides the same API as the real Prisma client. This allows development to continue while the disk space issue is resolved.
 
 ### Files Created:
+
 - `src/lib/prisma-client.ts` - Mock Prisma client implementation
 - `src/lib/prisma.ts` - Main Prisma client export
 - `src/lib/test-prisma.ts` - Test file to verify the setup
@@ -49,7 +50,7 @@ We've implemented a mock Prisma client that provides the same API as the real Pr
 You can test the current mock setup by importing and using the Prisma client:
 
 ```typescript
-import { prisma } from '@/lib/prisma'
+import { prisma } from '@/lib/prisma';
 
 // Test creating a user
 const user = await prisma.user.create({
@@ -58,14 +59,15 @@ const user = await prisma.user.create({
     password: 'hashedpassword',
     firstName: 'Test',
     lastName: 'User',
-    isActive: true
-  }
-})
+    isActive: true,
+  },
+});
 ```
 
 ## 📝 Database Schema Overview
 
 The schema includes the following models:
+
 - **User**: Authentication and user management
 - **UserRole**: Role-based access control
 - **Project**: Project management

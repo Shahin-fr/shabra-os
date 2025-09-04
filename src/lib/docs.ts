@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+
 import matter from 'gray-matter';
 import { remark } from 'remark';
 import html from 'remark-html';
@@ -29,11 +30,11 @@ export function getAllDocs(): DocMetadata[] {
 
   const fileNames = fs.readdirSync(docsDirectory);
   const allDocsData = fileNames
-    .filter((fileName) => fileName.endsWith('.md'))
-    .map((fileName) => {
+    .filter(fileName => fileName.endsWith('.md'))
+    .map(fileName => {
       // Remove ".md" from file name to get slug
       const originalSlug = fileName.replace(/\.md$/, '');
-      
+
       // Create URL-safe slug
       const slug = encodeURIComponent(originalSlug);
 
@@ -64,7 +65,7 @@ export async function getDocBySlug(slug: string): Promise<DocContent | null> {
     // Decode the URL-encoded slug to get the original filename
     const originalSlug = decodeURIComponent(slug);
     const fullPath = path.join(docsDirectory, `${originalSlug}.md`);
-    
+
     // Check if file exists
     if (!fs.existsSync(fullPath)) {
       return null;
@@ -105,10 +106,10 @@ export function getDocsByTag(tag: string): DocMetadata[] {
 export function getAllTags(): string[] {
   const allDocs = getAllDocs();
   const tags = new Set<string>();
-  
+
   allDocs.forEach(doc => {
     doc.tags.forEach(tag => tags.add(tag));
   });
-  
+
   return Array.from(tags).sort();
 }

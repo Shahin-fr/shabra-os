@@ -1,43 +1,59 @@
-"use client";
+'use client';
 
-import { Header } from "./Header";
-import { Sidebar } from "./Sidebar";
-import { GlobalStatusIndicator } from "@/components/ui/GlobalStatusIndicator";
-import dynamic from "next/dynamic";
+import React from 'react';
 
-// Dynamically import AmbientBubble to improve chunk loading
-const AmbientBubble = dynamic(() => import("@/components/ui/AmbientBubble").then(mod => ({ default: mod.AmbientBubble })), {
-  ssr: false,
-  loading: () => null
-});
+import { useAuth } from '@/hooks/useAuth';
+import { useMobile } from '@/hooks/useResponsive';
+
+import { Header } from './Header';
+import { Sidebar } from './Sidebar';
+import { MobileBottomNavigation } from './MobileBottomNavigation';
+import { FloatingActionButton } from './FloatingActionButton';
+import { OfflineIndicator } from '@/components/ui/offline-indicator';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
 }
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
+  const { user } = useAuth();
+  const isMobile = useMobile();
+
   return (
-    <div className="relative flex min-h-screen flex-col bg-gradient-to-br from-slate-50 via-pink-50/50 to-purple-50/30 overflow-hidden">
-      {/* Optimized Ambient Bubbles Background - Reduced from 14 to 6 for better performance */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <AmbientBubble size={120} initialX="15%" initialY="20%" delay={0} duration={8} parallaxSpeed={0.4} />
-        <AmbientBubble size={160} initialX="80%" initialY="30%" delay={1} duration={10} parallaxSpeed={0.8} />
-        <AmbientBubble size={100} initialX="75%" initialY="65%" delay={2} duration={7} parallaxSpeed={0.6} />
-        <AmbientBubble size={140} initialX="25%" initialY="75%" delay={0.5} duration={12} parallaxSpeed={0.5} />
-        <AmbientBubble size={130} initialX="85%" initialY="85%" delay={1.5} duration={9} parallaxSpeed={0.7} />
-        <AmbientBubble size={110} initialX="10%" initialY="90%" delay={3} duration={8} parallaxSpeed={0.9} />
-      </div>
-      
+    <div className='relative flex flex-col bg-gradient-to-br from-slate-50 via-pink-50/50 to-purple-50/30'>
+      <OfflineIndicator position='top' />
       <Header />
       <Sidebar />
-      <main className="relative md:mr-64 p-6 mt-16 z-5">
-        <div className="relative z-5">
-          {children}
-        </div>
+
+      {/* Main Content */}
+      <main
+        className={cn(
+          'relative flex-1 transition-all duration-300 ease-in-out',
+          'p-4 sm:p-6 mt-16 z-5',
+          // Desktop sidebar spacing - fixed width for icon-only sidebar
+          !isMobile ? 'lg:mr-20' : '',
+          // Mobile full width with no right margin and bottom padding for navigation
+          isMobile && 'w-full mr-0 pb-20'
+        )}
+      >
+        <div className='relative z-5 max-w-7xl mx-auto'>{children}</div>
       </main>
-      
-      {/* Global Status Indicator */}
-      <GlobalStatusIndicator />
+
+      {/* Mobile Navigation Components */}
+      {isMobile && (
+        <>
+          <MobileBottomNavigation />
+          {/* Only show FAB for non-employee roles (MANAGER, ADMIN) */}
+          {user?.roles && !user.roles.includes('EMPLOYEE') && (
+            <FloatingActionButton />
+          )}
+        </>
+      )}
     </div>
   );
+}
+
+// Utility function for conditional classes
+function cn(...classes: (string | undefined | null | false)[]): string {
+  return classes.filter(Boolean).join(' ');
 }

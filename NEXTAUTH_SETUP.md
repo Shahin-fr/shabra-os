@@ -46,6 +46,7 @@ openssl rand -base64 32
 ## Session Data
 
 The session object contains:
+
 - `user.id`: User's unique identifier
 - `user.email`: User's email address
 - `user.name`: User's full name (firstName + lastName)

@@ -1,43 +1,167 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next';
 
+// Bundle analyzer configuration
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+});
+
+// 🚨 SECURITY: Production builds MUST enforce code quality checks
+// NEVER bypass TypeScript or ESLint validation in production
 const nextConfig: NextConfig = {
-  turbopack: {
-    rules: {
-      '*.svg': {
-        loaders: ['@svgr/webpack'],
-        as: '*.js',
-      },
-    },
-  },
+  // Essential experimental features for performance
   experimental: {
-    optimizePackageImports: ['framer-motion', 'lucide-react'],
+    optimizePackageImports: [
+      'lucide-react',
+      '@radix-ui/react-avatar',
+      '@radix-ui/react-dialog',
+      '@radix-ui/react-dropdown-menu',
+      '@radix-ui/react-select',
+      '@radix-ui/react-popover',
+      '@radix-ui/react-checkbox',
+      '@radix-ui/react-label',
+      '@radix-ui/react-slot',
+    ],
   },
+
+  // Essential compiler options
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
-  // Add webpack configuration for better chunk splitting
+
+  // Performance optimizations
+  poweredByHeader: false,
+  compress: true,
+
+  // Enhanced webpack configuration for performance
   webpack: (config, { dev, isServer }) => {
+    // Optimize chunk splitting for production
     if (!isServer && !dev) {
-      // Optimize chunk splitting for production
       config.optimization.splitChunks = {
         chunks: 'all',
         cacheGroups: {
+          // Vendor chunk for all node_modules
           vendor: {
             test: /[\\/]node_modules[\\/]/,
             name: 'vendors',
             chunks: 'all',
+            priority: 10,
+            enforce: true,
           },
+          // Separate chunk for framer-motion
           framer: {
-            test: /[\\/]node_modules[\\/]framer-motion[\\/]/,
+            test: /[\\/]framer-motion[\\/]/,
             name: 'framer-motion',
             chunks: 'all',
-            priority: 10,
+            priority: 20,
+            enforce: true,
+          },
+          // Separate chunk for Radix UI components
+          radix: {
+            test: /[\\/]@radix-ui[\\/]/,
+            name: 'radix-ui',
+            chunks: 'all',
+            priority: 15,
+            enforce: true,
+          },
+          // Separate chunk for recharts
+          recharts: {
+            test: /[\\/]recharts[\\/]/,
+            name: 'recharts',
+            chunks: 'all',
+            priority: 15,
+            enforce: true,
+          },
+          // Separate chunk for @dnd-kit
+          dndkit: {
+            test: /[\\/]@dnd-kit[\\/]/,
+            name: 'dnd-kit',
+            chunks: 'all',
+            priority: 15,
+            enforce: true,
+          },
+          // Separate chunk for @tanstack
+          tanstack: {
+            test: /[\\/]@tanstack[\\/]/,
+            name: 'tanstack',
+            chunks: 'all',
+            priority: 15,
+            enforce: true,
+          },
+          // Common chunk for shared code
+          common: {
+            name: 'common',
+            minChunks: 2,
+            chunks: 'all',
+            priority: 5,
+            enforce: true,
           },
         },
       };
     }
+
     return config;
   },
+
+  // Essential headers for security and performance
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+          {
+            key: 'X-Frame-Options',
+            value: 'DENY',
+          },
+          {
+            key: 'X-XSS-Protection',
+            value: '1; mode=block',
+          },
+          // Performance headers
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      {
+        source: '/api/(.*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'no-store, no-cache, must-revalidate, proxy-revalidate',
+          },
+        ],
+      },
+    ];
+  },
+
+  // Optimize images
+  images: {
+    formats: ['image/webp'],
+    minimumCacheTTL: 60,
+  },
+
+  // Build output configuration
+  output: 'standalone',
+  distDir: '.next',
+
+  // TypeScript configuration - NEVER ignore build errors in production
+  typescript: {
+    ignoreBuildErrors: false, // ✅ Always enforce TypeScript checks
+  },
+
+  // ESLint configuration - NEVER ignore ESLint during builds
+  eslint: {
+    ignoreDuringBuilds: false, // ✅ Always enforce code quality checks
+  },
+
+  // Trailing slash configuration
+  trailingSlash: false,
 };
 
-export default nextConfig;
+// Export with bundle analyzer
+export default withBundleAnalyzer(nextConfig);

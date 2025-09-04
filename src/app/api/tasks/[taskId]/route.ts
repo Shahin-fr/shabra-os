@@ -1,5 +1,15 @@
-import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { NextRequest, NextResponse } from 'next/server';
+
+import {
+  createValidationErrorResponse,
+  createNotFoundErrorResponse,
+  createServerErrorResponse,
+  createSuccessResponse,
+  getHttpStatusForErrorCode,
+  HTTP_STATUS_CODES,
+} from '@/lib/api/response-utils';
+import { prisma } from '@/lib/prisma';
+import { auth } from '@/auth';
 
 export async function PATCH(
   request: NextRequest,
@@ -11,45 +21,139 @@ export async function PATCH(
     const { status } = body;
 
     // Validate required fields
-    if (!status || typeof status !== "string") {
-      return NextResponse.json(
-        { error: "وضعیت وظیفه الزامی است" },
-        { status: 400 }
+    if (!status || typeof status !== 'string') {
+      const errorResponse = createValidationErrorResponse(
+        'وضعیت وظیفه الزامی است'
       );
+      return NextResponse.json(errorResponse, {
+        status: getHttpStatusForErrorCode(errorResponse.error.code),
+      });
     }
 
     // Validate status values
-    const validStatuses = ["PENDING", "IN_PROGRESS", "COMPLETED", "CANCELLED"];
+    const validStatuses = ['Todo', 'InProgress', 'Done'];
     if (!validStatuses.includes(status)) {
-      return NextResponse.json(
-        { error: "وضعیت نامعتبر است" },
-        { status: 400 }
-      );
+      const errorResponse = createValidationErrorResponse('وضعیت نامعتبر است');
+      return NextResponse.json(errorResponse, {
+        status: getHttpStatusForErrorCode(errorResponse.error.code),
+      });
     }
 
     // Verify task exists
     const existingTask = await prisma.task.findUnique({
       where: { id: taskId },
+      include: {
+        creator: true,
+        assignee: true,
+      },
     });
 
     if (!existingTask) {
-      return NextResponse.json(
-        { error: "وظیفه مورد نظر یافت نشد" },
-        { status: 404 }
-      );
+      const errorResponse = createNotFoundErrorResponse();
+      return NextResponse.json(errorResponse, {
+        status: getHttpStatusForErrorCode(errorResponse.error.code),
+      });
     }
 
     // Update the task status
     const updatedTask = await prisma.task.update({
       where: { id: taskId },
-      data: { status: status as any },
+      data: {
+        status: status as 'Todo' | 'InProgress' | 'Done',
+      },
+      include: {
+        creator: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+          },
+        },
+        assignee: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+          },
+        },
+        project: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
     });
 
     return NextResponse.json(updatedTask);
-  } catch {
-    return NextResponse.json(
-      { error: "خطا در بروزرسانی وظیفه" },
-      { status: 500 }
-    );
+  } catch (error) {
+    console.error('Update task status error:', error);
+    const errorResponse = createServerErrorResponse('خطا در بروزرسانی وظیفه');
+    return NextResponse.json(errorResponse, {
+      status: getHttpStatusForErrorCode(errorResponse.error.code),
+    });
+  }
+}
+
+export async function DELETE(
+  _request: NextRequest,
+  { params }: { params: Promise<{ taskId: string }> }
+) {
+  try {
+    const { taskId } = await params;
+
+    // Get current user session
+    const session = await auth();
+    if (!session?.user?.id) {
+      const errorResponse = createValidationErrorResponse('Unauthorized');
+      return NextResponse.json(errorResponse, {
+        status: getHttpStatusForErrorCode(errorResponse.error.code),
+      });
+    }
+
+    // Verify task exists and user has permission to delete it
+    const existingTask = await prisma.task.findUnique({
+      where: { id: taskId },
+      include: {
+        creator: true,
+      },
+    });
+
+    if (!existingTask) {
+      const errorResponse = createNotFoundErrorResponse();
+      return NextResponse.json(errorResponse, {
+        status: getHttpStatusForErrorCode(errorResponse.error.code),
+      });
+    }
+
+    // Check if user is the creator or has admin/manager role
+    const userRoles = session.user.roles || [];
+    const isCreator = existingTask.createdBy === session.user.id;
+    const isManagerOrAdmin = userRoles.includes('MANAGER') || userRoles.includes('ADMIN');
+
+    if (!isCreator && !isManagerOrAdmin) {
+      const errorResponse = createValidationErrorResponse('شما مجاز به حذف این وظیفه نیستید');
+      return NextResponse.json(errorResponse, {
+        status: getHttpStatusForErrorCode(errorResponse.error.code),
+      });
+    }
+
+    // Delete the task
+    await prisma.task.delete({
+      where: { id: taskId },
+    });
+
+    const successResponse = createSuccessResponse({ message: 'وظیفه با موفقیت حذف شد' });
+    return NextResponse.json(successResponse, {
+      status: HTTP_STATUS_CODES.OK,
+    });
+  } catch (error) {
+    console.error('Delete task error:', error);
+    const errorResponse = createServerErrorResponse('خطا در حذف وظیفه');
+    return NextResponse.json(errorResponse, {
+      status: getHttpStatusForErrorCode(errorResponse.error.code),
+    });
   }
 }

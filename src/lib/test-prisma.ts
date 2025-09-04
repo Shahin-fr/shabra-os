@@ -1,28 +1,34 @@
-import { prisma } from './prisma'
+import { prisma } from './prisma';
 
-export async function testPrismaClient() {
+import { logDB, logError } from '@/lib/logger';
+
+export async function testPrismaConnection() {
   try {
-    await prisma.$connect()
-    
-    // Test creating a user
-    await prisma.user.create({
-      data: {
-        email: 'test@example.com',
-        password: 'hashedpassword',
-        firstName: 'Test',
-        lastName: 'User',
-        isActive: true
+    logDB('Testing Prisma connection...');
+
+    // Test basic connection
+    await prisma.$connect();
+    logDB('Prisma connection successful');
+
+    // Test a simple query
+    const result = await prisma.$queryRaw`SELECT 1 as test`;
+    logDB('Database query successful', { result });
+
+    // Test user count query
+    const userCount = await prisma.user.count();
+    logDB('User count query successful', { userCount });
+
+    logDB('All tests passed!');
+
+    await prisma.$disconnect();
+  } catch (error) {
+    logError(
+      'Connection test failed',
+      error instanceof Error ? error : new Error(String(error)),
+      {
+        context: 'prisma-connection-test',
       }
-    })
-    
-    // Test finding the user
-    await prisma.user.findUnique({
-      where: { email: 'test@example.com' }
-    })
-    
-    await prisma.$disconnect()
-    return true
-  } catch {
-    return false
+    );
+    throw error;
   }
 }

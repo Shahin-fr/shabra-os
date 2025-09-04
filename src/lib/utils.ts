@@ -1,15 +1,21 @@
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { type ClassValue, clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
-/**
- * Check if a user has admin role
- * @param roles - Array of user roles
- * @returns boolean indicating if user has admin role
- */
-export function isAdmin(roles: string[]): boolean {
-  return roles.includes("admin");
+export function isAdmin(role: string | string[]): boolean {
+  if (Array.isArray(role)) {
+    return role.includes('ADMIN') || role.includes('admin');
+  }
+  return role === 'ADMIN' || role === 'admin';
+}
+
+// Function to show status messages in the header
+export function showStatusMessage(message: string, duration: number = 3000) {
+  const event = new CustomEvent('showStatusMessage', {
+    detail: { message, duration },
+  });
+  window.dispatchEvent(event);
 }

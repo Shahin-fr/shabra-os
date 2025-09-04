@@ -5,6 +5,7 @@ This document describes the TanStack Query (React Query) integration in the Shab
 ## Overview
 
 TanStack Query has been integrated to provide:
+
 - **Efficient data fetching** with automatic caching
 - **Background updates** and synchronization
 - **Error handling** and retry logic
@@ -15,6 +16,7 @@ TanStack Query has been integrated to provide:
 ## Installation
 
 The following packages have been installed:
+
 ```bash
 npm install @tanstack/react-query @tanstack/react-query-devtools
 ```
@@ -24,6 +26,7 @@ npm install @tanstack/react-query @tanstack/react-query-devtools
 ### 1. Query Client Provider
 
 The Query Client is configured in `src/app/providers.tsx` with the following defaults:
+
 - **Stale Time**: 1 minute (queries are considered fresh for 1 minute)
 - **Retry**: 1 attempt on failure
 - **DevTools**: Disabled for clean UI
@@ -34,33 +37,33 @@ Query keys are organized in a hierarchical structure for better cache management
 
 ```typescript
 // Projects
-projectsKeys.all = ["projects"]
-projectsKeys.lists() = ["projects", "list"]
-projectsKeys.list(filters) = ["projects", "list", { filters }]
-projectsKeys.details() = ["projects", "detail"]
-projectsKeys.detail(id) = ["projects", "detail", id]
+projectsKeys.all = ['projects'];
+projectsKeys.lists() = ['projects', 'list'];
+projectsKeys.list(filters) = ['projects', 'list', { filters }];
+projectsKeys.details() = ['projects', 'detail'];
+projectsKeys.detail(id) = ['projects', 'detail', id];
 
 // Tasks
-tasksKeys.all = ["tasks"]
-tasksKeys.lists() = ["tasks", "list"]
-tasksKeys.list(filters) = ["tasks", "list", { filters }]
-tasksKeys.details() = ["tasks", "detail"]
-tasksKeys.detail(id) = ["tasks", "detail", id]
+tasksKeys.all = ['tasks'];
+tasksKeys.lists() = ['tasks', 'list'];
+tasksKeys.list(filters) = ['tasks', 'list', { filters }];
+tasksKeys.details() = ['tasks', 'detail'];
+tasksKeys.detail(id) = ['tasks', 'detail', id];
 
 // Stories
-storiesKeys.all = ["stories"]
-storiesKeys.lists() = ["stories", "list"]
-storiesKeys.list(filters) = ["stories", "list", { filters }]
-storiesKeys.details() = ["stories", "detail"]
-storiesKeys.detail(id) = ["stories", "detail", id]
-storiesKeys.byDay(day) = ["stories", "day", day]
+storiesKeys.all = ['stories'];
+storiesKeys.lists() = ['stories', 'list'];
+storiesKeys.list(filters) = ['stories', 'list', { filters }];
+storiesKeys.details() = ['stories', 'detail'];
+storiesKeys.detail(id) = ['stories', 'detail', id];
+storiesKeys.byDay(day) = ['stories', 'day', day];
 
 // Story Types
-storyTypesKeys.all = ["storyTypes"]
-storyTypesKeys.lists() = ["storyTypes", "list"]
-storyTypesKeys.list(filters) = ["storyTypes", "list", { filters }]
-storyTypesKeys.details() = ["storyTypes", "detail"]
-storyTypesKeys.detail(id) = ["storyTypes", "detail", id]
+storyTypesKeys.all = ['storyTypes'];
+storyTypesKeys.lists() = ['storyTypes', 'list'];
+storyTypesKeys.list(filters) = ['storyTypes', 'list', { filters }];
+storyTypesKeys.details() = ['storyTypes', 'detail'];
+storyTypesKeys.detail(id) = ['storyTypes', 'detail', id];
 ```
 
 ## Usage Examples
@@ -68,13 +71,17 @@ storyTypesKeys.detail(id) = ["storyTypes", "detail", id]
 ### Basic Query
 
 ```typescript
-import { useQuery } from "@tanstack/react-query";
-import { fetchProjects, projectsKeys } from "@/lib/queries";
+import { useQuery } from '@tanstack/react-query';
+import { fetchProjects, projectsKeys } from '@/lib/queries';
 
-const { data: projects, isLoading, isError } = useQuery({
+const {
+  data: projects,
+  isLoading,
+  isError,
+} = useQuery({
   queryKey: projectsKeys.all,
   queryFn: fetchProjects,
-  enabled: status === "authenticated",
+  enabled: status === 'authenticated',
 });
 ```
 
@@ -91,24 +98,29 @@ const { data: project } = useQuery({
 ### Date-based Query (Stories)
 
 ```typescript
-const { data: stories, isLoading, isError } = useQuery({
-  queryKey: storiesKeys.byDay(format(selectedDate, "yyyy-MM-dd")),
-  queryFn: () => fetchStoriesByDay(format(selectedDate, "yyyy-MM-dd")),
+const {
+  data: stories,
+  isLoading,
+  isError,
+} = useQuery({
+  queryKey: storiesKeys.byDay(format(selectedDate, 'yyyy-MM-dd')),
+  queryFn: () => fetchStoriesByDay(format(selectedDate, 'yyyy-MM-dd')),
 });
 ```
 
 ### Mutations with Cache Invalidation
 
 ```typescript
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 const queryClient = useQueryClient();
 
 const createProject = useMutation({
-  mutationFn: (newProject) => fetch("/api/projects", {
-    method: "POST",
-    body: JSON.stringify(newProject),
-  }),
+  mutationFn: newProject =>
+    fetch('/api/projects', {
+      method: 'POST',
+      body: JSON.stringify(newProject),
+    }),
   onSuccess: () => {
     // Invalidate and refetch projects
     queryClient.invalidateQueries({ queryKey: projectsKeys.all });
@@ -122,35 +134,44 @@ const createProject = useMutation({
 const updateStoryOrderMutation = useMutation({
   mutationFn: async ({ storyId, order }) => {
     const response = await fetch(`/api/stories/${storyId}`, {
-      method: "PATCH",
+      method: 'PATCH',
       body: JSON.stringify({ order }),
     });
-    if (!response.ok) throw new Error("Failed to update story order");
+    if (!response.ok) throw new Error('Failed to update story order');
     return response.json();
   },
   onMutate: async ({ storyId, order }) => {
     // Cancel outgoing refetches
-    await queryClient.cancelQueries({ queryKey: storiesKeys.byDay(selectedDate) });
-    
+    await queryClient.cancelQueries({
+      queryKey: storiesKeys.byDay(selectedDate),
+    });
+
     // Snapshot previous value
-    const previousStories = queryClient.getQueryData(storiesKeys.byDay(selectedDate));
-    
-    // Optimistically update
-    queryClient.setQueryData(storiesKeys.byDay(selectedDate), (old) => 
-      old?.map(story => story.id === storyId ? { ...story, order } : story)
+    const previousStories = queryClient.getQueryData(
+      storiesKeys.byDay(selectedDate)
     );
-    
+
+    // Optimistically update
+    queryClient.setQueryData(storiesKeys.byDay(selectedDate), old =>
+      old?.map(story => (story.id === storyId ? { ...story, order } : story))
+    );
+
     return { previousStories };
   },
   onError: (err, variables, context) => {
     // Rollback on error
     if (context?.previousStories) {
-      queryClient.setQueryData(storiesKeys.byDay(selectedDate), context.previousStories);
+      queryClient.setQueryData(
+        storiesKeys.byDay(selectedDate),
+        context.previousStories
+      );
     }
   },
   onSettled: () => {
     // Always refetch to ensure sync
-    queryClient.invalidateQueries({ queryKey: storiesKeys.byDay(selectedDate) });
+    queryClient.invalidateQueries({
+      queryKey: storiesKeys.byDay(selectedDate),
+    });
   },
 });
 ```
@@ -174,12 +195,14 @@ src/
 ## Refactored Components
 
 ### 1. Projects Page (`/projects`)
+
 - ✅ Refactored to use TanStack Query
 - ✅ Automatic caching and background updates
 - ✅ Proper error handling and loading states
 - ✅ Clean component without manual state management
 
 ### 2. Storyboard Page (`/storyboard`)
+
 - ✅ Refactored to use TanStack Query
 - ✅ Two separate queries: stories by date and story types
 - ✅ Automatic refetching when date changes
@@ -218,9 +241,10 @@ src/
 ## Mutation Patterns
 
 ### Basic Mutation
+
 ```typescript
 const mutation = useMutation({
-  mutationFn: (data) => apiCall(data),
+  mutationFn: data => apiCall(data),
   onSuccess: () => {
     queryClient.invalidateQueries({ queryKey: relatedQueryKey });
   },
@@ -228,27 +252,28 @@ const mutation = useMutation({
 ```
 
 ### Optimistic Update Mutation (Improved)
+
 ```typescript
 const mutation = useMutation({
-  mutationFn: (data) => apiCall(data),
-  onMutate: async (variables) => {
+  mutationFn: data => apiCall(data),
+  onMutate: async variables => {
     // Cancel outgoing refetches
     await queryClient.cancelQueries({ queryKey: queryKey });
-    
+
     // Snapshot previous value
     const previousData = queryClient.getQueryData(queryKey);
-    
+
     // Optimistically update
     queryClient.setQueryData(queryKey, optimisticData);
-    
+
     return { previousData };
   },
   onSuccess: () => {
     // Only invalidate on success to confirm optimistic update
     queryClient.invalidateQueries({ queryKey: queryKey });
-    
+
     // Show success message
-    setSuccessMessage("Operation completed successfully!");
+    setSuccessMessage('Operation completed successfully!');
     setShowSuccess(true);
   },
   onError: (err, variables, context) => {
@@ -256,9 +281,9 @@ const mutation = useMutation({
     if (context?.previousData) {
       queryClient.setQueryData(queryKey, context.previousData);
     }
-    
+
     // Show error message
-    showError("Operation failed. Please try again.");
+    showError('Operation failed. Please try again.');
   },
 });
 ```
@@ -274,6 +299,7 @@ const mutation = useMutation({
 ## Next Steps
 
 Consider implementing TanStack Query in other components:
+
 - Tasks page
 - User management
 - Any other data-fetching components

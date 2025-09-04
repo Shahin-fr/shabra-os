@@ -4,205 +4,62 @@ import bcrypt from 'bcryptjs';
 const prisma = new PrismaClient();
 
 async function main() {
-  // Hash the password
-  const password = 'password123';
-  const hashedPassword = await bcrypt.hash(password, 12);
+  console.log('Starting database seeding...');
 
-  // Create admin user
-  const adminUser = await prisma.user.upsert({
+  // Check if admin user already exists
+  const existingAdmin = await prisma.user.findUnique({
     where: { email: 'admin@shabra.com' },
-    update: {},
-    create: {
-      email: 'admin@shabra.com',
-      password: hashedPassword,
-      firstName: 'مدیر',
-      lastName: 'سیستم',
-      isActive: true,
-    },
   });
 
-  // Create admin role for the user
-  await prisma.userRole.upsert({
-    where: {
-      userId_role: {
-        userId: adminUser.id,
-        role: 'admin',
+  if (!existingAdmin) {
+    console.log('Creating admin user...');
+    const hashedPassword = await bcrypt.hash('admin-password-123', 12);
+
+    await prisma.user.create({
+      data: {
+        email: 'admin@shabra.com',
+        firstName: 'Admin',
+        lastName: 'User',
+        password: hashedPassword,
+        roles: ['ADMIN'],
+        isActive: true,
       },
-    },
-    update: {},
-    create: {
-      userId: adminUser.id,
-      role: 'admin',
-    },
-  });
+    });
+    console.log('Admin user created successfully');
+  } else {
+    console.log('Admin user already exists');
+  }
 
-  // Create a regular user
-  const regularUser = await prisma.user.upsert({
+  // Check if regular user already exists
+  const existingUser = await prisma.user.findUnique({
     where: { email: 'user@shabra.com' },
-    update: {},
-    create: {
-      email: 'user@shabra.com',
-      password: hashedPassword, // Same password for testing
-      firstName: 'کاربر',
-      lastName: 'عادی',
-      isActive: true,
-    },
   });
 
-  // Create user role for the regular user
-  await prisma.userRole.upsert({
-    where: {
-      userId_role: {
-        userId: regularUser.id,
-        role: 'employee',
-      },
-    },
-    update: {},
-    create: {
-      userId: regularUser.id,
-      role: 'employee',
-    },
-  });
+  if (!existingUser) {
+    console.log('Creating regular user...');
+    const hashedPassword = await bcrypt.hash('user-password-123', 12);
 
-  // Create sample projects
-  const projects = [
-    {
-      name: 'توسعه وب سایت شرکت',
-      description: 'طراحی و توسعه وب سایت جدید برای شرکت با استفاده از تکنولوژی‌های مدرن',
-      status: 'active',
-    },
-    {
-      name: 'سیستم مدیریت مشتریان',
-      description: 'پیاده‌سازی سیستم CRM برای مدیریت بهتر مشتریان و فروش',
-      status: 'active',
-    },
-    {
-      name: 'اپلیکیشن موبایل',
-      description: 'توسعه اپلیکیشن موبایل برای iOS و Android',
-      status: 'on-hold',
-    },
-    {
-      name: 'بهینه‌سازی پایگاه داده',
-      description: 'بهینه‌سازی عملکرد پایگاه داده و بهبود سرعت سیستم',
-      status: 'completed',
-    },
-  ];
-
-  for (const projectData of projects) {
-    await prisma.project.create({
-      data: projectData,
-    });
-  }
-
-  // Create sample tasks for the first project
-  const firstProject = await prisma.project.findFirst({
-    where: { name: 'توسعه وب سایت شرکت' }
-  });
-
-  if (firstProject) {
-    const tasks = [
-      {
-        title: 'طراحی رابط کاربری',
-        description: 'طراحی UI/UX برای صفحات اصلی سایت',
-        status: 'PENDING' as const,
-        priority: 'high',
-        projectId: firstProject.id,
-      },
-      {
-        title: 'پیاده‌سازی فرانت‌اند',
-        description: 'توسعه صفحات با React و Next.js',
-        status: 'IN_PROGRESS' as const,
-        priority: 'high',
-        projectId: firstProject.id,
-      },
-      {
-        title: 'تست عملکرد',
-        description: 'تست سرعت و عملکرد سایت',
-        status: 'COMPLETED' as const,
-        priority: 'medium',
-        projectId: firstProject.id,
-      },
-      {
-        title: 'بهینه‌سازی SEO',
-        description: 'بهینه‌سازی برای موتورهای جستجو',
-        status: 'PENDING' as const,
-        priority: 'medium',
-        projectId: firstProject.id,
-      },
-    ];
-
-    for (const taskData of tasks) {
-      await prisma.task.create({
-        data: taskData,
-      });
-    }
-  }
-
-  // Create comprehensive story types with icon-friendly names
-  const storyTypes = [
-    // Morning/Wellness
-    "سلام و صبح بخیر",
-    "وارم آپ صبحگاهی",
-    "انرژی مثبت",
-    
-    // Product & Business
-    "معرفی محصول",
-    "خدمات پیرسینگ",
-    "فضای داخلی فروشگاه",
-    "اعلام ساعت کاری",
-    "اتمام موجودی",
-    "پیشنهاد ویژه",
-    
-    // Community & Events
-    "رویداد ویژه",
-    "جشنواره",
-    "کارگاه آموزشی",
-    
-    // Lifestyle & Inspiration
-    "نکته روز",
-    "ایده خلاقانه",
-    "موفقیت",
-    "انگیزه",
-    
-    // Coffee & Break
-    "قهوه و استراحت",
-    "زنگ تفریح",
-    "گپ دوستانه",
-    
-    // Music & Entertainment
-    "موسیقی روز",
-    "سرگرمی",
-    "خنده و شادی",
-    
-    // Visual & Creative
-    "عکس روز",
-    "طراحی خلاقانه",
-    "هنر و زیبایی",
-    
-    // Location & Time
-    "مکان جدید",
-    "سفر و ماجراجویی",
-    "زمان طلایی",
-    
-    // Goals & Achievement
-    "هدف روزانه",
-    "دستاورد",
-    "پیشرفت"
-  ];
-
-  for (const storyTypeName of storyTypes) {
-    await prisma.storyType.upsert({
-      where: { name: storyTypeName },
-      update: {},
-      create: {
-        name: storyTypeName,
+    await prisma.user.create({
+      data: {
+        email: 'user@shabra.com',
+        firstName: 'Regular',
+        lastName: 'User',
+        password: hashedPassword,
+        roles: ['EMPLOYEE'],
+        isActive: true,
       },
     });
+    console.log('Regular user created successfully');
+  } else {
+    console.log('Regular user already exists');
   }
+
+  console.log('Database seeding completed!');
 }
 
 main()
-  .catch(() => {
+  .catch(e => {
+    console.error('Error during seeding:', e);
     process.exit(1);
   })
   .finally(async () => {

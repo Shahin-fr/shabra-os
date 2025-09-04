@@ -4,6 +4,18 @@ export interface StoryType {
   icon?: string;
 }
 
+export interface StoryIdea {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  storyType: string; // High-level story type this idea belongs to
+  template: string;
+  guidelines: string;
+  icon?: string;
+  isActive: boolean;
+}
+
 export interface Story {
   id: string;
   title: string;
@@ -12,7 +24,10 @@ export interface Story {
   link?: string;
   day: string; // This comes as ISO string from API
   order: number;
-  status: "DRAFT" | "READY" | "PUBLISHED";
+  status: 'DRAFT' | 'READY' | 'PUBLISHED';
+  customTitle?: string; // Custom title for specific day
+  type?: string; // High-level story type for quick planning
+  ideaId?: string; // Specific idea from idea bank
   storyType?: {
     id: string;
     name: string;
@@ -22,4 +37,5 @@ export interface Story {
     id: string;
     name: string;
   };
+  storyIdea?: StoryIdea;
 }

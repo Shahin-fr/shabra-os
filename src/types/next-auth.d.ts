@@ -1,12 +1,13 @@
-// NextAuth type extensions
+import NextAuth from 'next-auth';
 
-declare module "next-auth" {
+declare module 'next-auth' {
   interface Session {
     user: {
       id: string;
       email: string;
       name: string;
-      role: string[];
+      avatar?: string;
+      roles: string[];
     };
   }
 
@@ -14,12 +15,15 @@ declare module "next-auth" {
     id: string;
     email: string;
     name: string;
-    role: string[];
+    avatar?: string;
+    roles: string[];
   }
 }
 
-declare module "next-auth/jwt" {
+declare module 'next-auth/jwt' {
   interface JWT {
-    role: string[];
+    id: string;
+    roles: string[];
+    avatar?: string;
   }
 }

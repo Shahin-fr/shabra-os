@@ -1,8 +1,5 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { StorySlot } from "./StorySlot";
-import { motion } from "framer-motion";
 import {
   DndContext,
   closestCenter,
@@ -17,6 +14,10 @@ import {
   sortableKeyboardCoordinates,
   rectSortingStrategy,
 } from '@dnd-kit/sortable';
+import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
+
+import { StorySlot } from './StorySlot';
 
 interface Story {
   id: string;
@@ -26,7 +27,7 @@ interface Story {
   link?: string;
   day: string;
   order: number;
-  status: "DRAFT" | "READY" | "PUBLISHED";
+  status: 'DRAFT' | 'READY' | 'PUBLISHED';
   storyType?: {
     id: string;
     name: string;
@@ -41,20 +42,22 @@ interface StoryCanvasProps {
   stories: Story[];
   selectedSlotIndex: number | null;
   onSlotClick: (_index: number) => void;
+  onSlotDoubleClick?: (_index: number) => void;
   onReorderStories: (_fromIndex: number, _toIndex: number) => void;
   onClearSlot?: (_storyId: string) => void;
   isLoading?: boolean;
   slotCount: number;
 }
 
-export function StoryCanvas({ 
-  stories, 
-  selectedSlotIndex, 
-  onSlotClick, 
+export function StoryCanvas({
+  stories,
+  selectedSlotIndex,
+  onSlotClick,
+  onSlotDoubleClick,
   onReorderStories,
   onClearSlot,
   isLoading = false,
-  slotCount
+  slotCount,
 }: StoryCanvasProps) {
   // Fix hydration error by ensuring dnd-kit only renders on client
   const [isMounted, setIsMounted] = useState(false);
@@ -89,14 +92,15 @@ export function StoryCanvas({
   // Show loading state during hydration
   if (!isMounted) {
     return (
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+      <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6'>
         {slots.map((story, index) => (
-          <div key={story?.id || `empty-${index}`}>
+          <div key={`slot-${index}`}>
             <StorySlot
               story={story || undefined}
               index={index}
               isSelected={selectedSlotIndex === index}
               onClick={() => onSlotClick(index)}
+              onDoubleClick={() => onSlotDoubleClick?.(index)}
               onClearSlot={onClearSlot}
               isLoading={isLoading && selectedSlotIndex === index}
             />
@@ -107,28 +111,32 @@ export function StoryCanvas({
   }
 
   return (
-    <div className="space-y-6">
+    <div className='space-y-6'>
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
         onDragEnd={handleDragEnd}
       >
-        <SortableContext items={slots.map((_, index) => index.toString())} strategy={rectSortingStrategy}>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+        <SortableContext
+          items={slots.map((_, index) => index.toString())}
+          strategy={rectSortingStrategy}
+        >
+          <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6'>
             {slots.map((story, index) => (
               <motion.div
-                key={story?.id || `empty-${index}`}
+                key={`slot-${index}`}
                 variants={{
                   hidden: { opacity: 0, y: 20, scale: 0.9 },
-                  visible: { opacity: 1, y: 0, scale: 1 }
+                  visible: { opacity: 1, y: 0, scale: 1 },
                 }}
-                transition={{ duration: 0.4, ease: "easeOut" }}
+                transition={{ duration: 0.4, ease: 'easeOut' }}
               >
                 <StorySlot
                   story={story || undefined}
                   index={index}
                   isSelected={selectedSlotIndex === index}
                   onClick={() => onSlotClick(index)}
+                  onDoubleClick={() => onSlotDoubleClick?.(index)}
                   onClearSlot={onClearSlot}
                   isLoading={isLoading && selectedSlotIndex === index}
                 />

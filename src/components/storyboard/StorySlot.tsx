@@ -1,19 +1,16 @@
-"use client";
+'use client';
 
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { 
-  Plus, 
-  FileText, 
-  Image, 
-  Trash2
-} from "lucide-react";
-import { cn } from "@/lib/utils";
+import React from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { motion } from "framer-motion";
-import { DynamicLucideIcon } from "@/components/ui/DynamicLucideIcon";
+import { motion } from 'framer-motion';
+import { Plus, FileText, Image, Trash2 } from 'lucide-react';
+
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { DynamicLucideIcon } from '@/components/ui/DynamicLucideIcon';
+import { cn } from '@/lib/utils';
 
 interface Story {
   id: string;
@@ -23,7 +20,7 @@ interface Story {
   link?: string;
   day: string;
   order: number;
-  status: "DRAFT" | "READY" | "PUBLISHED";
+  status: 'DRAFT' | 'READY' | 'PUBLISHED';
   storyType?: {
     id: string;
     name: string;
@@ -40,19 +37,38 @@ interface StorySlotProps {
   index: number;
   isSelected: boolean;
   onClick: () => void;
+  onDoubleClick?: () => void;
   onClearSlot?: (_storyId: string) => void;
   isLoading?: boolean;
+  isMobile?: boolean;
 }
 
 const statusConfig = {
-  DRAFT: { label: "پیش‌نویس", color: "bg-muted text-muted-foreground border border-border" },
-  READY: { label: "آماده", color: "bg-yellow-100 text-yellow-800 border border-yellow-200 dark:bg-yellow-900/20 dark:text-yellow-200 dark:border-yellow-800" },
-  PUBLISHED: { label: "منتشر شده", color: "bg-green-100 text-green-800 border border-green-200 dark:bg-green-900/20 dark:text-green-200 dark:border-yellow-800" },
+  DRAFT: {
+    label: 'پیش‌نویس',
+    color: 'bg-muted text-muted-foreground border border-border',
+  },
+  READY: {
+    label: 'آماده',
+    color:
+      'bg-yellow-100 text-yellow-800 border border-yellow-200 dark:bg-yellow-900/20 dark:text-yellow-200 dark:border-yellow-800',
+  },
+  PUBLISHED: {
+    label: 'منتشر شده',
+    color:
+      'bg-green-100 text-green-800 border border-green-200 dark:bg-green-900/20 dark:text-green-200 dark:border-yellow-800',
+  },
 };
 
-
-
-export function StorySlot({ story, index, isSelected, onClick, onClearSlot, isLoading = false }: StorySlotProps) {
+export function StorySlot({
+  story,
+  index,
+  isSelected,
+  onClick,
+  onDoubleClick,
+  onClearSlot,
+  isLoading = false,
+}: StorySlotProps) {
   const status = story ? statusConfig[story.status] : null;
 
   const {
@@ -80,30 +96,31 @@ export function StorySlot({ story, index, isSelected, onClick, onClearSlot, isLo
     <motion.div
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
-      transition={{ type: "spring", stiffness: 400, damping: 17 }}
+      transition={{ type: 'spring', stiffness: 400, damping: 17 }}
     >
       <Card
         ref={setNodeRef}
         {...attributes}
         className={cn(
-          "relative cursor-pointer transition-all duration-300",
-          "aspect-[9/16] min-h-[300px] max-h-[450px]",
-          "border-2 border-dashed border-gray-400 hover:border-[#ff0a54]/70",
-          "bg-gray-50 hover:bg-gray-100",
-          "shadow-lg hover:shadow-xl",
-          isSelected && "border-[#ff0a54] border-solid shadow-xl ring-2 ring-[#ff0a54]/30 bg-white",
-          isLoading && isSelected && "animate-pulse",
-          isDragging && "opacity-50 scale-105 z-50"
+          'relative cursor-pointer transition-all duration-300',
+          'aspect-[9/16] min-h-[300px] max-h-[450px]',
+          'border-2 border-dashed border-gray-400 hover:border-[#ff0a54]/70',
+          'bg-gray-50 hover:bg-gray-100',
+          'shadow-lg hover:shadow-xl',
+          isSelected &&
+            'border-[#ff0a54] border-solid shadow-xl ring-2 ring-[#ff0a54]/30 bg-white',
+          isLoading && isSelected && 'animate-pulse',
+          isDragging && 'opacity-50 scale-105 z-50'
         )}
         style={{
           ...style,
-          background: isSelected 
-            ? 'rgba(255, 255, 255, 0.95)' 
+          background: isSelected
+            ? 'rgba(255, 255, 255, 0.95)'
             : 'rgba(248, 250, 252, 0.9)',
-          border: isSelected 
-            ? '2px solid rgba(255, 10, 84, 0.8)' 
+          border: isSelected
+            ? '2px solid rgba(255, 10, 84, 0.8)'
             : '2px dashed rgba(156, 163, 175, 0.7)',
-          boxShadow: isSelected 
+          boxShadow: isSelected
             ? `
               0 12px 40px rgba(0, 0, 0, 0.15),
               0 6px 20px rgba(255, 10, 84, 0.2),
@@ -113,28 +130,34 @@ export function StorySlot({ story, index, isSelected, onClick, onClearSlot, isLo
               0 8px 25px rgba(0, 0, 0, 0.1),
               0 4px 15px rgba(0, 0, 0, 0.05),
               inset 0 1px 0 rgba(255, 255, 255, 0.6)
-            `
+            `,
         }}
         onClick={onClick}
+        onDoubleClick={onDoubleClick}
       >
-        <CardContent className="p-6 h-full flex flex-col">
+        <CardContent className='p-6 h-full flex flex-col'>
           {story ? (
             // Story content - Refined layout
-            <div className="flex flex-col h-full">
+            <div className='flex flex-col h-full'>
               {/* Top row - Status badge in corner and Order number */}
-              <div className="flex items-start justify-between mb-3">
+              <div className='flex items-start justify-between mb-3'>
                 {status && (
                   <motion.div
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <Badge className={cn("text-xs font-medium px-2 py-1", status.color)}>
+                    <Badge
+                      className={cn(
+                        'text-xs font-medium px-2 py-1',
+                        status.color
+                      )}
+                    >
                       {status.label}
                     </Badge>
                   </motion.div>
                 )}
-                <div className="flex items-center gap-2">
+                <div className='flex items-center gap-2'>
                   {/* Clear slot button */}
                   <motion.div
                     initial={{ opacity: 0, scale: 0.8 }}
@@ -142,18 +165,18 @@ export function StorySlot({ story, index, isSelected, onClick, onClearSlot, isLo
                     transition={{ duration: 0.3, delay: 0.1 }}
                   >
                     <Button
-                      variant="ghost"
-                      size="sm"
+                      variant='ghost'
+                      size='sm'
                       onClick={handleClearSlot}
-                      className="h-6 w-6 p-0 rounded-full bg-red-100 hover:bg-red-200 text-red-600 hover:text-red-700 border border-red-200"
-                      title="حذف استوری"
+                      className='h-6 w-6 p-0 rounded-full bg-red-100 hover:bg-red-200 text-red-600 hover:text-red-700 border border-red-200'
+                      title='حذف استوری'
                     >
-                      <Trash2 className="h-3 w-3" />
+                      <Trash2 className='h-3 w-3' />
                     </Button>
                   </motion.div>
-                  <motion.div 
+                  <motion.div
                     {...listeners}
-                    className="w-8 h-8 bg-[#ff0a54]/30 rounded-full flex items-center justify-center text-sm font-medium text-[#ff0a54] cursor-grab active:cursor-grabbing"
+                    className='w-8 h-8 bg-[#ff0a54]/30 rounded-full flex items-center justify-center text-sm font-medium text-[#ff0a54] cursor-grab active:cursor-grabbing'
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                   >
@@ -163,47 +186,47 @@ export function StorySlot({ story, index, isSelected, onClick, onClearSlot, isLo
               </div>
 
               {/* Main content - Large centered icon */}
-              <div className="flex-1 flex flex-col items-center justify-center text-center">
-                <motion.div 
+              <div className='flex-1 flex flex-col items-center justify-center text-center'>
+                <motion.div
                   className={cn(
-                    "w-20 h-20 rounded-full flex items-center justify-center mb-6",
-                    "bg-gradient-to-br from-[#ff0a54]/40 to-[#ff0a54]/60",
-                    "border-2 border-[#ff0a54]/50"
+                    'w-20 h-20 rounded-full flex items-center justify-center mb-6',
+                    'bg-gradient-to-br from-[#ff0a54]/40 to-[#ff0a54]/60',
+                    'border-2 border-[#ff0a54]/50'
                   )}
                   style={{
                     boxShadow: `
                       0 8px 25px rgba(255, 10, 84, 0.3),
                       inset 0 1px 0 rgba(255, 255, 255, 0.6)
-                    `
+                    `,
                   }}
                   whileHover={{ scale: 1.05, rotate: 5 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 10 }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 10 }}
                 >
-                  <DynamicLucideIcon 
-                    iconName={story.storyType?.icon} 
-                    className="h-10 w-10 text-white" 
+                  <DynamicLucideIcon
+                    iconName={story.storyType?.icon}
+                    className='h-10 w-10 text-white'
                     fallbackIcon={FileText}
                   />
                 </motion.div>
-                
+
                 {/* Story type name - Most prominent text */}
-                <h3 className="text-lg font-bold text-gray-900 mb-3 leading-tight line-clamp-2">
+                <h3 className='text-lg font-bold text-gray-900 mb-3 leading-tight line-clamp-2'>
                   {story.storyType?.name || story.title}
                 </h3>
-                
+
                 {/* Story title (if different from type name) - Smaller and muted */}
                 {story.storyType && story.title !== story.storyType.name && (
-                  <p className="text-sm text-gray-700 leading-tight line-clamp-2">
+                  <p className='text-sm text-gray-700 leading-tight line-clamp-2'>
                     {story.title}
                   </p>
                 )}
               </div>
 
               {/* Bottom indicators - Smaller and less prominent */}
-              <div className="flex items-center justify-between mt-3 pt-2 border-t border-gray-200/50">
+              <div className='flex items-center justify-between mt-3 pt-2 border-t border-gray-200/50'>
                 {story.visualNotes && (
-                  <div className="flex items-center gap-1 text-xs text-gray-600">
-                    <Image className="h-3 w-3 text-[#ff0a54]" />
+                  <div className='flex items-center gap-1 text-xs text-gray-600'>
+                    <Image className='h-3 w-3 text-[#ff0a54]' />
                     <span>تصویر</span>
                   </div>
                 )}
@@ -211,40 +234,44 @@ export function StorySlot({ story, index, isSelected, onClick, onClearSlot, isLo
             </div>
           ) : (
             // Empty slot - Refined layout
-            <div className="flex flex-col items-center justify-center h-full text-gray-600">
+            <div className='flex flex-col items-center justify-center h-full text-gray-600'>
               {/* Order number */}
-              <div className="absolute top-3 right-3">
-                <motion.div 
+              <div className='absolute top-3 right-3'>
+                <motion.div
                   {...listeners}
-                  className="w-8 h-8 bg-[#ff0a54]/30 rounded-full flex items-center justify-center text-sm font-medium text-[#ff0a54] cursor-grab active:cursor-grabbing"
+                  className='w-8 h-8 bg-[#ff0a54]/30 rounded-full flex items-center justify-center text-sm font-medium text-[#ff0a54] cursor-grab active:cursor-grabbing'
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                 >
                   {index + 1}
                 </motion.div>
               </div>
-              
+
               {/* Main content */}
-              <div className="flex flex-col items-center">
-                <motion.div 
+              <div className='flex flex-col items-center'>
+                <motion.div
                   className={cn(
-                    "w-20 h-20 rounded-full flex items-center justify-center mb-6",
-                    "bg-gradient-to-br from-[#ff0a54]/30 to-[#ff0a54]/40",
-                    "border-2 border-dashed border-[#ff0a54]/50"
+                    'w-20 h-20 rounded-full flex items-center justify-center mb-6',
+                    'bg-gradient-to-br from-[#ff0a54]/30 to-[#ff0a54]/40',
+                    'border-2 border-dashed border-[#ff0a54]/50'
                   )}
                   style={{
                     boxShadow: `
                       0 6px 20px rgba(255, 10, 84, 0.2),
                       inset 0 1px 0 rgba(255, 255, 255, 0.4)
-                    `
+                    `,
                   }}
                   whileHover={{ scale: 1.05, rotate: 5 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 10 }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 10 }}
                 >
-                  <Plus className="h-10 w-10 text-[#ff0a54]" />
+                  <Plus className='h-10 w-10 text-[#ff0a54]' />
                 </motion.div>
-                <p className="text-base text-center font-medium text-gray-800 mb-2">اسلات خالی</p>
-                <p className="text-sm text-center text-gray-600">کلیک برای انتخاب</p>
+                <p className='text-base text-center font-medium text-gray-800 mb-2'>
+                  اسلات خالی
+                </p>
+                <p className='text-sm text-center text-gray-600'>
+                  کلیک برای انتخاب
+                </p>
               </div>
             </div>
           )}

@@ -1,128 +1,165 @@
-"use client";
+'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Edit, Trash2, Eye, Calendar, Tag } from 'lucide-react';
+import React from 'react';
 
-import { ChevronUp, ChevronDown, Trash2, ExternalLink, FileText, Image } from "lucide-react";
-
-import { Story } from "@/types/story";
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { formatJalaliDate } from '@/lib/date-utils';
+import { cn } from '@/lib/utils';
+import { Story } from '@/types/story';
 
 interface StoryCardProps {
   story: Story;
-  index: number;
-  totalStories: number;
-  onDelete: (_id: string) => void;
-  onReorder: (_id: string, _dir: "up" | "down") => void;
+  isDragging?: boolean;
+  onSelect?: (story: Story) => void;
+  onEdit?: (story: Story) => void;
+  onDelete?: (storyId: string) => void;
+  dragHandle?: React.ReactNode;
+  className?: string;
 }
 
+export function StoryCard({
+  story,
+  isDragging = false,
+  onSelect,
+  onEdit,
+  onDelete,
+  dragHandle,
+  className = '',
+}: StoryCardProps) {
+  const handleSelect = () => {
+    onSelect?.(story);
+  };
 
+  const handleEdit = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onEdit?.(story);
+  };
 
-export function StoryCard({ story, index, totalStories, onDelete, onReorder }: StoryCardProps) {
-
-  const handleDelete = (id: string) => {
-    // Use the id parameter to validate before calling the parent function
-    if (id && id.trim()) {
-      onDelete(id);
+  const handleDelete = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (confirm('آیا از حذف این داستان اطمینان دارید؟')) {
+      onDelete?.(story.id);
     }
   };
 
-  const handleReorder = (id: string, dir: "up" | "down") => {
-    // Use the parameters to validate before calling the parent function
-    if (id && id.trim() && (dir === "up" || dir === "down")) {
-      onReorder(id, dir);
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'COMPLETED':
+        return 'bg-green-100 text-green-800 border-green-200';
+      case 'IN_PROGRESS':
+        return 'bg-blue-100 text-blue-800 border-blue-200';
+      case 'PENDING':
+        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case 'BLOCKED':
+        return 'bg-red-100 text-red-800 border-red-200';
+      default:
+        return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   };
 
   return (
-    <Card className="hover:shadow-md transition-shadow">
-      <CardHeader className="pb-3">
-        <div className="flex items-start justify-between">
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-2">
-              <CardTitle className="text-lg truncate">{story.title}</CardTitle>
-            </div>
-            
-            {story.storyType && (
-              <div className="flex items-center gap-1 text-sm text-gray-600 mb-2">
-                <FileText className="h-3 w-3" />
-                <span>{story.storyType.name}</span>
-              </div>
-            )}
-          </div>
-          
-          <div className="flex items-center gap-1">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => handleReorder(story.id, "up")}
-              disabled={index === 0}
-              className="h-8 w-8 p-0"
+    <Card
+      className={cn(
+        'relative transition-all duration-200 hover:shadow-md cursor-pointer group',
+        isDragging && 'shadow-lg scale-105 rotate-2',
+        className
+      )}
+      onClick={handleSelect}
+    >
+      {dragHandle && (
+        <div className='absolute left-2 top-1/2 -translate-y-1/2 z-10'>
+          {dragHandle}
+        </div>
+      )}
+
+      <CardHeader className='pb-3'>
+        <div className='flex items-start justify-between gap-2'>
+          <CardTitle className='text-lg font-semibold text-gray-900 line-clamp-2 leading-tight'>
+            {story.title}
+          </CardTitle>
+
+          <div className='flex items-center gap-1 flex-shrink-0'>
+            <Badge
+              variant='outline'
+              className={cn(
+                'text-xs font-medium',
+                getStatusColor(story.status)
+              )}
             >
-              <ChevronUp className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => handleReorder(story.id, "down")}
-              disabled={index === totalStories - 1}
-              className="h-8 w-8 p-0"
-            >
-              <ChevronDown className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => handleDelete(story.id)}
-              className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
+              {story.status === 'DRAFT' && 'پیش‌نویس'}
+              {story.status === 'READY' && 'آماده'}
+              {story.status === 'PUBLISHED' && 'منتشر شده'}
+            </Badge>
           </div>
         </div>
       </CardHeader>
-      
-      <CardContent className="pt-0 space-y-3">
 
-        
-        {story.visualNotes && (
-          <div>
-            <div className="flex items-center gap-1 text-sm font-medium text-gray-700 mb-1">
-              <Image className="h-3 w-3" />
-              یادداشت‌های بصری
-            </div>
-            <p className="text-sm text-gray-600 bg-blue-50 p-2 rounded-md whitespace-pre-wrap">
-              {story.visualNotes}
-            </p>
-          </div>
-        )}
-        
-        {story.link && (
-          <div>
-            <div className="flex items-center gap-1 text-sm font-medium text-gray-700 mb-1">
-              <ExternalLink className="h-3 w-3" />
-              لینک
-            </div>
-            <a
-              href={story.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm text-pink-600 hover:text-pink-700 break-all"
-            >
-              {story.link}
-            </a>
-          </div>
-        )}
-        
+      <CardContent className='pt-0'>
         {story.notes && (
-          <div>
-            <div className="text-sm font-medium text-gray-700 mb-1">
-              یادداشت‌های اضافی
-            </div>
-            <p className="text-sm text-gray-600 whitespace-pre-wrap">
-              {story.notes}
-            </p>
-          </div>
+          <p className='text-gray-600 text-sm line-clamp-3 mb-4 leading-relaxed'>
+            {story.notes}
+          </p>
         )}
+
+        <div className='space-y-3'>
+          {/* Story Type */}
+          {story.storyType && (
+            <div className='flex items-center gap-2 text-sm text-gray-600'>
+              <Tag className='w-4 h-4' />
+              <span>{story.storyType.name}</span>
+            </div>
+          )}
+
+          {/* Project */}
+          {story.project && (
+            <div className='flex items-center gap-2 text-sm text-gray-600'>
+              <Tag className='w-4 h-4' />
+              <span>{story.project.name}</span>
+            </div>
+          )}
+
+          {/* Day */}
+          <div className='flex items-center gap-2 text-sm text-gray-600'>
+            <Calendar className='w-4 h-4' />
+            <span>روز: {formatJalaliDate(new Date(story.day))}</span>
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className='flex items-center justify-end gap-2 mt-4 pt-3 border-t border-gray-100'>
+          <Button
+            variant='ghost'
+            size='sm'
+            onClick={handleSelect}
+            className='h-8 px-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+          >
+            <Eye className='w-4 h-4 mr-1' />
+            مشاهده
+          </Button>
+
+          <Button
+            variant='ghost'
+            size='sm'
+            onClick={handleEdit}
+            className='h-8 px-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50'
+          >
+            <Edit className='w-4 h-4 mr-1' />
+            ویرایش
+          </Button>
+
+          <Button
+            variant='ghost'
+            size='sm'
+            onClick={handleDelete}
+            className='h-8 px-2 text-red-600 hover:text-red-700 hover:bg-red-50'
+          >
+            <Trash2 className='w-4 h-4 mr-1' />
+            حذف
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );

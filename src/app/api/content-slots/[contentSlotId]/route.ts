@@ -1,9 +1,17 @@
-import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { NextRequest, NextResponse } from 'next/server';
+
+import {
+  createSuccessResponse,
+  createNotFoundErrorResponse,
+  createServerErrorResponse,
+  HTTP_STATUS_CODES,
+  getHttpStatusForErrorCode,
+} from '@/lib/api/response-utils';
+import { prisma } from '@/lib/prisma';
 
 // GET /api/content-slots/[contentSlotId] - Get a specific content slot
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ contentSlotId: string }> }
 ) {
   try {
@@ -11,29 +19,23 @@ export async function GET(
 
     const contentSlot = await prisma.contentSlot.findUnique({
       where: { id: contentSlotId },
-      include: {
-        project: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-      },
     });
 
     if (!contentSlot) {
-      return NextResponse.json(
-        { error: "Content slot not found" },
-        { status: 404 }
-      );
+      const errorResponse = createNotFoundErrorResponse();
+      return NextResponse.json(errorResponse, {
+        status: getHttpStatusForErrorCode(errorResponse.error.code),
+      });
     }
 
     return NextResponse.json(contentSlot);
   } catch {
-    return NextResponse.json(
-      { error: "Failed to fetch content slot" },
-      { status: 500 }
+    const errorResponse = createServerErrorResponse(
+      'Failed to fetch content slot'
     );
+    return NextResponse.json(errorResponse, {
+      status: getHttpStatusForErrorCode(errorResponse.error.code),
+    });
   }
 }
 
@@ -52,45 +54,53 @@ export async function PATCH(
     });
 
     if (!existingSlot) {
-      return NextResponse.json(
-        { error: "Content slot not found" },
-        { status: 404 }
-      );
+      const errorResponse = createNotFoundErrorResponse();
+      return NextResponse.json(errorResponse, {
+        status: getHttpStatusForErrorCode(errorResponse.error.code),
+      });
     }
 
     // Update the content slot
+    const updateData: {
+      title?: string;
+      projectId?: string;
+      startDate?: Date;
+      endDate?: Date;
+      description?: string;
+      type?: string;
+    } = {};
+
+    if (body.title !== undefined) updateData.title = body.title;
+    if (body.projectId !== undefined) updateData.projectId = body.projectId;
+    if (body.startDate !== undefined)
+      updateData.startDate = new Date(body.startDate);
+    if (body.endDate !== undefined) updateData.endDate = new Date(body.endDate);
+    if (body.description !== undefined)
+      updateData.description = body.description;
+    if (body.type !== undefined) updateData.type = body.type;
+
     const updatedSlot = await prisma.contentSlot.update({
       where: { id: contentSlotId },
-      data: {
-        title: body.title,
-        type: body.type,
-        dayOfWeek: body.dayOfWeek,
-        weekStart: body.weekStart ? new Date(body.weekStart) : undefined,
-        notes: body.notes,
-        projectId: body.projectId,
-      },
-      include: {
-        project: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-      },
+      data: updateData,
     });
 
-    return NextResponse.json(updatedSlot);
+    const successResponse = createSuccessResponse(updatedSlot);
+    return NextResponse.json(successResponse, {
+      status: HTTP_STATUS_CODES.OK,
+    });
   } catch {
-    return NextResponse.json(
-      { error: "Failed to update content slot" },
-      { status: 500 }
+    const errorResponse = createServerErrorResponse(
+      'Failed to update content slot'
     );
+    return NextResponse.json(errorResponse, {
+      status: getHttpStatusForErrorCode(errorResponse.error.code),
+    });
   }
 }
 
 // DELETE /api/content-slots/[contentSlotId] - Delete a content slot
 export async function DELETE(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ contentSlotId: string }> }
 ) {
   try {
@@ -102,10 +112,10 @@ export async function DELETE(
     });
 
     if (!existingSlot) {
-      return NextResponse.json(
-        { error: "Content slot not found" },
-        { status: 404 }
-      );
+      const errorResponse = createNotFoundErrorResponse();
+      return NextResponse.json(errorResponse, {
+        status: getHttpStatusForErrorCode(errorResponse.error.code),
+      });
     }
 
     // Delete the content slot
@@ -113,11 +123,16 @@ export async function DELETE(
       where: { id: contentSlotId },
     });
 
-    return NextResponse.json({ message: "Content slot deleted successfully" });
+    const successResponse = createSuccessResponse({
+      message: 'Content slot deleted successfully',
+    });
+    return NextResponse.json(successResponse, { status: HTTP_STATUS_CODES.OK });
   } catch {
-    return NextResponse.json(
-      { error: "Failed to delete content slot" },
-      { status: 500 }
+    const errorResponse = createServerErrorResponse(
+      'Failed to delete content slot'
     );
+    return NextResponse.json(errorResponse, {
+      status: getHttpStatusForErrorCode(errorResponse.error.code),
+    });
   }
 }

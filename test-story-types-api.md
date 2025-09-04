@@ -30,6 +30,7 @@ curl -X GET http://localhost:3000/api/story-types
 ```
 
 Expected response:
+
 ```json
 {
   "error": "Unauthorized"
@@ -46,6 +47,7 @@ curl -X GET http://localhost:3000/api/story-types \
 ```
 
 Expected response (if no story types exist):
+
 ```json
 []
 ```
@@ -61,6 +63,7 @@ curl -X POST http://localhost:3000/api/story-types \
 ```
 
 Expected response:
+
 ```json
 {
   "id": "clx...",
@@ -81,6 +84,7 @@ curl -X POST http://localhost:3000/api/story-types \
 ```
 
 Expected response:
+
 ```json
 {
   "error": "Story type with this name already exists"
@@ -96,6 +100,7 @@ curl -X GET http://localhost:3000/api/story-types \
 ```
 
 Expected response:
+
 ```json
 [
   {
@@ -118,6 +123,7 @@ curl -X PUT http://localhost:3000/api/story-types/[id] \
 ```
 
 Expected response:
+
 ```json
 {
   "id": "clx...",
@@ -136,6 +142,7 @@ curl -X DELETE http://localhost:3000/api/story-types/[id] \
 ```
 
 Expected response:
+
 ```json
 {
   "message": "Story type deleted successfully"
@@ -162,22 +169,24 @@ fetch('/api/story-types')
 fetch('/api/story-types', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ name: 'Test Story Type' })
+  body: JSON.stringify({ name: 'Test Story Type' }),
 })
-.then(res => res.json())
-.then(data => console.log(data))
-.catch(err => console.error(err));
+  .then(res => res.json())
+  .then(data => console.log(data))
+  .catch(err => console.error(err));
 ```
 
 ## Expected Behavior
 
 ### Success Cases:
+
 - ✅ Admin users can create, read, update, and delete story types
 - ✅ Story type names are unique
 - ✅ Proper validation of input data
 - ✅ Appropriate HTTP status codes
 
 ### Error Cases:
+
 - ❌ Unauthenticated users get 401
 - ❌ Non-admin users get 403
 - ❌ Invalid input gets 400

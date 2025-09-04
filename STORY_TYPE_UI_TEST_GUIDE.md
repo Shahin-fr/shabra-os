@@ -67,6 +67,7 @@ The "افزودن" (Add) button has been fixed and now includes full functionali
 ## Expected Behavior
 
 ### Success Cases:
+
 - ✅ Create new story types with unique names
 - ✅ Edit existing story types
 - ✅ Delete story types (with confirmation)
@@ -75,6 +76,7 @@ The "افزودن" (Add) button has been fixed and now includes full functionali
 - ✅ Loading states during operations
 
 ### Error Cases:
+
 - ❌ Empty name submission shows validation error
 - ❌ Duplicate names show conflict error
 - ❌ Delete confirmation prevents accidental deletion
@@ -98,6 +100,7 @@ The "افزودن" (Add) button has been fixed and now includes full functionali
 ## Troubleshooting
 
 If the button still doesn't work:
+
 1. Check browser console for JavaScript errors
 2. Verify you're logged in as admin user
 3. Check network tab for API call status

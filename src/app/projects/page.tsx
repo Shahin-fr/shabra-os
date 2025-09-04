@@ -1,31 +1,56 @@
-"use client";
+'use client';
 
-import { useSession } from "next-auth/react";
-import { redirect } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Calendar, FileText } from "lucide-react";
-import Link from "next/link";
+import { useQuery } from '@tanstack/react-query';
+import { motion } from 'framer-motion';
+import { Calendar, FileText, Shield, UserCheck, Edit } from 'lucide-react';
+import dynamic from 'next/dynamic';
+import Link from 'next/link';
+import { redirect } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
-import { motion } from "framer-motion";
-import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
-import { fetchProjects, projectsKeys } from "@/lib/queries";
-import { Pagination } from "@/components/ui/pagination";
-import CreateProject from "@/components/projects/CreateProject";
-import { cn } from "@/lib/utils";
-import { formatJalaliDate } from "@/lib/date-utils";
+import CreateProject from '@/components/projects/CreateProject';
+import DeleteProject from '@/components/projects/DeleteProject';
+import EditProject from '@/components/projects/EditProject';
+import { MobileProjectsList } from '@/components/projects/MobileProjectsList';
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from '@/components/ui/card';
+import { Pagination } from '@/components/ui/pagination';
+import { useAuth } from '@/hooks/useAuth';
+import { useMobile } from '@/hooks/useResponsive';
+import { isAdminOrManager } from '@/lib/auth-utils';
+import { formatJalaliDate } from '@/lib/date-utils';
+import { fetchProjects, projectsKeys } from '@/lib/queries';
+import { cn } from '@/lib/utils';
+import { Project, ProjectsResponse } from '@/types/project';
 
-
-export default function ProjectsPage() {
-  const { data: session, status } = useSession();
+// Dynamic import to prevent SSR issues with TanStack Query
+const ProjectsPageContent = () => {
+  const { user, isAuthenticated, isLoading } = useAuth();
+  const isMobile = useMobile();
   const [currentPage, setCurrentPage] = useState(1);
+  const [editingProject, setEditingProject] = useState<Project | null>(null);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
   // Use TanStack Query to fetch projects with pagination
-  const { data: projectsData, isLoading, isError } = useQuery({
+  const {
+    data: projectsData,
+    isLoading: isProjectsLoading,
+    isError,
+  } = useQuery<ProjectsResponse>({
     queryKey: projectsKeys.byPage(currentPage),
-    queryFn: () => fetchProjects(currentPage),
-    enabled: status === "authenticated",
+    queryFn: async () =>
+      fetchProjects(currentPage) as Promise<ProjectsResponse>,
+    enabled: isAuthenticated,
+    staleTime: 30 * 1000, // Consider data stale after 30 seconds
+    gcTime: 5 * 60 * 1000, // 5 minutes
+    refetchOnWindowFocus: true, // Refetch when window gains focus
+    refetchOnMount: true, // Always refetch when component mounts
   });
 
   // Extract projects and pagination data
@@ -37,6 +62,19 @@ export default function ProjectsPage() {
     hasPreviousPage: projectsData?.hasPreviousPage || false,
   };
 
+  // Get user privilege level for conditional content
+  const canManageProjects =
+    user &&
+    isAdminOrManager({
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        avatar: user.avatar,
+        roles: user.roles || [],
+      },
+    } as any);
+
   // Handle page changes
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -44,18 +82,41 @@ export default function ProjectsPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  useEffect(() => {
-    if (status === "unauthenticated") {
-      redirect("/login");
+  // Handle double click to edit project
+  const handleProjectDoubleClick = (project: Project) => {
+    if (canManageProjects) {
+      setEditingProject(project);
+      setIsEditDialogOpen(true);
     }
-  }, [status]);
+  };
 
-  if (status === "loading" || isLoading) {
+  // Handle edit dialog close
+  const handleEditDialogClose = (open: boolean) => {
+    setIsEditDialogOpen(open);
+    if (!open) {
+      setEditingProject(null);
+    }
+  };
+
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      redirect('/login');
+    }
+  }, [isAuthenticated, isLoading]);
+
+  // Show mobile components for mobile devices
+  if (isMobile) {
+    return <MobileProjectsList />;
+  }
+
+  if (isLoading || isProjectsLoading) {
     return (
-      <div className="container mx-auto max-w-7xl">
-        <div className="text-center py-12">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-3 text-muted-foreground">در حال بارگذاری پروژه‌ها...</p>
+      <div className='container mx-auto max-w-7xl'>
+        <div className='text-center py-12'>
+          <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto'></div>
+          <p className='mt-3 text-muted-foreground'>
+            در حال بارگذاری پروژه‌ها...
+          </p>
         </div>
       </div>
     );
@@ -63,18 +124,20 @@ export default function ProjectsPage() {
 
   if (isError) {
     return (
-      <div className="container mx-auto max-w-7xl">
-        <div className="text-center py-12">
-          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <FileText className="h-8 w-8 text-red-600" />
+      <div className='container mx-auto max-w-7xl'>
+        <div className='text-center py-12'>
+          <div className='w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4'>
+            <FileText className='h-8 w-8 text-red-600' />
           </div>
-          <h3 className="text-lg font-semibold text-foreground mb-2">خطا در بارگذاری پروژه‌ها</h3>
-          <p className="text-muted-foreground mb-6">
+          <h3 className='text-lg font-semibold text-foreground mb-2'>
+            خطا در بارگذاری پروژه‌ها
+          </h3>
+          <p className='text-muted-foreground mb-6'>
             مشکلی در بارگذاری پروژه‌ها پیش آمده است
           </p>
-          <Button 
-            onClick={() => window.location.reload()} 
-            className="bg-[#ff0a54] hover:bg-[#ff0a54]/90 text-white"
+          <Button
+            onClick={() => window.location.reload()}
+            className='bg-[#ff0a54] hover:bg-[#ff0a54]/90 text-white'
           >
             تلاش مجدد
           </Button>
@@ -83,192 +146,240 @@ export default function ProjectsPage() {
     );
   }
 
-  if (!session) {
-    return null; // Will redirect via useEffect
-  }
-
   return (
-    <motion.div 
-      className="container mx-auto max-w-7xl"
+    <motion.div
+      className='container mx-auto max-w-7xl p-6'
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
     >
-        {/* Enhanced Page Header */}
-        <motion.div 
-          className="mb-8"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-        >
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h1 className="text-4xl font-bold text-foreground mb-3">
-                پروژه‌ها
-              </h1>
-              <p className="text-lg text-muted-foreground">مدیریت پروژه‌ها و محتوای دیجیتال</p>
-            </div>
-            <CreateProject />
-          </div>
-        </motion.div>
-
-        {/* Projects Grid */}
-        <motion.div 
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-          initial="hidden"
-          animate="visible"
-          variants={{
-            hidden: { opacity: 0 },
-            visible: {
-              opacity: 1,
-              transition: {
-                staggerChildren: 0.1,
-                delayChildren: 0.2
-              }
-            }
+      {/* Header */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
+        className='mb-8'
+      >
+        <Card
+          style={{
+            background: 'rgba(255, 255, 255, 0.25)',
+            backdropFilter: 'blur(40px)',
+            border: '1px solid rgba(255, 255, 255, 0.3)',
+            boxShadow: `
+                0 20px 60px rgba(0, 0, 0, 0.2),
+                0 10px 30px rgba(255, 10, 84, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.4)
+              `,
           }}
         >
-          {projects.map((project) => (
-            <motion.div
-              key={project.id}
-              variants={{
-                hidden: { opacity: 0, y: 20 },
-                visible: { opacity: 1, y: 0 }
-              }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
-            >
-              <Link href={`/projects/${project.id}`}>
-                <motion.div
-                  whileHover={{ y: -4 }}
-                  transition={{ duration: 0.3, ease: "easeOut" }}
-                >
-                  <Card className="group h-full cursor-pointer"
-                    style={{
-                      background: 'rgba(255, 255, 255, 0.95)',
-                      backdropFilter: 'blur(20px)',
-                      border: '1px solid rgba(255, 255, 255, 0.3)',
-                      boxShadow: `
-                        0 8px 25px rgba(0, 0, 0, 0.1),
-                        0 4px 15px rgba(253, 214, 232, 0.1),
-                        inset 0 1px 0 rgba(255, 255, 255, 0.8)
-                      `
-                    }}
-                  >
-                    <CardHeader className="pb-3">
-                      <CardTitle className="text-lg font-semibold text-foreground group-hover:text-[#ff0a54] transition-colors duration-300">
-                        {project.name}
-                      </CardTitle>
-                      <CardDescription className="line-clamp-2 text-muted-foreground">
-                        {project.description || "توضیحات پروژه"}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="pt-0">
-                      <div className="space-y-3">
-                        {/* Status Badge */}
-                        <div className="flex items-center justify-between">
-                          <span className={cn(
-                            "px-3 py-1 rounded-full font-medium text-xs",
-                            project.status === "ACTIVE" ? "bg-[#ff0a54]/20 text-[#ff0a54] border border-[#ff0a54]/30" : "",
-                            project.status === "COMPLETED" ? "bg-green-100 text-green-800 border border-green-200 dark:bg-green-900/20 dark:text-green-200 dark:border-green-800" : "",
-                            project.status === "PAUSED" ? "bg-yellow-100 text-yellow-800 border border-yellow-200 dark:bg-yellow-900/20 dark:text-yellow-200 dark:border-yellow-800" : ""
-                          )}>
-                            {project.status === "ACTIVE" && "فعال"}
-                            {project.status === "COMPLETED" && "تکمیل شده"}
-                            {project.status === "PAUSED" && "متوقف"}
-                          </span>
-                        </div>
+          <CardContent className='p-6'>
+            <div className='flex items-center justify-between'>
+              <div>
+                <h1 className='text-3xl font-bold text-foreground mb-2'>
+                  پروژه‌ها
+                </h1>
+                <p className='text-muted-foreground'>
+                  مدیریت و نظارت بر پروژه‌های فعال
+                </p>
+              </div>
 
-                        {/* Project Stats */}
-                        <div className="flex items-center justify-between text-sm text-muted-foreground">
-                          <div className="flex items-center gap-1">
-                            <FileText className="h-4 w-4" />
-                            <span>{project._count.stories} استوری</span>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <Calendar className="h-4 w-4" />
-                            <span>{project._count.tasks} وظیفه</span>
-                          </div>
-                        </div>
+              <div className='flex items-center gap-3'>
+                {canManageProjects && <CreateProject />}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
 
-                        {/* Last Updated */}
-                        <div className="text-xs text-muted-foreground/70">
-                          آخرین بروزرسانی: {formatJalaliDate(new Date(project.updatedAt), 'yyyy/M/d')}
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              </Link>
-            </motion.div>
-          ))}
-        </motion.div>
-
-        {/* Empty State */}
-        {projects.length === 0 && (
+      {/* Projects Grid */}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+        className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8'
+      >
+        {projects.map((project: Project, index: number) => (
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
+            key={project.id}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.1 * index }}
           >
             <Card
+              className='h-full bg-white/20 backdrop-blur-sm border-white/30 hover:bg-white/30 transition-all cursor-pointer group relative'
               style={{
-                background: 'rgba(255, 255, 255, 0.95)',
-                backdropFilter: 'blur(20px)',
+                background: 'rgba(255, 255, 255, 0.25)',
+                backdropFilter: 'blur(40px)',
                 border: '1px solid rgba(255, 255, 255, 0.3)',
                 boxShadow: `
-                  0 12px 40px rgba(0, 0, 0, 0.1),
-                  0 6px 20px rgba(253, 214, 232, 0.1),
-                  inset 0 1px 0 rgba(255, 255, 255, 0.8)
-                `
+                  0 20px 60px rgba(0, 0, 0, 0.2),
+                  0 10px 30px rgba(255, 10, 84, 0.2),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.4)
+                `,
               }}
+              onDoubleClick={() => handleProjectDoubleClick(project)}
+              title={canManageProjects ? 'دابل کلیک برای ویرایش' : ''}
             >
-              <CardContent className="p-12 text-center">
-                <div className="w-16 h-16 bg-gradient-to-br from-[#fdd6e8]/20 to-[#fdd6e8]/40 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <FileText className="h-8 w-8 text-[#fdd6e8]" />
+              <CardHeader className='pb-3'>
+                <div className='flex items-start justify-between'>
+                  <div className='flex-1'>
+                    <CardTitle className='text-lg font-bold text-foreground mb-2 line-clamp-2'>
+                      {project.name}
+                    </CardTitle>
+                    <CardDescription className='text-muted-foreground line-clamp-2'>
+                      {project.description || 'بدون توضیحات'}
+                    </CardDescription>
+                  </div>
+                  {canManageProjects && (
+                    <div className='flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200'>
+                      <div className='text-muted-foreground text-xs'>
+                        <Edit className='h-3 w-3' />
+                      </div>
+                      <DeleteProject project={project} />
+                    </div>
+                  )}
                 </div>
-                <h3 className="text-lg font-semibold text-foreground mb-2">هیچ پروژه‌ای یافت نشد</h3>
-                <p className="text-muted-foreground mb-6">
-                  اولین پروژه خود را ایجاد کنید تا شروع کنید
-                </p>
-                <CreateProject />
+              </CardHeader>
+
+              <CardContent className='pt-0'>
+                <div className='space-y-3'>
+                  {/* Project Status */}
+                  <div className='flex items-center gap-2'>
+                    <div
+                      className={cn(
+                        'w-3 h-3 rounded-full',
+                        project.status === 'ACTIVE' && 'bg-green-500',
+                        project.status === 'PAUSED' && 'bg-yellow-500',
+                        project.status === 'COMPLETED' && 'bg-blue-500',
+                        project.status === 'CANCELLED' && 'bg-red-500'
+                      )}
+                    />
+                    <span className='text-sm font-medium text-foreground'>
+                      {project.status === 'ACTIVE' && 'فعال'}
+                      {project.status === 'PAUSED' && 'متوقف'}
+                      {project.status === 'COMPLETED' && 'تکمیل شده'}
+                      {project.status === 'CANCELLED' && 'لغو شده'}
+                    </span>
+                  </div>
+
+                  {/* Project Details */}
+                  <div className='grid grid-cols-2 gap-4 text-sm'>
+                    <div className='flex items-center gap-2 text-muted-foreground'>
+                      <Calendar className='h-4 w-4' />
+                      <span>تاریخ شروع:</span>
+                    </div>
+                    <div className='text-foreground'>
+                      {formatJalaliDate(project.startDate)}
+                    </div>
+
+                    <div className='flex items-center gap-2 text-muted-foreground'>
+                      <FileText className='h-4 w-4' />
+                      <span>وظایف:</span>
+                    </div>
+                    <div className='text-foreground'>
+                      {project._count.tasks || 0} وظیفه
+                    </div>
+
+                    <div className='flex items-center gap-2 text-muted-foreground'>
+                      <UserCheck className='h-4 w-4' />
+                      <span>اعضا:</span>
+                    </div>
+                    <div className='text-foreground'>
+                      {project._count.members || 0} عضو
+                    </div>
+
+                    <div className='flex items-center gap-2 text-muted-foreground'>
+                      <Shield className='h-4 w-4' />
+                      <span>سطح دسترسی:</span>
+                    </div>
+                    <div className='text-foreground'>
+                      {project.accessLevel === 'PUBLIC' && 'عمومی'}
+                      {project.accessLevel === 'PRIVATE' && 'خصوصی'}
+                      {project.accessLevel === 'RESTRICTED' && 'محدود'}
+                    </div>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className='flex items-center gap-2 pt-2'>
+                    <Link href={`/projects/${project.id}`}>
+                      <Button
+                        variant='outline'
+                        size='sm'
+                        className='flex-1 bg-white/20 border-white/30 hover:bg-white/30 text-foreground'
+                      >
+                        مشاهده جزئیات
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </motion.div>
-        )}
-
-        {/* Pagination */}
-        {projects.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            className="mt-8"
-          >
-            <Card
-              style={{
-                background: 'rgba(255, 255, 255, 0.95)',
-                backdropFilter: 'blur(20px)',
-                border: '1px solid rgba(255, 255, 255, 0.3)',
-                boxShadow: `
-                  0 8px 25px rgba(0, 0, 0, 0.1),
-                  0 4px 15px rgba(253, 214, 232, 0.1),
-                  inset 0 1px 0 rgba(255, 255, 255, 0.8)
-                `
-              }}
-            >
-              <Pagination
-                currentPage={pagination.currentPage}
-                totalPages={pagination.totalPages}
-                hasNextPage={pagination.hasNextPage}
-                hasPreviousPage={pagination.hasPreviousPage}
-                onPageChange={handlePageChange}
-                isLoading={isLoading}
-              />
-            </Card>
-          </motion.div>
-        )}
+        ))}
       </motion.div>
+
+      {/* Pagination */}
+      {pagination.totalPages > 1 && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className='flex justify-center'
+        >
+          <Pagination
+            currentPage={pagination.currentPage}
+            totalPages={pagination.totalPages}
+            onPageChange={handlePageChange}
+            hasNextPage={pagination.hasNextPage}
+            hasPreviousPage={pagination.hasPreviousPage}
+          />
+        </motion.div>
+      )}
+
+      {/* Empty State */}
+      {projects.length === 0 && !isLoading && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className='text-center py-12'
+        >
+          <div className='w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4'>
+            <FileText className='h-8 w-8 text-gray-600' />
+          </div>
+          <h3 className='text-lg font-semibold text-foreground mb-2'>
+            هیچ پروژه‌ای یافت نشد
+          </h3>
+          <p className='text-muted-foreground mb-6'>
+            هنوز پروژه‌ای ایجاد نشده است
+          </p>
+          {canManageProjects && <CreateProject />}
+        </motion.div>
+      )}
+
+      {/* Edit Project Dialog */}
+      {editingProject && (
+        <EditProject
+          project={editingProject}
+          open={isEditDialogOpen}
+          onOpenChange={handleEditDialogClose}
+        />
+      )}
+    </motion.div>
   );
-}
+};
 
-
+// Export with dynamic import to prevent SSR issues
+export default dynamic(() => Promise.resolve(ProjectsPageContent), {
+  ssr: false,
+  loading: () => (
+    <div className='container mx-auto max-w-7xl p-6'>
+      <div className='text-center py-12'>
+        <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto'></div>
+        <p className='mt-3 text-muted-foreground'>
+          در حال بارگذاری پروژه‌ها...
+        </p>
+      </div>
+    </div>
+  ),
+});

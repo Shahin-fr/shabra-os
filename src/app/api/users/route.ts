@@ -1,5 +1,10 @@
-import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { NextResponse } from 'next/server';
+
+import {
+  createServerErrorResponse,
+  getHttpStatusForErrorCode,
+} from '@/lib/api/response-utils';
+import { prisma } from '@/lib/prisma';
 
 export async function GET() {
   try {
@@ -20,9 +25,11 @@ export async function GET() {
 
     return NextResponse.json(users);
   } catch {
-    return NextResponse.json(
-      { error: "خطا در دریافت لیست کاربران" },
-      { status: 500 }
+    const errorResponse = createServerErrorResponse(
+      'خطا در دریافت لیست کاربران'
     );
+    return NextResponse.json(errorResponse, {
+      status: getHttpStatusForErrorCode(errorResponse.error.code),
+    });
   }
 }

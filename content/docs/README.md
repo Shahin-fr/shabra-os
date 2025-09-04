@@ -1,9 +1,9 @@
 ---
-title: "Knowledge Base Documentation"
-date: "2025-08-17"
-description: "توضیحات مقاله Knowledge Base Documentation"
-author: "Shabra Team"
-tags: ["documentation"]
+title: 'Knowledge Base Documentation'
+date: '2025-08-17'
+description: 'توضیحات مقاله Knowledge Base Documentation'
+author: 'Shabra Team'
+tags: ['documentation']
 ---
 
 This directory contains all the markdown files for the Shabra OS Knowledge Base. Each file represents an article that will be displayed in the Knowledge Base section of the application.
@@ -18,11 +18,11 @@ Each markdown file should include frontmatter metadata at the top of the file:
 
 ```yaml
 ---
-title: "Article Title"
-date: "YYYY-MM-DD"
-description: "Brief description of the article"
-author: "Author Name"
-tags: ["tag1", "tag2", "tag3"]
+title: 'Article Title'
+date: 'YYYY-MM-DD'
+description: 'Brief description of the article'
+author: 'Author Name'
+tags: ['tag1', 'tag2', 'tag3']
 ---
 ```
 
@@ -76,13 +76,14 @@ The content is automatically styled using Tailwind CSS Typography plugin with cu
 ## Examples
 
 ### Basic Article
+
 ```markdown
 ---
-title: "Getting Started Guide"
-date: "2024-01-15"
-description: "Learn how to get started with Shabra OS"
-author: "Shabra Team"
-tags: ["guide", "beginner"]
+title: 'Getting Started Guide'
+date: '2024-01-15'
+description: 'Learn how to get started with Shabra OS'
+author: 'Shabra Team'
+tags: ['guide', 'beginner']
 ---
 
 # Getting Started Guide
@@ -101,13 +102,14 @@ Contact our support team for assistance.
 ```
 
 ### Article with Code Examples
-```markdown
+
+````markdown
 ---
-title: "API Integration Guide"
-date: "2024-01-20"
-description: "Learn how to integrate with Shabra OS API"
-author: "Developer Team"
-tags: ["api", "integration", "technical"]
+title: 'API Integration Guide'
+date: '2024-01-20'
+description: 'Learn how to integrate with Shabra OS API'
+author: 'Developer Team'
+tags: ['api', 'integration', 'technical']
 ---
 
 # API Integration Guide
@@ -124,18 +126,20 @@ const response = await fetch('/api/auth', {
   },
   body: JSON.stringify({
     username: 'your-username',
-    password: 'your-password'
-  })
+    password: 'your-password',
+  }),
 });
 ```
+````
 
 ## API Endpoints
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/projects` | List all projects |
-| POST | `/api/projects` | Create new project |
-| PUT | `/api/projects/:id` | Update project |
+| Method | Endpoint            | Description        |
+| ------ | ------------------- | ------------------ |
+| GET    | `/api/projects`     | List all projects  |
+| POST   | `/api/projects`     | Create new project |
+| PUT    | `/api/projects/:id` | Update project     |
+
 ```
 
 ## Best Practices
@@ -149,3 +153,4 @@ const response = await fetch('/api/auth', {
 ## Support
 
 For questions about the Knowledge Base system or content guidelines, please contact the development team.
+```
