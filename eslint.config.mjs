@@ -242,13 +242,16 @@ export default [
         globalThis: 'readonly',
         btoa: 'readonly',
         atob: 'readonly',
+        // Browser dialogs
+        confirm: 'readonly',
+        alert: 'readonly',
       },
       ecmaVersion: 'latest',
       sourceType: 'module',
     },
   },
 
-  // Node.js environment files (scripts, build tools, Prisma)
+  // Node.js environment files (scripts, build tools, Prisma, auth)
   {
     files: [
       'scripts/**/*.{js,ts}',
@@ -259,6 +262,8 @@ export default [
       'playwright.config.ts',
       'postcss.config.mjs',
       'eslint.config.mjs',
+      'src/auth.ts',
+      'src/lib/**/*.{js,ts}',
     ],
     languageOptions: {
       globals: {

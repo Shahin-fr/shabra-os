@@ -6,6 +6,7 @@
  * to improve maintainability and reduce complexity.
  */
 
+import React from 'react';
 import { create } from 'zustand';
 import {
   persist,

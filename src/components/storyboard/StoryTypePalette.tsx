@@ -13,9 +13,7 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 
-import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { DynamicLucideIcon } from '@/components/ui/DynamicLucideIcon';
 import { cn } from '@/lib/utils';
 
 interface StoryType {

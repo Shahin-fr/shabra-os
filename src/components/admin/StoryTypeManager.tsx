@@ -8,11 +8,9 @@ import {
   Trash2,
   Eye,
   EyeOff,
-  Save,
-  X,
   Palette,
 } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';

@@ -7,7 +7,6 @@ import { Palette } from 'lucide-react';
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
-import { useStoryboardOperationsNew } from '@/hooks/useStoryboardOperationsNew';
 import { useStoryIdeas } from '@/hooks/useStoryIdeas';
 import { showStatusMessage } from '@/lib/utils';
 import { Story } from '@/types/story';
@@ -16,7 +15,6 @@ import { CompleteEditStoryModal } from './CompleteEditStoryModal';
 import { CreateStoryDialog } from './CreateStoryDialog';
 import { IdeaBank } from './IdeaBank';
 import { StoryboardCanvas } from './StoryboardCanvas';
-import { StoryboardPalette } from './StoryboardPalette';
 import { StoryTypePalette } from './StoryTypePalette';
 
 interface StoryManagementProps {
@@ -61,7 +59,6 @@ export function StoryManagementNew({
   const [isCreating, setIsCreating] = useState(false);
   const [isIdeaBankOpen, setIsIdeaBankOpen] = useState(false);
   const [isCompleteEditModalOpen, setIsCompleteEditModalOpen] = useState(false);
-  const [selectedIdea, setSelectedIdea] = useState<any>(null);
   const [selectedStoryType, setSelectedStoryType] = useState<string | null>(
     null
   );
@@ -229,17 +226,6 @@ export function StoryManagementNew({
     }
   };
 
-  // Get storyboard operations
-  const { applyTemplate, createStoryWithDefaults } = useStoryboardOperationsNew(
-    selectedDate,
-    _selectedSlotIndex,
-    stories,
-    storyTypes,
-    createStoryMutation,
-    updateStoryMutation,
-    deleteStoryMutation,
-    _refetchStories
-  );
 
   // Handle story type selection from palette
   const handleStoryTypeSelect = async (storyType: any) => {
@@ -270,17 +256,6 @@ export function StoryManagementNew({
     }
   };
 
-  // Handle template click - simplified logic (legacy)
-  const handleTemplateClick = async (storyTypeId: string) => {
-    setIsCreating(true);
-    try {
-      await applyTemplate(storyTypeId);
-    } catch (error) {
-      // Error handling is done in the mutation's onError callback
-    } finally {
-      setIsCreating(false);
-    }
-  };
 
   // Handle clear slot (delete story)
   const handleClearSlot = async (storyId: string) => {
@@ -339,8 +314,7 @@ export function StoryManagementNew({
   };
 
   // Handle idea selection from Idea Bank
-  const handleIdeaSelect = (idea: any) => {
-    setSelectedIdea(idea);
+  const handleIdeaSelect = (_idea: any) => {
     setIsIdeaBankOpen(false);
   };
 
@@ -375,7 +349,6 @@ export function StoryManagementNew({
         setIsCompleteEditModalOpen(false);
         onEditingStoryChange(null);
         onIsEditingChange(false);
-        setSelectedIdea(null);
       } catch (error) {
         // Error handling is done in the mutation's onError callback
       } finally {
@@ -402,7 +375,6 @@ export function StoryManagementNew({
         await createStoryMutation.mutateAsync(newStoryData);
         setIsCompleteEditModalOpen(false);
         onSelectedSlotIndexChange(null);
-        setSelectedIdea(null);
       } catch (error) {
         // Error handling is done in the mutation's onError callback
       } finally {
@@ -423,18 +395,6 @@ export function StoryManagementNew({
     }
   };
 
-  const handleDialogSubmit = (storyData: {
-    title: string;
-    notes?: string;
-    link?: string;
-    storyTypeId?: string;
-  }) => {
-    if (_isEditing) {
-      handleUpdateStory(storyData);
-    } else {
-      handleCreateStory(storyData);
-    }
-  };
 
   const handleDialogClose = (open: boolean) => {
     onDialogOpenChange(open);
@@ -513,7 +473,7 @@ export function StoryManagementNew({
         onSelectIdea={handleIdeaSelect}
         storyIdeas={storyIdeas as any}
         isLoading={storyIdeasLoading}
-        selectedStoryType={selectedStoryType}
+        selectedStoryType={selectedStoryType || undefined}
       />
 
       {/* Complete & Edit Story Modal */}
@@ -531,7 +491,7 @@ export function StoryManagementNew({
       <CreateStoryDialog
         isOpen={_isDialogOpen}
         onOpenChange={handleDialogClose}
-        onSubmit={handleDialogSubmit}
+        onSubmit={() => {}}
         storyTypes={storyTypes}
         isLoading={isCreating}
         editingStory={_editingStory}

@@ -1,7 +1,7 @@
 'use client';
 
+import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -29,24 +29,6 @@ export default function CreateProject() {
     description: '',
   });
   const queryClient = useQueryClient();
-
-  // Check if user has permission to create projects
-  const canCreateProject =
-    user &&
-    isAdminOrManager({
-      user: {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        avatar: user.avatar,
-        roles: user.roles || [],
-      },
-    } as any);
-
-  // If user doesn't have permission, don't render the component
-  if (!canCreateProject) {
-    return null;
-  }
 
   // Use TanStack Query mutation for creating projects
   const createProjectMutation = useMutation({
@@ -128,6 +110,24 @@ export default function CreateProject() {
       }
     },
   });
+
+  // Check if user has permission to create projects
+  const canCreateProject =
+    user &&
+    isAdminOrManager({
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        avatar: user.avatar,
+        roles: user.roles || [],
+      },
+    } as any);
+
+  // If user doesn't have permission, don't render the component
+  if (!canCreateProject) {
+    return null;
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

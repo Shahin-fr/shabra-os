@@ -11,7 +11,6 @@ import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { DynamicLucideIcon } from '@/components/ui/DynamicLucideIcon';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { cn } from '@/lib/utils';
 
 interface StoryIdea {
   id: string;
@@ -112,16 +111,6 @@ export function CompleteEditStoryModal({
     onOpenChange(false);
   };
 
-  const handleIdeaSelect = (idea: StoryIdea) => {
-    setSelectedIdea(idea);
-    // Update custom title with template if it's empty
-    if (!formData.customTitle && idea.template) {
-      setFormData(prev => ({
-        ...prev,
-        customTitle: idea.template,
-      }));
-    }
-  };
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>

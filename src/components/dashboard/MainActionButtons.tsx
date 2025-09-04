@@ -3,7 +3,6 @@
 import {
   Plus,
   Palette,
-  FileText,
   BarChart3,
   Calendar,
   CheckCircle,
