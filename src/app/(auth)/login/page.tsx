@@ -106,13 +106,13 @@ export default function LoginPage() {
     if (isLoading) return;
 
     setError('');
-    console.log('🧪 [LOGIN DEBUG] Executing test login with admin credentials');
+    console.log('🧪 [LOGIN DEBUG] Executing test login with any credentials');
     
     try {
       const result = await signIn('credentials', {
         redirect: false,
-        email: 'admin@shabra.com',
-        password: 'admin-password-123',
+        email: 'test@example.com',
+        password: 'anypassword',
       });
 
       console.log('🧪 [LOGIN DEBUG] Test login result received:', {
@@ -164,6 +164,9 @@ export default function LoginPage() {
             <p className='text-muted-foreground'>
               برای دسترسی به پنل مدیریت وارد شوید
             </p>
+            <div className='mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded text-xs text-yellow-700'>
+              🚨 حالت تست: هر ایمیل و رمز عبوری کار می‌کند
+            </div>
           </CardHeader>
 
           <CardContent className='space-y-6'>
@@ -245,7 +248,7 @@ export default function LoginPage() {
                 onClick={handleTestLogin}
                 className='w-full'
               >
-                🧪 Test Login (admin@shabra.com)
+                🧪 Test Login (هر ایمیل/رمز عبور)
               </Button>
 
               {/* Debug info */}
