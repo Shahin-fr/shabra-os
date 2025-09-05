@@ -1,10 +1,15 @@
+// ✅✅✅ [AUTH BOOTSTRAP] NextAuth configuration file loaded. NODE_ENV: ${process.env.NODE_ENV}
+console.log("✅✅✅ [AUTH BOOTSTRAP] NextAuth configuration file loaded. NODE_ENV:", process.env.NODE_ENV);
+console.log("✅✅✅ [AUTH BOOTSTRAP] Vercel environment:", !!process.env.VERCEL);
+console.log("✅✅✅ [AUTH BOOTSTRAP] Database URL set:", !!process.env.DATABASE_URL);
+console.log("✅✅✅ [AUTH BOOTSTRAP] NextAuth URL set:", !!process.env.NEXTAUTH_URL);
+
 import bcrypt from 'bcryptjs';
 import NextAuth from 'next-auth';
 import type { Session } from 'next-auth';
 import type { JWT } from 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
-import { logAuth, logUser, logError } from '@/lib/logger';
 import { prisma } from '@/lib/prisma';
 import { initializeProductionFixes } from '@/lib/production-fixes';
 
@@ -36,7 +41,7 @@ const authConfig = {
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
-        // DEBUG: Log incoming credentials (production debugging)
+        // FORCE LOG: Multiple methods to ensure Vercel captures this
         console.log('🔐 [AUTH DEBUG] Authorize function called with credentials:', {
           email: credentials?.email,
           hasPassword: !!credentials?.password,
@@ -46,6 +51,11 @@ const authConfig = {
           databaseUrl: process.env.DATABASE_URL ? 'SET' : 'NOT_SET',
           nextAuthUrl: process.env.NEXTAUTH_URL || 'NOT_SET'
         });
+        
+        // Force multiple logging methods for Vercel
+        process.stdout.write(`🔐 [AUTH DEBUG] Authorize function called - ${credentials?.email || 'NO_EMAIL'}\n`);
+        console.error(`🔐 [AUTH DEBUG] Authorize function called - ${credentials?.email || 'NO_EMAIL'}`);
+        console.warn(`🔐 [AUTH DEBUG] Authorize function called - ${credentials?.email || 'NO_EMAIL'}`);
 
         if (!credentials?.email || !credentials?.password) {
           console.log('❌ [AUTH DEBUG] Missing credentials - email or password not provided');
@@ -102,9 +112,7 @@ const authConfig = {
               email: user.email,
               isActive: user.isActive
             });
-            logUser('User authentication failed: user not active', {
-              email: user.email,
-            });
+            process.stdout.write(`❌ [AUTH DEBUG] User authentication failed: user not active - ${user.email}\n`);
             return null;
           }
 
@@ -123,9 +131,7 @@ const authConfig = {
             console.log('❌ [AUTH DEBUG] User authentication failed: invalid password', {
               email: user.email
             });
-            logUser('User authentication failed: invalid password', {
-              email: user.email,
-            });
+            process.stdout.write(`❌ [AUTH DEBUG] User authentication failed: invalid password - ${user.email}\n`);
             return null;
           }
 
@@ -143,11 +149,7 @@ const authConfig = {
             name: userToReturn.name,
             roles: userToReturn.roles
           });
-
-          logUser('User authenticated successfully', {
-            email: user.email,
-            userId: user.id,
-          });
+          process.stdout.write(`✅ [AUTH DEBUG] Authentication successful - ${user.email}\n`);
           return userToReturn;
         } catch (error) {
           console.log('💥 [AUTH DEBUG] Authorization error occurred:', {
@@ -155,17 +157,7 @@ const authConfig = {
             email: credentials.email,
             stack: error instanceof Error ? error.stack : undefined
           });
-          
-          logError(
-            'Authorization error occurred',
-            error instanceof Error ? error : new Error(String(error)),
-            {
-              email: credentials.email,
-              operation: 'authorize',
-              error: error instanceof Error ? error.message : String(error),
-              stack: error instanceof Error ? error.stack : undefined,
-            }
-          );
+          process.stdout.write(`💥 [AUTH DEBUG] Authorization error - ${credentials.email}: ${error instanceof Error ? error.message : String(error)}\n`);
           return null;
         }
       },
@@ -184,11 +176,7 @@ const authConfig = {
         timestamp: new Date().toISOString()
       });
 
-      logAuth('JWT callback triggered', {
-        hasUser: !!user,
-        tokenSub: token.sub,
-        hasRoles: !!user?.roles?.length,
-      });
+      process.stdout.write(`🔑 [AUTH DEBUG] JWT callback triggered - hasUser: ${!!user}, tokenSub: ${token.sub}\n`);
 
       if (user) {
         // Set the sub field to the user ID for NextAuth compatibility
@@ -204,11 +192,7 @@ const authConfig = {
           roles: user.roles,
         });
 
-        logAuth('JWT callback: token updated successfully', {
-          userId: user.id,
-          email: user.email,
-          roles: user.roles,
-        });
+        process.stdout.write(`🔑 [AUTH DEBUG] JWT callback: token updated successfully - ${user.email}\n`);
       }
       return token;
     },
@@ -221,16 +205,12 @@ const authConfig = {
         timestamp: new Date().toISOString()
       });
 
-      logAuth('Session callback triggered', {
-        hasSessionUser: !!session.user,
-        hasToken: !!token,
-        tokenSub: token.sub,
-      });
+      process.stdout.write(`📋 [AUTH DEBUG] Session callback triggered - hasSessionUser: ${!!session.user}, tokenSub: ${token.sub}\n`);
 
       // Ensure session.user exists and has all required properties
       if (!session.user) {
         console.log('📋 [AUTH DEBUG] Session callback: creating session.user');
-        logAuth('Session callback: creating session.user');
+        process.stdout.write(`📋 [AUTH DEBUG] Session callback: creating session.user\n`);
         session.user = {
           id: '',
           email: '',
@@ -245,10 +225,7 @@ const authConfig = {
           email: token.email,
         });
 
-        logAuth('Session callback: updating session with token data', {
-          userId: token.sub,
-          email: token.email,
-        });
+        process.stdout.write(`📋 [AUTH DEBUG] Session callback: updating session with token data - ${token.email}\n`);
         session.user.id = token.sub;
         session.user.email = token.email || '';
         session.user.name = token.name || '';
@@ -262,14 +239,10 @@ const authConfig = {
           hasRoles: !!(session.user as any).roles?.length,
         });
 
-        logAuth('Session callback: final session prepared', {
-          userId: session.user.id,
-          email: session.user.email,
-          hasRoles: !!(session.user as any).roles?.length,
-        });
+        process.stdout.write(`📋 [AUTH DEBUG] Session callback: final session prepared - ${session.user.email}\n`);
       } else {
         console.log('📋 [AUTH DEBUG] Session callback: no token or token.sub found');
-        logAuth('Session callback: no token or token.sub found');
+        process.stdout.write(`📋 [AUTH DEBUG] Session callback: no token or token.sub found\n`);
       }
 
       return session;
@@ -313,3 +286,7 @@ const authConfig = {
 };
 
 export const { handlers, auth, signIn, signOut } = NextAuth(authConfig);
+
+// ✅✅✅ [AUTH BOOTSTRAP] NextAuth configuration completed and exported
+console.log("✅✅✅ [AUTH BOOTSTRAP] NextAuth configuration completed and exported");
+process.stdout.write("✅✅✅ [AUTH BOOTSTRAP] NextAuth configuration completed and exported\n");
