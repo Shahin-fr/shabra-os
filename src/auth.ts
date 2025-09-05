@@ -6,6 +6,10 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 
 import { logAuth, logUser, logError } from '@/lib/logger';
 import { prisma } from '@/lib/prisma';
+import { initializeProductionFixes } from '@/lib/production-fixes';
+
+// Initialize production fixes
+initializeProductionFixes();
 
 // Ensure environment variables are set (only at runtime, not during build)
 // Skip validation during build time to prevent Vercel deployment issues
