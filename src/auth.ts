@@ -41,124 +41,51 @@ const authConfig = {
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
-        // FORCE LOG: Multiple methods to ensure Vercel captures this
-        console.log('🔐 [AUTH DEBUG] Authorize function called with credentials:', {
-          email: credentials?.email,
-          hasPassword: !!credentials?.password,
-          timestamp: new Date().toISOString(),
-          environment: process.env.NODE_ENV,
-          isVercel: !!process.env.VERCEL,
-          databaseUrl: process.env.DATABASE_URL ? 'SET' : 'NOT_SET',
-          nextAuthUrl: process.env.NEXTAUTH_URL || 'NOT_SET'
-        });
-        
-        // Force multiple logging methods for Vercel
-        process.stdout.write(`🔐 [AUTH DEBUG] Authorize function called - ${credentials?.email || 'NO_EMAIL'}\n`);
-        console.error(`🔐 [AUTH DEBUG] Authorize function called - ${credentials?.email || 'NO_EMAIL'}`);
-        console.warn(`🔐 [AUTH DEBUG] Authorize function called - ${credentials?.email || 'NO_EMAIL'}`);
+        // 1. Log the entry point
+        console.log("✅ [AUTH DEBUG] Authorize function STARTED with credentials:", credentials?.email);
 
+        // 2. Check if credentials exist
         if (!credentials?.email || !credentials?.password) {
-          console.log('❌ [AUTH DEBUG] Missing credentials - email or password not provided');
-          return null;
+          console.error("❌ [AUTH DEBUG] Credentials object is missing email or password.");
+          throw new Error("Debugging: Credentials object is missing email or password.");
         }
 
         try {
-          console.log('🔍 [AUTH DEBUG] Searching for user in database with email:', credentials.email);
-          
-          // Test database connection first
-          try {
-            await prisma.$connect();
-            console.log('✅ [AUTH DEBUG] Database connection successful');
-          } catch (dbError) {
-            console.error('❌ [AUTH DEBUG] Database connection failed:', {
-              error: dbError instanceof Error ? dbError.message : String(dbError),
-              databaseUrl: process.env.DATABASE_URL ? 'SET' : 'NOT_SET'
-            });
-            throw dbError;
-          }
-          
+          // 3. Find the user in the database
           const user = await prisma.user.findUnique({
-            where: {
-              email: credentials.email as string,
-            },
-            select: {
-              id: true,
-              email: true,
-              firstName: true,
-              lastName: true,
-              avatar: true,
-              roles: true,
-              password: true,
-              isActive: true,
-            },
-          });
-
-          console.log('👤 [AUTH DEBUG] User found in DB:', {
-            found: !!user,
-            userId: user?.id,
-            email: user?.email,
-            isActive: user?.isActive,
-            hasPassword: !!user?.password,
-            roles: user?.roles
+            where: { email: credentials.email },
           });
 
           if (!user) {
-            console.log('❌ [AUTH DEBUG] User not found in database');
-            return null;
+            console.error(`❌ [AUTH DEBUG] User with email '${credentials.email}' not found.`);
+            throw new Error(`Debugging: User with email '${credentials.email}' not found in the database.`);
           }
 
-          if (!user.isActive) {
-            console.log('❌ [AUTH DEBUG] User authentication failed: user not active', {
-              email: user.email,
-              isActive: user.isActive
-            });
-            process.stdout.write(`❌ [AUTH DEBUG] User authentication failed: user not active - ${user.email}\n`);
-            return null;
+          if (!user.password) {
+            console.error(`❌ [AUTH DEBUG] User '${credentials.email}' found, but has no password.`);
+            throw new Error(`Debugging: User '${credentials.email}' found, but has no password in the database.`);
           }
 
-          console.log('🔐 [AUTH DEBUG] Comparing password...');
-          const isPasswordValid = await bcrypt.compare(
+          // 4. Compare passwords
+          const isPasswordCorrect = await bcrypt.compare(
             credentials.password as string,
-            user.password
+            user.password as string
           );
 
-          console.log('🔐 [AUTH DEBUG] Password comparison result:', {
-            isValid: isPasswordValid,
-            email: user.email
-          });
-
-          if (!isPasswordValid) {
-            console.log('❌ [AUTH DEBUG] User authentication failed: invalid password', {
-              email: user.email
-            });
-            process.stdout.write(`❌ [AUTH DEBUG] User authentication failed: invalid password - ${user.email}\n`);
-            return null;
+          if (!isPasswordCorrect) {
+            console.error("❌ [AUTH DEBUG] Password comparison failed.");
+            throw new Error("Debugging: Password comparison failed. The provided password is incorrect.");
           }
+          
+          // 5. Success
+          console.log("✅ [AUTH DEBUG] Authentication successful for:", user.email);
+          return user;
 
-          const userToReturn = {
-            id: user.id,
-            email: user.email,
-            name: `${user.firstName} ${user.lastName}`,
-            avatar: user.avatar || undefined,
-            roles: user.roles || [],
-          };
-
-          console.log('✅ [AUTH DEBUG] Authentication successful, returning user:', {
-            id: userToReturn.id,
-            email: userToReturn.email,
-            name: userToReturn.name,
-            roles: userToReturn.roles
-          });
-          process.stdout.write(`✅ [AUTH DEBUG] Authentication successful - ${user.email}\n`);
-          return userToReturn;
         } catch (error) {
-          console.log('💥 [AUTH DEBUG] Authorization error occurred:', {
-            error: error instanceof Error ? error.message : String(error),
-            email: credentials.email,
-            stack: error instanceof Error ? error.stack : undefined
-          });
-          process.stdout.write(`💥 [AUTH DEBUG] Authorization error - ${credentials.email}: ${error instanceof Error ? error.message : String(error)}\n`);
-          return null;
+          // This will catch any errors from the steps above or database connection issues and re-throw them.
+          console.error("❌ [AUTH DEBUG] A critical error occurred during authorization:", error);
+          const errorMessage = error instanceof Error ? error.message : String(error);
+          throw new Error(errorMessage); // Propagate the specific error message
         }
       },
     }),

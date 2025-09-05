@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { Loader2 } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { signIn } from 'next-auth/react';
 import React, { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -10,7 +11,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/hooks/useAuth';
-import { logAuth, logError } from '@/lib/logger';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -59,7 +59,7 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    logAuth('Login form submitted', {
+    console.log('🔐 [LOGIN DEBUG] Login form submitted', {
       email,
       hasPassword: !!password,
       isLoading,
@@ -69,49 +69,72 @@ export default function LoginPage() {
     if (isLoading) return;
 
     setError('');
-    const result = await login(email, password);
-
-    logAuth('Login result received', {
-      success: result.success,
-      hasError: !!result.error,
-    });
-
-    if (result.success) {
-      // Login successful, redirect will happen in useEffect
-      return;
-    }
-
-    if (result.error) {
-      logError('Login failed with error', new Error(result.error), {
+    
+    try {
+      console.log('🔐 [LOGIN DEBUG] Calling signIn directly...');
+      const result = await signIn('credentials', {
+        redirect: false, // Important: Do not redirect, so we can handle the error here
         email,
-        error: result.error,
-        result,
+        password,
       });
-      setError(result.error);
+
+      console.log('🔐 [LOGIN DEBUG] signIn result received:', {
+        success: result?.ok,
+        hasError: !!result?.error,
+        error: result?.error,
+      });
+
+      if (result?.error) {
+        // The error message from our authorize function will be here!
+        console.error('🔐 [LOGIN DEBUG] Login failed with error:', result.error);
+        setError(result.error);
+      } else if (result?.ok) {
+        console.log('🔐 [LOGIN DEBUG] Login successful, redirecting...');
+        window.location.href = callbackUrl;
+      } else {
+        console.error('🔐 [LOGIN DEBUG] Unknown login result:', result);
+        setError('An unexpected error occurred during login.');
+      }
+    } catch (catchError) {
+      console.error('🔐 [LOGIN DEBUG] Exception during signIn call:', catchError);
+      setError('An unexpected error occurred during signIn call.');
     }
   };
 
   const handleTestLogin = async () => {
-    logAuth('Test login button clicked');
+    console.log('🧪 [LOGIN DEBUG] Test login button clicked');
 
     if (isLoading) return;
 
     setError('');
-    logAuth('Executing test login');
-    const result = await login('test@example.com', 'testpassword');
+    console.log('🧪 [LOGIN DEBUG] Executing test login with admin credentials');
+    
+    try {
+      const result = await signIn('credentials', {
+        redirect: false,
+        email: 'admin@shabra.com',
+        password: 'admin-password-123',
+      });
 
-    logAuth('Test login result received', {
-      success: result.success,
-      hasError: !!result.error,
-    });
+      console.log('🧪 [LOGIN DEBUG] Test login result received:', {
+        success: result?.ok,
+        hasError: !!result?.error,
+        error: result?.error,
+      });
 
-    if (result.success) {
-      // Login successful, redirect will happen in useEffect
-      return;
-    }
-
-    if (result.error) {
-      setError(result.error);
+      if (result?.error) {
+        console.error('🧪 [LOGIN DEBUG] Test login failed with error:', result.error);
+        setError(result.error);
+      } else if (result?.ok) {
+        console.log('🧪 [LOGIN DEBUG] Test login successful, redirecting...');
+        window.location.href = callbackUrl;
+      } else {
+        console.error('🧪 [LOGIN DEBUG] Unknown test login result:', result);
+        setError('An unexpected error occurred during test login.');
+      }
+    } catch (catchError) {
+      console.error('🧪 [LOGIN DEBUG] Exception during test login:', catchError);
+      setError('An unexpected error occurred during test login.');
     }
   };
 
@@ -223,7 +246,7 @@ export default function LoginPage() {
                 onClick={handleTestLogin}
                 className='w-full'
               >
-                🧪 Test Login (Admin)
+                🧪 Test Login (admin@shabra.com)
               </Button>
 
               {/* Debug info */}
