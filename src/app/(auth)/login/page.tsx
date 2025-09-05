@@ -85,9 +85,8 @@ export default function LoginPage() {
       });
 
       if (result?.error) {
-        // The error message from our authorize function will be here!
         console.error('🔐 [LOGIN DEBUG] Login failed with error:', result.error);
-        setError(result.error);
+        setError('Invalid email or password.');
       } else if (result?.ok) {
         console.log('🔐 [LOGIN DEBUG] Login successful, redirecting...');
         window.location.href = callbackUrl;
@@ -124,7 +123,7 @@ export default function LoginPage() {
 
       if (result?.error) {
         console.error('🧪 [LOGIN DEBUG] Test login failed with error:', result.error);
-        setError(result.error);
+        setError('Invalid email or password.');
       } else if (result?.ok) {
         console.log('🧪 [LOGIN DEBUG] Test login successful, redirecting...');
         window.location.href = callbackUrl;
