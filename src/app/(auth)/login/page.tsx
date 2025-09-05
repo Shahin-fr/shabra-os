@@ -26,7 +26,7 @@ export default function LoginPage() {
   // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated && user) {
-      logAuth('User authenticated, redirecting to dashboard', {
+      console.log('🔐 [LOGIN DEBUG] User authenticated, redirecting to dashboard', {
         userId: user.id,
         email: user.email,
         callbackUrl,
