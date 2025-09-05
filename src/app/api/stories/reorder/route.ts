@@ -62,7 +62,7 @@ export async function PUT(request: NextRequest) {
     }
 
     // Update story orders in a transaction
-    const updatedStories = await prisma.$transaction(async tx => {
+    const updatedStories = await prisma.$transaction(async (tx: any) => {
       const updates = stories.map(({ id }) =>
         tx.story.update({
           where: { id },

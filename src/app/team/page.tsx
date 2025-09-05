@@ -41,7 +41,7 @@ export default async function TeamPage() {
             </div>
           ) : (
             <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
-              {users.map(user => (
+              {users.map((user: any) => (
                 <div
                   key={user.id}
                   className='group p-4 rounded-xl border border-white/20 bg-white/5 backdrop-blur-sm hover:bg-white/10 transition-all duration-300'

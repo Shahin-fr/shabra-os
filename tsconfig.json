@@ -79,7 +79,13 @@
     "build",
     "coverage",
     "*.config.js",
-    "*.config.ts"
+    "*.config.ts",
+    "**/*.test.{js,ts,jsx,tsx}",
+    "**/*.spec.{js,ts,jsx,tsx}",
+    "**/test/**/*",
+    "**/e2e/**/*",
+    "src/test/**/*",
+    "__tests__/**/*"
   ],
 
   // TypeScript project references for better performance

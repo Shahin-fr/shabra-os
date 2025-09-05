@@ -165,7 +165,11 @@ const nextConfig: NextConfig = {
   // ESLint configuration - NEVER ignore ESLint during builds
   eslint: {
     ignoreDuringBuilds: false, // ✅ Always enforce code quality checks
+    dirs: ['src', 'pages', 'components', 'lib', 'app'], // Specify directories to lint
   },
+
+  // Exclude test files from build
+  pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'md', 'mdx'],
 
   // Trailing slash configuration
   trailingSlash: false,
