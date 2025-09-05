@@ -18,7 +18,7 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { login, isAuthenticated, isLoading, status, user } = useAuth();
+  const { isAuthenticated, isLoading, status, user } = useAuth();
 
   // Get the callback URL from search params (set by middleware)
   const callbackUrl = searchParams.get('callbackUrl') || '/';
