@@ -323,7 +323,7 @@ export default function ProfilePage() {
               className='w-full h-12'
               onClick={() => {
                 // Handle logout
-                console.log('Logout clicked');
+                // TODO: Implement logout functionality
               }}
             >
               <LogOut className='h-4 w-4 ml-2' />

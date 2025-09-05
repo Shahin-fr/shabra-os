@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 
 import { auth } from '@/auth';
 import {
@@ -12,7 +12,7 @@ import { logger } from '@/lib/logger';
 import { prisma } from '@/lib/prisma';
 
 // POST handler for clock-in/clock-out
-export async function POST(_request: NextRequest) {
+export async function POST() {
   try {
     // Get the authenticated user from the session
     const session = await auth();
@@ -79,10 +79,10 @@ export async function POST(_request: NextRequest) {
       attendance: attendanceRecord,
     });
     return NextResponse.json(successResponse, { status: HTTP_STATUS_CODES.OK });
-  } catch (error) {
+  } catch (_error) {
     logger.error(
       'Attendance API error:',
-      error instanceof Error ? error : undefined,
+      _error instanceof Error ? _error : undefined,
       {
         context: 'attendance-api',
       }
@@ -95,7 +95,7 @@ export async function POST(_request: NextRequest) {
 }
 
 // GET handler for current attendance status
-export async function GET(_request: NextRequest) {
+export async function GET() {
   try {
     // Get the authenticated user from the session
     const session = await auth();
@@ -149,10 +149,10 @@ export async function GET(_request: NextRequest) {
       currentTime,
     });
     return NextResponse.json(successResponse, { status: HTTP_STATUS_CODES.OK });
-  } catch (error) {
+  } catch (_error) {
     logger.error(
       'Attendance status API error:',
-      error instanceof Error ? error : undefined,
+      _error instanceof Error ? _error : undefined,
       {
         context: 'attendance-api',
       }

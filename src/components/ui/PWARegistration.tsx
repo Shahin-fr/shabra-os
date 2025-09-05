@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState, useCallback, useRef } from 'react';
-
 import { logger } from '@/lib/logger';
 
 export function PWARegistration() {
@@ -22,7 +21,7 @@ export function PWARegistration() {
 
   useEffect(() => {
     // DEVELOPMENT: Completely disable Service Worker and unregister existing ones
-    if (process.env.NODE_ENV === 'development') {
+    if (process?.env.NODE_ENV === 'development') {
       // Unregister any existing service workers to clean up the environment
       if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
         navigator.serviceWorker.getRegistrations().then(registrations => {
@@ -151,7 +150,7 @@ export function PWARegistration() {
 
   const registerServiceWorker = () => {
     // Safety check - only register in production
-    if (process.env.NODE_ENV === 'development') {
+    if (process?.env.NODE_ENV === 'development') {
       return;
     }
 
@@ -208,8 +207,7 @@ export function PWARegistration() {
     }
   }, [swRegistration]);
 
-  const invalidateContentCache = useCallback(
-    async (contentType: 'calendar' | 'projects' | 'stories' | 'tasks') => {
+  const invalidateContentCache = useCallback(async (contentType: 'calendar' | 'projects' | 'stories' | 'tasks') => {
       if (!swRegistration?.active) {
         logger.warn('Service Worker not active');
         return false;
@@ -252,8 +250,7 @@ export function PWARegistration() {
     [swRegistration]
   );
 
-  const updateCacheVersion = useCallback(
-    async (newVersion: string) => {
+  const updateCacheVersion = useCallback(async (newVersion: string) => {
       if (!swRegistration?.active) {
         logger.warn('Service Worker not active');
         return false;
@@ -279,7 +276,7 @@ export function PWARegistration() {
   // Function to show install prompt
   const showInstallPrompt = useCallback(async () => {
     // Safety check - only show prompt in production
-    if (process.env.NODE_ENV === 'development') {
+    if (process?.env.NODE_ENV === 'development') {
       return;
     }
 
@@ -299,7 +296,7 @@ export function PWARegistration() {
   // Function to update service worker
   const updateServiceWorker = useCallback(() => {
     // Safety check - only update in production
-    if (process.env.NODE_ENV === 'development') {
+    if (process?.env.NODE_ENV === 'development') {
       return;
     }
 
@@ -334,7 +331,7 @@ export function PWARegistration() {
         clearAllCaches,
         invalidateContentCache,
         updateCacheVersion,
-        environment: process.env.NODE_ENV,
+        environment: process?.env.NODE_ENV,
       };
     }
   }, [
@@ -351,7 +348,7 @@ export function PWARegistration() {
   ]);
 
   // Don't render anything in development
-  if (process.env.NODE_ENV === 'development') {
+  if (process?.env.NODE_ENV === 'development') {
     return null;
   }
 

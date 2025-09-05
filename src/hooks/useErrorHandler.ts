@@ -6,7 +6,6 @@
  */
 
 import { useCallback, useState, useRef, useEffect } from 'react';
-
 import { ErrorHandler, ErrorHandlingResult } from '@/lib/error-handler';
 import { useAppStore } from '@/stores/consolidated-store';
 import { ErrorCategory, ErrorPriority, ErrorContext } from '@/types/error';
@@ -18,8 +17,8 @@ export interface UseErrorHandlerOptions {
   enableNotifications?: boolean;
   enableRetry?: boolean;
   maxRetries?: number;
-  onError?: (error: Error, context: ErrorContext) => void;
-  onSuccess?: (data: any) => void;
+  onError?: (_error: Error, _context: ErrorContext) => void;
+  onSuccess?: (_data: any) => void;
 }
 
 export interface ErrorState {
@@ -35,22 +34,17 @@ export interface ErrorState {
 }
 
 export interface ErrorActions {
-  handleError: (
-    error: Error | string | unknown,
-    context?: Partial<ErrorContext>
+  handleError: (_error: Error | string | unknown, _context?: Partial<ErrorContext>
   ) => string;
   clearError: () => void;
   retry: () => void;
-  executeWithErrorHandling: <T>(
-    operation: () => Promise<T>,
+  executeWithErrorHandling: <T>(_operation: () => Promise<T>,
     context?: Partial<ErrorContext>
   ) => Promise<ErrorHandlingResult<T>>;
-  executeWithRetry: <T>(
-    operation: () => Promise<T>,
+  executeWithRetry: <T>(_operation: () => Promise<T>,
     context?: Partial<ErrorContext>
   ) => Promise<T>;
-  executeApiCall: <T>(
-    apiCall: () => Promise<T>,
+  executeApiCall: <T>(_apiCall: () => Promise<T>,
     apiContext?: { [key: string]: any }
   ) => Promise<ErrorHandlingResult<T>>;
 }
@@ -158,8 +152,7 @@ export function useErrorHandler(options: UseErrorHandlerOptions) {
   );
 
   // Execute operation with error handling
-  const executeWithErrorHandling = useCallback(
-    async <T>(
+  const executeWithErrorHandling = useCallback(async <T>(
       operation: () => Promise<T>,
       context?: Partial<ErrorContext>
     ): Promise<ErrorHandlingResult<T>> => {
@@ -172,24 +165,24 @@ export function useErrorHandler(options: UseErrorHandlerOptions) {
         context
       );
 
-      if (!result.success && result.errorResponse) {
+      if (!result?.success && result?.errorResponse) {
         // Update error state
         setErrorState({
           hasError: true,
-          error: result.error!,
-          errorId: result.errorResponse.errorId,
-          category: result.errorResponse.category,
-          priority: result.errorResponse.priority,
-          retryable: result.errorResponse.retryable,
-          suggestions: result.errorResponse.suggestions,
-          userMessage: result.errorResponse.userMessage,
+          error: result?.error!,
+          errorId: result?.errorResponse.errorId,
+          category: result?.errorResponse.category,
+          priority: result?.errorResponse.priority,
+          retryable: result?.errorResponse.retryable,
+          suggestions: result?.errorResponse.suggestions,
+          userMessage: result?.errorResponse.userMessage,
           timestamp: new Date(),
         });
 
         // Create notification if enabled
-        if (options.enableNotifications && result.error) {
+        if (options.enableNotifications && result?.error) {
           const notification = errorHandler.current.createErrorNotification(
-            result.error,
+            result?.error,
             context
           );
           addNotification(notification);
@@ -199,8 +192,8 @@ export function useErrorHandler(options: UseErrorHandlerOptions) {
         clearError();
 
         // Call success callback if provided
-        if (options.onSuccess && result.data) {
-          options.onSuccess(result.data);
+        if (options.onSuccess && result?.data) {
+          options.onSuccess(result?.data);
         }
       }
 
@@ -215,8 +208,7 @@ export function useErrorHandler(options: UseErrorHandlerOptions) {
   );
 
   // Execute operation with retry
-  const executeWithRetry = useCallback(
-    async <T>(
+  const executeWithRetry = useCallback(async <T>(
       operation: () => Promise<T>,
       context?: Partial<ErrorContext>
     ): Promise<T> => {
@@ -251,8 +243,7 @@ export function useErrorHandler(options: UseErrorHandlerOptions) {
   );
 
   // Execute API call with error handling
-  const executeApiCall = useCallback(
-    async <T>(
+  const executeApiCall = useCallback(async <T>(
       apiCall: () => Promise<T>,
       apiContext: { [key: string]: any } = {}
     ): Promise<ErrorHandlingResult<T>> => {

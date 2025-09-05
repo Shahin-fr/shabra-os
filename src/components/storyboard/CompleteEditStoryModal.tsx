@@ -111,7 +111,6 @@ export function CompleteEditStoryModal({
     onOpenChange(false);
   };
 
-
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent

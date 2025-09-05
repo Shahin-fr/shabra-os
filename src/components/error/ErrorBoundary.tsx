@@ -157,7 +157,7 @@ export class ErrorBoundary extends Component<Props, State> {
       try {
         const store = useAppStore.getState();
         store.addNotification(notification);
-      } catch (e) {
+      } catch (_e) {
         // Fallback to console if store is not available
         // Error handling is done in the mutation's onError callback
       }

@@ -68,7 +68,7 @@ export async function getDatabaseMetrics() {
         timestamp: new Date().toISOString(),
       },
     };
-  } catch (error) {
+  } catch (_error) {
     return {
       error: 'Unable to get database metrics',
       timestamp: new Date().toISOString(),

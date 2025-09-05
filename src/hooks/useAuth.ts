@@ -1,6 +1,5 @@
 import { useSession, signIn, signOut } from 'next-auth/react';
 import { useEffect, useRef, useState } from 'react';
-
 import { logAuth, logUser, logError } from '@/lib/logger';
 import {
   useSetUser,

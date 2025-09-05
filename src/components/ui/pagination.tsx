@@ -1,5 +1,4 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-
 import { Button } from '@/components/ui/button';
 
 interface PaginationProps {
@@ -7,7 +6,7 @@ interface PaginationProps {
   totalPages: number;
   hasNextPage: boolean;
   hasPreviousPage: boolean;
-  onPageChange: (_newPage: number) => void;
+  onPageChange: (__newPage: number) => void;
   isLoading?: boolean;
 }
 
@@ -30,8 +29,7 @@ export function Pagination({
     }
   };
 
-  return (
-    <div className='flex items-center justify-between px-2 py-4'>
+  return (<div className='flex items-center justify-between px-2 py-4'>
       <div className='flex items-center gap-2'>
         <Button
           variant='outline'

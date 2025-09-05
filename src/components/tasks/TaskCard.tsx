@@ -47,10 +47,10 @@ interface Task {
 interface TaskCardProps {
   task: Task;
   onStatusChange: (
-    _taskId: string,
-    _status: 'Todo' | 'InProgress' | 'Done'
+    __taskId: string,
+    __status: 'Todo' | 'InProgress' | 'Done'
   ) => void;
-  onEdit?: (_task: Task) => void;
+  onEdit?: (__task: Task) => void;
   isDragging?: boolean;
   canEdit?: boolean;
 }

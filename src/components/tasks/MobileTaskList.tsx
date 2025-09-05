@@ -12,7 +12,6 @@ import {
   Flag,
 } from 'lucide-react';
 import { useState } from 'react';
-
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
@@ -84,8 +83,8 @@ interface Task {
 
 interface MobileTaskListProps {
   tasks: Task[];
-  onStatusChange: (taskId: string, status: Task['status']) => void;
-  onTaskSelect: (task: Task) => void;
+  onStatusChange: (_taskId: string, _status: Task['status']) => void;
+  onTaskSelect: (_task: Task) => void;
   onCreateTask: () => void;
   onRefresh?: () => Promise<void> | void;
   isLoading?: boolean;
@@ -165,8 +164,7 @@ export function MobileTaskList({
     return '';
   };
 
-  return (
-    <div className={`space-y-3 ${_className || ''}`}>
+  return (<div className={`space-y-3 ${_className || ''}`}>
       {/* Header with Create Button */}
       <div className='flex items-center justify-between mb-4'>
         <h2 className='text-lg font-semibold text-gray-900'>وظایف من</h2>

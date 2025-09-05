@@ -1,5 +1,7 @@
 'use client';
 
+import React, { useState } from 'react';
+
 import {
   DndContext,
   DragEndEvent,
@@ -11,7 +13,6 @@ import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { CheckSquare, Plus, Loader2 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
-import { useState } from 'react';
 
 import { CreateTaskModal } from '@/components/tasks/CreateTaskModal';
 import { EditTaskModal } from '@/components/tasks/EditTaskModal';

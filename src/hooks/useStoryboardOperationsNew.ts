@@ -36,7 +36,7 @@ export function useStoryboardOperationsNew(
           defaultProjectId = projectsData.data.projects[0].id;
         }
       }
-    } catch (error) {
+    } catch (_error) {
       // Error handling is done in the mutation's onError callback
     }
 
@@ -59,7 +59,7 @@ export function useStoryboardOperationsNew(
           const projectData = await createProjectResponse.json();
           defaultProjectId = projectData.data.id;
         }
-      } catch (error) {
+      } catch (_error) {
         // Error handling is done in the mutation's onError callback
       }
     }
@@ -86,7 +86,7 @@ export function useStoryboardOperationsNew(
           const storyTypeData = await storyTypeResponse.json();
           defaultStoryTypeId = storyTypeData.id;
         }
-      } catch (error) {
+      } catch (_error) {
         // Error handling is done in the mutation's onError callback
       }
     }

@@ -16,7 +16,6 @@ import {
   Paperclip,
 } from 'lucide-react';
 import { useState } from 'react';
-
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -63,9 +62,9 @@ interface Attachment {
 interface MobileTaskDetailProps {
   task: Task;
   onClose: () => void;
-  onEdit: (task: Task) => void;
-  onDelete: (taskId: string) => void;
-  onStatusChange: (taskId: string, status: Task['status']) => void;
+  onEdit: (_task: Task) => void;
+  onDelete: (_taskId: string) => void;
+  onStatusChange: (_taskId: string, _status: Task['status']) => void;
   className?: string;
 }
 
@@ -154,8 +153,7 @@ export function MobileTaskDetail({
     onClose();
   };
 
-  return (
-    <motion.div
+  return (<motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}

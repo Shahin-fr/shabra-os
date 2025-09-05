@@ -77,25 +77,25 @@ export async function GET() {
     // Get all markdown documents from content/docs
     let markdownDocs: any[] = [];
     try {
-      console.log('=== WIKI API DEBUG ===');
-      console.log('Attempting to load markdown docs...');
+      logger.warn('=== WIKI API DEBUG ===');
+      logger.warn('Attempting to load markdown docs...');
       markdownDocs = getAllDocs();
-      console.log('Markdown docs loaded successfully:', markdownDocs.length);
+      logger.warn('Markdown docs loaded successfully:', { count: markdownDocs.length });
       if (markdownDocs.length > 0) {
-        console.log(
+        logger.warn(
           'First few docs:',
           markdownDocs
             .slice(0, 3)
             .map(doc => ({ title: doc.title, slug: doc.slug }))
         );
       } else {
-        console.log('No markdown docs found!');
+        logger.warn('No markdown docs found!');
       }
-      console.log('=== END WIKI API DEBUG ===');
+      logger.warn('=== END WIKI API DEBUG ===');
     } catch (error) {
-      console.error('Error loading markdown docs:', error);
+      logger.error('Error loading markdown docs:', error instanceof Error ? error : new Error(String(error)));
       if (error instanceof Error) {
-        console.error('Error stack:', error.stack);
+        logger.error('Error stack:', new Error(error.stack || 'No stack trace available'));
       }
       markdownDocs = [];
     }

@@ -226,7 +226,6 @@ export function StoryManagementNew({
     }
   };
 
-
   // Handle story type selection from palette
   const handleStoryTypeSelect = async (storyType: any) => {
     if (_selectedSlotIndex === null) return;
@@ -249,13 +248,12 @@ export function StoryManagementNew({
       // Clear selection
       onSelectedSlotIndexChange(null);
       setSelectedStoryType(null);
-    } catch (error) {
+    } catch (_error) {
       // Error handling is done in the mutation's onError callback
     } finally {
       setIsCreating(false);
     }
   };
-
 
   // Handle clear slot (delete story)
   const handleClearSlot = async (storyId: string) => {
@@ -265,7 +263,7 @@ export function StoryManagementNew({
 
     try {
       await deleteStoryMutation.mutateAsync(storyId);
-    } catch (error) {
+    } catch (_error) {
       // Error handling is done in the mutation's onError callback
     }
   };
@@ -286,7 +284,7 @@ export function StoryManagementNew({
     for (const story of orphanedStories) {
       try {
         await deleteStoryMutation.mutateAsync(story.id);
-      } catch (error) {
+      } catch (_error) {
         // Error handling is done in the mutation's onError callback
       }
     }
@@ -308,7 +306,7 @@ export function StoryManagementNew({
         storyId: fromStory.id,
         storyData: { order: toIndex + 1 },
       });
-    } catch (error) {
+    } catch (_error) {
       // Error handling is done in the mutation's onError callback
     }
   };
@@ -349,7 +347,7 @@ export function StoryManagementNew({
         setIsCompleteEditModalOpen(false);
         onEditingStoryChange(null);
         onIsEditingChange(false);
-      } catch (error) {
+      } catch (_error) {
         // Error handling is done in the mutation's onError callback
       } finally {
         setIsCreating(false);
@@ -375,7 +373,7 @@ export function StoryManagementNew({
         await createStoryMutation.mutateAsync(newStoryData);
         setIsCompleteEditModalOpen(false);
         onSelectedSlotIndexChange(null);
-      } catch (error) {
+      } catch (_error) {
         // Error handling is done in the mutation's onError callback
       } finally {
         setIsCreating(false);
@@ -390,11 +388,10 @@ export function StoryManagementNew({
       setIsCompleteEditModalOpen(false);
       onEditingStoryChange(null);
       onIsEditingChange(false);
-    } catch (error) {
+    } catch (_error) {
       // Error handling is done in the mutation's onError callback
     }
   };
-
 
   const handleDialogClose = (open: boolean) => {
     onDialogOpenChange(open);

@@ -8,7 +8,6 @@
 import { execSync } from 'child_process';
 import { existsSync, readdirSync, statSync } from 'fs';
 import { join } from 'path';
-
 import { logger } from '@/lib/logger';
 
 interface TestResult {
@@ -181,7 +180,7 @@ class E2ETestRunner {
       logger.info(
         '💥 ${summary.failed} test(s) failed. Please review the errors above.'
       );
-      process.exit(1);
+      process?.exit(1);
     }
   }
 
@@ -194,7 +193,9 @@ class E2ETestRunner {
     logger.info('🌐 Running tests with ${browser} browser');
 
     // Set environment variable for browser
-    process.env.PLAYWRIGHT_BROWSER = browser;
+    if (process.env) {
+      process.env.PLAYWRIGHT_BROWSER = browser;
+    }
 
     return this.runAllTests();
   }
@@ -206,7 +207,9 @@ class E2ETestRunner {
     logger.info('👁️  Running tests in headed mode');
 
     // Set environment variable for headed mode
-    process.env.PLAYWRIGHT_HEADED = 'true';
+    if (process.env) {
+      process.env.PLAYWRIGHT_HEADED = 'true';
+    }
 
     return this.runAllTests();
   }
@@ -218,7 +221,9 @@ class E2ETestRunner {
     logger.info('🐛 Running tests with debugging enabled');
 
     // Set environment variable for debug mode
-    process.env.PLAYWRIGHT_DEBUG = 'true';
+    if (process.env) {
+      process.env.PLAYWRIGHT_DEBUG = 'true';
+    }
 
     return this.runAllTests();
   }
@@ -226,7 +231,7 @@ class E2ETestRunner {
 
 // CLI interface
 async function main() {
-  const args = process.argv.slice(2);
+  const args = process?.argv.slice(2);
   const runner = new E2ETestRunner();
 
   let summary: TestSummary;
@@ -274,7 +279,7 @@ Examples:
 if (require.main === module) {
   main().catch(error => {
     logger.error('❌ Test runner failed:', error);
-    process.exit(1);
+    process?.exit(1);
   });
 }
 

@@ -191,7 +191,7 @@ export async function DELETE(
       },
       { status: HTTP_STATUS_CODES.OK }
     );
-  } catch (error) {
+  } catch (_error) {
     const errorResponse = createServerErrorResponse('خطا در حذف استوری');
     return NextResponse.json(errorResponse, {
       status: getHttpStatusForErrorCode(errorResponse.error.code),

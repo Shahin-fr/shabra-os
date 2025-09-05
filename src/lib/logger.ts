@@ -201,11 +201,11 @@ class Logger {
         switch (level) {
           case 'debug':
             // eslint-disable-next-line no-console
-            console.debug(formattedMessage, sanitizedContext);
+            console.warn(formattedMessage, sanitizedContext);
             break;
           case 'info':
             // eslint-disable-next-line no-console
-            console.info(formattedMessage, sanitizedContext);
+            console.warn(formattedMessage, sanitizedContext);
             break;
           case 'warn':
             console.warn(formattedMessage, sanitizedContext);

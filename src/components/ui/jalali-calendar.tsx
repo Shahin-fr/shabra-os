@@ -24,7 +24,7 @@ import { cn } from '@/lib/utils';
 
 interface JalaliCalendarProps {
   selected?: Date;
-  onSelect?: (_date: Date | undefined) => void;
+  onSelect?: (__date: Date | undefined) => void;
   buttonVariant?: React.ComponentProps<typeof Button>['variant'];
   className?: string;
 }
@@ -168,8 +168,7 @@ function JalaliCalendar({
           const isSelected = selected && isSameDay(day, selected);
           const isTodayDate = isToday(day);
 
-          return (
-            <Button
+          return (<Button
               key={index}
               variant='ghost'
               size='icon'

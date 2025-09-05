@@ -43,7 +43,7 @@ export function measurePerformance(
   if (typeof window !== 'undefined' && window.performance) {
     try {
       window.performance.measure(name, startMark, endMark);
-    } catch (error) {
+    } catch (_error) {
       // Silently fail if marks don't exist
     }
   }

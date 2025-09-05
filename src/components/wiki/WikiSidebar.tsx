@@ -16,7 +16,7 @@ interface WikiItem {
 }
 
 interface WikiSidebarProps {
-  onDocumentSelect: (_documentId: string | null) => void;
+  onDocumentSelect: (__documentId: string | null) => void;
   selectedDocument: string | null;
 }
 
@@ -38,7 +38,7 @@ export function WikiSidebar({
     try {
       const response = await fetch('/api/wiki');
       if (response.ok) {
-        const data = await response.json();
+        const data = await response?.json();
         setWikiItems(data);
       }
     } catch (error) {

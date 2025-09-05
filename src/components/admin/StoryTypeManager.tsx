@@ -2,14 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  Plus,
-  Edit,
-  Trash2,
-  Eye,
-  EyeOff,
-  Palette,
-} from 'lucide-react';
+import { Plus, Edit, Trash2, Eye, EyeOff, Palette } from 'lucide-react';
 import { useState } from 'react';
 
 import { Badge } from '@/components/ui/badge';
@@ -218,6 +211,7 @@ export function StoryTypeManager() {
   };
 
   const handleDelete = (id: string) => {
+    // eslint-disable-next-line no-alert
     if (
       window.confirm('آیا مطمئن هستید که می‌خواهید این نوع استوری را حذف کنید؟')
     ) {

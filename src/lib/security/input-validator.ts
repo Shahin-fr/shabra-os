@@ -434,7 +434,7 @@ export function withValidation(schema: ValidationSchema) {
         });
 
         return handler(sanitizedRequest);
-      } catch (error) {
+      } catch (_error) {
         return new Response(
           JSON.stringify({
             error: 'Invalid request body',
