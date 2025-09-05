@@ -23,7 +23,7 @@ async function quickFixVercel() {
     console.log('1. Checking current database status...');
     try {
       const statusResponse = await fetch(seedUrl);
-      const statusData = await statusResponse.json();
+      const statusData = await statusResponse.json() as any;
       
       if (statusData.success) {
         console.log(`   ✅ Database accessible`);
@@ -57,7 +57,7 @@ async function quickFixVercel() {
         },
       });
 
-      const seedData = await seedResponse.json();
+      const seedData = await seedResponse.json() as any;
       
       if (seedData.success) {
         console.log('   ✅ Database seeded successfully!');
@@ -84,7 +84,7 @@ async function quickFixVercel() {
     console.log('\n3. Final verification...');
     try {
       const verifyResponse = await fetch(seedUrl);
-      const verifyData = await verifyResponse.json();
+      const verifyData = await verifyResponse.json() as any;
       
       if (verifyData.success && verifyData.userCount > 0) {
         console.log('   ✅ Verification successful!');

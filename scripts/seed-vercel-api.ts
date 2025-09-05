@@ -23,7 +23,7 @@ async function seedVercelDatabase() {
     console.log('1. Checking current database status...');
     try {
       const statusResponse = await fetch(seedUrl);
-      const statusData = await statusResponse.json();
+      const statusData = await statusResponse.json() as any;
       
       if (statusData.success) {
         console.log(`   Current users: ${statusData.userCount}`);
@@ -54,7 +54,7 @@ async function seedVercelDatabase() {
         },
       });
 
-      const seedData = await seedResponse.json();
+      const seedData = await seedResponse.json() as any;
       
       if (seedData.success) {
         console.log('   ✅ Database seeded successfully!');
@@ -90,7 +90,7 @@ async function seedVercelDatabase() {
     console.log('3. Verifying database after seeding...');
     try {
       const verifyResponse = await fetch(seedUrl);
-      const verifyData = await verifyResponse.json();
+      const verifyData = await verifyResponse.json() as any;
       
       if (verifyData.success) {
         console.log(`   ✅ Verification successful!`);
