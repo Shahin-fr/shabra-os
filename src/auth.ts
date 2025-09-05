@@ -25,6 +25,9 @@ if (typeof window === 'undefined' && process.env.NODE_ENV === 'production' && !p
 
 const authConfig = {
   secret: process.env.NEXTAUTH_SECRET || 'fallback-secret-for-build',
+  // Add production-specific configuration
+  trustHost: process.env.NODE_ENV === 'production',
+  useSecureCookies: process.env.NODE_ENV === 'production',
   providers: [
     CredentialsProvider({
       name: 'credentials',
@@ -37,7 +40,11 @@ const authConfig = {
         console.log('🔐 [AUTH DEBUG] Authorize function called with credentials:', {
           email: credentials?.email,
           hasPassword: !!credentials?.password,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
+          environment: process.env.NODE_ENV,
+          isVercel: !!process.env.VERCEL,
+          databaseUrl: process.env.DATABASE_URL ? 'SET' : 'NOT_SET',
+          nextAuthUrl: process.env.NEXTAUTH_URL || 'NOT_SET'
         });
 
         if (!credentials?.email || !credentials?.password) {
@@ -47,6 +54,18 @@ const authConfig = {
 
         try {
           console.log('🔍 [AUTH DEBUG] Searching for user in database with email:', credentials.email);
+          
+          // Test database connection first
+          try {
+            await prisma.$connect();
+            console.log('✅ [AUTH DEBUG] Database connection successful');
+          } catch (dbError) {
+            console.error('❌ [AUTH DEBUG] Database connection failed:', {
+              error: dbError instanceof Error ? dbError.message : String(dbError),
+              databaseUrl: process.env.DATABASE_URL ? 'SET' : 'NOT_SET'
+            });
+            throw dbError;
+          }
           
           const user = await prisma.user.findUnique({
             where: {
@@ -269,6 +288,24 @@ const authConfig = {
         path: '/',
         secure: process.env.NODE_ENV === 'production',
         domain: process.env.NODE_ENV === 'production' ? undefined : undefined, // Let NextAuth handle domain automatically
+      }
+    },
+    callbackUrl: {
+      name: `__Secure-next-auth.callback-url`,
+      options: {
+        httpOnly: true,
+        sameSite: 'lax' as const,
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+      }
+    },
+    csrfToken: {
+      name: `__Host-next-auth.csrf-token`,
+      options: {
+        httpOnly: true,
+        sameSite: 'lax' as const,
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
       }
     }
   },

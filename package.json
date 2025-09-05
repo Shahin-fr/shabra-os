@@ -37,6 +37,7 @@
     "security:generate": "node scripts/generate-secure-credentials.js",
     "security:setup": "npm run security:generate && npm run security:audit",
     "verify:no-console": "node scripts/verify-no-console.js",
+    "debug:auth": "node scripts/debug-production-auth.js",
     "postinstall": "prisma generate",
     "prepare": "node -e \"process.env.VERCEL ? console.log('Skipping husky in Vercel environment') : require('child_process').execSync('husky', {stdio: 'inherit'})\""
   },
