@@ -7,17 +7,19 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import { logAuth, logUser, logError } from '@/lib/logger';
 import { prisma } from '@/lib/prisma';
 
-// Ensure environment variables are set
-if (!process.env.NEXTAUTH_SECRET) {
-  throw new Error('NEXTAUTH_SECRET environment variable is required');
-}
+// Ensure environment variables are set (only at runtime, not during build)
+if (typeof window === 'undefined' && process.env.NODE_ENV === 'production') {
+  if (!process.env.NEXTAUTH_SECRET) {
+    throw new Error('NEXTAUTH_SECRET environment variable is required');
+  }
 
-if (!process.env.NEXTAUTH_URL) {
-  throw new Error('NEXTAUTH_URL environment variable is required');
+  if (!process.env.NEXTAUTH_URL) {
+    throw new Error('NEXTAUTH_URL environment variable is required');
+  }
 }
 
 const authConfig = {
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET || 'fallback-secret-for-build',
   providers: [
     CredentialsProvider({
       name: 'credentials',

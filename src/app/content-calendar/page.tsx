@@ -366,7 +366,6 @@ export default function ContentCalendarPage() {
   };
 
   const handleDeleteContent = (id: string) => {
-    // eslint-disable-next-line no-alert
     if (window.confirm('آیا از حذف این محتوا اطمینان دارید؟')) {
       deleteMutation.mutate(id);
     }
@@ -634,9 +633,7 @@ function DroppableDayColumn({
   };
   dayContent: ContentSlot[];
   index: number;
-  // eslint-disable-next-line no-unused-vars
   onEdit: (_content: ContentSlot) => void;
-  // eslint-disable-next-line no-unused-vars
   onDelete: (_id: string) => void;
   isLoadingSlots: boolean;
   slotsError: unknown;
@@ -723,9 +720,7 @@ function DraggableContentCard({
   onDelete,
 }: {
   content: ContentSlot;
-  // eslint-disable-next-line no-unused-vars
   onEdit: (_content: ContentSlot) => void;
-  // eslint-disable-next-line no-unused-vars
   onDelete: (_id: string) => void;
 }) {
   const {
@@ -851,7 +846,6 @@ function ContentForm({
   currentWeek,
   isLoading,
 }: {
-  // eslint-disable-next-line no-unused-vars
   onSubmit: (formData: CreateContentData) => void;
   onCancel: () => void;
   editingContent: ContentSlot | null;

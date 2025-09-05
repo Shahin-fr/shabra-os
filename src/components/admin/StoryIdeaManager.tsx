@@ -299,7 +299,6 @@ export function StoryIdeaManager() {
   };
 
   const handleDelete = (id: string) => {
-    // eslint-disable-next-line no-alert
     if (
       window.confirm(
         'آیا مطمئن هستید که می‌خواهید این ایده استوری را حذف کنید؟'
