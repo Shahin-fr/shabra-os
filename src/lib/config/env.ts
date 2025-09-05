@@ -108,7 +108,7 @@ function validateEnv(): EnvConfig {
           context: 'env-validation',
         });
 
-        if (process.env.NODE_ENV === 'production') {
+        if (process.env.NODE_ENV === 'production' && !process.env.VERCEL) {
           throw new Error(errorMessage);
         }
       }

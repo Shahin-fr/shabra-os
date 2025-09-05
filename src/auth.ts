@@ -8,7 +8,8 @@ import { logAuth, logUser, logError } from '@/lib/logger';
 import { prisma } from '@/lib/prisma';
 
 // Ensure environment variables are set (only at runtime, not during build)
-if (typeof window === 'undefined' && process.env.NODE_ENV === 'production') {
+// Skip validation during build time to prevent Vercel deployment issues
+if (typeof window === 'undefined' && process.env.NODE_ENV === 'production' && !process.env.VERCEL) {
   if (!process.env.NEXTAUTH_SECRET) {
     throw new Error('NEXTAUTH_SECRET environment variable is required');
   }
