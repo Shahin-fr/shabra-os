@@ -28,6 +28,7 @@ import {
 
 import { NavigationItem } from './NavigationItem';
 
+
 // Dynamic import for Image component to improve performance
 const Image = dynamic(() => import('next/image'), {
   loading: () => (
@@ -35,13 +36,13 @@ const Image = dynamic(() => import('next/image'), {
   ),
 });
 
-// Navigation item interface
-interface NavigationItem {
+// Navigation item type
+type NavigationItemType = {
   href: string;
   label: string;
   icon: React.ComponentType<{ className?: string }>;
   priority: 'high' | 'medium' | 'low';
-}
+};
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -55,7 +56,7 @@ export function Sidebar() {
   };
 
   // Performance-optimized navigation items with priority
-  const navigationItems: NavigationItem[] = [
+  const navigationItems: NavigationItemType[] = [
     { href: '/', label: 'داشبورد', icon: LayoutDashboard, priority: 'high' },
     {
       href: '/tasks',

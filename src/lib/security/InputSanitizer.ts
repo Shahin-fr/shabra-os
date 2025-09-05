@@ -106,7 +106,7 @@ export class InputSanitizer {
     return input
       .replace(/[<>:"|?*]/g, '') // Remove invalid characters
       .replace(/\.\./g, '') // Remove path traversal attempts
-      .replace(/^[\/\\]+/, '') // Remove leading slashes
+      .replace(/^[/\\]+/, '') // Remove leading slashes
       .trim();
   }
 

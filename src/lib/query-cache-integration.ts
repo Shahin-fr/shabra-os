@@ -7,7 +7,6 @@
 
 import { QueryClient, QueryKey } from '@tanstack/react-query';
 
-import { useCacheActions } from '@/stores/consolidated-store';
 
 // ============================================================================
 // CACHE INTEGRATION TYPES
@@ -156,14 +155,13 @@ export function createIntegratedQueryClient(
 export function preloadCacheData<T>(
   cacheKey: string,
   data: T,
+  setCache: (key: string, data: any, options: any) => void,
   options?: {
     ttl?: number;
     dependencies?: string[];
   }
 ) {
-  const { set } = useCacheActions();
-
-  set(cacheKey, data, {
+  setCache(cacheKey, data, {
     ttl: options?.ttl || getDefaultTTL([cacheKey]),
     dependencies: options?.dependencies || [],
   });
@@ -178,12 +176,11 @@ export function preloadMultipleCacheEntries(
     data: any;
     ttl?: number;
     dependencies?: string[];
-  }>
+  }>,
+  setCache: (key: string, data: any, options: any) => void
 ) {
-  const { set } = useCacheActions();
-
   entries.forEach(({ key, data, ttl, dependencies }) => {
-    set(key, data, {
+    setCache(key, data, {
       ttl: ttl || getDefaultTTL([key]),
       dependencies: dependencies || [],
     });

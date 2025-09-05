@@ -138,24 +138,19 @@ export function useStoryboardOperationsNew(
       return;
     }
 
-    try {
-      if (story) {
-        // Update existing story
-        await updateStory(story.id, { title: story.title, storyTypeId });
-      } else {
-        // Create new story
-        await createStoryWithDefaults({
-          title: `${storyType.name} Story`,
-          storyTypeId,
-        });
-      }
-
-      // Note: No need to call refetchStories() here as the mutation's onSuccess callback
-      // already handles the refetch. Calling it here would create a race condition.
-    } catch (error) {
-      // Error handling is done in the mutation's onError callback
-      throw error;
+    if (story) {
+      // Update existing story
+      await updateStory(story.id, { title: story.title, storyTypeId });
+    } else {
+      // Create new story
+      await createStoryWithDefaults({
+        title: `${storyType.name} Story`,
+        storyTypeId,
+      });
     }
+
+    // Note: No need to call refetchStories() here as the mutation's onSuccess callback
+    // already handles the refetch. Calling it here would create a race condition.
   };
 
   return {
