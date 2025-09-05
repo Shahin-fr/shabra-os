@@ -13,7 +13,7 @@ export const prisma =
         : ['error'],
     datasources: {
       db: {
-        url: process.env.PRISMA_DATABASE_URL,
+        url: process.env.DATABASE_URL,
       },
     },
   });

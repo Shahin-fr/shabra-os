@@ -1,7 +1,5 @@
-import { PrismaClient } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 export async function GET(
   _request: NextRequest,
@@ -27,8 +25,6 @@ export async function GET(
       { error: { message: 'Failed to fetch story type' } },
       { status: 500 }
     );
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
@@ -58,8 +54,6 @@ export async function PATCH(
       { error: { message: 'Failed to update story type' } },
       { status: 500 }
     );
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
@@ -96,7 +90,5 @@ export async function DELETE(
       { error: { message: 'Failed to delete story type' } },
       { status: 500 }
     );
-  } finally {
-    await prisma.$disconnect();
   }
 }
