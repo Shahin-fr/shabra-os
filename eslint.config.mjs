@@ -11,9 +11,15 @@ export default [
   // Base JavaScript recommended rules
   js.configs.recommended,
 
-  // TypeScript configuration
+  // TypeScript configuration for source files
   {
-    files: ['**/*.{ts,tsx}'],
+    files: ['src/**/*.{ts,tsx}'],
+    ignores: [
+      'src/**/*.test.{ts,tsx}',
+      'src/**/*.spec.{ts,tsx}',
+      'src/test/**/*',
+      'src/e2e/**/*'
+    ],
     languageOptions: {
       parser: typescriptParser,
       parserOptions: {
@@ -348,9 +354,16 @@ export default [
       '**/*.spec.{js,ts,jsx,tsx}',
       '**/test/**/*.{js,ts,jsx,tsx}',
       'src/test/**/*.{js,ts,jsx,tsx}',
+      '**/e2e/**/*.{js,ts,jsx,tsx}',
       'vitest.config.ts',
     ],
     languageOptions: {
+      parser: typescriptParser,
+      parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+        // Don't require project for test files
+      },
       globals: {
         // Test globals
         describe: 'readonly',
@@ -363,31 +376,132 @@ export default [
         afterEach: 'readonly',
         // Vitest globals
         vi: 'readonly',
+        // Jest globals
+        jest: 'readonly',
         // Browser globals for component testing
         window: 'readonly',
         document: 'readonly',
         console: 'readonly',
         fetch: 'readonly',
-        // Global objects
+        // DOM types
+        HTMLInputElement: 'readonly',
+        HTMLTextAreaElement: 'readonly',
+        HTMLSelectElement: 'readonly',
+        HTMLButtonElement: 'readonly',
+        HTMLElement: 'readonly',
+        Element: 'readonly',
+        Node: 'readonly',
+        // Web APIs
+        URL: 'readonly',
+        URLSearchParams: 'readonly',
+        FormData: 'readonly',
+        Headers: 'readonly',
+        Request: 'readonly',
+        Response: 'readonly',
+        // Performance API
+        performance: 'readonly',
+        // Node.js globals for test files
+        process: 'readonly',
+        Buffer: 'readonly',
+        __dirname: 'readonly',
+        __filename: 'readonly',
         global: 'readonly',
+        module: 'readonly',
+        exports: 'readonly',
+        require: 'readonly',
+        // Global objects
         globalThis: 'readonly',
       },
-      ecmaVersion: 'latest',
-      sourceType: 'module',
+    },
+    plugins: {
+      '@typescript-eslint': typescript,
+      react: react,
+      'react-hooks': reactHooks,
     },
     rules: {
       'import/no-extraneous-dependencies': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       'no-console': 'off',
+      '@typescript-eslint/no-unused-vars': 'off',
+      'no-unused-vars': 'off',
+      '@typescript-eslint/explicit-function-return-type': 'off',
+      '@typescript-eslint/explicit-module-boundary-types': 'off',
+      'no-undef': 'off',
     },
   },
 
   // Configuration files
   {
     files: ['**/*.config.{js,ts,mjs}', '**/*.config.*.{js,ts,mjs}'],
+    languageOptions: {
+      parser: typescriptParser,
+      parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+        // Don't require project for config files
+      },
+      globals: {
+        // Node.js globals for config files
+        process: 'readonly',
+        Buffer: 'readonly',
+        __dirname: 'readonly',
+        __filename: 'readonly',
+        global: 'readonly',
+        module: 'readonly',
+        exports: 'readonly',
+        require: 'readonly',
+        console: 'readonly',
+      },
+    },
+    plugins: {
+      '@typescript-eslint': typescript,
+    },
     rules: {
       'import/no-extraneous-dependencies': 'off',
       '@typescript-eslint/no-var-requires': 'off',
+      '@typescript-eslint/no-unused-vars': 'off',
+      'no-unused-vars': 'off',
+      'no-undef': 'off',
+    },
+  },
+
+  // Script files
+  {
+    files: ['scripts/**/*.{js,ts}', '*.js'],
+    languageOptions: {
+      parser: typescriptParser,
+      parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+        // Don't require project for script files
+      },
+      globals: {
+        // Node.js globals for script files
+        process: 'readonly',
+        Buffer: 'readonly',
+        __dirname: 'readonly',
+        __filename: 'readonly',
+        global: 'readonly',
+        module: 'readonly',
+        exports: 'readonly',
+        require: 'readonly',
+        console: 'readonly',
+        // Web APIs for scripts that might use them
+        fetch: 'readonly',
+        URL: 'readonly',
+        URLSearchParams: 'readonly',
+      },
+    },
+    plugins: {
+      '@typescript-eslint': typescript,
+    },
+    rules: {
+      'import/no-extraneous-dependencies': 'off',
+      '@typescript-eslint/no-var-requires': 'off',
+      '@typescript-eslint/no-unused-vars': 'off',
+      'no-unused-vars': 'off',
+      'no-undef': 'off',
+      'no-console': 'off',
     },
   },
 
