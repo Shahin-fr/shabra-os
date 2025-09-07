@@ -48,11 +48,8 @@ function getAllDocs() {
 }
 
 // GET /api/wiki - Get all wiki items with nested structure
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    // Temporarily disable authentication for testing
-    // TODO: Re-enable authentication once the issue is resolved
-    /*
     // Add authorization check
     const { withAuth } = await import('@/lib/middleware/auth-middleware');
 
@@ -61,7 +58,6 @@ export async function GET() {
     if (authResult.response) {
       return authResult.response;
     }
-    */
 
     // Get all documents and folders from database
     const dbItems = await prisma.document.findMany({

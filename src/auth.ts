@@ -9,13 +9,13 @@ console.log("✅ [AUTH CONFIG] NEXTAUTH_SECRET is set:", !!process.env.NEXTAUTH_
 console.log("✅ [AUTH CONFIG] DATABASE_URL is set:", !!process.env.DATABASE_URL);
 console.log("✅ [AUTH CONFIG] NODE_ENV:", process.env.NODE_ENV);
 
-// import bcrypt from 'bcryptjs'; // Temporarily disabled for bypass
+import bcrypt from 'bcryptjs';
 import NextAuth from 'next-auth';
 import type { Session } from 'next-auth';
 import type { JWT } from 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
-// import { prisma } from '@/lib/prisma'; // Temporarily disabled for bypass
+import { prisma } from '@/lib/prisma';
 import { initializeProductionFixes } from '@/lib/production-fixes';
 
 // Initialize production fixes
@@ -54,28 +54,6 @@ const authConfig = {
           return null;
         }
 
-        // 🚨 TEMPORARY BYPASS: Allow any email/password combination for testing
-        console.log('🚨 [TEMP BYPASS] Allowing any credentials for testing purposes');
-        
-        // Create a temporary user for any valid email/password combination
-        const tempUser = {
-          id: 'temp-user-' + Date.now(),
-          email: credentials.email as string,
-          name: 'Test User',
-          avatar: undefined,
-          roles: ['ADMIN'], // Give admin access for testing
-        };
-
-        console.log('✅ [TEMP BYPASS] Authentication successful for testing:', {
-          email: tempUser.email,
-          name: tempUser.name,
-          roles: tempUser.roles
-        });
-
-        return tempUser;
-
-        // Original database authentication code (commented out for now)
-        /*
         try {
           console.log('🔍 [AUTH DEBUG] Searching for user in database with email:', credentials.email);
           
@@ -158,7 +136,6 @@ const authConfig = {
           });
           return null;
         }
-        */
       },
     }),
   ],

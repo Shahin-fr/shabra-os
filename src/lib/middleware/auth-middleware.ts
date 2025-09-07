@@ -74,12 +74,14 @@ export async function withAuth(
         EMPLOYEE: 1,
       };
 
-      const userHighestPrivilege = Math.max(
-        ...context.roles.map(
-          role =>
-            privilegeHierarchy[role as keyof typeof privilegeHierarchy] || 0
-        )
-      );
+      const userHighestPrivilege = context.roles.length > 0 
+        ? Math.max(
+            ...context.roles.map(
+              role =>
+                privilegeHierarchy[role as keyof typeof privilegeHierarchy] || 0
+            )
+          )
+        : 0;
 
       const requiredPrivilege =
         privilegeHierarchy[options.requiredPrivilegeLevel];
