@@ -7,7 +7,8 @@ const globalForPrisma = globalThis as unknown as {
 // Check if we have a valid database URL
 const hasValidDatabaseUrl = process.env.DATABASE_URL && 
   process.env.DATABASE_URL !== 'undefined' && 
-  process.env.DATABASE_URL.startsWith('postgresql://') &&
+  (process.env.DATABASE_URL.startsWith('postgresql://') || 
+   process.env.DATABASE_URL.startsWith('postgres://')) &&
   !process.env.DATABASE_URL.includes('mock://');
 
 // Create a mock Prisma client for build time when no database is available
