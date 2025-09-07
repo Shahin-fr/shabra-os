@@ -4,7 +4,7 @@ import {
   createServerErrorResponse,
   getHttpStatusForErrorCode,
 } from '@/lib/api/response-utils';
-import { prisma } from '@/lib/prisma';
+import { prismaLocal as prisma } from '@/lib/prisma-local';
 
 export async function GET() {
   try {

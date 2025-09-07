@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { prismaLocal as prisma } from '@/lib/prisma-local';
 
 export async function GET(request: NextRequest) {
   try {
@@ -46,7 +46,14 @@ export async function GET(request: NextRequest) {
       orderBy: [{ isActive: 'desc' }, { category: 'asc' }, { title: 'asc' }],
     });
 
-    return NextResponse.json(storyIdeas);
+    const response = NextResponse.json(storyIdeas);
+    
+    // Add cache control headers to prevent caching
+    response.headers.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+    response.headers.set('Pragma', 'no-cache');
+    response.headers.set('Expires', '0');
+    
+    return response;
   } catch (error) {
     console.error('Error fetching story ideas:', error);
     return NextResponse.json(

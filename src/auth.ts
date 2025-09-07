@@ -34,10 +34,20 @@ if (typeof window === 'undefined' && process.env.NODE_ENV === 'production' && !p
 }
 
 const authConfig = {
-  secret: process.env.NEXTAUTH_SECRET, // Make it explicit - no fallback
+  secret: process.env.NEXTAUTH_SECRET || 'local-development-secret-key-minimum-32-characters-long',
   // Add production-specific configuration
-  trustHost: process.env.NODE_ENV === 'production',
+  trustHost: true, // Allow localhost for development
   useSecureCookies: process.env.NODE_ENV === 'production',
+  // CSRF configuration for local development
+  csrfToken: {
+    name: 'next-auth.csrf-token',
+    options: {
+      httpOnly: true,
+      sameSite: 'lax',
+      path: '/',
+      secure: process.env.NODE_ENV === 'production',
+    },
+  },
   providers: [
     CredentialsProvider({
       name: 'credentials',
@@ -57,7 +67,17 @@ const authConfig = {
         try {
           console.log('🔍 [AUTH DEBUG] Searching for user in database with email:', credentials.email);
           
-          const user = await prisma.user.findUnique({
+          // Force use the correct database
+          const { PrismaClient } = require('@prisma/client');
+          const localPrisma = new PrismaClient({
+            datasources: {
+              db: {
+                url: 'file:./dev.db'
+              }
+            }
+          });
+          
+          const user = await localPrisma.user.findUnique({
             where: {
               email: credentials.email as string,
             },
@@ -118,7 +138,7 @@ const authConfig = {
             email: user.email,
             name: `${user.firstName} ${user.lastName}`,
             avatar: user.avatar || undefined,
-            roles: user.roles || [],
+            roles: user.roles ? [user.roles] : ['EMPLOYEE'], // Convert string to array for compatibility
           };
 
           console.log('✅ [AUTH DEBUG] Authentication successful, returning user:', {
@@ -127,6 +147,10 @@ const authConfig = {
             name: userToReturn.name,
             roles: userToReturn.roles
           });
+          
+          // Close the local prisma connection
+          await localPrisma.$disconnect();
+          
           return userToReturn;
         } catch (error) {
           console.log('💥 [AUTH DEBUG] Authorization error occurred:', {
@@ -134,6 +158,14 @@ const authConfig = {
             email: credentials.email,
             stack: error instanceof Error ? error.stack : undefined
           });
+          
+          // Close the local prisma connection
+          try {
+            await localPrisma.$disconnect();
+          } catch (e) {
+            // Ignore disconnect errors
+          }
+          
           return null;
         }
       },
@@ -230,17 +262,16 @@ const authConfig = {
   },
   cookies: {
     sessionToken: {
-      name: `__Secure-next-auth.session-token`,
+      name: process.env.NODE_ENV === 'production' ? '__Secure-next-auth.session-token' : 'next-auth.session-token',
       options: {
         httpOnly: true,
         sameSite: 'lax' as const,
         path: '/',
         secure: process.env.NODE_ENV === 'production',
-        domain: process.env.NODE_ENV === 'production' ? undefined : undefined, // Let NextAuth handle domain automatically
       }
     },
     callbackUrl: {
-      name: `__Secure-next-auth.callback-url`,
+      name: process.env.NODE_ENV === 'production' ? '__Secure-next-auth.callback-url' : 'next-auth.callback-url',
       options: {
         httpOnly: true,
         sameSite: 'lax' as const,
@@ -249,7 +280,7 @@ const authConfig = {
       }
     },
     csrfToken: {
-      name: `__Host-next-auth.csrf-token`,
+      name: process.env.NODE_ENV === 'production' ? '__Host-next-auth.csrf-token' : 'next-auth.csrf-token',
       options: {
         httpOnly: true,
         sameSite: 'lax' as const,

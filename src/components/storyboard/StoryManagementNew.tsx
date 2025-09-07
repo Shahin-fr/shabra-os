@@ -312,8 +312,9 @@ export function StoryManagementNew({
   };
 
   // Handle idea selection from Idea Bank
-  const handleIdeaSelect = (_idea: any) => {
+  const handleIdeaSelect = (idea: any) => {
     setIsIdeaBankOpen(false);
+    // The idea will be handled by CompleteEditStoryModal
   };
 
   // Handle opening Idea Bank
@@ -342,6 +343,8 @@ export function StoryManagementNew({
             title: storyData.title,
             notes: storyData.notes,
             link: storyData.link,
+            customTitle: storyData.customTitle,
+            storyIdeaId: storyData.ideaId,
           },
         });
         setIsCompleteEditModalOpen(false);
@@ -480,7 +483,9 @@ export function StoryManagementNew({
         onSubmit={handleCompleteEditSubmit}
         onDelete={handleDeleteStory}
         onOpenIdeaBank={handleOpenIdeaBank}
+        onSelectIdea={handleIdeaSelect}
         story={_editingStory}
+        storyIdeas={storyIdeas as any}
         isLoading={isCreating}
       />
 

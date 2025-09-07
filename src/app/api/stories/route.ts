@@ -9,6 +9,7 @@ import {
 import { DatabasePerformanceMonitor } from '@/lib/database/query-optimizer';
 import { StoryQueryOptimizer } from '@/lib/database/query-optimizer';
 import { logger } from '@/lib/logger';
+import { prismaLocal as prisma } from '@/lib/prisma-local';
 
 // GET /api/stories - Get stories for a specific day
 export async function GET(request: NextRequest) {
@@ -89,7 +90,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const {
+    let {
       title,
       notes,
       visualNotes,
@@ -104,6 +105,40 @@ export async function POST(request: NextRequest) {
       type,
       ideaId,
     } = body;
+
+    // Fix old project IDs - convert to valid ones
+    if (projectId === 'cmf5o9m110001u35cldria860') {
+      // Get the first available project
+      const firstProject = await prisma.project.findFirst({
+        select: { id: true }
+      });
+      if (firstProject) {
+        projectId = firstProject.id;
+        console.log('🔄 Fixed project ID:', projectId);
+      }
+    }
+
+    // Fix story idea ID if needed
+    if (storyIdeaId && storyIdeaId.length > 0) {
+      // Check if storyIdeaId is actually a story idea name
+      const storyIdea = await prisma.storyIdea.findFirst({
+        where: {
+          OR: [
+            { id: storyIdeaId },
+            { title: storyIdeaId }
+          ]
+        },
+        select: { id: true, title: true }
+      });
+      
+      if (storyIdea) {
+        storyIdeaId = storyIdea.id;
+        console.log('🔄 Fixed story idea ID:', storyIdeaId, 'for:', storyIdea.title);
+      } else {
+        console.log('⚠️ Story idea not found:', storyIdeaId);
+        storyIdeaId = null;
+      }
+    }
 
     logger.info('Story creation request received', {
       body,
@@ -167,6 +202,7 @@ export async function POST(request: NextRequest) {
           customTitle: customTitle?.trim() || null,
           type: type?.trim() || null,
           ideaId: ideaId || null,
+          authorId: authResult.context.userId,
         })
     );
 

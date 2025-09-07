@@ -7,7 +7,7 @@ import {
   HTTP_STATUS_CODES,
   getHttpStatusForErrorCode,
 } from '@/lib/api/response-utils';
-import { prisma } from '@/lib/prisma';
+import { prismaLocal as prisma } from '@/lib/prisma-local';
 
 // GET /api/content-slots/[contentSlotId] - Get a specific content slot
 export async function GET(

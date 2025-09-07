@@ -9,7 +9,7 @@ import {
   getHttpStatusForErrorCode,
   HTTP_STATUS_CODES,
 } from '@/lib/api/response-utils';
-import { prisma } from '@/lib/prisma';
+import { prismaLocal as prisma } from '@/lib/prisma-local';
 
 export async function PATCH(
   request: NextRequest,

@@ -13,7 +13,7 @@ import {
 } from '@/lib/api/response-utils';
 // import { getAllDocs } from '@/lib/docs';
 import { logger } from '@/lib/logger';
-import { prisma } from '@/lib/prisma';
+import { prismaLocal as prisma } from '@/lib/prisma-local';
 
 // Temporary inline getAllDocs function for testing
 function getAllDocs() {

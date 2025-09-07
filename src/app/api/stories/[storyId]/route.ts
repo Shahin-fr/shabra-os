@@ -7,7 +7,75 @@ import {
   HTTP_STATUS_CODES,
   getHttpStatusForErrorCode,
 } from '@/lib/api/response-utils';
-import { prisma } from '@/lib/prisma';
+import { prismaLocal as prisma } from '@/lib/prisma-local';
+
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ storyId: string }> }
+) {
+  try {
+    // Add authorization check
+    const { withAuth } = await import('@/lib/middleware/auth-middleware');
+
+    // Check authentication
+    const authResult = await withAuth(request);
+    if (authResult.response) {
+      return authResult.response;
+    }
+
+    const { storyId } = await params;
+
+    // Get the story with all related data
+    const story = await prisma.story.findUnique({
+      where: { id: storyId },
+      include: {
+        storyType: {
+          select: {
+            id: true,
+            name: true,
+            icon: true,
+          },
+        },
+        storyIdea: {
+          select: {
+            id: true,
+            title: true,
+            description: true,
+            category: true,
+            storyType: true,
+          },
+        },
+        project: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        author: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+      },
+    });
+
+    if (!story) {
+      const errorResponse = createNotFoundErrorResponse();
+      return NextResponse.json(errorResponse, {
+        status: getHttpStatusForErrorCode(errorResponse.error.code),
+      });
+    }
+
+    return NextResponse.json(story);
+  } catch {
+    const errorResponse = createServerErrorResponse('خطا در دریافت استوری');
+    return NextResponse.json(errorResponse, {
+      status: getHttpStatusForErrorCode(errorResponse.error.code),
+    });
+  }
+}
 
 export async function PATCH(
   request: NextRequest,
@@ -25,7 +93,7 @@ export async function PATCH(
 
     const { storyId } = await params;
     const body = await request.json();
-    const { title, notes, visualNotes, link, order, storyTypeId, status } =
+    const { title, notes, visualNotes, link, order, storyTypeId, storyIdeaId, status } =
       body;
 
     // Check if story exists
@@ -47,6 +115,7 @@ export async function PATCH(
       visualNotes?: string | null;
       link?: string | null;
       storyTypeId?: string | null;
+      storyIdeaId?: string | null;
       order?: number;
       status?: string;
     } = {};
@@ -92,6 +161,31 @@ export async function PATCH(
       updateData.storyTypeId = storyTypeId || null;
     }
 
+    if (storyIdeaId !== undefined) {
+      if (storyIdeaId) {
+        // Check if storyIdeaId is actually a story idea name
+        const storyIdea = await prisma.storyIdea.findFirst({
+          where: {
+            OR: [
+              { id: storyIdeaId },
+              { title: storyIdeaId }
+            ]
+          },
+          select: { id: true, title: true }
+        });
+        
+        if (storyIdea) {
+          updateData.storyIdeaId = storyIdea.id;
+          console.log('🔄 Fixed story idea ID:', storyIdea.id, 'for:', storyIdea.title);
+        } else {
+          console.log('⚠️ Story idea not found:', storyIdeaId);
+          updateData.storyIdeaId = null;
+        }
+      } else {
+        updateData.storyIdeaId = null;
+      }
+    }
+
     if (order !== undefined) {
       if (typeof order !== 'number' || order < 0) {
         const errorResponse = createValidationErrorResponse(
@@ -129,6 +223,15 @@ export async function PATCH(
             id: true,
             name: true,
             icon: true,
+          },
+        },
+        storyIdea: {
+          select: {
+            id: true,
+            title: true,
+            description: true,
+            category: true,
+            storyType: true,
           },
         },
         project: {

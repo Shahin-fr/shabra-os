@@ -6,7 +6,7 @@ import {
   HTTP_STATUS_CODES,
 } from '@/lib/api/response-utils';
 import { logger } from '@/lib/logger';
-import { prisma } from '@/lib/prisma';
+import { prismaLocal as prisma } from '@/lib/prisma-local';
 
 const reorderSchema = z.object({
   stories: z

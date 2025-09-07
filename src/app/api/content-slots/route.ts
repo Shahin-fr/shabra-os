@@ -8,7 +8,7 @@ import {
   getHttpStatusForErrorCode,
 } from '@/lib/api/response-utils';
 import { logger } from '@/lib/logger';
-import { prisma } from '@/lib/prisma';
+import { prismaLocal as prisma } from '@/lib/prisma-local';
 
 // GET /api/content-slots - Fetch content slots for a specific week
 export async function GET(request: NextRequest) {

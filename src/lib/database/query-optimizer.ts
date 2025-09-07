@@ -1,5 +1,5 @@
 import { logger } from '@/lib/logger';
-import { prisma } from '@/lib/prisma';
+import { prismaLocal as prisma } from '@/lib/prisma-local';
 
 /**
  * Database Query Optimizer
@@ -253,6 +253,7 @@ export class StoryQueryOptimizer {
     ideaId?: string | null;
     order: number;
     status?: string;
+    authorId: string;
   }) {
     // Use the day string directly since it's already in YYYY-MM-DD format
     const dayString = storyData.day;
@@ -274,7 +275,7 @@ export class StoryQueryOptimizer {
         customTitle: storyData.customTitle,
         type: storyData.type,
         ideaId: storyData.ideaId,
-        authorId: 'default-author-id', // You might want to handle this differently
+        authorId: storyData.authorId,
       },
       include: {
         storyType: {

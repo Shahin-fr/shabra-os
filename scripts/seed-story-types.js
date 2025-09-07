@@ -1,92 +1,92 @@
 const { PrismaClient } = require('@prisma/client');
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: 'file:./dev.db'
+    }
+  }
+});
 
-const storyTypes = [
-  {
-    name: 'خبر و اطلاع‌رسانی',
-    icon: 'Newspaper',
-    isActive: true,
-  },
-  {
-    name: 'محتوای آموزشی',
-    icon: 'BookOpen',
-    isActive: true,
-  },
-  {
-    name: 'معرفی محصول',
-    icon: 'Package',
-    isActive: true,
-  },
-  {
-    name: 'پشت صحنه',
-    icon: 'Camera',
-    isActive: true,
-  },
-  {
-    name: 'نظرسنجی',
-    icon: 'MessageCircle',
-    isActive: true,
-  },
-  {
-    name: 'رویداد و مناسبت',
-    icon: 'Calendar',
-    isActive: true,
-  },
-  {
-    name: 'داستان برند',
-    icon: 'Heart',
-    isActive: true,
-  },
-  {
-    name: 'محتوی سرگرمی',
-    icon: 'Smile',
-    isActive: true,
-  },
-  {
-    name: 'نکات و ترفند',
-    icon: 'Lightbulb',
-    isActive: true,
-  },
-  {
-    name: 'مقایسه و بررسی',
-    icon: 'BarChart3',
-    isActive: true,
-  },
-];
-
-async function main() {
-  console.log('🌱 شروع به کاشت انواع استوری...');
-
+async function seedStoryTypes() {
   try {
+    console.log('🌱 Starting to seed story types...');
+
     // Clear existing story types
     await prisma.storyType.deleteMany({});
-    console.log('✅ انواع قبلی پاک شدند');
+    console.log('🗑️ Cleared existing story types');
 
-    // Create new story types
+    // Create story types
+    const storyTypes = [
+      {
+        name: 'متن',
+        description: 'استوری‌های متنی برای انتشار در شبکه‌های اجتماعی',
+        icon: 'text',
+        isActive: true
+      },
+      {
+        name: 'تصویر',
+        description: 'استوری‌های تصویری و عکس',
+        icon: 'image',
+        isActive: true
+      },
+      {
+        name: 'ویدیو',
+        description: 'استوری‌های ویدیویی کوتاه',
+        icon: 'video',
+        isActive: true
+      },
+      {
+        name: 'اینفوگرافیک',
+        description: 'استوری‌های اینفوگرافیک و نمودار',
+        icon: 'chart',
+        isActive: true
+      },
+      {
+        name: 'پول',
+        description: 'استوری‌های مربوط به پول و اقتصاد',
+        icon: 'money',
+        isActive: true
+      },
+      {
+        name: 'ورزش',
+        description: 'استوری‌های ورزشی و مسابقات',
+        icon: 'sport',
+        isActive: true
+      },
+      {
+        name: 'سیاست',
+        description: 'استوری‌های سیاسی و اخبار',
+        icon: 'politics',
+        isActive: true
+      },
+      {
+        name: 'فناوری',
+        description: 'استوری‌های تکنولوژی و فناوری',
+        icon: 'tech',
+        isActive: true
+      }
+    ];
+
+    // Insert story types
     for (const storyType of storyTypes) {
       await prisma.storyType.create({
-        data: storyType,
+        data: storyType
       });
+      console.log(`✅ Created story type: ${storyType.name}`);
     }
 
-    console.log(`✅ ${storyTypes.length} نوع استوری با موفقیت ایجاد شدند`);
-    console.log('📊 انواع استوری:');
+    console.log('🎉 Story types seeded successfully!');
+    
+    // Verify the data
+    const count = await prisma.storyType.count();
+    console.log(`📊 Total story types in database: ${count}`);
 
-    storyTypes.forEach(storyType => {
-      console.log(`   - ${storyType.name} (${storyType.icon})`);
-    });
   } catch (error) {
-    console.error('❌ خطا در ایجاد انواع استوری:', error);
-    throw error;
+    console.error('❌ Error seeding story types:', error);
+  } finally {
+    await prisma.$disconnect();
   }
 }
 
-main()
-  .catch(e => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+seedStoryTypes();

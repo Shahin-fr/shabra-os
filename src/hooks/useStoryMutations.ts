@@ -11,7 +11,9 @@ export interface StoryData {
   notes?: string;
   visualNotes?: string;
   link?: string;
+  customTitle?: string;
   storyTypeId?: string;
+  storyIdeaId?: string;
 }
 
 export interface CreateStoryData extends StoryData {

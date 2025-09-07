@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { DynamicLucideIcon } from '@/components/ui/DynamicLucideIcon';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { IdeaBank } from './IdeaBank';
 
 interface StoryIdea {
   id: string;
@@ -46,7 +47,9 @@ interface CompleteEditStoryModalProps {
   }) => void;
   onDelete?: (storyId: string) => void;
   onOpenIdeaBank: () => void;
+  onSelectIdea?: (idea: StoryIdea) => void;
   story?: Story | null;
+  storyIdeas?: StoryIdea[];
   isLoading?: boolean;
 }
 
@@ -56,7 +59,9 @@ export function CompleteEditStoryModal({
   onSubmit,
   onDelete,
   onOpenIdeaBank,
+  onSelectIdea,
   story,
+  storyIdeas = [],
   isLoading = false,
 }: CompleteEditStoryModalProps) {
   const [formData, setFormData] = useState({
@@ -67,6 +72,7 @@ export function CompleteEditStoryModal({
   });
 
   const [selectedIdea, setSelectedIdea] = useState<StoryIdea | null>(null);
+  const [isIdeaBankOpen, setIsIdeaBankOpen] = useState(false);
 
   // Initialize form data when story changes
   useEffect(() => {
@@ -109,6 +115,17 @@ export function CompleteEditStoryModal({
 
   const handleClose = () => {
     onOpenChange(false);
+  };
+
+  const handleIdeaSelect = (idea: StoryIdea) => {
+    setSelectedIdea(idea);
+    if (onSelectIdea) {
+      onSelectIdea(idea);
+    }
+  };
+
+  const handleOpenIdeaBankInternal = () => {
+    setIsIdeaBankOpen(true);
   };
 
   return (
@@ -175,7 +192,7 @@ export function CompleteEditStoryModal({
               {/* Idea Bank Button */}
               <div className='space-y-3'>
                 <Button
-                  onClick={onOpenIdeaBank}
+                  onClick={handleOpenIdeaBankInternal}
                   className='w-full bg-gradient-to-r from-[#ff0a54] to-[#ff0a54]/80 hover:from-[#ff0a54]/90 hover:to-[#ff0a54]/70 text-white'
                 >
                   <Lightbulb className='h-4 w-4 ml-2' />
@@ -297,6 +314,15 @@ export function CompleteEditStoryModal({
           </div>
         </motion.div>
       </DialogContent>
+
+      {/* Idea Bank Modal */}
+      <IdeaBank
+        isOpen={isIdeaBankOpen}
+        onOpenChange={setIsIdeaBankOpen}
+        onSelectIdea={handleIdeaSelect}
+        storyIdeas={storyIdeas}
+        selectedStoryType={story?.type}
+      />
     </Dialog>
   );
 }
