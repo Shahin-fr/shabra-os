@@ -46,6 +46,15 @@ function setupDatabaseConfig() {
   url       = env("DATABASE_URL")
 }`
     );
+    
+    // Also handle the case where there's no directUrl
+    schemaContent = schemaContent.replace(
+      /datasource db \{\s*provider\s*=\s*"postgresql"\s*url\s*=\s*env\("DATABASE_URL"\)\s*\}/,
+      `datasource db {
+  provider  = "sqlite"
+  url       = env("DATABASE_URL")
+}`
+    );
   }
 
   // Write the updated schema
