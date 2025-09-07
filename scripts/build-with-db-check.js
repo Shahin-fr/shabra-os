@@ -18,16 +18,13 @@ const hasDatabaseUrl = process.env.DATABASE_URL && process.env.DATABASE_URL !== 
 console.log(`Environment: ${isVercel ? 'Vercel' : 'Local'}`);
 console.log(`Database URL present: ${hasDatabaseUrl}`);
 
-if (!hasDatabaseUrl) {
-  console.log('⚠️  No DATABASE_URL found, using mock database for build...');
-  
-  // Set environment variables to trigger mock Prisma client
-  process.env.DATABASE_URL = "mock://database";
-  process.env.POSTGRES_URL = "mock://database";
-  process.env.NEXTAUTH_SECRET = "temp-secret-for-build-only";
-  process.env.NEXTAUTH_URL = "http://localhost:3000";
-  process.env.NODE_ENV = "production";
-}
+// Always use mock database for builds to avoid connection issues
+console.log('🔧 Using mock database for build process to avoid connection issues...');
+process.env.DATABASE_URL = "mock://database";
+process.env.POSTGRES_URL = "mock://database";
+process.env.NEXTAUTH_SECRET = "temp-secret-for-build-only";
+process.env.NEXTAUTH_URL = "http://localhost:3000";
+process.env.NODE_ENV = "production";
 
 try {
   console.log('📦 Running Next.js build...');
