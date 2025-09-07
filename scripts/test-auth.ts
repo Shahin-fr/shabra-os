@@ -36,7 +36,7 @@ async function testAuthentication() {
 
       console.log(`✅ User found: ${user.firstName} ${user.lastName}`);
       console.log(`   Active: ${user.isActive}`);
-      console.log(`   Roles: ${user.roles.join(', ')}`);
+      console.log(`   Roles: ${user.roles}`);
 
       // Test password
       const isPasswordValid = await bcrypt.compare(cred.password, user.password);

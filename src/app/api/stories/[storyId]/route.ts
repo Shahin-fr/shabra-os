@@ -54,7 +54,8 @@ export async function GET(
         author: {
           select: {
             id: true,
-            name: true,
+            firstName: true,
+            lastName: true,
             email: true,
           },
         },

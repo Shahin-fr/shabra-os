@@ -32,6 +32,15 @@ if (!hasDatabaseUrl) {
 try {
   console.log('📦 Running Next.js build...');
   
+  // Check if ESLint is available
+  try {
+    execSync('npx eslint --version', { stdio: 'pipe' });
+    console.log('✅ ESLint is available');
+  } catch (eslintError) {
+    console.log('⚠️  ESLint not found, installing...');
+    execSync('npm install --save-dev eslint', { stdio: 'inherit' });
+  }
+  
   // Run the build command
   execSync('npx next build', { 
     stdio: 'inherit',

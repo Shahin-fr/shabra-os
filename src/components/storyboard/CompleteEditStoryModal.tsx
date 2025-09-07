@@ -22,6 +22,7 @@ interface StoryIdea {
   template: string;
   guidelines: string;
   icon?: string;
+  isActive: boolean;
 }
 
 interface Story {
@@ -46,7 +47,6 @@ interface CompleteEditStoryModalProps {
     ideaId?: string;
   }) => void;
   onDelete?: (storyId: string) => void;
-  onOpenIdeaBank: () => void;
   onSelectIdea?: (idea: StoryIdea) => void;
   story?: Story | null;
   storyIdeas?: StoryIdea[];
@@ -58,7 +58,6 @@ export function CompleteEditStoryModal({
   onOpenChange,
   onSubmit,
   onDelete,
-  onOpenIdeaBank,
   onSelectIdea,
   story,
   storyIdeas = [],

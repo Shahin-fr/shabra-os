@@ -32,7 +32,7 @@ async function checkUsers() {
     users.forEach((user, index) => {
       console.log(`${index + 1}. ${user.firstName} ${user.lastName}`);
       console.log(`   📧 Email: ${user.email}`);
-      console.log(`   🔑 Roles: ${user.roles.join(', ')}`);
+      console.log(`   🔑 Roles: ${user.roles}`);
       console.log(`   ✅ Active: ${user.isActive ? 'Yes' : 'No'}`);
       console.log(`   📅 Created: ${user.createdAt.toISOString()}`);
       console.log('');

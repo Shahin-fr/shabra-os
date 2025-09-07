@@ -162,7 +162,7 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: false, // ✅ Always enforce TypeScript checks
   },
 
-  // ESLint configuration - NEVER ignore ESLint during builds
+  // ESLint configuration - Allow builds to proceed with warnings
   eslint: {
     ignoreDuringBuilds: false, // ✅ Always enforce code quality checks
     dirs: ['src', 'pages', 'components', 'lib', 'app'], // Specify directories to lint

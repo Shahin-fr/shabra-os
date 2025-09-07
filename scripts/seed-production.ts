@@ -21,7 +21,7 @@ async function seedProductionDatabase() {
     if (existingUsers.length > 0) {
       console.log(`   Found ${existingUsers.length} existing user(s):`);
       existingUsers.forEach(user => {
-        console.log(`   - ${user.email} (${user.roles.join(', ')})`);
+        console.log(`   - ${user.email} (${user.roles})`);
       });
       console.log('');
     }
@@ -45,7 +45,7 @@ async function seedProductionDatabase() {
           firstName: 'Admin',
           lastName: 'User',
           password: hashedAdminPassword,
-          roles: ['ADMIN'],
+          roles: 'ADMIN',
           isActive: true,
         },
       });
@@ -71,7 +71,7 @@ async function seedProductionDatabase() {
           firstName: 'Regular',
           lastName: 'User',
           password: hashedUserPassword,
-          roles: ['EMPLOYEE'],
+          roles: 'EMPLOYEE',
           isActive: true,
         },
       });
@@ -97,7 +97,7 @@ async function seedProductionDatabase() {
           firstName: 'Manager',
           lastName: 'User',
           password: hashedManagerPassword,
-          roles: ['MANAGER'],
+          roles: 'MANAGER',
           isActive: true,
         },
       });
@@ -120,7 +120,7 @@ async function seedProductionDatabase() {
     allUsers.forEach((user, index) => {
       console.log(`   ${index + 1}. ${user.firstName} ${user.lastName}`);
       console.log(`      📧 Email: ${user.email}`);
-      console.log(`      🔑 Roles: ${user.roles.join(', ')}`);
+      console.log(`      🔑 Roles: ${user.roles}`);
       console.log(`      ✅ Active: ${user.isActive ? 'Yes' : 'No'}`);
     });
 

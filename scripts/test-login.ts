@@ -37,7 +37,7 @@ async function testLogin() {
       console.log(`✅ User found: ${user.firstName} ${user.lastName}`);
       console.log(`   ID: ${user.id}`);
       console.log(`   Active: ${user.isActive}`);
-      console.log(`   Roles: ${user.roles.join(', ')}`);
+      console.log(`   Roles: ${user.roles}`);
 
       // Step 2: Check if user is active
       if (!user.isActive) {
@@ -55,7 +55,7 @@ async function testLogin() {
         console.log(`   - ID: ${user.id}`);
         console.log(`   - Email: ${user.email}`);
         console.log(`   - Name: ${user.firstName} ${user.lastName}`);
-        console.log(`   - Roles: ${user.roles.join(', ')}`);
+        console.log(`   - Roles: ${user.roles}`);
       } else {
         console.log(`❌ Login would fail for ${cred.email} - Invalid password`);
       }

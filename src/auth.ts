@@ -15,7 +15,6 @@ import type { Session } from 'next-auth';
 import type { JWT } from 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
-import { prisma } from '@/lib/prisma';
 import { initializeProductionFixes } from '@/lib/production-fixes';
 
 // Initialize production fixes
@@ -64,18 +63,18 @@ const authConfig = {
           return null;
         }
 
+        // Force use the correct database
+        const { PrismaClient } = require('@prisma/client');
+        const localPrisma = new PrismaClient({
+          datasources: {
+            db: {
+              url: 'file:./dev.db'
+            }
+          }
+        });
+
         try {
           console.log('🔍 [AUTH DEBUG] Searching for user in database with email:', credentials.email);
-          
-          // Force use the correct database
-          const { PrismaClient } = require('@prisma/client');
-          const localPrisma = new PrismaClient({
-            datasources: {
-              db: {
-                url: 'file:./dev.db'
-              }
-            }
-          });
           
           const user = await localPrisma.user.findUnique({
             where: {
@@ -148,9 +147,6 @@ const authConfig = {
             roles: userToReturn.roles
           });
           
-          // Close the local prisma connection
-          await localPrisma.$disconnect();
-          
           return userToReturn;
         } catch (error) {
           console.log('💥 [AUTH DEBUG] Authorization error occurred:', {
@@ -159,14 +155,14 @@ const authConfig = {
             stack: error instanceof Error ? error.stack : undefined
           });
           
-          // Close the local prisma connection
+          return null;
+        } finally {
+          // Always close the local prisma connection
           try {
             await localPrisma.$disconnect();
           } catch (e) {
             // Ignore disconnect errors
           }
-          
-          return null;
         }
       },
     }),

@@ -128,6 +128,8 @@ export function StoryManagementNew({
         link?: string;
         storyTypeId?: string;
         order?: number;
+        customTitle?: string;
+        storyIdeaId?: string;
       };
     }) => {
       const response = await fetch(`/api/stories/${storyId}`, {
@@ -312,18 +314,11 @@ export function StoryManagementNew({
   };
 
   // Handle idea selection from Idea Bank
-  const handleIdeaSelect = (idea: any) => {
+  const handleIdeaSelect = (_idea: any) => {
     setIsIdeaBankOpen(false);
     // The idea will be handled by CompleteEditStoryModal
   };
 
-  // Handle opening Idea Bank
-  const handleOpenIdeaBank = () => {
-    if (_editingStory?.type) {
-      setSelectedStoryType(_editingStory.type);
-    }
-    setIsIdeaBankOpen(true);
-  };
 
   // Handle story creation/update from Complete Edit Modal
   const handleCompleteEditSubmit = async (storyData: {
@@ -482,7 +477,6 @@ export function StoryManagementNew({
         onOpenChange={setIsCompleteEditModalOpen}
         onSubmit={handleCompleteEditSubmit}
         onDelete={handleDeleteStory}
-        onOpenIdeaBank={handleOpenIdeaBank}
         onSelectIdea={handleIdeaSelect}
         story={_editingStory}
         storyIdeas={storyIdeas as any}

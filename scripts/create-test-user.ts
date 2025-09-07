@@ -36,7 +36,7 @@ async function createTestUser() {
         password: hashedPassword,
         firstName: 'Admin',
         lastName: 'User',
-        roles: ['ADMIN'],
+        roles: 'ADMIN',
         isActive: true,
       },
     });

@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { prismaLocal as prisma } from '@/lib/prisma-local';
 
 export async function GET() {
