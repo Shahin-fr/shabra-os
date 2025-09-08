@@ -56,6 +56,15 @@ if (isVercel) {
     } catch (error) {
       console.error('❌ Failed to regenerate Prisma client:', error.message);
     }
+    
+    // Reset database to ensure compatibility
+    console.log('🔄 Resetting database for compatibility...');
+    try {
+      execSync('node scripts/reset-vercel-database.js', { stdio: 'inherit' });
+      console.log('✅ Database reset completed successfully');
+    } catch (error) {
+      console.error('❌ Failed to reset database:', error.message);
+    }
   }
   
   // Ensure required environment variables are set
