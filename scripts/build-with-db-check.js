@@ -32,10 +32,35 @@ if (isVercel) {
   }
   process.env.NODE_ENV = "production";
 } else {
-  // On local development, use mock database for builds to avoid connection issues
-  console.log('🔧 Using mock database for local build process...');
-  process.env.DATABASE_URL = "mock://database";
-  process.env.POSTGRES_URL = "mock://database";
+  // On local development, use SQLite database
+  console.log('🔧 Using SQLite database for local build process...');
+  
+  // First, switch Prisma schema to SQLite for local development
+  const schemaPath = path.join(process.cwd(), 'prisma', 'schema.prisma');
+  if (fs.existsSync(schemaPath)) {
+    let schemaContent = fs.readFileSync(schemaPath, 'utf8');
+    
+    // Switch to SQLite for local development
+    schemaContent = schemaContent.replace(
+      /datasource db \{\s*provider\s*=\s*"postgresql"\s*url\s*=\s*env\("DATABASE_URL"\)\s*\}/,
+      `datasource db {
+  provider  = "sqlite"
+  url       = env("DATABASE_URL")
+}`
+    );
+    
+    // Switch roles field to String for SQLite compatibility
+    schemaContent = schemaContent.replace(
+      /roles\s+Role\s+@default\(EMPLOYEE\)/,
+      'roles     String   @default("EMPLOYEE")'
+    );
+    
+    fs.writeFileSync(schemaPath, schemaContent);
+    console.log('✅ Switched to SQLite for local development');
+  }
+  
+  process.env.DATABASE_URL = "file:./dev.db";
+  process.env.POSTGRES_URL = "file:./dev.db";
   process.env.NEXTAUTH_SECRET = "temp-secret-for-build-only";
   process.env.NEXTAUTH_URL = "http://localhost:3000";
   process.env.NODE_ENV = "production";

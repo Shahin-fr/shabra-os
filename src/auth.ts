@@ -137,7 +137,7 @@ const authConfig = {
             email: user.email,
             name: `${user.firstName} ${user.lastName}`,
             avatar: user.avatar || undefined,
-            roles: user.roles ? [user.roles] : ['EMPLOYEE'], // Convert string to array for compatibility
+            roles: user.roles ? [user.roles] : ['EMPLOYEE'], // Convert enum to array for compatibility
           };
 
           console.log('✅ [AUTH DEBUG] Authentication successful, returning user:', {

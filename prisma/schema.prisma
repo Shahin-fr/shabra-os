@@ -5,6 +5,7 @@ generator client {
 datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
+  directUrl = env("POSTGRES_URL")
 }
 
 model User {
@@ -15,7 +16,7 @@ model User {
   lastName  String
   avatar    String?
   isActive  Boolean  @default(true)
-  roles     String   @default("EMPLOYEE") // Changed to String for SQLite compatibility
+  roles     String   @default("EMPLOYEE")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

@@ -21,7 +21,7 @@ async function main() {
         firstName: 'Admin',
         lastName: 'User',
         password: hashedPassword,
-        roles: 'ADMIN',
+        roles: 'ADMIN' as any,
         isActive: true,
       },
     });
@@ -45,7 +45,7 @@ async function main() {
         firstName: 'Regular',
         lastName: 'User',
         password: hashedPassword,
-        roles: 'EMPLOYEE',
+        roles: 'EMPLOYEE' as any,
         isActive: true,
       },
     });
