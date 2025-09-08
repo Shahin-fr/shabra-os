@@ -46,6 +46,16 @@ if (isVercel) {
     
     fs.writeFileSync(schemaPath, schemaContent);
     console.log('✅ Ensured PostgreSQL configuration for Vercel');
+    
+    // Regenerate Prisma client after schema change
+    console.log('🔄 Regenerating Prisma client...');
+    const { execSync } = require('child_process');
+    try {
+      execSync('npx prisma generate', { stdio: 'inherit' });
+      console.log('✅ Prisma client regenerated successfully');
+    } catch (error) {
+      console.error('❌ Failed to regenerate Prisma client:', error.message);
+    }
   }
   
   // Ensure required environment variables are set
