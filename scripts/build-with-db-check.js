@@ -64,6 +64,7 @@ if (isVercel) {
       console.log('✅ Database reset completed successfully');
     } catch (error) {
       console.error('❌ Failed to reset database:', error.message);
+      // Continue with build even if reset fails
     }
   }
   
