@@ -24,27 +24,42 @@ export async function POST(request: NextRequest) {
     // Test database connection
     await prisma.$queryRaw`SELECT 1`;
 
+    // Reset database first to ensure compatibility
+    logger.info('Resetting database for compatibility...');
+    
+    // Delete all existing data
+    await prisma.story.deleteMany();
+    await prisma.task.deleteMany();
+    await prisma.user.deleteMany();
+    await prisma.storyIdea.deleteMany();
+    await prisma.storyType.deleteMany();
+    await prisma.contentSlot.deleteMany();
+    await prisma.project.deleteMany();
+    await prisma.document.deleteMany();
+    
+    logger.info('Database reset completed');
+
     const users = [
       {
         email: 'admin@shabra.com',
         firstName: 'Admin',
         lastName: 'User',
         password: 'admin-password-123',
-        roles: ['ADMIN'],
+        roles: 'ADMIN',
       },
       {
         email: 'user@shabra.com',
         firstName: 'Regular',
         lastName: 'User',
         password: 'user-password-123',
-        roles: ['EMPLOYEE'],
+        roles: 'EMPLOYEE',
       },
       {
         email: 'manager@shabra.com',
         firstName: 'Manager',
         lastName: 'User',
         password: 'manager-password-123',
-        roles: ['MANAGER'],
+        roles: 'MANAGER',
       },
     ];
 
@@ -52,20 +67,6 @@ export async function POST(request: NextRequest) {
 
     for (const userData of users) {
       try {
-        // Check if user exists
-        const existingUser = await prisma.user.findUnique({
-          where: { email: userData.email },
-        });
-
-        if (existingUser) {
-          results.push({
-            email: userData.email,
-            status: 'exists',
-            message: 'User already exists',
-          });
-          continue;
-        }
-
         // Create user
         const hashedPassword = await bcrypt.hash(userData.password, 12);
         const user = await prisma.user.create({
@@ -74,7 +75,7 @@ export async function POST(request: NextRequest) {
             firstName: userData.firstName,
             lastName: userData.lastName,
             password: hashedPassword,
-            roles: userData.roles as any,
+            roles: userData.roles,
             isActive: true,
           },
         });
@@ -132,35 +133,20 @@ export async function GET() {
     // Test database connection
     await prisma.$queryRaw`SELECT 1`;
 
-    // Get current user count
-    const userCount = await prisma.user.count();
+    // Reset database first to ensure compatibility
+    logger.info('Resetting database for compatibility...');
     
-    // If users exist, just return the current state
-    if (userCount > 0) {
-      const users = await prisma.user.findMany({
-        select: {
-          email: true,
-          firstName: true,
-          lastName: true,
-          roles: true,
-          isActive: true,
-          createdAt: true,
-        },
-        orderBy: {
-          createdAt: 'asc',
-        },
-      });
-
-      return NextResponse.json({
-        success: true,
-        userCount,
-        users,
-        message: 'Users already exist',
-      });
-    }
-
-    // If no users exist, proceed with seeding
-    logger.info('No users found, starting automatic seeding...');
+    // Delete all existing data
+    await prisma.story.deleteMany();
+    await prisma.task.deleteMany();
+    await prisma.user.deleteMany();
+    await prisma.storyIdea.deleteMany();
+    await prisma.storyType.deleteMany();
+    await prisma.contentSlot.deleteMany();
+    await prisma.project.deleteMany();
+    await prisma.document.deleteMany();
+    
+    logger.info('Database reset completed');
 
     const users = [
       {
@@ -168,21 +154,21 @@ export async function GET() {
         firstName: 'Admin',
         lastName: 'User',
         password: 'admin-password-123',
-        roles: ['ADMIN'],
+        roles: 'ADMIN',
       },
       {
         email: 'user@shabra.com',
         firstName: 'Regular',
         lastName: 'User',
         password: 'user-password-123',
-        roles: ['EMPLOYEE'],
+        roles: 'EMPLOYEE',
       },
       {
         email: 'manager@shabra.com',
         firstName: 'Manager',
         lastName: 'User',
         password: 'manager-password-123',
-        roles: ['MANAGER'],
+        roles: 'MANAGER',
       },
     ];
 
@@ -199,7 +185,7 @@ export async function GET() {
             firstName: userData.firstName,
             lastName: userData.lastName,
             password: hashedPassword,
-            roles: userData.roles as any,
+            roles: userData.roles,
             isActive: true,
           },
         });
