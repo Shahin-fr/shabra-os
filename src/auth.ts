@@ -65,13 +65,7 @@ const authConfig = {
 
         // Force use the correct database
         const { PrismaClient } = require('@prisma/client');
-        const localPrisma = new PrismaClient({
-          datasources: {
-            db: {
-              url: 'file:./dev.db'
-            }
-          }
-        });
+        const localPrisma = new PrismaClient();
 
         try {
           console.log('🔍 [AUTH DEBUG] Searching for user in database with email:', credentials.email);
