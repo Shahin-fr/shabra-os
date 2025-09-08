@@ -63,9 +63,15 @@ const authConfig = {
           return null;
         }
 
-        // Force use the correct database
+        // Use the correct database based on environment
         const { PrismaClient } = require('@prisma/client');
-        const localPrisma = new PrismaClient();
+        const localPrisma = new PrismaClient({
+          datasources: {
+            db: {
+              url: process.env.VERCEL ? process.env.DATABASE_URL : 'file:./dev.db'
+            }
+          }
+        });
 
         try {
           console.log('🔍 [AUTH DEBUG] Searching for user in database with email:', credentials.email);
