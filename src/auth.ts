@@ -115,6 +115,9 @@ const authConfig = {
           }
 
           console.log('🔐 [AUTH DEBUG] Comparing password...');
+          console.log('🔐 [AUTH DEBUG] Input password:', credentials.password);
+          console.log('🔐 [AUTH DEBUG] Stored password hash:', user.password);
+          
           const isPasswordValid = await bcrypt.compare(
             credentials.password as string,
             user.password
@@ -122,7 +125,9 @@ const authConfig = {
 
           console.log('🔐 [AUTH DEBUG] Password comparison result:', {
             isValid: isPasswordValid,
-            email: user.email
+            email: user.email,
+            inputPassword: credentials.password,
+            storedHash: user.password
           });
 
           if (!isPasswordValid) {
