@@ -23,6 +23,31 @@ if (isVercel) {
   console.log('🌐 Using PostgreSQL database on Vercel...');
   console.log('✅ Database URL will be used as provided by Vercel');
   
+  // Ensure Prisma schema is set to PostgreSQL for Vercel
+  const schemaPath = path.join(process.cwd(), 'prisma', 'schema.prisma');
+  if (fs.existsSync(schemaPath)) {
+    let schemaContent = fs.readFileSync(schemaPath, 'utf8');
+    
+    // Ensure PostgreSQL configuration
+    schemaContent = schemaContent.replace(
+      /datasource db \{\s*provider\s*=\s*"sqlite"\s*url\s*=\s*env\("DATABASE_URL"\)\s*\}/,
+      `datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("POSTGRES_URL")
+}`
+    );
+    
+    // Ensure roles field is String for compatibility
+    schemaContent = schemaContent.replace(
+      /roles\s+Role\s+@default\(EMPLOYEE\)/,
+      'roles     String   @default("EMPLOYEE")'
+    );
+    
+    fs.writeFileSync(schemaPath, schemaContent);
+    console.log('✅ Ensured PostgreSQL configuration for Vercel');
+  }
+  
   // Ensure required environment variables are set
   if (!process.env.NEXTAUTH_SECRET) {
     process.env.NEXTAUTH_SECRET = "temp-secret-for-build-only";
