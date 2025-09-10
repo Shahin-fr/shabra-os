@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { BarChart3, TrendingUp, TrendingDown, Target, Users, CheckCircle } from 'lucide-react';
+import { BarChart3, TrendingUp, TrendingDown, Target } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 const weeklyData = [

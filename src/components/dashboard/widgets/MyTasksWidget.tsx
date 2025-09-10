@@ -96,19 +96,6 @@ export function MyTasksWidget() {
     }
   };
 
-  // Get status text in Persian
-  const getStatusText = (status: string) => {
-    switch (status) {
-      case 'completed':
-        return 'تکمیل شده';
-      case 'in_progress':
-        return 'در حال انجام';
-      case 'pending':
-        return 'در انتظار';
-      default:
-        return 'نامشخص';
-    }
-  };
 
   // Get priority text in Persian
   const getPriorityText = (priority: string) => {

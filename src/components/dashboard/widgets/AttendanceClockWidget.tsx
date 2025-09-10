@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Clock, Calendar, Sun, Moon } from 'lucide-react';
+import { Clock, Calendar, Sun } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -67,10 +67,13 @@ export function AttendanceClockWidget() {
   const getWorkDuration = () => {
     if (!isClockedIn || !clockInTime) return '00:00:00';
     
+    const timeParts = clockInTime.split(':');
+    if (timeParts.length !== 3) return '00:00:00';
+    
     const clockInDate = new Date();
-    clockInDate.setHours(parseInt(clockInTime.split(':')[0]));
-    clockInDate.setMinutes(parseInt(clockInTime.split(':')[1]));
-    clockInDate.setSeconds(parseInt(clockInTime.split(':')[2]));
+    clockInDate.setHours(parseInt(timeParts[0] || '0'));
+    clockInDate.setMinutes(parseInt(timeParts[1] || '0'));
+    clockInDate.setSeconds(parseInt(timeParts[2] || '0'));
     
     const now = new Date();
     const diff = now.getTime() - clockInDate.getTime();

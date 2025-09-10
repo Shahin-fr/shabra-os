@@ -58,9 +58,6 @@ export function InteractiveCalendarWidget() {
     return events.find(event => event.date === date)?.type;
   };
   
-  const getEventTitle = (date: number) => {
-    return events.find(event => event.date === date)?.title;
-  };
   
   const getEventColor = (type: string) => {
     switch (type) {
@@ -211,7 +208,6 @@ export function InteractiveCalendarWidget() {
             <div className="text-sm font-medium text-gray-900">رویدادهای پیش رو</div>
             <div className="space-y-1">
               {events.slice(0, 3).map((event, index) => {
-                const IconComponent = getEventIcon(event.type);
                 return (
                   <div key={index} className="flex items-center gap-2 text-xs text-gray-600">
                     <div className={`w-2 h-2 rounded-full ${getEventColor(event.type)}`} />

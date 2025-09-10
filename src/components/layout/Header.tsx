@@ -1,6 +1,6 @@
 'use client';
 
-import { LogOut, User, Settings, Menu, ChevronDown, UserCircle } from 'lucide-react';
+import { LogOut, User, Settings, Menu, UserCircle } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { memo } from 'react';
 

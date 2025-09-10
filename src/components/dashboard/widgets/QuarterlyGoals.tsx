@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Target, CheckCircle, Clock, AlertCircle, TrendingUp, Users, DollarSign, BarChart3 } from 'lucide-react';
+import { Target, TrendingUp, Users, DollarSign, BarChart3 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -81,35 +81,7 @@ const quarterlyGoals = [
   }
 ];
 
-const getStatusColor = (status: string) => {
-  switch (status) {
-    case 'excellent':
-      return 'text-green-500 bg-green-500/20';
-    case 'on_track':
-      return 'text-[#ff0a54] bg-[#ff0a54]/20';
-    case 'at_risk':
-      return 'text-yellow-500 bg-yellow-500/20';
-    case 'behind':
-      return 'text-red-500 bg-red-500/20';
-    default:
-      return 'text-gray-500 bg-gray-500/20';
-  }
-};
 
-const getStatusIcon = (status: string) => {
-  switch (status) {
-    case 'excellent':
-      return <CheckCircle className="h-4 w-4" />;
-    case 'on_track':
-      return <Target className="h-4 w-4" />;
-    case 'at_risk':
-      return <Clock className="h-4 w-4" />;
-    case 'behind':
-      return <AlertCircle className="h-4 w-4" />;
-    default:
-      return <Target className="h-4 w-4" />;
-  }
-};
 
 const getStatusText = (status: string) => {
   switch (status) {

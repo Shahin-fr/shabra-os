@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { BarChart3, Users, Clock, AlertTriangle, CheckCircle } from 'lucide-react';
+import { BarChart3, Users, AlertTriangle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -69,15 +69,8 @@ const getWorkloadColor = (status: string) => {
   }
 };
 
-const getWorkloadStatus = (workload: number) => {
-  if (workload >= 90) return 'critical';
-  if (workload >= 70) return 'high';
-  if (workload >= 50) return 'medium';
-  return 'low';
-};
 
 export function TeamWorkloadAnalysis() {
-  const maxWorkload = Math.max(...workloadData.map(emp => emp.workload));
   const avgWorkload = Math.round(workloadData.reduce((sum, emp) => sum + emp.workload, 0) / workloadData.length);
   const criticalCount = workloadData.filter(emp => emp.status === 'critical').length;
 

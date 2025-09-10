@@ -75,7 +75,6 @@ export function ProjectStatusDonutChart() {
                   const strokeDasharray = circumference;
                   const strokeDashoffset = circumference - (item.percentage / 100) * circumference;
                   
-                  const currentOffset = cumulativePercentage;
                   cumulativePercentage += item.percentage;
                   
                   return (

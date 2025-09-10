@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Bell, Megaphone, User, Calendar, AlertTriangle, CheckCircle, X } from 'lucide-react';
+import { Bell, Megaphone, User, AlertTriangle, CheckCircle, X } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';

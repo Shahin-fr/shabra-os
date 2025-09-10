@@ -1,7 +1,6 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { User, Clock, CheckCircle, Bell } from 'lucide-react';
 
 import { AttendanceClockWidget } from './widgets/AttendanceClockWidget';
 import { MyTasksWidget } from './widgets/MyTasksWidget';
@@ -27,8 +26,7 @@ export function EmployeeDashboard() {
       y: 0, 
       scale: 1,
       transition: { 
-        duration: 0.6,
-        ease: [0.25, 0.46, 0.45, 0.94]
+        duration: 0.6
       }
     },
   };
