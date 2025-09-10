@@ -17,7 +17,7 @@ export function useResponsive(): ResponsiveState {
   const [state, setState] = useState<ResponsiveState>({
     isMobile: false,
     isTablet: false,
-    isDesktop: false,
+    isDesktop: true, // Default to desktop for SSR
     isSmallMobile: false,
     isLargeMobile: false,
     breakpoint: 'lg',

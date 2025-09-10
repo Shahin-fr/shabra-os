@@ -12,6 +12,15 @@ import {
   Calendar,
   X,
   CheckSquare,
+  Clock,
+  User,
+  UserCheck,
+  BarChart,
+  Palette,
+  Calendar as CalendarIcon,
+  FileText,
+  TrendingUp,
+  FileText as DocsIcon,
 } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
@@ -19,6 +28,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import React, { Suspense, useCallback } from 'react';
 
 import { Button } from '@/components/ui/button';
+import { useAuth } from '@/hooks/useAuth';
 import { useMobile } from '@/hooks/useResponsive';
 import { cn } from '@/lib/utils';
 import {
@@ -47,6 +57,7 @@ type NavigationItemType = {
 export function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
+  const { user } = useAuth();
   const mobileSidebarOpen = useMobileSidebarOpen();
   const setMobileSidebarOpen = useSetMobileSidebarOpen();
   const isMobile = useMobile();
@@ -55,50 +66,43 @@ export function Sidebar() {
     setMobileSidebarOpen(false);
   };
 
-  // Performance-optimized navigation items with priority
-  const navigationItems: NavigationItemType[] = [
+  // Get user role for navigation filtering
+  const getUserRole = () => {
+    if (!user?.roles) return 'EMPLOYEE';
+    if (user.roles.includes('ADMIN')) return 'ADMIN';
+    if (user.roles.includes('MANAGER')) return 'MANAGER';
+    if (user.roles.includes('EMPLOYEE')) return 'EMPLOYEE';
+    return 'EMPLOYEE';
+  };
+
+  const userRole = getUserRole();
+
+  // Admin navigation items
+  const adminNavigationItems: NavigationItemType[] = [
     { href: '/', label: 'داشبورد', icon: LayoutDashboard, priority: 'high' },
-    {
-      href: '/tasks',
-      label: 'تسک‌ها',
-      icon: CheckSquare,
-      priority: 'high',
-    },
-    {
-      href: '/projects',
-      label: 'پروژه‌ها',
-      icon: FolderOpen,
-      priority: 'high',
-    },
-    {
-      href: '/storyboard',
-      label: 'استوری‌بورد',
-      icon: Instagram,
-      priority: 'medium',
-    },
-    {
-      href: '/admin/storyboard',
-      label: 'مدیریت استوری‌بورد',
-      icon: Settings,
-      priority: 'medium',
-    },
-    {
-      href: '/content-calendar',
-      label: 'تقویم محتوا',
-      icon: Calendar,
-      priority: 'high',
-    },
-    { href: '/wiki', label: 'شبرالوگ', icon: BookOpen, priority: 'medium' },
-    { href: '/team', label: 'تیم', icon: Users, priority: 'medium' },
-    { href: '/calendar', label: 'تقویم', icon: Calendar, priority: 'low' },
-    {
-      href: '/analytics',
-      label: 'تحلیل‌ها',
-      icon: BarChart3,
-      priority: 'low',
-    },
+    { href: '/tasks', label: 'تسک‌ها', icon: CheckSquare, priority: 'high' },
+    { href: '/projects', label: 'پروژه‌ها', icon: FolderOpen, priority: 'high' },
+    { href: '/storyboard', label: 'استوری‌بورد', icon: Palette, priority: 'high' },
+    { href: '/content-calendar', label: 'تقویم محتوا', icon: Calendar, priority: 'high' },
+    { href: '/calendar', label: 'تقویم', icon: CalendarIcon, priority: 'medium' },
+    { href: '/team', label: 'تیم', icon: Users, priority: 'high' },
+    { href: '/attendance', label: 'حضور و غیاب', icon: Clock, priority: 'high' },
+    { href: '/analytics', label: 'تحلیل و گزارش‌ها', icon: TrendingUp, priority: 'medium' },
+    { href: '/wiki', label: 'ویکی', icon: BookOpen, priority: 'medium' },
+    { href: '/docs', label: 'مستندات', icon: DocsIcon, priority: 'medium' },
     { href: '/settings', label: 'تنظیمات', icon: Settings, priority: 'low' },
   ];
+
+  // Employee navigation items
+  const employeeNavigationItems: NavigationItemType[] = [
+    { href: '/', label: 'داشبورد من', icon: LayoutDashboard, priority: 'high' },
+    { href: '/tasks', label: 'تسک‌های من', icon: CheckSquare, priority: 'high' },
+    { href: '/attendance', label: 'حضور و غیاب من', icon: Clock, priority: 'high' },
+    { href: '/profile', label: 'پروفایل من', icon: User, priority: 'medium' },
+  ];
+
+  // Get navigation items based on user role
+  const navigationItems = userRole === 'ADMIN' ? adminNavigationItems : employeeNavigationItems;
 
   // Instant navigation handler - no debouncing or delays
   const handleItemClick = useCallback(
@@ -262,14 +266,14 @@ export function Sidebar() {
                   >
                     {/* Ripple effect for active state */}
                     {isActive && (
-                      <div className='absolute inset-0 rounded-xl bg-gradient-to-r from-[#ff0a54]/20 to-[#ff0a54]/10 animate-pulse' />
+                      <div className='absolute inset-0 rounded-xl bg-gradient-to-r from-[#fbddec]/20 to-[#fbddec]/10 animate-pulse' />
                     )}
 
                     <item.icon
                       className={cn(
                         'transition-transform duration-200 h-6 w-6',
                         'group-hover:scale-110',
-                        isActive ? 'text-[#ff0a54]' : 'text-gray-500'
+                        isActive ? 'text-[#fbddec]' : 'text-gray-500'
                       )}
                     />
                   </Link>

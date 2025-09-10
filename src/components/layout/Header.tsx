@@ -1,6 +1,6 @@
 'use client';
 
-import { LogOut, User, Settings, Menu } from 'lucide-react';
+import { LogOut, User, Settings, Menu, ChevronDown, UserCircle } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { memo } from 'react';
 
@@ -43,6 +43,15 @@ export function Header() {
   const toggleMobileSidebar = useToggleMobileSidebar();
   const isMobile = useMobile();
 
+  // Get user role for display
+  const getUserRole = () => {
+    if (!user?.roles) return 'کاربر';
+    if (user.roles.includes('ADMIN')) return 'مدیر سیستم';
+    if (user.roles.includes('MANAGER')) return 'مدیر پروژه';
+    if (user.roles.includes('EMPLOYEE')) return 'کارمند';
+    return 'کاربر';
+  };
+
   // Listen for custom status events
   useEffect(() => {
     const handleStatusMessage = (event: CustomEvent) => {
@@ -73,8 +82,8 @@ export function Header() {
   };
 
   return (
-    <header className='fixed top-0 left-0 right-0 z-50 bg-transparent'>
-      <div className='flex items-center justify-between h-16 px-4 sm:px-6 relative'>
+    <header className='fixed top-0 left-0 right-0 z-50'>
+      <div className='flex items-center justify-between h-16 px-4 sm:px-6'>
         {/* Left Section - Mobile Menu Button and Status Message */}
         <div className='flex items-center space-x-3 rtl:space-x-reverse'>
           {/* Hamburger Menu Button - Only visible on mobile */}
@@ -84,11 +93,6 @@ export function Header() {
               size='sm'
               onClick={toggleMobileSidebar}
               className='p-2 hover:bg-[#ff0a54]/10 hover:text-[#ff0a54] transition-all duration-200 rounded-lg'
-              style={{
-                background: 'rgba(255, 255, 255, 0.1)',
-                backdropFilter: 'blur(20px)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-              }}
             >
               <Menu className='h-5 w-5' />
             </Button>
@@ -103,44 +107,29 @@ export function Header() {
           </div>
         </div>
 
-        {/* Right Section - User Menu */}
+        {/* Right Section - Only User Profile */}
         {user && (
-          <div className='flex items-center space-x-2 rtl:space-x-reverse'>
-            {/* User Avatar */}
+          <div className='flex items-center'>
+            {/* Ultra-Minimalist User Profile - Only Avatar */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant='ghost'
-                  className='relative h-8 w-8 rounded-full hover:bg-[#ff0a54]/10 transition-all duration-200'
-                  style={{
-                    background: 'rgba(255, 255, 255, 0.1)',
-                    backdropFilter: 'blur(20px)',
-                    border: '1px solid rgba(255, 255, 255, 0.2)',
-                  }}
+                  className='p-2 hover:bg-[#ff0a54]/10 hover:scale-105 transition-all duration-200 rounded-full'
                 >
-                  <Avatar
-                    className='h-8 w-8 border border-white/30 hover:border-[#ff0a54]/50 transition-all duration-200'
-                    style={{
-                      boxShadow: '0 2px 8px rgba(255, 10, 84, 0.2)',
-                    }}
-                  >
+                  <Avatar className='h-10 w-10 ring-2 ring-[#ff0a54]/20 hover:ring-[#ff0a54]/40 transition-all duration-200'>
                     <AvatarImage
                       src={user.avatar || ''}
                       alt={user.name || ''}
                     />
-                    <AvatarFallback
-                      className='bg-[#ff0a54]/20 text-[#ff0a54] font-semibold'
-                      style={{
-                        background: 'rgba(255, 10, 84, 0.2)',
-                      }}
-                    >
-                      <User className='h-4 w-4' />
+                    <AvatarFallback className='bg-[#ff0a54]/20 text-[#ff0a54] font-semibold'>
+                      <UserCircle className='h-6 w-6' />
                     </AvatarFallback>
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent
-                className='w-48 ml-4'
+                className='w-56 ml-4 mt-2'
                 align='end'
                 style={{
                   background: 'rgba(255, 255, 255, 0.95)',
@@ -150,23 +139,41 @@ export function Header() {
                 }}
               >
                 <DropdownMenuLabel className='font-semibold'>
-                  {user.name || 'کاربر'}
+                  <div className='flex items-center space-x-2 rtl:space-x-reverse'>
+                    <Avatar className='h-8 w-8'>
+                      <AvatarImage
+                        src={user.avatar || ''}
+                        alt={user.name || ''}
+                      />
+                      <AvatarFallback className='bg-[#ff0a54]/20 text-[#ff0a54] font-semibold'>
+                        {user.name?.charAt(0) || 'U'}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <div className='text-sm font-medium'>
+                        {user.name || 'کاربر'}
+                      </div>
+                      <div className='text-xs text-gray-500'>
+                        {getUserRole()}
+                      </div>
+                    </div>
+                  </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem className='cursor-pointer'>
-                  <User className='mr-2 h-4 w-4 text-[#ff0a54]' />
+                  <User className='mr-2 h-4 w-4' />
                   <span>پروفایل</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem className='cursor-pointer'>
-                  <Settings className='mr-2 h-4 w-4 text-[#ff0a54]' />
+                  <Settings className='mr-2 h-4 w-4' />
                   <span>تنظیمات</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
-                  className='cursor-pointer text-destructive focus:text-destructive'
+                  className='cursor-pointer text-red-600 focus:text-red-600'
                   onClick={handleSignOut}
                 >
-                  <LogOut className='mr-2 h-4 w-4 text-[#ff0a54]' />
+                  <LogOut className='mr-2 h-4 w-4' />
                   <span>خروج</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>

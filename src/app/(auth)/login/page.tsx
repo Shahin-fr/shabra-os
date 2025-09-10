@@ -100,42 +100,6 @@ export default function LoginPage() {
     }
   };
 
-  const handleTestLogin = async () => {
-    console.log('🧪 [LOGIN DEBUG] Test login button clicked');
-
-    if (isLoading) return;
-
-    setError('');
-    console.log('🧪 [LOGIN DEBUG] Executing test login with any credentials');
-    
-    try {
-      const result = await signIn('credentials', {
-        redirect: false,
-        email: 'test@example.com',
-        password: 'anypassword',
-      });
-
-      console.log('🧪 [LOGIN DEBUG] Test login result received:', {
-        success: result?.ok,
-        hasError: !!result?.error,
-        error: result?.error,
-      });
-
-      if (result?.error) {
-        console.error('🧪 [LOGIN DEBUG] Test login failed with error:', result.error);
-        setError('Invalid email or password.');
-      } else if (result?.ok) {
-        console.log('🧪 [LOGIN DEBUG] Test login successful, redirecting...');
-        window.location.href = callbackUrl;
-      } else {
-        console.error('🧪 [LOGIN DEBUG] Unknown test login result:', result);
-        setError('An unexpected error occurred during test login.');
-      }
-    } catch (catchError) {
-      console.error('🧪 [LOGIN DEBUG] Exception during test login:', catchError);
-      setError('An unexpected error occurred during test login.');
-    }
-  };
 
   return (
     <div className='min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-pink-50/50 to-purple-50/30 p-4'>
@@ -164,8 +128,8 @@ export default function LoginPage() {
             <p className='text-muted-foreground'>
               برای دسترسی به پنل مدیریت وارد شوید
             </p>
-            <div className='mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded text-xs text-yellow-700'>
-              🚨 حالت تست: هر ایمیل و رمز عبوری کار می‌کند
+            <div className='mt-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-700'>
+              در حالت تست هستید. برای ورود می‌توانید از هر ایمیل و رمز عبوری استفاده کنید.
             </div>
           </CardHeader>
 
@@ -241,35 +205,21 @@ export default function LoginPage() {
                 )}
               </Button>
 
-              {/* Test button for debugging */}
-              <Button
-                type='button'
-                variant='outline'
-                onClick={handleTestLogin}
-                className='w-full'
-              >
-                🧪 Test Login (هر ایمیل/رمز عبور)
-              </Button>
-
-              {/* Debug info */}
-              <div className='text-xs text-gray-500 mt-2'>
-                Debug: isLoading={String(isLoading)}, status={status}, email=
-                {email ? 'filled' : 'empty'}, password=
-                {password ? 'filled' : 'empty'}
-              </div>
             </form>
 
-            <div className='text-center'>
-              <p className='text-sm text-muted-foreground'>
-                حساب کاربری ندارید؟{' '}
-                <Button
-                  variant='link'
-                  className='text-[#ff0a54] hover:text-[#ff0a54]/80 p-0 h-auto'
-                >
-                  ثبت نام کنید
-                </Button>
-              </p>
-            </div>
+            {process.env.NEXT_PUBLIC_ALLOW_SIGNUP === 'true' && (
+              <div className='text-center'>
+                <p className='text-sm text-muted-foreground'>
+                  حساب کاربری ندارید؟{' '}
+                  <Button
+                    variant='link'
+                    className='text-[#ff0a54] hover:text-[#ff0a54]/80 p-0 h-auto'
+                  >
+                    ثبت نام کنید
+                  </Button>
+                </p>
+              </div>
+            )}
           </CardContent>
         </Card>
       </motion.div>
