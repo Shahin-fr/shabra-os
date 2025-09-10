@@ -5,7 +5,6 @@ import {
   Calendar, 
   Palette, 
   FileText, 
-  Clock, 
   BookOpen 
 } from 'lucide-react';
 import Link from 'next/link';
