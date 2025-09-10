@@ -4,8 +4,8 @@ import { motion } from 'framer-motion';
 import { 
   Calendar, 
   Palette, 
-  FileText, 
-  BookOpen 
+  FileText,
+  BookOpen,
 } from 'lucide-react';
 import Link from 'next/link';
 
