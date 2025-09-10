@@ -153,8 +153,7 @@ export const config = {
 
   // Database
   database: {
-    url: env.PRISMA_DATABASE_URL,
-    directUrl: env.POSTGRES_URL,
+    url: env.DATABASE_URL,
   },
 
   // Authentication
@@ -236,8 +235,8 @@ export function validateCredentials() {
     }
 
     if (
-      env.PRISMA_DATABASE_URL.includes('localhost') ||
-      env.PRISMA_DATABASE_URL.includes('127.0.0.1')
+      env.DATABASE_URL.includes('localhost') ||
+      env.DATABASE_URL.includes('127.0.0.1')
     ) {
       issues.push('Database URL points to localhost in production');
     }
