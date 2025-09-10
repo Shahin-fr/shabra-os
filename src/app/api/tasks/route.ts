@@ -11,7 +11,7 @@ import {
   getHttpStatusForErrorCode,
 } from '@/lib/api/response-utils';
 import { logger } from '@/lib/logger';
-import { prismaLocal as prisma } from '@/lib/prisma-local';
+import { prisma } from '@/lib/prisma';
 
 export async function GET(request: NextRequest) {
   try {

@@ -9,8 +9,7 @@ import { logError, logger } from '@/lib/logger';
 // Environment variable schema for validation
 const envSchema = z.object({
   // Database
-  PRISMA_DATABASE_URL: z.string().url('Invalid database URL'),
-  POSTGRES_URL: z.string().url('Invalid PostgreSQL URL'),
+  DATABASE_URL: z.string().url('Invalid database URL'),
 
   // Authentication
   NEXTAUTH_SECRET: z
@@ -120,8 +119,7 @@ function validateEnv(): EnvConfig {
 
     // Return safe defaults for development
     return {
-      PRISMA_DATABASE_URL: process.env.PRISMA_DATABASE_URL || '',
-      POSTGRES_URL: process.env.POSTGRES_URL || '',
+      DATABASE_URL: process.env.DATABASE_URL || '',
       NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET || '',
       NEXTAUTH_URL: process.env.NEXTAUTH_URL || 'http://localhost:3000',
       NODE_ENV: 'development',

@@ -1,15 +1,13 @@
-import { PrismaClient } from '@prisma/client';
+/**
+ * Prisma Local Client
+ * This is an alias for the main Prisma client to maintain compatibility
+ * with existing API routes that import from '@/lib/prisma-local'
+ */
 
-// Create a local Prisma client that always uses the local SQLite database
-export const prismaLocal = new PrismaClient({
-  datasources: {
-    db: {
-      url: 'file:./dev.db'
-    }
-  }
-});
+import { prisma } from './prisma';
 
-// Graceful shutdown
-process.on('beforeExit', async () => {
-  await prismaLocal.$disconnect();
-});
+// Export the main Prisma client as prismaLocal for backward compatibility
+export const prismaLocal = prisma;
+
+// Also export as prisma for consistency
+export { prisma };

@@ -21,10 +21,8 @@ Create a new file called `.env.local` in your project root directory (same level
 # DATABASE CONFIGURATION
 # ========================================
 # PostgreSQL connection string (REQUIRED - replace with your actual credentials)
-PRISMA_DATABASE_URL="postgresql://your-username:your-password@localhost:5432/your-database-name?schema=public"
-
-# Direct PostgreSQL connection for migrations (REQUIRED - replace with your actual credentials)
-POSTGRES_URL="postgresql://your-username:your-password@localhost:5432/your-database-name?schema=public"
+# This is used for both local development and production
+DATABASE_URL="postgresql://your-username:your-password@localhost:5432/your-database-name?schema=public"
 
 # ========================================
 # AUTHENTICATION & SECURITY

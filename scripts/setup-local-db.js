@@ -2,14 +2,13 @@
 
 /**
  * Local Database Setup Script
- * This script sets up the local development database with SQLite
+ * This script sets up the local development database with PostgreSQL
  * and creates initial users for testing
  */
 
 const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcryptjs');
-const fs = require('fs');
-const path = require('path');
+const { execSync } = require('child_process');
 
 // Check if we're in development mode
 if (process.env.NODE_ENV === 'production') {
@@ -17,34 +16,28 @@ if (process.env.NODE_ENV === 'production') {
   process.exit(1);
 }
 
-// Set environment variables for local development
-process.env.DATABASE_URL = 'file:./dev.db';
-process.env.POSTGRES_URL = 'file:./dev.db';
+// Check if DATABASE_URL is set
+if (!process.env.DATABASE_URL) {
+  console.log('❌ DATABASE_URL environment variable is required');
+  console.log('   Please set DATABASE_URL in your .env.local file');
+  console.log('   Example: DATABASE_URL="postgresql://username:password@localhost:5432/shabra_os?schema=public"');
+  process.exit(1);
+}
 
 const prisma = new PrismaClient();
 
 async function setupLocalDatabase() {
   try {
     console.log('🚀 Setting up local development database...');
-
-    // Check if database file exists
-    const dbPath = path.join(process.cwd(), 'dev.db');
-    const dbExists = fs.existsSync(dbPath);
-
-    if (dbExists) {
-      console.log('📁 Database file already exists, skipping migration...');
-    } else {
-      console.log('📁 Creating new database file...');
-    }
+    console.log(`📊 Using database: ${process.env.DATABASE_URL.split('@')[1] || 'PostgreSQL'}`);
 
     // Generate Prisma client
     console.log('🔧 Generating Prisma client...');
-    const { execSync } = require('child_process');
-    execSync('npx prisma generate', { stdio: 'inherit' });
+    execSync('npx dotenv-cli -e .env.local -- npx prisma generate', { stdio: 'inherit' });
 
     // Run migrations
     console.log('🔄 Running database migrations...');
-    execSync('npx prisma migrate dev --name init', { stdio: 'inherit' });
+    execSync('npx dotenv-cli -e .env.local -- npx prisma migrate dev --name init', { stdio: 'inherit' });
 
     // Check if users already exist
     const existingUsers = await prisma.user.count();
@@ -142,6 +135,10 @@ async function setupLocalDatabase() {
 
   } catch (error) {
     console.error('❌ Error setting up local database:', error);
+    console.log('\n💡 Make sure you have:');
+    console.log('   1. PostgreSQL running locally');
+    console.log('   2. DATABASE_URL set in .env.local');
+    console.log('   3. Database created and accessible');
     process.exit(1);
   } finally {
     await prisma.$disconnect();

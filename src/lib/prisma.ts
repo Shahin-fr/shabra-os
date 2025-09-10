@@ -4,131 +4,38 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
-// Check if we have a valid database URL
-const hasValidDatabaseUrl = process.env.DATABASE_URL && 
-  process.env.DATABASE_URL !== 'undefined' && 
-  (process.env.DATABASE_URL.startsWith('postgresql://') || 
-   process.env.DATABASE_URL.startsWith('postgres://')) &&
-  !process.env.DATABASE_URL.includes('mock://') &&
-  !process.env.DATABASE_URL.includes('mock://database');
-
-// Create a mock Prisma client for build time when no database is available
-const createMockPrismaClient = () => {
-  return {
-    $connect: () => Promise.resolve(),
-    $disconnect: () => Promise.resolve(),
-    $queryRaw: () => Promise.resolve([]),
-    $executeRaw: () => Promise.resolve(0),
-    $transaction: (fn: (tx: any) => any) => fn(createMockPrismaClient()),
-    user: {
-      findMany: () => Promise.resolve([]),
-      findUnique: () => Promise.resolve(null),
-      create: () => Promise.resolve({ id: 'mock-id' }),
-      update: () => Promise.resolve({ id: 'mock-id' }),
-      delete: () => Promise.resolve({ id: 'mock-id' }),
-      count: () => Promise.resolve(0),
-    },
-    project: {
-      findMany: () => Promise.resolve([]),
-      findUnique: () => Promise.resolve(null),
-      create: () => Promise.resolve({ id: 'mock-id' }),
-      update: () => Promise.resolve({ id: 'mock-id' }),
-      delete: () => Promise.resolve({ id: 'mock-id' }),
-      count: () => Promise.resolve(0),
-    },
-    task: {
-      findMany: () => Promise.resolve([]),
-      findUnique: () => Promise.resolve(null),
-      create: () => Promise.resolve({ id: 'mock-id' }),
-      update: () => Promise.resolve({ id: 'mock-id' }),
-      delete: () => Promise.resolve({ id: 'mock-id' }),
-      count: () => Promise.resolve(0),
-    },
-    story: {
-      findMany: () => Promise.resolve([]),
-      findUnique: () => Promise.resolve(null),
-      create: () => Promise.resolve({ id: 'mock-id' }),
-      update: () => Promise.resolve({ id: 'mock-id' }),
-      delete: () => Promise.resolve({ id: 'mock-id' }),
-      count: () => Promise.resolve(0),
-    },
-    storyType: {
-      findMany: () => Promise.resolve([]),
-      findUnique: () => Promise.resolve(null),
-      create: () => Promise.resolve({ id: 'mock-id' }),
-      update: () => Promise.resolve({ id: 'mock-id' }),
-      delete: () => Promise.resolve({ id: 'mock-id' }),
-      count: () => Promise.resolve(0),
-    },
-    storyIdea: {
-      findMany: () => Promise.resolve([]),
-      findUnique: () => Promise.resolve(null),
-      create: () => Promise.resolve({ id: 'mock-id' }),
-      update: () => Promise.resolve({ id: 'mock-id' }),
-      delete: () => Promise.resolve({ id: 'mock-id' }),
-      count: () => Promise.resolve(0),
-    },
-    contentSlot: {
-      findMany: () => Promise.resolve([]),
-      findUnique: () => Promise.resolve(null),
-      create: () => Promise.resolve({ id: 'mock-id' }),
-      update: () => Promise.resolve({ id: 'mock-id' }),
-      delete: () => Promise.resolve({ id: 'mock-id' }),
-      count: () => Promise.resolve(0),
-    },
-    document: {
-      findMany: () => Promise.resolve([]),
-      findUnique: () => Promise.resolve(null),
-      create: () => Promise.resolve({ id: 'mock-id' }),
-      update: () => Promise.resolve({ id: 'mock-id' }),
-      delete: () => Promise.resolve({ id: 'mock-id' }),
-      count: () => Promise.resolve(0),
-    },
-    idea: {
-      findMany: () => Promise.resolve([]),
-      findUnique: () => Promise.resolve(null),
-      create: () => Promise.resolve({ id: 'mock-id' }),
-      update: () => Promise.resolve({ id: 'mock-id' }),
-      delete: () => Promise.resolve({ id: 'mock-id' }),
-      count: () => Promise.resolve(0),
-    },
-    leaveRequest: {
-      findMany: () => Promise.resolve([]),
-      findUnique: () => Promise.resolve(null),
-      create: () => Promise.resolve({ id: 'mock-id' }),
-      update: () => Promise.resolve({ id: 'mock-id' }),
-      delete: () => Promise.resolve({ id: 'mock-id' }),
-      count: () => Promise.resolve(0),
-    },
-    attendance: {
-      findMany: () => Promise.resolve([]),
-      findUnique: () => Promise.resolve(null),
-      create: () => Promise.resolve({ id: 'mock-id' }),
-      update: () => Promise.resolve({ id: 'mock-id' }),
-      delete: () => Promise.resolve({ id: 'mock-id' }),
-      count: () => Promise.resolve(0),
-    },
-  } as any;
-};
-
-// Create Prisma client with error handling
+// Create Prisma client with extensive debugging
 const createPrismaClient = () => {
-  if (!hasValidDatabaseUrl) {
-    return createMockPrismaClient();
-  }
-  
   try {
-    return new PrismaClient({
-      log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
-      datasources: {
-        db: {
-          url: process.env.DATABASE_URL,
-        },
-      },
+    console.log('🔍 [PRISMA DEBUG] Starting Prisma client creation...');
+    console.log('🔍 [PRISMA DEBUG] process.env.DATABASE_URL:', process.env.DATABASE_URL);
+    console.log('🔍 [PRISMA DEBUG] process.env.NODE_ENV:', process.env.NODE_ENV);
+    console.log('🔍 [PRISMA DEBUG] All environment variables:', Object.keys(process.env).filter(key => key.includes('DATABASE') || key.includes('POSTGRES')));
+    
+    // Use environment variable for database URL
+    const databaseUrl = process.env.DATABASE_URL;
+    
+    if (!databaseUrl) {
+      throw new Error('DATABASE_URL environment variable is not set');
+    }
+    
+    console.log('🔍 [PRISMA DEBUG] Using DATABASE_URL from environment:', databaseUrl);
+    console.log('🔍 [PRISMA DEBUG] Creating PrismaClient with environment URL...');
+
+    const client = new PrismaClient({
+      log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn', 'info'] : ['error'],
     });
+
+    console.log('✅ [PRISMA DEBUG] PrismaClient created successfully');
+    return client;
   } catch (error) {
-    console.log('⚠️  Failed to create Prisma client, using mock client for build');
-    return createMockPrismaClient();
+    console.error('❌ [PRISMA DEBUG] Failed to create Prisma client:', error);
+    console.error('❌ [PRISMA DEBUG] Error details:', {
+      message: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+      name: error instanceof Error ? error.name : undefined
+    });
+    throw error;
   }
 };
 

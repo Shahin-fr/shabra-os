@@ -63,20 +63,13 @@ const authConfig = {
           return null;
         }
 
-        // Use the correct database based on environment
-        const { PrismaClient } = require('@prisma/client');
-        const localPrisma = new PrismaClient({
-          datasources: {
-            db: {
-              url: process.env.VERCEL ? process.env.DATABASE_URL : 'file:./dev.db'
-            }
-          }
-        });
+        // Use the standard Prisma Client
+        const { prisma } = require('@/lib/prisma');
 
         try {
           console.log('🔍 [AUTH DEBUG] Searching for user in database with email:', credentials.email);
           
-          const user = await localPrisma.user.findUnique({
+          const user = await prisma.user.findUnique({
             where: {
               email: credentials.email as string,
             },
@@ -161,13 +154,6 @@ const authConfig = {
           });
           
           return null;
-        } finally {
-          // Always close the local prisma connection
-          try {
-            await localPrisma.$disconnect();
-          } catch (e) {
-            // Ignore disconnect errors
-          }
         }
       },
     }),

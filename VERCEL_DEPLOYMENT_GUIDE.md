@@ -16,8 +16,7 @@ To deploy successfully on Vercel, you need to set these environment variables in
 ### 🔐 Critical Variables (Required)
 ```bash
 # Database
-PRISMA_DATABASE_URL=postgresql://username:password@host:port/database?schema=public
-POSTGRES_URL=postgresql://username:password@host:port/database?schema=public
+DATABASE_URL=postgresql://username:password@host:port/database?schema=public
 
 # Authentication
 NEXTAUTH_SECRET=your-super-secret-key-here-minimum-32-characters
@@ -58,8 +57,7 @@ npm i -g vercel
 vercel login
 
 # Set environment variables
-vercel env add PRISMA_DATABASE_URL
-vercel env add POSTGRES_URL
+vercel env add DATABASE_URL
 vercel env add NEXTAUTH_SECRET
 vercel env add NEXTAUTH_URL
 vercel env add NODE_ENV

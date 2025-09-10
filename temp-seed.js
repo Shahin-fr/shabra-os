@@ -1,32 +1,11 @@
-import { PrismaClient } from '@prisma/client';
-import bcrypt from 'bcryptjs';
-import dotenv from 'dotenv';
 
-// Load environment variables from .env.local
-dotenv.config({ path: '.env.local' });
-
-// Fix for Docker connection - use localhost instead of 127.0.0.1
-if (process.env.DATABASE_URL && process.env.DATABASE_URL.includes('127.0.0.1')) {
-  process.env.DATABASE_URL = process.env.DATABASE_URL.replace('127.0.0.1', 'localhost');
-}
-
-// For Docker with trust authentication, we need to use the correct format
-// The container uses trust authentication for localhost connections
-if (process.env.DATABASE_URL && process.env.DATABASE_URL.includes('localhost')) {
-  // Use the format that works with trust authentication - try postgres user
-  process.env.DATABASE_URL = 'postgresql://postgres@localhost:5432/shabra_os?schema=public';
-}
-
-// Debug: Log the DATABASE_URL to see what's being used
-console.log('🔍 Seed script DATABASE_URL:', process.env.DATABASE_URL);
+const { PrismaClient } = require('@prisma/client');
+const bcrypt = require('bcryptjs');
 
 const prisma = new PrismaClient();
 
 async function main() {
   console.log('🌱 Starting database seeding...');
-  console.log('🔍 Environment check:');
-  console.log('  - DATABASE_URL:', process.env.DATABASE_URL ? 'Set' : 'Not set');
-  console.log('  - NODE_ENV:', process.env.NODE_ENV);
   
   // Test database connection
   try {
@@ -37,10 +16,8 @@ async function main() {
     throw error;
   }
 
-  // Reset database first to ensure compatibility
-  console.log('🔄 Resetting database for compatibility...');
-  
-  // Delete all existing data
+  // Reset database first
+  console.log('🔄 Resetting database...');
   await prisma.story.deleteMany();
   await prisma.task.deleteMany();
   await prisma.user.deleteMany();
@@ -49,7 +26,6 @@ async function main() {
   await prisma.contentSlot.deleteMany();
   await prisma.project.deleteMany();
   await prisma.document.deleteMany();
-  
   console.log('✅ Database reset completed');
 
   // Create admin user
@@ -82,7 +58,26 @@ async function main() {
   });
   console.log('Regular user created successfully');
 
+  // Create manager user
+  console.log('Creating manager user...');
+  const managerHashedPassword = await bcrypt.hash('manager-password-123', 12);
+  await prisma.user.create({
+    data: {
+      email: 'manager@shabra.com',
+      firstName: 'Manager',
+      lastName: 'User',
+      password: managerHashedPassword,
+      roles: 'MANAGER',
+      isActive: true,
+    },
+  });
+  console.log('Manager user created successfully');
+
   console.log('🎉 Database seeding completed!');
+  console.log('\n📋 Login credentials:');
+  console.log('   Admin: admin@shabra.com / admin-password-123');
+  console.log('   Manager: manager@shabra.com / manager-password-123');
+  console.log('   User: user@shabra.com / user-password-123');
 }
 
 main()
