@@ -5,7 +5,6 @@ import {
   Calendar, 
   Palette, 
   FileText, 
-  CheckCircle, 
   Clock, 
   BookOpen 
 } from 'lucide-react';
