@@ -24,7 +24,7 @@ const ReelSchema = z.object({
 
 const PageSchema = z.object({
   username: z.string().min(1, 'Username is required'),
-  followerCount: z.number().int().min(0, 'Follower count must be non-negative'),
+  followerCount: z.number().int().min(0, 'Follower count must be non-negative').optional(),
 });
 
 const SaveResultSchema = z.object({
@@ -133,8 +133,11 @@ export async function POST(request: NextRequest) {
       const updatedPage = await tx.trackedInstagramPage.update({
         where: { id: existingPage.id },
         data: {
-          followerCount: page.followerCount,
           status: 'ACTIVE',
+          // Conditionally update followerCount only if it exists and is a number
+          ...(typeof page.followerCount === 'number' && {
+            followerCount: page.followerCount,
+          }),
           updatedAt: new Date(),
         },
       });
