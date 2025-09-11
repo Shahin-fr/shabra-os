@@ -44,6 +44,9 @@ const fetchPages = async (): Promise<TrackedInstagramPage[]> => {
 };
 
 const addPage = async (username: string): Promise<TrackedInstagramPage> => {
+  console.log('Hook: About to send username to API:', username);
+  console.log('Hook: Request body will be:', JSON.stringify({ username }));
+  
   const response = await fetch('/api/instapulse/pages', {
     method: 'POST',
     headers: {

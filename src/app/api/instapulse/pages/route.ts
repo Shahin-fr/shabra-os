@@ -43,7 +43,9 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
+    console.log('API: Received request body:', body);
     const { username } = body;
+    console.log('API: Extracted username:', username);
 
     // Validate that username is provided
     if (!username || typeof username !== 'string' || username.trim() === '') {

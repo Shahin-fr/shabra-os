@@ -27,6 +27,7 @@ export default function PageManager() {
   const handleAddPage = () => {
     if (!newUsername.trim() || isAddingPage) return;
 
+    console.log('Sending this username to API:', newUsername);
     addPage(newUsername.trim());
     setNewUsername('');
   };
