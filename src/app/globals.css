@@ -2,6 +2,198 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Mobile-First PWA Enhancements */
+@layer base {
+  /* Safe area support for mobile devices */
+  .safe-area-pb {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  .safe-area-pt {
+    padding-top: env(safe-area-inset-top);
+  }
+  
+  .safe-area-pl {
+    padding-left: env(safe-area-inset-left);
+  }
+  
+  .safe-area-pr {
+    padding-right: env(safe-area-inset-right);
+  }
+
+  /* Mobile touch targets - minimum 44px */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Prevent text selection on mobile UI elements */
+  .no-select {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+
+  /* Smooth scrolling for mobile */
+  .smooth-scroll {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+
+  /* Mobile-optimized focus states */
+  .mobile-focus:focus {
+    outline: 2px solid theme('colors.pink.500');
+    outline-offset: 2px;
+  }
+
+  /* Prevent zoom on input focus (iOS) */
+  @media screen and (max-width: 768px) {
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="number"],
+    textarea,
+    select {
+      font-size: 16px;
+    }
+  }
+}
+
+@layer components {
+  /* Mobile card spacing */
+  .mobile-card {
+    @apply p-4 sm:p-6;
+    @apply rounded-2xl;
+    @apply shadow-lg;
+    @apply bg-white/80;
+    @apply backdrop-blur-sm;
+    @apply border-0;
+  }
+
+  /* Mobile button styles */
+  .mobile-button {
+    @apply h-12;
+    @apply px-6;
+    @apply rounded-xl;
+    @apply font-semibold;
+    @apply text-base;
+    @apply touch-target;
+  }
+
+  /* Mobile input styles */
+  .mobile-input {
+    @apply h-12;
+    @apply px-4;
+    @apply rounded-xl;
+    @apply text-base;
+    @apply border-2;
+    @apply border-gray-200;
+    @apply focus:border-pink-500;
+    @apply focus:ring-2;
+    @apply focus:ring-pink-200;
+  }
+
+  /* Mobile spacing utilities */
+  .mobile-spacing {
+    @apply space-y-4 sm:space-y-6;
+  }
+
+  .mobile-padding {
+    @apply p-4 sm:p-6;
+  }
+
+  .mobile-margin {
+    @apply m-4 sm:m-6;
+  }
+
+  /* Mobile grid layouts */
+  .mobile-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3;
+    @apply gap-4 sm:gap-6;
+  }
+
+  /* Mobile text sizes */
+  .mobile-heading {
+    @apply text-xl sm:text-2xl lg:text-3xl;
+    @apply font-bold;
+  }
+
+  .mobile-subheading {
+    @apply text-lg sm:text-xl;
+    @apply font-semibold;
+  }
+
+  .mobile-body {
+    @apply text-sm sm:text-base;
+  }
+
+  .mobile-caption {
+    @apply text-xs sm:text-sm;
+  }
+}
+
+@layer utilities {
+  /* Mobile-specific utilities */
+  .mobile-only {
+    @apply block sm:hidden;
+  }
+
+  .desktop-only {
+    @apply hidden sm:block;
+  }
+
+  /* Touch-friendly spacing */
+  .touch-spacing {
+    @apply space-y-6;
+  }
+
+  .touch-gap {
+    @apply gap-6;
+  }
+
+  /* Mobile container */
+  .mobile-container {
+    @apply px-4 sm:px-6 lg:px-8;
+    @apply max-w-7xl;
+    @apply mx-auto;
+  }
+
+  /* Mobile safe areas */
+  .mobile-safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .mobile-safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .mobile-safe-left {
+    padding-left: env(safe-area-inset-left);
+  }
+
+  .mobile-safe-right {
+    padding-right: env(safe-area-inset-right);
+  }
+
+  /* Safe area utilities for direct use */
+  .safe-area-pt {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .safe-area-pb {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .safe-area-pl {
+    padding-left: env(safe-area-inset-left);
+  }
+
+  .safe-area-pr {
+    padding-right: env(safe-area-inset-right);
+  }
+}
+
 :root {
   --font-vazirmatn: var(--font-vazirmatn);
 

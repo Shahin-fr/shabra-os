@@ -1,34 +1,26 @@
 {
-  "name": "Shabra OS",
-  "short_name": "Shabra",
-  "description": "A high-performance, scalable, and maintainable internal platform for managing Instagram stories and digital content",
+  "name": "Shabra OS - سیستم عامل شبرا",
+  "short_name": "Shabra OS",
+  "description": "A high-performance, scalable, and maintainable internal platform",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#fdf2f8",
-  "theme_color": "#ffffff",
+  "background_color": "#ffffff",
+  "theme_color": "#ff0a54",
   "orientation": "portrait-primary",
   "scope": "/",
   "lang": "fa",
   "dir": "rtl",
-  "categories": ["productivity", "business", "social"],
+  "categories": ["productivity", "business", "utilities"],
   "icons": [
     {
       "src": "/favicon-16x16.png",
       "sizes": "16x16",
-      "type": "image/png",
-      "purpose": "any"
+      "type": "image/png"
     },
     {
       "src": "/favicon-32x32.png",
       "sizes": "32x32",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/apple-touch-icon.png",
-      "sizes": "180x180",
-      "type": "image/png",
-      "purpose": "any"
+      "type": "image/png"
     },
     {
       "src": "/android-chrome-192x192.png",
@@ -41,53 +33,73 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
-    }
-  ],
-  "shortcuts": [
-    {
-      "name": "Dashboard",
-      "short_name": "Dashboard",
-      "description": "Go to main dashboard",
-      "url": "/",
-      "icons": [
-        {
-          "src": "/favicon-32x32.png",
-          "sizes": "32x32"
-        }
-      ]
     },
     {
-      "name": "Projects",
-      "short_name": "Projects",
-      "description": "Manage projects",
-      "url": "/projects",
-      "icons": [
-        {
-          "src": "/favicon-32x32.png",
-          "sizes": "32x32"
-        }
-      ]
-    },
-    {
-      "name": "Storyboard",
-      "short_name": "Storyboard",
-      "description": "Plan Instagram stories",
-      "url": "/storyboard",
-      "icons": [
-        {
-          "src": "/favicon-32x32.png",
-          "sizes": "32x32"
-        }
-      ]
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
     }
   ],
   "screenshots": [
     {
-      "src": "/android-chrome-512x512.png",
-      "sizes": "512x512",
+      "src": "/screenshots/mobile-dashboard.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Mobile Dashboard"
+    },
+    {
+      "src": "/screenshots/desktop-dashboard.png",
+      "sizes": "1280x720",
       "type": "image/png",
       "form_factor": "wide",
-      "label": "Shabra OS Dashboard"
+      "label": "Desktop Dashboard"
     }
-  ]
+  ],
+  "shortcuts": [
+    {
+      "name": "داشبورد",
+      "short_name": "داشبورد",
+      "description": "دسترسی سریع به داشبورد اصلی",
+      "url": "/",
+      "icons": [
+        {
+          "src": "/icons/dashboard-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "تسک‌ها",
+      "short_name": "تسک‌ها",
+      "description": "مدیریت تسک‌ها و وظایف",
+      "url": "/tasks/mobile",
+      "icons": [
+        {
+          "src": "/icons/tasks-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "پروژه‌ها",
+      "short_name": "پروژه‌ها",
+      "description": "مدیریت پروژه‌ها",
+      "url": "/projects/mobile",
+      "icons": [
+        {
+          "src": "/icons/projects-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  }
 }

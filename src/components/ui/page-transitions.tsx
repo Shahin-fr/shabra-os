@@ -1,241 +1,185 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { ReactNode } from 'react';
-
-import { cn } from '@/lib/utils';
 
 interface PageTransitionProps {
   children: ReactNode;
   className?: string;
-  direction?: 'left' | 'right' | 'up' | 'down';
-  duration?: number;
 }
 
-export function PageTransition({
-  children,
-  className,
-  direction = 'up',
-  duration = 0.3,
-}: PageTransitionProps) {
-  const getVariants = () => {
-    switch (direction) {
-      case 'left':
-        return {
-          initial: { x: -300, opacity: 0 },
-          animate: { x: 0, opacity: 1 },
-          exit: { x: 300, opacity: 0 },
-        };
-      case 'right':
-        return {
-          initial: { x: 300, opacity: 0 },
-          animate: { x: 0, opacity: 1 },
-          exit: { x: -300, opacity: 0 },
-        };
-      case 'up':
-        return {
-          initial: { y: 300, opacity: 0 },
-          animate: { y: 0, opacity: 1 },
-          exit: { y: -300, opacity: 0 },
-        };
-      case 'down':
-        return {
-          initial: { y: -300, opacity: 0 },
-          animate: { y: 0, opacity: 1 },
-          exit: { y: 300, opacity: 0 },
-        };
-      default:
-        return {
-          initial: { y: 300, opacity: 0 },
-          animate: { y: 0, opacity: 1 },
-          exit: { y: -300, opacity: 0 },
-        };
-    }
-  };
+// Slide transition variants
+export const slideVariants = {
+  initial: {
+    x: '100%',
+    opacity: 0
+  },
+  in: {
+    x: 0,
+    opacity: 1
+  },
+  out: {
+    x: '-100%',
+    opacity: 0
+  }
+};
 
-  const variants = getVariants();
+// Fade transition variants
+export const fadeVariants = {
+  initial: {
+    opacity: 0,
+    y: 20
+  },
+  in: {
+    opacity: 1,
+    y: 0
+  },
+  out: {
+    opacity: 0,
+    y: -20
+  }
+};
 
+// Scale transition variants
+export const scaleVariants = {
+  initial: {
+    scale: 0.95,
+    opacity: 0
+  },
+  in: {
+    scale: 1,
+    opacity: 1
+  },
+  out: {
+    scale: 1.05,
+    opacity: 0
+  }
+};
+
+export function PageTransition({ children, className }: PageTransitionProps) {
   return (
     <motion.div
-      className={cn('w-full', className)}
-      initial={variants.initial}
-      animate={variants.animate}
-      exit={variants.exit}
+      initial="initial"
+      animate="in"
+      exit="out"
+      variants={slideVariants}
       transition={{
-        duration,
+        type: 'tween',
         ease: 'easeInOut',
+        duration: 0.3
       }}
+      className={className}
     >
       {children}
     </motion.div>
   );
 }
 
-// Staggered animation for lists
-interface StaggeredListProps {
-  children: ReactNode[];
-  className?: string;
-  itemDelay?: number;
-}
-
-export function StaggeredList({
-  children,
-  className,
-  itemDelay = 0.05,
-}: StaggeredListProps) {
-  return (
-    <motion.div className={cn('space-y-3', className)}>
-      <AnimatePresence>
-        {children.map((child, index) => (
-          <motion.div
-            key={index}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{
-              delay: index * itemDelay,
-              duration: 0.3,
-              ease: 'easeOut',
-            }}
-          >
-            {child}
-          </motion.div>
-        ))}
-      </AnimatePresence>
-    </motion.div>
-  );
-}
-
-// Micro-interaction animations
-export function MicroInteraction({
-  children,
-  className,
-  scale = 0.95,
-  duration = 0.1,
-}: {
-  children: ReactNode;
-  className?: string;
-  scale?: number;
-  duration?: number;
-}) {
+export function FadeTransition({ children, className }: PageTransitionProps) {
   return (
     <motion.div
-      className={className}
-      whileTap={{ scale }}
-      transition={{ duration }}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
-// Fade in animation
-export function FadeIn({
-  children,
-  className,
-  delay = 0,
-  duration = 0.5,
-}: {
-  children: ReactNode;
-  className?: string;
-  delay?: number;
-  duration?: number;
-}) {
-  return (
-    <motion.div
-      className={className}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ delay, duration }}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
-// Slide in animation
-export function SlideIn({
-  children,
-  className,
-  direction = 'up',
-  delay = 0,
-  duration = 0.5,
-}: {
-  children: ReactNode;
-  className?: string;
-  direction?: 'up' | 'down' | 'left' | 'right';
-  delay?: number;
-  duration?: number;
-}) {
-  const getInitial = () => {
-    switch (direction) {
-      case 'up':
-        return { y: 50, opacity: 0 };
-      case 'down':
-        return { y: -50, opacity: 0 };
-      case 'left':
-        return { x: 50, opacity: 0 };
-      case 'right':
-        return { x: -50, opacity: 0 };
-      default:
-        return { y: 50, opacity: 0 };
-    }
-  };
-
-  return (
-    <motion.div
-      className={className}
-      initial={getInitial()}
-      animate={{ x: 0, y: 0, opacity: 1 }}
-      transition={{ delay, duration, ease: 'easeOut' }}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
-// Bounce animation for success states
-export function BounceIn({
-  children,
-  className,
-  delay = 0,
-}: {
-  children: ReactNode;
-  className?: string;
-  delay?: number;
-}) {
-  return (
-    <motion.div
-      className={className}
-      initial={{ scale: 0, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
+      initial="initial"
+      animate="in"
+      exit="out"
+      variants={fadeVariants}
       transition={{
-        delay,
-        type: 'spring',
-        stiffness: 500,
-        damping: 15,
+        type: 'tween',
+        ease: 'easeInOut',
+        duration: 0.2
       }}
+      className={className}
     >
       {children}
     </motion.div>
   );
 }
 
-// Shake animation for error states
-export function Shake({
-  children,
-  className,
-  trigger,
-}: {
-  children: ReactNode;
-  className?: string;
-  trigger: boolean;
-}) {
+export function ScaleTransition({ children, className }: PageTransitionProps) {
   return (
     <motion.div
+      initial="initial"
+      animate="in"
+      exit="out"
+      variants={scaleVariants}
+      transition={{
+        type: 'tween',
+        ease: 'easeInOut',
+        duration: 0.2
+      }}
       className={className}
-      animate={trigger ? { x: [-10, 10, -10, 10, 0] } : {}}
-      transition={{ duration: 0.5 }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+// Modal transition variants
+export const modalVariants = {
+  initial: {
+    opacity: 0,
+    scale: 0.8,
+    y: 50
+  },
+  in: {
+    opacity: 1,
+    scale: 1,
+    y: 0
+  },
+  out: {
+    opacity: 0,
+    scale: 0.8,
+    y: 50
+  }
+};
+
+export function ModalTransition({ children, className }: PageTransitionProps) {
+  return (
+    <motion.div
+      initial="initial"
+      animate="in"
+      exit="out"
+      variants={modalVariants}
+      transition={{
+        type: 'spring',
+        damping: 25,
+        stiffness: 300
+      }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+// Mobile-specific transitions
+export const mobileSlideVariants = {
+  initial: {
+    x: '100%',
+    opacity: 0
+  },
+  in: {
+    x: 0,
+    opacity: 1
+  },
+  out: {
+    x: '-100%',
+    opacity: 0
+  }
+};
+
+export function MobilePageTransition({ children, className }: PageTransitionProps) {
+  return (
+    <motion.div
+      initial="initial"
+      animate="in"
+      exit="out"
+      variants={mobileSlideVariants}
+      transition={{
+        type: 'tween',
+        ease: [0.25, 0.46, 0.45, 0.94],
+        duration: 0.4
+      }}
+      className={className}
     >
       {children}
     </motion.div>

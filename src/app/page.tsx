@@ -47,18 +47,18 @@ export default function HomePage() {
   const isAdmin = userRoles.includes('ADMIN');
   const isEmployee = userRoles.includes('EMPLOYEE');
 
-  // Role-based dashboard rendering
+  // Mobile-first rendering
+  if (isMobile) {
+    return <MobileDashboard />;
+  }
+
+  // Desktop role-based dashboard rendering
   if (isAdmin) {
     return <AdminDashboard />;
   }
 
   if (isEmployee) {
     return <EmployeeDashboard />;
-  }
-
-  // Show mobile dashboard for mobile devices (fallback)
-  if (isMobile) {
-    return <MobileDashboard />;
   }
 
   // Fallback for users without specific roles

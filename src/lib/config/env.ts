@@ -42,6 +42,12 @@ const envSchema = z.object({
   ALLOWED_ORIGINS: z
     .string()
     .default('http://localhost:3000,http://localhost:3001'),
+  
+  // n8n Integration
+  N8N_SECRET_TOKEN: z
+    .string()
+    .min(16, 'N8N_SECRET_TOKEN must be at least 16 characters')
+    .default('dev-n8n-secret-token-12345'),
 
   // Testing
   TEST_DATABASE_URL: z.string().url('Invalid test database URL').optional(),
@@ -174,6 +180,7 @@ export const config = {
   // Security
   security: {
     allowedOrigins: env.ALLOWED_ORIGINS.split(',').map(origin => origin.trim()),
+    n8nSecretToken: env.N8N_SECRET_TOKEN,
   },
 
   // Testing

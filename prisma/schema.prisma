@@ -249,3 +249,33 @@ enum TaskStatus {
   InProgress
   Done
 }
+
+model TrackedInstagramPage {
+  id            Int      @id @default(autoincrement())
+  username      String   @unique
+  profileUrl    String
+  followerCount Int      @default(0)
+  status        String   @default("ACTIVE") // e.g., ACTIVE, FAILED_LAST_CHECK
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  reels         InstagramReel[]
+
+  @@map("tracked_instagram_pages")
+}
+
+model InstagramReel {
+  id              Int      @id @default(autoincrement())
+  postUrl         String   @unique
+  shortCode       String   @unique
+  thumbnailUrl    String?
+  viewCount       Int      @default(0)
+  publishedAt     DateTime
+  
+  pageId          Int
+  trackedPage     TrackedInstagramPage @relation(fields: [pageId], references: [id], onDelete: Cascade)
+
+  createdAt       DateTime @default(now())
+
+  @@map("instagram_reels")
+}
