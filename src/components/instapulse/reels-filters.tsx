@@ -73,13 +73,15 @@ export default function ReelsFilters({
 
   const handleSortChange = (value: string) => {
     const [newSortBy, newSortOrder] = value.split('_');
-    setSortBy(newSortBy);
-    setSortOrder(newSortOrder);
-    applyFilters({
-      dateRange,
-      sortBy: newSortBy,
-      sortOrder: newSortOrder,
-    });
+    if (newSortBy && newSortOrder) {
+      setSortBy(newSortBy);
+      setSortOrder(newSortOrder);
+      applyFilters({
+        dateRange,
+        sortBy: newSortBy,
+        sortOrder: newSortOrder,
+      });
+    }
   };
 
   const applyFilters = (filters: ReelsFilters) => {
@@ -91,12 +93,6 @@ export default function ReelsFilters({
   };
 
   const handleReset = () => {
-    const defaultFilters: ReelsFilters = {
-      dateRange: undefined,
-      sortBy: 'publishedAt',
-      sortOrder: 'desc',
-    };
-    
     setDateRange(undefined);
     setSortBy('publishedAt');
     setSortOrder('desc');

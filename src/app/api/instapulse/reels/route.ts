@@ -4,7 +4,6 @@ import { z } from 'zod';
 import {
   createSuccessResponse,
   createValidationErrorResponse,
-  createServerErrorResponse,
   createDatabaseErrorResponse,
   HTTP_STATUS_CODES,
   getHttpStatusForErrorCode,

@@ -3,7 +3,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import {
   createSuccessResponse,
   createValidationErrorResponse,
-  createServerErrorResponse,
   createNotFoundErrorResponse,
   createDatabaseErrorResponse,
   HTTP_STATUS_CODES,

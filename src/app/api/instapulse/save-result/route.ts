@@ -4,7 +4,6 @@ import { z } from 'zod';
 import {
   createSuccessResponse,
   createValidationErrorResponse,
-  createServerErrorResponse,
   createAuthErrorResponse,
   createDatabaseErrorResponse,
   HTTP_STATUS_CODES,
@@ -122,7 +121,7 @@ export async function POST(request: NextRequest) {
       });
 
       if (!existingPage) {
-        logger.error('Tracked page not found in database', {
+        logger.error('Tracked page not found in database', undefined, {
           context: 'instapulse-save-result-api',
           operation: 'POST',
           username: page.username,
@@ -162,12 +161,11 @@ export async function POST(request: NextRequest) {
           });
           upsertedReels.push(upsertedReel);
         } catch (reelError) {
-          logger.error('Failed to upsert reel', {
+          logger.error('Failed to upsert reel', reelError instanceof Error ? reelError : new Error('Unknown error'), {
             context: 'instapulse-save-result-api',
             operation: 'POST',
             username: page.username,
             postUrl: reel.postUrl,
-            error: reelError instanceof Error ? reelError.message : 'Unknown error',
           });
           // Continue with other reels even if one fails
         }

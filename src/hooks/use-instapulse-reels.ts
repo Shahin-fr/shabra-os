@@ -1,3 +1,4 @@
+import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
@@ -91,23 +92,27 @@ export function useInstapulseReels(filters: ReelsFilters) {
     isError,
     error,
     refetch,
-  } = useQuery<ApiResponse<ReelsResponse>, Error>({
+  } = useQuery<ReelsResponse, Error>({
     queryKey: instapulseKeys.reelsList(JSON.stringify(filters)),
     queryFn: async () => {
       const params = buildQueryParams(filters);
       const url = `/api/instapulse/reels?${params.toString()}`;
       
-      return fetchWithCache<ApiResponse<ReelsResponse>>(url);
+      const response = await fetchWithCache<ApiResponse<ReelsResponse>>(url);
+      return response.data;
     },
-    select: (data) => data.data,
     staleTime: 30 * 1000, // 30 seconds
-    onError: (err) => {
-      logger.error('Failed to fetch InstaPulse reels', err);
-      toast.error('Failed to load Instagram reels', {
-        description: err.message || 'Please try again later.',
-      });
-    },
   });
+
+  // Handle errors with useEffect
+  React.useEffect(() => {
+    if (isError && error) {
+      logger.error('Failed to fetch InstaPulse reels', error);
+      toast.error('Failed to load Instagram reels', {
+        description: error.message || 'Please try again later.',
+      });
+    }
+  }, [isError, error]);
 
   return {
     reels: reelsResponse?.reels || [],

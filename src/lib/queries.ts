@@ -68,7 +68,7 @@ export const instapulseKeys = {
 };
 
 // Generic fetch function with error handling and caching
-async function fetchWithCache<T>(
+export async function fetchWithCache<T>(
   url: string,
   options: RequestInit = {}
 ): Promise<T> {

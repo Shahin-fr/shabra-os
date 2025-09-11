@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { DateRange } from 'react-day-picker';
 
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
@@ -34,7 +33,7 @@ export default function InstaPulsePage() {
   });
 
   // Fetch reels using TanStack Query
-  const { reels, meta, isLoading, isError, error } = useInstapulseReels(appliedFilters);
+  const { reels, isLoading, isError, error } = useInstapulseReels(appliedFilters);
 
   // Handle temporary filter changes
   const handleFiltersChange = (newFilters: ReelsFiltersType) => {

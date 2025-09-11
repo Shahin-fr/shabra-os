@@ -134,6 +134,7 @@ function validateEnv(): EnvConfig {
       LOG_BUFFER_SIZE: 1000,
       LOG_FLUSH_INTERVAL: 5000,
       ALLOWED_ORIGINS: 'http://localhost:3000,http://localhost:3001',
+      N8N_SECRET_TOKEN: 'dev-n8n-secret-token-12345',
       TEST_USER_EMAIL: 'test@shabra.com',
       TEST_USER_PASSWORD: 'test-password-123',
       DEV_ADMIN_EMAIL: 'admin@shabra.com',
