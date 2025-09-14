@@ -104,14 +104,22 @@ export default function ReelCard({ reel }: ReelCardProps) {
                 alt={`Reel by @${reel.trackedPage.username}`}
                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-200"
                 loading="lazy"
+                onError={(e) => {
+                  console.error('Failed to load thumbnail:', reel.thumbnailUrl);
+                  e.currentTarget.style.display = 'none';
+                  e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                }}
+                onLoad={() => {
+                  console.log('Successfully loaded thumbnail:', reel.thumbnailUrl);
+                }}
               />
-            ) : (
-              <div className="w-full h-full bg-muted flex items-center justify-center">
-                <span className="text-muted-foreground text-sm">
-                  No thumbnail
-                </span>
-              </div>
-            )}
+            ) : null}
+            {/* Fallback div - always present but hidden when image loads */}
+            <div className={`w-full h-full bg-muted flex items-center justify-center ${reel.thumbnailUrl ? 'hidden' : ''}`}>
+              <span className="text-muted-foreground text-sm">
+                {reel.thumbnailUrl ? 'Loading...' : 'No thumbnail'}
+              </span>
+            </div>
           </a>
         </AspectRatio>
       </CardContent>
