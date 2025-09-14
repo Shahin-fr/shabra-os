@@ -3,51 +3,50 @@ import { AspectRatio } from '@/components/ui/aspect-ratio';
 
 export default function ReelCardSkeleton() {
   return (
-    <div className="overflow-hidden rounded-xl border bg-white/10 backdrop-blur-2xl shadow-lg">
-      {/* Card Header Skeleton */}
-      <div className="p-6 pb-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            {/* Avatar Skeleton */}
-            <Skeleton className="h-8 w-8 rounded-full" />
-            <div className="flex flex-col gap-1">
-              {/* Username Skeleton */}
-              <Skeleton className="h-4 w-20" />
-              {/* Follower count Skeleton */}
-              <Skeleton className="h-3 w-24" />
-            </div>
-          </div>
-          {/* Date Skeleton */}
-          <Skeleton className="h-3 w-16" />
-        </div>
-      </div>
-
-      {/* Card Content Skeleton - Thumbnail */}
-      <div className="p-0">
-        <AspectRatio ratio={9 / 16}>
+    <div className="relative overflow-hidden rounded-2xl border border-gray-200/20 shadow-sm" dir="ltr">
+      <AspectRatio ratio={9 / 16}>
+        <div className="relative w-full h-full">
+          {/* Background Skeleton */}
           <Skeleton className="h-full w-full" />
-        </AspectRatio>
-      </div>
+          
+          {/* Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20" />
 
-      {/* Card Footer Skeleton - Stats */}
-      <div className="p-6 pt-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            {/* View count Skeleton */}
-            <div className="flex items-center gap-1">
-              <Skeleton className="h-4 w-4" />
-              <Skeleton className="h-4 w-8" />
-            </div>
-            {/* Virality score Skeleton */}
-            <div className="flex items-center gap-1">
-              <Skeleton className="h-4 w-4" />
-              <Skeleton className="h-4 w-8" />
+          {/* Top Overlay Skeleton - User Info */}
+          <div className="absolute top-3 left-3 z-10">
+            <div className="flex items-start gap-2">
+              {/* Avatar Skeleton */}
+              <Skeleton className="h-8 w-8 rounded-full border border-white/30 flex-shrink-0" />
+              <div className="flex flex-col justify-center gap-1">
+                {/* Username Skeleton */}
+                <Skeleton className="h-4 w-20 bg-white/30" />
+                {/* Follower count Skeleton */}
+                <Skeleton className="h-3 w-24 bg-white/20" />
+              </div>
             </div>
           </div>
-          {/* Short code Skeleton */}
-          <Skeleton className="h-3 w-12" />
+
+          {/* Bottom Overlay Skeleton - Stats */}
+          <div className="absolute bottom-3 left-3 right-3 z-10">
+            <div className="flex items-end justify-between">
+              {/* Left side - Time and Views Skeleton */}
+              <div className="flex flex-col gap-1">
+                <Skeleton className="h-3 w-16 bg-white/30" />
+                <div className="flex items-center gap-1">
+                  <Skeleton className="h-4 w-4 bg-white/20 flex-shrink-0" />
+                  <Skeleton className="h-4 w-8 bg-white/20" />
+                </div>
+              </div>
+
+              {/* Right side - Virality Score Skeleton */}
+              <div className="flex items-center gap-1 bg-white/15 backdrop-blur-sm rounded-full px-2 py-1">
+                <Skeleton className="h-3 w-3 bg-white/40 flex-shrink-0" />
+                <Skeleton className="h-3 w-5 bg-white/40" />
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+      </AspectRatio>
     </div>
   );
 }
