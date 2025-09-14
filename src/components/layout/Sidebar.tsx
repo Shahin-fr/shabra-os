@@ -16,6 +16,7 @@ import {
   Calendar as CalendarIcon,
   TrendingUp,
   FileText as DocsIcon,
+  Instagram,
 } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
@@ -79,6 +80,7 @@ export function Sidebar() {
     { href: '/projects', label: 'پروژه‌ها', icon: FolderOpen, priority: 'high' },
     { href: '/storyboard', label: 'استوری‌بورد', icon: Palette, priority: 'high' },
     { href: '/content-calendar', label: 'تقویم محتوا', icon: Calendar, priority: 'high' },
+    { href: '/dashboard/instapulse', label: 'اینستاپالس', icon: Instagram, priority: 'high' },
     { href: '/calendar', label: 'تقویم', icon: CalendarIcon, priority: 'medium' },
     { href: '/team', label: 'تیم', icon: Users, priority: 'high' },
     { href: '/attendance', label: 'حضور و غیاب', icon: Clock, priority: 'high' },
@@ -92,6 +94,7 @@ export function Sidebar() {
   const employeeNavigationItems: NavigationItemType[] = [
     { href: '/', label: 'داشبورد من', icon: LayoutDashboard, priority: 'high' },
     { href: '/tasks', label: 'تسک‌های من', icon: CheckSquare, priority: 'high' },
+    { href: '/dashboard/instapulse', label: 'اینستاپالس', icon: Instagram, priority: 'high' },
     { href: '/attendance', label: 'حضور و غیاب من', icon: Clock, priority: 'high' },
     { href: '/profile', label: 'پروفایل من', icon: User, priority: 'medium' },
   ];

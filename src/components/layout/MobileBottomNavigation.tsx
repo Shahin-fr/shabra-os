@@ -12,7 +12,8 @@ import {
   BookOpen,
   Palette,
   FileText,
-  Clock
+  Clock,
+  Instagram
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -32,6 +33,7 @@ const adminNavigationItems: NavigationItemType[] = [
   { href: '/', label: 'داشبورد', icon: LayoutDashboard },
   { href: '/tasks/mobile', label: 'تسک‌ها', icon: CheckSquare },
   { href: '/projects/mobile', label: 'پروژه‌ها', icon: FolderOpen },
+  { href: '/dashboard/instapulse', label: 'اینستاپالس', icon: Instagram },
   { href: '/team', label: 'تیم', icon: Users },
   { href: '/attendance', label: 'حضور', icon: Clock },
   { href: '/analytics', label: 'تحلیل', icon: BarChart3 },
@@ -46,6 +48,7 @@ const adminNavigationItems: NavigationItemType[] = [
 const employeeNavigationItems: NavigationItemType[] = [
   { href: '/', label: 'داشبورد', icon: LayoutDashboard },
   { href: '/tasks/mobile', label: 'تسک‌ها', icon: CheckSquare },
+  { href: '/dashboard/instapulse', label: 'اینستاپالس', icon: Instagram },
   { href: '/attendance', label: 'حضور', icon: Clock },
   { href: '/profile', label: 'پروفایل', icon: Users },
 ];

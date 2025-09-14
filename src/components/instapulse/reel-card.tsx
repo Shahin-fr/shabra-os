@@ -104,7 +104,7 @@ export default function ReelCard({ reel }: ReelCardProps) {
               </span>
             </div>
           </div>
-          <span className="text-xs text-muted-foreground">
+          <span className="text-xs text-muted-foreground" dir="ltr">
             {getPersianTime(relativeTime)}
           </span>
         </div>
