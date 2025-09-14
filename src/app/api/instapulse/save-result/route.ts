@@ -176,6 +176,16 @@ export async function POST(request: NextRequest) {
       
       for (let i = 0; i < reels.length; i++) {
         const reel = reels[i];
+        if (!reel) {
+          logger.warn(`Reel at index ${i} is undefined, skipping`, {
+            context: 'instapulse-save-result-api',
+            operation: 'POST',
+            reelIndex: i + 1,
+            totalReels: reels.length,
+          });
+          continue;
+        }
+        
         logger.info(`Processing reel ${i + 1}/${reels.length}`, {
           context: 'instapulse-save-result-api',
           operation: 'POST',
