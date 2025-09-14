@@ -2,6 +2,7 @@
 
 import { Eye, Flame } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
+import Image from 'next/image';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -96,14 +97,15 @@ export default function ReelCard({ reel }: ReelCardProps) {
             href={reel.postUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="block w-full h-full"
+            className="block w-full h-full relative overflow-hidden group"
           >
             {reel.thumbnailUrl ? (
-              <img
+              <Image
                 src={reel.thumbnailUrl}
                 alt={`Reel by @${reel.trackedPage.username}`}
-                className="w-full h-full object-cover hover:scale-105 transition-transform duration-200"
-                loading="lazy"
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-200"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 onError={(e) => {
                   console.error('Failed to load thumbnail:', reel.thumbnailUrl);
                   e.currentTarget.style.display = 'none';
@@ -115,7 +117,7 @@ export default function ReelCard({ reel }: ReelCardProps) {
               />
             ) : null}
             {/* Fallback div - always present but hidden when image loads */}
-            <div className={`w-full h-full bg-muted flex items-center justify-center ${reel.thumbnailUrl ? 'hidden' : ''}`}>
+            <div className={`absolute inset-0 bg-muted flex items-center justify-center ${reel.thumbnailUrl ? 'hidden' : ''}`}>
               <span className="text-muted-foreground text-sm">
                 {reel.thumbnailUrl ? 'Loading...' : 'No thumbnail'}
               </span>
