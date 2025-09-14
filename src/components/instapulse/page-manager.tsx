@@ -23,6 +23,7 @@ export default function PageManager() {
   const [newUsername, setNewUsername] = useState('');
   const [editingPage, setEditingPage] = useState<TrackedInstagramPage | null>(null);
   const [newFollowerCount, setNewFollowerCount] = useState<number>(0);
+  const [hasInitiatedUpdate, setHasInitiatedUpdate] = useState(false);
   
   const {
     pages,
@@ -60,32 +61,49 @@ export default function PageManager() {
   };
 
   const handleEditPage = (page: TrackedInstagramPage) => {
+    console.log('Starting edit for page:', page);
     setEditingPage(page);
     setNewFollowerCount(page.followerCount);
+    setHasInitiatedUpdate(false); // Reset update flag when starting edit
   };
 
   const handleCancelEdit = () => {
     setEditingPage(null);
     setNewFollowerCount(0);
+    setHasInitiatedUpdate(false);
   };
 
   const handleSaveChanges = () => {
     if (!editingPage || isUpdatingPage) return;
     
+    console.log('Initiating update for page:', editingPage.id, 'with count:', newFollowerCount);
+    setHasInitiatedUpdate(true);
     updatePage({
       id: editingPage.id,
       followerCount: newFollowerCount,
     });
   };
 
+  // Debug: Track editingPage state changes
+  useEffect(() => {
+    console.log('Editing page state changed to:', editingPage);
+  }, [editingPage]);
+
+  // Debug: Track mutation states
+  useEffect(() => {
+    console.log('Mutation states:', { isUpdatingPage, updatePageError });
+  }, [isUpdatingPage, updatePageError]);
+
   // Handle successful update - exit edit mode
   useEffect(() => {
-    if (!isUpdatingPage && !updatePageError && editingPage) {
-      // Update was successful, exit edit mode
+    // Only exit edit mode if we initiated an update AND it's now complete AND there's no error
+    if (hasInitiatedUpdate && !isUpdatingPage && !updatePageError && editingPage) {
+      console.log('Update completed successfully, exiting edit mode');
       setEditingPage(null);
       setNewFollowerCount(0);
+      setHasInitiatedUpdate(false);
     }
-  }, [isUpdatingPage, updatePageError, editingPage]);
+  }, [hasInitiatedUpdate, isUpdatingPage, updatePageError, editingPage]);
 
   // Show loading state
   if (isLoading) {

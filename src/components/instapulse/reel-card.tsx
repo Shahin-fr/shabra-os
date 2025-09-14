@@ -84,8 +84,8 @@ export default function ReelCard({ reel }: ReelCardProps) {
     <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-200">
       {/* Card Header - Page Info */}
       <CardHeader className="pb-2">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
+        <div className="flex items-center justify-between" dir="ltr">
+          <div className="flex items-center gap-3 justify-start">
             <Avatar className="h-8 w-8">
               <AvatarImage 
                 src={`https://www.instagram.com/${reel.trackedPage.username}/`} 
