@@ -86,6 +86,29 @@ const deletePage = async (id: number): Promise<void> => {
   }
 };
 
+const updatePageFollowers = async ({ id, followerCount }: { id: number; followerCount: number }): Promise<TrackedInstagramPage> => {
+  const response = await fetch(`/api/instapulse/pages/${id}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ followerCount }),
+  });
+  
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.error?.message || `Failed to update page: ${response.statusText}`);
+  }
+  
+  const result: ApiResponse<TrackedInstagramPage> = await response.json();
+  
+  if (!result.success) {
+    throw new Error(result.error?.message || 'Failed to update page');
+  }
+  
+  return result.data;
+};
+
 // Custom hook
 export function useInstapulsePages() {
   const queryClient = useQueryClient();
@@ -166,6 +189,59 @@ export function useInstapulsePages() {
     },
   });
 
+  // Update page mutation with optimistic updates
+  const updatePageMutation = useMutation({
+    mutationFn: updatePageFollowers,
+    onMutate: async ({ id, followerCount }) => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: instapulseKeys.pages() });
+
+      // Snapshot the previous value
+      const previousPages = queryClient.getQueryData<TrackedInstagramPage[]>(
+        instapulseKeys.pages()
+      );
+
+      // Optimistically update to the new value
+      if (previousPages) {
+        queryClient.setQueryData<TrackedInstagramPage[]>(
+          instapulseKeys.pages(),
+          previousPages.map(page => 
+            page.id === id 
+              ? { ...page, followerCount, updatedAt: new Date().toISOString() }
+              : page
+          )
+        );
+      }
+
+      // Return a context object with the snapshotted value
+      return { previousPages };
+    },
+    onSuccess: (updatedPage) => {
+      // Invalidate and refetch pages to ensure server state
+      queryClient.invalidateQueries({ queryKey: instapulseKeys.pages() });
+      
+      logger.info('Page updated successfully', {
+        context: 'use-instapulse-pages',
+        operation: 'updatePage',
+        username: updatedPage.username,
+        pageId: updatedPage.id,
+        newFollowerCount: updatedPage.followerCount,
+      });
+    },
+    onError: (error, { id }, context) => {
+      // If the mutation fails, use the context returned from onMutate to roll back
+      if (context?.previousPages) {
+        queryClient.setQueryData(instapulseKeys.pages(), context.previousPages);
+      }
+      
+      logger.error('Failed to update page', error, {
+        context: 'use-instapulse-pages',
+        operation: 'updatePage',
+        pageId: id,
+      });
+    },
+  });
+
   return {
     // Data
     pages,
@@ -178,13 +254,16 @@ export function useInstapulsePages() {
     // Mutations
     addPage: addPageMutation.mutate,
     deletePage: deletePageMutation.mutate,
+    updatePage: updatePageMutation.mutate,
     
     // Mutation states
     isAddingPage: addPageMutation.isPending,
     isDeletingPage: deletePageMutation.isPending,
+    isUpdatingPage: updatePageMutation.isPending,
     
     // Mutation errors
     addPageError: addPageMutation.error,
     deletePageError: deletePageMutation.error,
+    updatePageError: updatePageMutation.error,
   };
 }

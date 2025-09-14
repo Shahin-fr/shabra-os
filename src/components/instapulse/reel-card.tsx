@@ -60,10 +60,30 @@ export default function ReelCard({ reel }: ReelCardProps) {
     addSuffix: true,
   });
 
+  // Convert English time to Persian
+  const getPersianTime = (timeStr: string) => {
+    if (timeStr.includes('day')) {
+      const days = timeStr.match(/\d+/)?.[0] || '1';
+      return `${days} روز پیش`;
+    }
+    if (timeStr.includes('hour')) {
+      const hours = timeStr.match(/\d+/)?.[0] || '1';
+      return `${hours} ساعت پیش`;
+    }
+    if (timeStr.includes('minute')) {
+      const minutes = timeStr.match(/\d+/)?.[0] || '1';
+      return `${minutes} دقیقه پیش`;
+    }
+    if (timeStr.includes('second')) {
+      return 'همین الان';
+    }
+    return timeStr;
+  };
+
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-200">
       {/* Card Header - Page Info */}
-      <CardHeader className="pb-3">
+      <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Avatar className="h-8 w-8">
@@ -85,7 +105,7 @@ export default function ReelCard({ reel }: ReelCardProps) {
             </div>
           </div>
           <span className="text-xs text-muted-foreground">
-            {relativeTime}
+            {getPersianTime(relativeTime)}
           </span>
         </div>
       </CardHeader>
