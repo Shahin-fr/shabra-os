@@ -133,7 +133,7 @@ export default function ReelCard({ reel }: ReelCardProps) {
   };
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-gray-200/20 shadow-sm hover:shadow-md transition-all duration-200 group" dir="ltr">
+    <div className="relative overflow-hidden rounded-2xl border border-white/20 shadow-2xl shadow-pink-500/10 hover:shadow-3xl hover:shadow-pink-500/20 transition-all duration-300 group backdrop-blur-sm bg-white/5 hover:bg-white/10 hover:border-white/30 hover:-translate-y-1" dir="ltr">
       <AspectRatio ratio={9 / 16}>
         <a
           href={reel.postUrl}
