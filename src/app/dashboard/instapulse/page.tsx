@@ -2,11 +2,10 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Plus, Calendar, BarChart3 } from 'lucide-react';
+import { Plus } from 'lucide-react';
+import { DateRange } from 'react-day-picker';
 
 import { Button } from '@/components/ui/button';
-import { SegmentedControl } from '@/components/ui/segmented-control';
-import { GlassmorphismPanel } from '@/components/ui/glassmorphism-panel';
 import { AnimatedBackground } from '@/components/ui/animated-background';
 import {
   Dialog,
@@ -21,20 +20,11 @@ import ReelsGrid from '@/components/instapulse/reels-grid';
 import ReelsGridSkeleton from '@/components/instapulse/reels-grid-skeleton';
 import { useInstapulseReels } from '@/hooks/use-instapulse-reels';
 
-// Type definition for filters
-interface ReelsFiltersType {
-  dateRange?: {
-    from?: Date;
-    to?: Date;
-  };
-  sortBy: string;
-  sortOrder: string;
-}
 
 export default function InstaPulsePage() {
   // Simple state for current sort
   const [currentSort, setCurrentSort] = useState('newest');
-  const [dateRange, setDateRange] = useState<{from?: Date, to?: Date} | undefined>(undefined);
+  const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
 
   // Convert to API format
   const apiFilters = {
@@ -52,7 +42,7 @@ export default function InstaPulsePage() {
   };
 
   // Handle date range change
-  const handleDateRangeChange = (newDateRange: {from?: Date, to?: Date} | undefined) => {
+  const handleDateRangeChange = (newDateRange: DateRange | undefined) => {
     setDateRange(newDateRange);
   };
 

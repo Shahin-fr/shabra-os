@@ -47,11 +47,7 @@ export default function ReelsGrid({ reels }: ReelsGridProps) {
     visible: { 
       opacity: 1, 
       y: 0,
-      scale: 1,
-      transition: {
-        duration: 0.5,
-        ease: "easeOut"
-      }
+      scale: 1
     }
   };
 
@@ -102,7 +98,7 @@ export default function ReelsGrid({ reels }: ReelsGridProps) {
           whileHover={{ 
             y: -8,
             scale: 1.02,
-            transition: { duration: 0.2, ease: "easeOut" }
+            transition: { duration: 0.2 }
           }}
           whileTap={{ 
             scale: 0.98,

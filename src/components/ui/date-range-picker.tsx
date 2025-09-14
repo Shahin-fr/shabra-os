@@ -86,7 +86,9 @@ export function DateRangePicker({
                   );
                 }
 
-                return null;
+                return (
+                  <ChevronRightIcon className={cn('size-4', className)} {...props} />
+                );
               },
             }}
             classNames={{
