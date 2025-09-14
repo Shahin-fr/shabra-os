@@ -30,19 +30,19 @@ interface ReelsFiltersProps {
 const SORT_OPTIONS = [
   {
     value: 'publishedAt_desc',
-    label: 'Published Date (Newest)',
+    label: 'تاریخ انتشار (جدیدترین)',
   },
   {
     value: 'publishedAt_asc',
-    label: 'Published Date (Oldest)',
+    label: 'تاریخ انتشار (قدیمی‌ترین)',
   },
   {
     value: 'viewCount_desc',
-    label: 'View Count (Most)',
+    label: 'تعداد بازدید (بیشترین)',
   },
   {
     value: 'viewCount_asc',
-    label: 'View Count (Least)',
+    label: 'تعداد بازدید (کمترین)',
   },
 ];
 
@@ -106,12 +106,12 @@ export default function ReelsFilters({
       {/* Date Range Picker */}
       <div className="flex-1 min-w-[280px]">
         <label className="text-sm font-medium text-foreground mb-2 block">
-          Date Range
+          بازه زمانی
         </label>
         <DateRangePicker
           date={dateRange}
           onDateChange={handleDateRangeChange}
-          placeholder="Pick a date range"
+          placeholder="یک بازه زمانی انتخاب کنید"
           className="w-full"
         />
       </div>
@@ -119,14 +119,14 @@ export default function ReelsFilters({
       {/* Sort By Dropdown */}
       <div className="min-w-[200px]">
         <label className="text-sm font-medium text-foreground mb-2 block">
-          Sort By
+          مرتب‌سازی بر اساس
         </label>
         <Select
           value={`${sortBy}_${sortOrder}`}
           onValueChange={handleSortChange}
         >
           <SelectTrigger className="w-full">
-            <SelectValue placeholder="Select sort option" />
+            <SelectValue placeholder="انتخاب معیار مرتب‌سازی" />
           </SelectTrigger>
           <SelectContent>
             {SORT_OPTIONS.map((option) => (
@@ -148,7 +148,7 @@ export default function ReelsFilters({
             className="h-10"
           >
             <X className="h-4 w-4 mr-2" />
-            Reset
+            حذف فیلترها
           </Button>
         )}
         
@@ -157,7 +157,7 @@ export default function ReelsFilters({
           onClick={handleApply}
           className="h-10"
         >
-          Apply Filters
+          اعمال فیلترها
         </Button>
       </div>
     </div>

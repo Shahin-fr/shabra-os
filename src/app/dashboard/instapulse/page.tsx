@@ -62,17 +62,17 @@ export default function InstaPulsePage() {
       {/* Header Section */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-foreground">
-          InstaPulse Dashboard
+          داشبورد اینستاپالس
         </h1>
         <Dialog>
           <DialogTrigger asChild>
             <Button>
-              Add New Page
+              افزودن پیج جدید
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[500px]">
             <DialogHeader>
-              <DialogTitle>Manage Tracked Pages</DialogTitle>
+              <DialogTitle>مدیریت پیج‌های دنبال شده</DialogTitle>
             </DialogHeader>
             <PageManager />
           </DialogContent>
@@ -114,13 +114,13 @@ export default function InstaPulsePage() {
               </svg>
             </div>
             <h3 className="text-lg font-semibold text-foreground mb-2">
-              Failed to Load Reels
+              خطا در بارگذاری ریلزها
             </h3>
             <p className="text-muted-foreground max-w-md mb-4">
-              {error?.message || 'Something went wrong while loading the reels. Please try again.'}
+              {error?.message || 'مشکلی در هنگام بارگذاری ریلزها پیش آمد. لطفاً دوباره تلاش کنید.'}
             </p>
             <Button onClick={() => window.location.reload()}>
-              Try Again
+              تلاش مجدد
             </Button>
           </div>
         ) : (

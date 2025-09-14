@@ -49,7 +49,7 @@ export default function PageManager() {
       <div className="flex items-center justify-center py-8">
         <div className="flex items-center gap-2 text-muted-foreground">
           <Loader2 className="h-4 w-4 animate-spin" />
-          <span>Loading pages...</span>
+          <span>در حال بارگذاری پیج‌ها...</span>
         </div>
       </div>
     );
@@ -61,7 +61,7 @@ export default function PageManager() {
       <div className="space-y-4">
         <div className="text-center py-8">
           <p className="text-destructive text-sm">
-            Failed to load pages: {error?.message || 'Unknown error'}
+            خطا در بارگذاری پیج‌ها: {error?.message || 'خطای نامشخص'}
           </p>
         </div>
       </div>
@@ -74,7 +74,7 @@ export default function PageManager() {
       <div className="space-y-4">
         <div className="flex gap-2">
           <Input
-            placeholder="Enter Instagram username..."
+            placeholder="نام کاربری پیج جدید را وارد کنید..."
             value={newUsername}
             onChange={(e) => setNewUsername(e.target.value)}
             onKeyPress={handleKeyPress}
@@ -88,10 +88,10 @@ export default function PageManager() {
             {isAddingPage ? (
               <>
                 <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                Adding...
+                در حال افزودن...
               </>
             ) : (
-              'Add'
+              'افزودن'
             )}
           </Button>
         </div>
@@ -99,7 +99,7 @@ export default function PageManager() {
         {/* Add Page Error */}
         {addPageError && (
           <p className="text-destructive text-sm">
-            Failed to add page: {addPageError.message}
+            خطا در افزودن پیج: {addPageError.message}
           </p>
         )}
       </div>
@@ -110,12 +110,12 @@ export default function PageManager() {
       {/* Existing Pages List Section */}
       <div className="space-y-4">
         <h3 className="text-lg font-semibold text-foreground">
-          Tracked Pages
+          پیج‌های دنبال شده
         </h3>
         
         {pages.length === 0 ? (
           <p className="text-muted-foreground text-sm">
-            No pages are being tracked yet. Add one above to get started.
+            هنوز هیچ پیجی دنبال نمی‌شود. برای شروع یکی اضافه کنید.
           </p>
         ) : (
           <div className="space-y-2">
@@ -158,7 +158,7 @@ export default function PageManager() {
         {/* Delete Page Error */}
         {deletePageError && (
           <p className="text-destructive text-sm">
-            Failed to delete page: {deletePageError.message}
+            خطا در حذف پیج: {deletePageError.message}
           </p>
         )}
       </div>

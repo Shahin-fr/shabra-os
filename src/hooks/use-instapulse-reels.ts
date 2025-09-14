@@ -101,7 +101,8 @@ export function useInstapulseReels(filters: ReelsFilters) {
       const response = await fetchWithCache<ApiResponse<ReelsResponse>>(url);
       return response.data;
     },
-    staleTime: 30 * 1000, // 30 seconds
+    staleTime: 0, // Consider data stale immediately
+    refetchOnWindowFocus: true, // Refetch when window regains focus
   });
 
   // Handle errors with useEffect
