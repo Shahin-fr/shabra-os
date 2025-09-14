@@ -34,6 +34,9 @@ const SaveResultSchema = z.object({
 
 // POST /api/instapulse/save-result - Save scraped data from n8n workflow
 export async function POST(request: NextRequest) {
+  let page: any = null;
+  let reels: any[] = [];
+  
   try {
     // 1. Authentication - Check for N8N secret token
     const authHeader = request.headers.get('authorization');
@@ -104,7 +107,7 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    const { page, reels } = validationResult.data;
+    ({ page, reels } = validationResult.data);
 
     logger.info('Processing save-result request', {
       context: 'instapulse-save-result-api',
