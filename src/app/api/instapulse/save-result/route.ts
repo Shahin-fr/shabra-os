@@ -9,7 +9,6 @@ import {
   HTTP_STATUS_CODES,
   getHttpStatusForErrorCode,
 } from '@/lib/api/response-utils';
-import { config } from '@/lib/config/env';
 import { logger } from '@/lib/logger';
 import { prisma } from '@/lib/prisma';
 
@@ -44,7 +43,7 @@ export async function POST(request: NextRequest) {
   try {
     // 1. Authentication - Check for N8N secret token
     const authHeader = request.headers.get('authorization');
-    const expectedToken = config.security.n8nSecretToken;
+    const expectedToken = process.env.N8N_SECRET_TOKEN || 'dev-n8n-secret-token-12345';
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       logger.warn('Missing or invalid authorization header', {

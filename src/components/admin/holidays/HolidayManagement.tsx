@@ -193,7 +193,7 @@ export function HolidayManagement() {
     setSelectedHoliday(holiday);
     setFormData({
       name: holiday.name,
-      date: new Date(holiday.date).toISOString().split('T')[0],
+      date: holiday.date ? new Date(holiday.date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
     });
     setIsEditDialogOpen(true);
   };

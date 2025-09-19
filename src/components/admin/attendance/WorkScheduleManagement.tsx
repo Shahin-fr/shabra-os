@@ -44,14 +44,14 @@ interface WorkSchedule {
   updatedAt: string;
 }
 
-interface User {
+interface WorkScheduleUser {
   id: string;
   name: string;
 }
 
 interface WorkScheduleResponse {
   workSchedule: WorkSchedule;
-  user: User;
+  user: WorkScheduleUser;
 }
 
 interface Employee {
@@ -343,7 +343,7 @@ export function WorkScheduleManagement() {
                         </Label>
                         <div className="flex items-center justify-center">
                           <Switch
-                            checked={workSchedule[day.key as keyof WorkSchedule] || false}
+                            checked={Boolean(workSchedule[day.key as keyof WorkSchedule])}
                             onCheckedChange={() => handleDayToggle(day.key as keyof WorkSchedule)}
                             disabled={!isEditing}
                           />

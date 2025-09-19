@@ -100,7 +100,7 @@ function getWorkingDayStatus(workSchedule: any, dayOfWeek: number): boolean {
  */
 function getDayName(dayOfWeek: number): string {
   const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-  return days[dayOfWeek];
+  return days[dayOfWeek] || 'Unknown';
 }
 
 /**

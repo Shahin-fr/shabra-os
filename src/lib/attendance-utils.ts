@@ -62,8 +62,10 @@ export async function calculateUserAttendanceStats(
   // Group attendance by date
   const attendanceByDate = new Map<string, typeof attendanceRecords[0]>();
   attendanceRecords.forEach(record => {
-    const dateKey = record.checkIn.toISOString().split('T')[0];
-    attendanceByDate.set(dateKey, record);
+    const dateKey = record.checkIn?.toISOString().split('T')[0];
+    if (dateKey) {
+      attendanceByDate.set(dateKey, record);
+    }
   });
 
   // Calculate statistics
@@ -77,7 +79,7 @@ export async function calculateUserAttendanceStats(
   // Check each working day
   for (const workingDay of workingDays) {
     const dateKey = workingDay.toISOString().split('T')[0];
-    const attendance = attendanceByDate.get(dateKey);
+    const attendance = dateKey ? attendanceByDate.get(dateKey) : undefined;
     
     if (attendance) {
       presentDays++;
@@ -170,8 +172,10 @@ export async function getUserAttendanceSummary(
   // Group attendance by date
   const attendanceByDate = new Map<string, typeof attendanceRecords[0]>();
   attendanceRecords.forEach(record => {
-    const dateKey = record.checkIn.toISOString().split('T')[0];
-    attendanceByDate.set(dateKey, record);
+    const dateKey = record.checkIn?.toISOString().split('T')[0];
+    if (dateKey) {
+      attendanceByDate.set(dateKey, record);
+    }
   });
 
   // Create daily summary
@@ -181,7 +185,7 @@ export async function getUserAttendanceSummary(
 
   for (let i = 0; i < daysToShow; i++) {
     const dateKey = currentDate.toISOString().split('T')[0];
-    const attendance = attendanceByDate.get(dateKey);
+    const attendance = dateKey ? attendanceByDate.get(dateKey) : undefined;
     const isWorking = await isWorkingDay(userId, currentDate);
     const isHoliday = holidays.some(h => 
       h.date.toDateString() === currentDate.toDateString()

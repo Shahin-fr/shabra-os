@@ -198,15 +198,19 @@ export function ChecklistTemplateForm({ template, onSuccess, onCancel }: Checkli
 
   const updateTask = (index: number, field: keyof ChecklistTemplateTask, value: any) => {
     const newTasks = [...tasks];
-    newTasks[index] = { ...newTasks[index], [field]: value };
-    setTasks(newTasks);
+    if (newTasks[index]) {
+      newTasks[index] = { ...newTasks[index], [field]: value };
+      setTasks(newTasks);
+    }
   };
 
   const moveTask = (fromIndex: number, toIndex: number) => {
     const newTasks = [...tasks];
     const [movedTask] = newTasks.splice(fromIndex, 1);
-    newTasks.splice(toIndex, 0, movedTask);
-    setTasks(newTasks.map((task, index) => ({ ...task, order: index })));
+    if (movedTask) {
+      newTasks.splice(toIndex, 0, movedTask);
+      setTasks(newTasks.map((task, index) => ({ ...task, order: index })));
+    }
   };
 
   return (

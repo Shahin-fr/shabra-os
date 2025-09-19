@@ -195,11 +195,12 @@ export function TeamCalendarDashboard() {
     let borderColor = '#3174ad';
 
     switch (event.type) {
-      case 'leave':
+      case 'leave': {
         const leaveType = event.resource?.leaveType;
         backgroundColor = LEAVE_TYPE_COLORS[leaveType as keyof typeof LEAVE_TYPE_COLORS] || '#3174ad';
         borderColor = backgroundColor;
         break;
+      }
       case 'holiday':
         backgroundColor = '#F59E0B';
         borderColor = '#F59E0B';

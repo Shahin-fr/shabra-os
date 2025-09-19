@@ -114,29 +114,23 @@ export function ProfileDocuments({ userId }: ProfileDocumentsProps) {
   } = useQuery({
     queryKey: ['documents', userId],
     queryFn: async (): Promise<DocumentsResponse> => {
-      try {
-        const response = await fetch(`/api/admin/documents?userId=${userId}`);
-        
-        if (!response.ok) {
-          const errorText = await response.text();
-          
-          // Handle specific error cases
-          if (response.status === 401) {
-            throw new Error('شما باید وارد سیستم شوید تا بتوانید اسناد را مشاهده کنید');
-          } else if (response.status === 403) {
-            throw new Error('شما دسترسی لازم برای مشاهده این اسناد را ندارید');
-          } else if (response.status === 404) {
-            throw new Error('کاربر مورد نظر یافت نشد');
-          } else {
-            throw new Error(`خطا در بارگذاری اسناد: ${response.status} ${response.statusText}`);
-          }
+      const response = await fetch(`/api/admin/documents?userId=${userId}`);
+      
+      if (!response.ok) {
+        // Handle specific error cases
+        if (response.status === 401) {
+          throw new Error('شما باید وارد سیستم شوید تا بتوانید اسناد را مشاهده کنید');
+        } else if (response.status === 403) {
+          throw new Error('شما دسترسی لازم برای مشاهده این اسناد را ندارید');
+        } else if (response.status === 404) {
+          throw new Error('کاربر مورد نظر یافت نشد');
+        } else {
+          throw new Error(`خطا در بارگذاری اسناد: ${response.status} ${response.statusText}`);
         }
-        
-        const data = await response.json();
-        return data;
-      } catch (error) {
-        throw error;
       }
+      
+      const data = await response.json();
+      return data;
     },
     retry: 2,
     staleTime: 5 * 60 * 1000, // 5 minutes
@@ -200,7 +194,7 @@ export function ProfileDocuments({ userId }: ProfileDocumentsProps) {
     const file = event.target.files?.[0];
     if (file) {
       setSelectedFile(file);
-      setDocumentName(file.name.split('.')[0]); // Set default name without extension
+      setDocumentName(file.name.split('.')[0] || ''); // Set default name without extension
     }
   };
 
