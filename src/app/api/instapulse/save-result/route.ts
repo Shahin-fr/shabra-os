@@ -11,7 +11,7 @@ import {
 } from '@/lib/api/response-utils';
 import { config } from '@/lib/config/env';
 import { logger } from '@/lib/logger';
-import { prismaLocal as prisma } from '@/lib/prisma-local';
+import { prisma } from '@/lib/prisma';
 
 // Validation schemas using Zod
 const ReelSchema = z.object({
@@ -24,7 +24,11 @@ const ReelSchema = z.object({
 
 const PageSchema = z.object({
   username: z.string().min(1, 'Username is required'),
-  followerCount: z.number().int().min(0, 'Follower count must be non-negative').optional(),
+  followerCount: z
+    .number()
+    .int()
+    .min(0, 'Follower count must be non-negative')
+    .optional(),
 });
 
 const SaveResultSchema = z.object({
@@ -36,7 +40,7 @@ const SaveResultSchema = z.object({
 export async function POST(request: NextRequest) {
   let page: any = null;
   let reels: any[] = [];
-  
+
   try {
     // 1. Authentication - Check for N8N secret token
     const authHeader = request.headers.get('authorization');
@@ -124,7 +128,7 @@ export async function POST(request: NextRequest) {
       reelsCount: reels.length,
     });
 
-    const result = await prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async tx => {
       logger.info('Transaction started - looking up page', {
         context: 'instapulse-save-result-api',
         operation: 'POST',
@@ -142,7 +146,9 @@ export async function POST(request: NextRequest) {
           operation: 'POST',
           username: page.username,
         });
-        throw new Error(`Tracked page with username '${page.username}' not found`);
+        throw new Error(
+          `Tracked page with username '${page.username}' not found`
+        );
       }
 
       logger.info('Page found, updating page record', {
@@ -176,7 +182,7 @@ export async function POST(request: NextRequest) {
       // Upsert the Reels - Process each reel
       const upsertedReels = [];
       const failedReels = [];
-      
+
       for (let i = 0; i < reels.length; i++) {
         const reel = reels[i];
         if (!reel) {
@@ -188,7 +194,7 @@ export async function POST(request: NextRequest) {
           });
           continue;
         }
-        
+
         logger.info(`Processing reel ${i + 1}/${reels.length}`, {
           context: 'instapulse-save-result-api',
           operation: 'POST',
@@ -216,7 +222,7 @@ export async function POST(request: NextRequest) {
               pageId: existingPage.id,
             },
           });
-          
+
           upsertedReels.push(upsertedReel);
           logger.info(`Successfully upserted reel ${i + 1}`, {
             context: 'instapulse-save-result-api',
@@ -226,26 +232,32 @@ export async function POST(request: NextRequest) {
             reelId: upsertedReel.id,
           });
         } catch (reelError) {
-          const errorMessage = reelError instanceof Error ? reelError.message : 'Unknown error';
-          const errorStack = reelError instanceof Error ? reelError.stack : undefined;
-          
-          logger.error('Failed to upsert reel', reelError instanceof Error ? reelError : new Error('Unknown error'), {
-            context: 'instapulse-save-result-api',
-            operation: 'POST',
-            username: page.username,
-            postUrl: reel.postUrl,
-            reelIndex: i + 1,
-            errorMessage,
-            errorStack,
-            pageId: existingPage.id,
-          });
-          
+          const errorMessage =
+            reelError instanceof Error ? reelError.message : 'Unknown error';
+          const errorStack =
+            reelError instanceof Error ? reelError.stack : undefined;
+
+          logger.error(
+            'Failed to upsert reel',
+            reelError instanceof Error ? reelError : new Error('Unknown error'),
+            {
+              context: 'instapulse-save-result-api',
+              operation: 'POST',
+              username: page.username,
+              postUrl: reel.postUrl,
+              reelIndex: i + 1,
+              errorMessage,
+              errorStack,
+              pageId: existingPage.id,
+            }
+          );
+
           failedReels.push({
             index: i + 1,
             postUrl: reel.postUrl,
             error: errorMessage,
           });
-          
+
           // Continue with other reels even if one fails
         }
       }
@@ -309,10 +321,11 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(successResponse, { status: HTTP_STATUS_CODES.OK });
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorMessage =
+      error instanceof Error ? error.message : 'Unknown error';
     const errorStack = error instanceof Error ? error.stack : undefined;
     const errorName = error instanceof Error ? error.name : 'UnknownError';
-    
+
     logger.error(
       'Failed to save scraped data:',
       error instanceof Error ? error : undefined,
@@ -330,23 +343,24 @@ export async function POST(request: NextRequest) {
     // Handle specific error types
     if (error instanceof Error) {
       if (error.message.includes('not found')) {
-        const errorResponse = createValidationErrorResponse(
-          error.message
-        );
+        const errorResponse = createValidationErrorResponse(error.message);
         return NextResponse.json(errorResponse, {
           status: HTTP_STATUS_CODES.BAD_REQUEST,
         });
       }
-      
+
       // Handle Prisma constraint violations
-      if (error.message.includes('Unique constraint') || error.message.includes('Foreign key constraint')) {
+      if (
+        error.message.includes('Unique constraint') ||
+        error.message.includes('Foreign key constraint')
+      ) {
         logger.error('Database constraint violation detected', error, {
           context: 'instapulse-save-result-api',
           operation: 'POST',
           username: page?.username || 'unknown',
           constraintError: error.message,
         });
-        
+
         const errorResponse = createValidationErrorResponse(
           'Database constraint violation: ' + error.message
         );

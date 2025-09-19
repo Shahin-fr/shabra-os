@@ -61,25 +61,32 @@ export function useUpdateTaskStatus() {
   return useMutation({
     mutationFn: updateTaskStatus,
     onMutate: async ({ taskId, status }) => {
-      // Cancel any outgoing refetches
+      // Step 1.1: Cancel any outgoing refetches for the tasks query
       await queryClient.cancelQueries({ queryKey: ['tasks'] });
 
-      // Snapshot the previous value
+      // Step 1.2: Get a snapshot of the current tasks data from the cache
       const previousTasks = queryClient.getQueryData<Task[]>(['tasks']);
 
-      // Optimistically update the cache
+      // Step 1.3: Manually and immediately update the cache
       if (previousTasks) {
-        const updatedTasks = previousTasks.map(task =>
-          task.id === taskId ? { ...task, status } : task
-        );
+        const updatedTasks = previousTasks.map(task => {
+          if (task.id === taskId) {
+            return {
+              ...task,
+              status,
+              updatedAt: new Date().toISOString(),
+            };
+          }
+          return task;
+        });
         queryClient.setQueryData(['tasks'], updatedTasks);
       }
 
-      // Return a context object with the snapshotted value
+      // Step 1.4: Return the previous state snapshot as context
       return { previousTasks };
     },
     onError: (error, _variables, context) => {
-      // If the mutation fails, use the context returned from onMutate to roll back
+      // Rollback: Restore the cache to the previous state snapshot
       if (context?.previousTasks) {
         queryClient.setQueryData(['tasks'], context.previousTasks);
       }
@@ -89,12 +96,13 @@ export function useUpdateTaskStatus() {
       });
     },
     onSuccess: (data, variables) => {
+      // Show success message
       toast.success('وضعیت تسک با موفقیت بروزرسانی شد', {
         description: `تسک "${data.title}" به وضعیت "${getStatusLabel(variables.status)}" تغییر یافت`,
       });
     },
     onSettled: () => {
-      // Always refetch after error or success
+      // Cleanup: Refetch the tasks data to ensure perfect sync with server
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
     },
   });

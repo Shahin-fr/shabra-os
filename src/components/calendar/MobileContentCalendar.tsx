@@ -2,7 +2,8 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { format, startOfWeek, addDays } from 'date-fns';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
+import { OptimizedMotion } from '@/components/ui/OptimizedMotion';
 import {
   Plus,
   Calendar,
@@ -10,7 +11,6 @@ import {
   ChevronRight,
   FileText,
   Image,
-  Trash2,
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
@@ -361,7 +361,7 @@ export function MobileContentCalendar({
           });
 
           return (
-            <motion.div
+            <OptimizedMotion
               key={day.dayOfWeek}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -397,7 +397,7 @@ export function MobileContentCalendar({
                     ) : dayContent.length > 0 ? (
                       <AnimatePresence>
                         {dayContent.map((content: ContentSlot) => (
-                          <motion.div
+                          <OptimizedMotion
                             key={content.id}
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
@@ -411,9 +411,8 @@ export function MobileContentCalendar({
                                 setIsEditing(true);
                                 setIsCreateDialogOpen(true);
                               }}
-                              onDelete={() => handleDeleteContent(content.id)}
                             />
-                          </motion.div>
+                          </OptimizedMotion>
                         ))}
                       </AnimatePresence>
                     ) : (
@@ -427,7 +426,7 @@ export function MobileContentCalendar({
                   </div>
                 </CardContent>
               </Card>
-            </motion.div>
+            </OptimizedMotion>
           );
         })}
       </div>
@@ -442,6 +441,8 @@ export function MobileContentCalendar({
         }}
         submitLabel={isEditing ? 'بروزرسانی' : 'ایجاد'}
         isLoading={createMutation.isPending}
+        onDelete={editingContent ? () => handleDeleteContent(editingContent.id) : undefined}
+        showDelete={!!editingContent}
       >
         <ContentForm
           onSubmit={handleCreateContent}
@@ -459,11 +460,9 @@ export function MobileContentCalendar({
 function ContentCard({
   content,
   onEdit,
-  onDelete,
 }: {
   content: ContentSlot;
   onEdit: () => void;
-  onDelete: () => void;
 }) {
   const typeConfig = contentTypes.find(t => t.value === content.type);
   const TypeIcon = typeConfig?.icon || FileText;
@@ -487,14 +486,6 @@ function ContentCard({
               className='h-6 w-6 p-0 hover:bg-pink-100'
             >
               <FileText className='h-3 w-3' />
-            </Button>
-            <Button
-              variant='ghost'
-              size='sm'
-              onClick={onDelete}
-              className='h-6 w-6 p-0 hover:bg-red-100 hover:text-red-500'
-            >
-              <Trash2 className='h-3 w-3' />
             </Button>
           </div>
         </div>
@@ -563,6 +554,7 @@ function ContentForm({
     onSubmit(formData);
   };
 
+
   return (
     <form onSubmit={handleSubmit} className='space-y-4'>
       <MobileFormField label='عنوان' required>
@@ -620,3 +612,4 @@ function ContentForm({
     </form>
   );
 }
+

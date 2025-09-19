@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prismaLocal as prisma } from '@/lib/prisma-local';
+import { prisma } from '@/lib/prisma';
 
 export async function GET(
   _request: NextRequest,
@@ -20,7 +20,7 @@ export async function GET(
 
     return NextResponse.json(storyType);
   } catch (error) {
-    console.error('Error fetching story type:', error);
+    // Error occurred while fetching story type
     return NextResponse.json(
       { error: { message: 'Failed to fetch story type' } },
       { status: 500 }
@@ -49,7 +49,7 @@ export async function PATCH(
 
     return NextResponse.json(storyType);
   } catch (error) {
-    console.error('Error updating story type:', error);
+    // Error occurred while updating story type
     return NextResponse.json(
       { error: { message: 'Failed to update story type' } },
       { status: 500 }
@@ -85,7 +85,7 @@ export async function DELETE(
 
     return NextResponse.json({ message: 'Story type deleted successfully' });
   } catch (error) {
-    console.error('Error deleting story type:', error);
+    // Error occurred while deleting story type
     return NextResponse.json(
       { error: { message: 'Failed to delete story type' } },
       { status: 500 }

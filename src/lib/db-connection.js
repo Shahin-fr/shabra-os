@@ -10,34 +10,29 @@ let client = null;
 async function getConnection() {
   if (!client) {
     client = new Client({
-      host: 'localhost',
-      port: 5432,
-      database: 'shabra_os',
-      user: 'postgres',
-      password: 'postgres',
+      host: process.env.DB_HOST || 'localhost',
+      port: parseInt(process.env.DB_PORT) || 5432,
+      database: process.env.DB_NAME || 'shabra_os',
+      user: process.env.DB_USER || 'postgres',
+      password:
+        process.env.DB_PASSWORD ||
+        process.env.DATABASE_URL?.split('://')[1]
+          ?.split('@')[0]
+          ?.split(':')[1] ||
+        'postgres',
     });
-    
-    try {
-      await client.connect();
-      console.log('✅ [DB] Direct connection established');
-    } catch (error) {
-      console.error('❌ [DB] Direct connection failed:', error.message);
-      throw error;
-    }
+
+    await client.connect();
+    // Direct connection established
   }
-  
+
   return client;
 }
 
 async function query(text, params = []) {
   const conn = await getConnection();
-  try {
-    const result = await conn.query(text, params);
-    return result;
-  } catch (error) {
-    console.error('❌ [DB] Query failed:', error.message);
-    throw error;
-  }
+  const result = await conn.query(text, params);
+  return result;
 }
 
 async function findUserByEmail(email) {
@@ -45,7 +40,7 @@ async function findUserByEmail(email) {
     'SELECT id, email, "firstName", "lastName", password, roles, "isActive", avatar FROM "User" WHERE email = $1',
     [email]
   );
-  
+
   return result.rows[0] || null;
 }
 
@@ -60,5 +55,5 @@ module.exports = {
   getConnection,
   query,
   findUserByEmail,
-  closeConnection
+  closeConnection,
 };

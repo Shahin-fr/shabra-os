@@ -20,7 +20,9 @@ interface MobileCreateProjectProps {
   className?: string;
 }
 
-export function MobileCreateProject({ className: _className }: MobileCreateProjectProps) {
+export function MobileCreateProject({
+  className: _className,
+}: MobileCreateProjectProps) {
   const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [formData, setFormData] = useState({
@@ -164,3 +166,4 @@ export function MobileCreateProject({ className: _className }: MobileCreateProje
     </>
   );
 }
+

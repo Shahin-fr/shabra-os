@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import { prisma } from '@/lib/prisma';
-import { sanitizeHtml } from '@/lib/security/html-sanitizer';
+import { sanitizeHtmlServer } from '@/lib/security/html-sanitizer';
 
 interface DocPageProps {
   params: {
@@ -60,7 +60,7 @@ export default async function DocPage({ params }: DocPageProps) {
   });
 
   // Sanitize HTML content to prevent XSS attacks
-  const sanitizedHtml = sanitizeHtml(doc.content || '');
+  const sanitizedHtml = sanitizeHtmlServer(doc.content || '');
 
   return (
     <div className='container mx-auto px-4 py-8 max-w-4xl'>

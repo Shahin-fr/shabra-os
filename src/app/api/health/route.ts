@@ -4,8 +4,8 @@ import {
   createSuccessResponse,
   HTTP_STATUS_CODES,
 } from '@/lib/api/response-utils';
-import { logger } from '@/lib/logger';
-import { prismaLocal as prisma } from '@/lib/prisma-local';
+import { prisma } from '@/lib/prisma';
+import { handleApiError } from '@/lib/utils/error-handler';
 
 export async function GET() {
   try {
@@ -19,21 +19,9 @@ export async function GET() {
     });
     return NextResponse.json(successResponse, { status: HTTP_STATUS_CODES.OK });
   } catch (error) {
-    logger.error(
-      'Health check failed:',
-      error instanceof Error ? error : undefined,
-      {
-        context: 'health-api',
-      }
-    );
-    return NextResponse.json(
-      {
-        status: 'unhealthy',
-        database: 'disconnected',
-        error: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date().toISOString(),
-      },
-      { status: 500 }
-    );
+    return handleApiError(error, {
+      operation: 'GET /api/health',
+      source: 'api/health/route.ts',
+    });
   }
 }

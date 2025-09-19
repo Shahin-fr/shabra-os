@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { OptimizedMotion } from '@/components/ui/OptimizedMotion';
 import { Settings, Palette, Lightbulb, BarChart3 } from 'lucide-react';
 
 import { StoryTypeManager } from '@/components/admin/StoryTypeManager';
@@ -31,7 +31,7 @@ export default function StoryboardAdminPage() {
     <div className='min-h-screen bg-gray-50'>
       <div className='container mx-auto px-4 py-8'>
         {/* Header */}
-        <motion.div
+        <OptimizedMotion
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -50,10 +50,10 @@ export default function StoryboardAdminPage() {
               </p>
             </div>
           </div>
-        </motion.div>
+        </OptimizedMotion>
 
         {/* Stats Cards */}
-        <motion.div
+        <OptimizedMotion
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
@@ -99,10 +99,10 @@ export default function StoryboardAdminPage() {
               <p className='text-xs text-muted-foreground'>دسته‌بندی مختلف</p>
             </CardContent>
           </Card>
-        </motion.div>
+        </OptimizedMotion>
 
         {/* Main Content */}
-        <motion.div
+        <OptimizedMotion
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
@@ -133,8 +133,9 @@ export default function StoryboardAdminPage() {
               <StoryIdeaManager />
             </TabsContent>
           </Tabs>
-        </motion.div>
+        </OptimizedMotion>
       </div>
     </div>
   );
 }
+

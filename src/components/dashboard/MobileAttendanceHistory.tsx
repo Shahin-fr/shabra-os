@@ -1,6 +1,7 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
+import { OptimizedMotion } from '@/components/ui/OptimizedMotion';
 import {
   Clock,
   Calendar,
@@ -170,14 +171,14 @@ export function MobileAttendanceHistory({
   };
 
   return (
-    <motion.div
+    <OptimizedMotion
       className={`space-y-4 ${className}`}
       variants={containerVariants}
       initial='hidden'
       animate='visible'
     >
       {/* Header with Stats */}
-      <motion.div variants={itemVariants}>
+      <OptimizedMotion variants={itemVariants}>
         <Card
           style={{
             background: 'rgba(255, 255, 255, 0.8)',
@@ -236,10 +237,10 @@ export function MobileAttendanceHistory({
             </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </OptimizedMotion>
 
       {/* Attendance Records */}
-      <motion.div variants={itemVariants}>
+      <OptimizedMotion variants={itemVariants}>
         <Card
           style={{
             background: 'rgba(255, 255, 255, 0.8)',
@@ -260,7 +261,7 @@ export function MobileAttendanceHistory({
                   const StatusIcon = status.icon;
 
                   return (
-                    <motion.div
+                    <OptimizedMotion
                       key={record.id}
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
@@ -320,14 +321,15 @@ export function MobileAttendanceHistory({
                           </div>
                         )}
                       </div>
-                    </motion.div>
+                    </OptimizedMotion>
                   );
                 })}
               </AnimatePresence>
             </div>
           </CardContent>
         </Card>
-      </motion.div>
-    </motion.div>
+      </OptimizedMotion>
+    </OptimizedMotion>
   );
 }
+

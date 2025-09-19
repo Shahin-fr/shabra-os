@@ -1,7 +1,7 @@
 'use client';
 
 import { useDraggable } from '@dnd-kit/core';
-import { motion } from 'framer-motion';
+import { OptimizedMotion } from '@/components/ui/OptimizedMotion';
 import { Calendar, User, GripVertical } from 'lucide-react';
 import React, { useState } from 'react';
 
@@ -137,7 +137,7 @@ export function TaskCard({
   };
 
   return (
-    <motion.div
+    <OptimizedMotion
       ref={setNodeRef}
       style={style}
       initial={{ opacity: 0, y: 20 }}
@@ -245,6 +245,7 @@ export function TaskCard({
           </div>
         </CardContent>
       </Card>
-    </motion.div>
+    </OptimizedMotion>
   );
 }
+

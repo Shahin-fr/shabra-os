@@ -18,25 +18,27 @@ export function SegmentedControl({
   options,
   value,
   onValueChange,
-  className
+  className,
 }: SegmentedControlProps) {
   const selectedIndex = options.findIndex(option => option.value === value);
 
   return (
-    <div className={cn(
-      'relative inline-flex items-center bg-white/10 backdrop-blur-sm rounded-xl p-1 border border-white/20 w-full',
-      className
-    )}>
+    <div
+      className={cn(
+        'relative inline-flex items-center bg-white/10 backdrop-blur-sm rounded-xl p-1 border border-white/20 w-full',
+        className
+      )}
+    >
       {/* Background indicator */}
       <div
-        className="absolute top-1 bottom-1 bg-gradient-to-r from-pink-500 to-rose-500 rounded-lg shadow-lg transition-all duration-300 ease-out"
+        className='absolute top-1 bottom-1 bg-gradient-to-r from-pink-500 to-rose-500 rounded-lg shadow-lg transition-all duration-300 ease-out'
         style={{
           left: `${(selectedIndex * 100) / options.length + 2}%`,
           width: `${100 / options.length - 4}%`,
         }}
       />
-      
-      {options.map((option) => (
+
+      {options.map(option => (
         <button
           key={option.value}
           onClick={() => onValueChange(option.value)}
@@ -54,3 +56,4 @@ export function SegmentedControl({
     </div>
   );
 }
+

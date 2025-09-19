@@ -1,22 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 
+import { auth } from '@/auth';
+import { withAuthorization, createAuthorizationErrorResponse } from '@/lib/auth/authorization';
 import { prisma } from '@/lib/prisma';
 import { logger } from '@/lib/logger';
+import { withCriticalRateLimit } from '@/lib/middleware/rate-limit-middleware';
 
 export async function POST(request: NextRequest) {
-  try {
-    // Only allow in development or with special key
-    const authHeader = request.headers.get('authorization');
-    const isAuthorized = 
-      process.env.NODE_ENV === 'development' || 
-      authHeader === `Bearer ${process.env.SEED_SECRET}`;
+  // Apply critical rate limiting
+  const rateLimitResult = withCriticalRateLimit(request);
+  if (!rateLimitResult.allowed) {
+    return rateLimitResult.response!;
+  }
 
-    if (!isAuthorized) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+  try {
+    // Get user session
+    const session = await auth();
+    
+    // Check authorization - only ADMIN users can seed the database
+    const authResult = await withAuthorization('ADMIN')(session);
+    if (!authResult.authorized) {
+      return createAuthorizationErrorResponse(authResult);
     }
 
     logger.info('Starting database seeding...');
@@ -24,19 +29,24 @@ export async function POST(request: NextRequest) {
     // Test database connection
     await prisma.$queryRaw`SELECT 1`;
 
-    // Reset database first to ensure compatibility
+    // Reset database first to ensure compatibility using transaction
     logger.info('Resetting database for compatibility...');
-    
-    // Delete all existing data
-    await prisma.story.deleteMany();
-    await prisma.task.deleteMany();
-    await prisma.user.deleteMany();
-    await prisma.storyIdea.deleteMany();
-    await prisma.storyType.deleteMany();
-    await prisma.contentSlot.deleteMany();
-    await prisma.project.deleteMany();
-    await prisma.document.deleteMany();
-    
+
+    await prisma.$transaction(async (tx) => {
+      // Delete all existing data in correct order (respecting foreign key constraints)
+      await tx.story.deleteMany();
+      await tx.task.deleteMany();
+      await tx.attendance.deleteMany();
+      await tx.instagramReel.deleteMany();
+      await tx.trackedInstagramPage.deleteMany();
+      await tx.contentSlot.deleteMany();
+      await tx.document.deleteMany();
+      await tx.storyIdea.deleteMany();
+      await tx.storyType.deleteMany();
+      await tx.project.deleteMany();
+      await tx.user.deleteMany();
+    });
+
     logger.info('Database reset completed');
 
     const users = [
@@ -63,40 +73,48 @@ export async function POST(request: NextRequest) {
       },
     ];
 
-    const results = [];
+    const results: any[] = [];
 
-    for (const userData of users) {
-      try {
-        // Create user
-        const hashedPassword = await bcrypt.hash(userData.password, 12);
-        const user = await prisma.user.create({
-          data: {
+    // Create users in a transaction to ensure atomicity
+    await prisma.$transaction(async (tx) => {
+      for (const userData of users) {
+        try {
+          // Create user
+          const hashedPassword = await bcrypt.hash(userData.password, 12);
+          const user = await tx.user.create({
+            data: {
+              email: userData.email,
+              firstName: userData.firstName,
+              lastName: userData.lastName,
+              password: hashedPassword,
+              roles: userData.roles,
+              isActive: true,
+            },
+          });
+
+          results.push({
             email: userData.email,
-            firstName: userData.firstName,
-            lastName: userData.lastName,
-            password: hashedPassword,
-            roles: userData.roles,
-            isActive: true,
-          },
-        });
+            status: 'created',
+            message: 'User created successfully',
+            userId: user.id,
+          });
 
-        results.push({
-          email: userData.email,
-          status: 'created',
-          message: 'User created successfully',
-          userId: user.id,
-        });
-
-        logger.info(`User created: ${userData.email}`);
-      } catch (error) {
-        results.push({
-          email: userData.email,
-          status: 'error',
-          message: error instanceof Error ? error.message : 'Unknown error',
-        });
-        logger.error(`Error creating user ${userData.email}:`, error instanceof Error ? error : new Error(String(error)));
+          logger.info(`User created: ${userData.email}`);
+        } catch (error) {
+          results.push({
+            email: userData.email,
+            status: 'error',
+            message: error instanceof Error ? error.message : 'Unknown error',
+          });
+          logger.error(
+            `Error creating user ${userData.email}:`,
+            error instanceof Error ? error : new Error(String(error))
+          );
+          // Re-throw to rollback the entire transaction
+          throw error;
+        }
       }
-    }
+    });
 
     // Get total user count
     const totalUsers = await prisma.user.count();
@@ -109,14 +127,16 @@ export async function POST(request: NextRequest) {
       results,
       totalUsers,
       credentials: {
-        admin: 'admin@shabra.com / admin-password-123',
-        user: 'user@shabra.com / user-password-123',
-        manager: 'manager@shabra.com / manager-password-123',
+        admin: 'admin@shabra.com / [PASSWORD_HIDDEN]',
+        user: 'user@shabra.com / [PASSWORD_HIDDEN]',
+        manager: 'manager@shabra.com / [PASSWORD_HIDDEN]',
       },
     });
-
   } catch (error) {
-    logger.error('Database seeding failed:', error instanceof Error ? error : new Error(String(error)));
+    logger.error(
+      'Database seeding failed:',
+      error instanceof Error ? error : new Error(String(error))
+    );
     return NextResponse.json(
       {
         success: false,
@@ -130,12 +150,21 @@ export async function POST(request: NextRequest) {
 
 export async function GET() {
   try {
+    // Get user session
+    const session = await auth();
+    
+    // Check authorization - only ADMIN users can seed the database
+    const authResult = await withAuthorization('ADMIN')(session);
+    if (!authResult.authorized) {
+      return createAuthorizationErrorResponse(authResult);
+    }
+
     // Test database connection
     await prisma.$queryRaw`SELECT 1`;
 
     // Reset database first to ensure compatibility
     logger.info('Resetting database for compatibility...');
-    
+
     // Delete all existing data
     await prisma.story.deleteMany();
     await prisma.task.deleteMany();
@@ -145,7 +174,7 @@ export async function GET() {
     await prisma.contentSlot.deleteMany();
     await prisma.project.deleteMany();
     await prisma.document.deleteMany();
-    
+
     logger.info('Database reset completed');
 
     const users = [
@@ -172,7 +201,7 @@ export async function GET() {
       },
     ];
 
-    const results = [];
+    const results: any[] = [];
     const createdUsers = [];
 
     for (const userData of users) {
@@ -213,14 +242,20 @@ export async function GET() {
           status: 'error',
           message: error instanceof Error ? error.message : 'Unknown error',
         });
-        logger.error(`Error creating user ${userData.email}:`, error instanceof Error ? error : new Error(String(error)));
+        logger.error(
+          `Error creating user ${userData.email}:`,
+          error instanceof Error ? error : new Error(String(error))
+        );
       }
     }
 
     // Get final user count
     const finalUserCount = await prisma.user.count();
 
-    logger.info('Automatic database seeding completed', { results, finalUserCount });
+    logger.info('Automatic database seeding completed', {
+      results,
+      finalUserCount,
+    });
 
     return NextResponse.json({
       success: true,
@@ -229,14 +264,16 @@ export async function GET() {
       userCount: finalUserCount,
       users: createdUsers,
       credentials: {
-        admin: 'admin@shabra.com / admin-password-123',
-        user: 'user@shabra.com / user-password-123',
-        manager: 'manager@shabra.com / manager-password-123',
+        admin: 'admin@shabra.com / [PASSWORD_HIDDEN]',
+        user: 'user@shabra.com / [PASSWORD_HIDDEN]',
+        manager: 'manager@shabra.com / [PASSWORD_HIDDEN]',
       },
     });
-
   } catch (error) {
-    logger.error('Error in GET seed handler:', error instanceof Error ? error : new Error(String(error)));
+    logger.error(
+      'Error in GET seed handler:',
+      error instanceof Error ? error : new Error(String(error))
+    );
     return NextResponse.json(
       {
         success: false,

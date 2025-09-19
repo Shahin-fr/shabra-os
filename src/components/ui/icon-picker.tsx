@@ -317,3 +317,4 @@ export function IconPicker({ value, onValueChange, trigger }: IconPickerProps) {
     </Dialog>
   );
 }
+

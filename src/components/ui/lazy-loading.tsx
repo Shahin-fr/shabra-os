@@ -127,3 +127,4 @@ export function createLazyComponent<T extends ComponentType<any>>(
       : () => <DefaultFallback />,
   });
 }
+

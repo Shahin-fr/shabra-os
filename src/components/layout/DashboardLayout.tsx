@@ -5,6 +5,7 @@ import React from 'react';
 import { OfflineIndicator } from '@/components/ui/offline-indicator';
 import { useAuth } from '@/hooks/useAuth';
 import { useMobile } from '@/hooks/useResponsive';
+import { cn } from '@/lib/utils';
 
 import { FloatingActionButton } from './FloatingActionButton';
 import { Header } from './Header';
@@ -53,7 +54,4 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   );
 }
 
-// Utility function for conditional classes
-function cn(...classes: (string | undefined | null | false)[]): string {
-  return classes.filter(Boolean).join(' ');
-}
+

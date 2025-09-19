@@ -3,11 +3,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import {
   createSuccessResponse,
   createNotFoundErrorResponse,
-  createServerErrorResponse,
   HTTP_STATUS_CODES,
   getHttpStatusForErrorCode,
 } from '@/lib/api/response-utils';
-import { prismaLocal as prisma } from '@/lib/prisma-local';
+import { prisma } from '@/lib/prisma';
+import { handleApiError } from '@/lib/utils/error-handler';
 
 // GET /api/content-slots/[contentSlotId] - Get a specific content slot
 export async function GET(
@@ -29,12 +29,10 @@ export async function GET(
     }
 
     return NextResponse.json(contentSlot);
-  } catch {
-    const errorResponse = createServerErrorResponse(
-      'Failed to fetch content slot'
-    );
-    return NextResponse.json(errorResponse, {
-      status: getHttpStatusForErrorCode(errorResponse.error.code),
+  } catch (error) {
+    return handleApiError(error, {
+      operation: 'GET /api/content-slots/[contentSlotId]',
+      source: 'api/content-slots/[contentSlotId]/route.ts',
     });
   }
 }
@@ -88,12 +86,10 @@ export async function PATCH(
     return NextResponse.json(successResponse, {
       status: HTTP_STATUS_CODES.OK,
     });
-  } catch {
-    const errorResponse = createServerErrorResponse(
-      'Failed to update content slot'
-    );
-    return NextResponse.json(errorResponse, {
-      status: getHttpStatusForErrorCode(errorResponse.error.code),
+  } catch (error) {
+    return handleApiError(error, {
+      operation: 'PATCH /api/content-slots/[contentSlotId]',
+      source: 'api/content-slots/[contentSlotId]/route.ts',
     });
   }
 }
@@ -127,12 +123,10 @@ export async function DELETE(
       message: 'Content slot deleted successfully',
     });
     return NextResponse.json(successResponse, { status: HTTP_STATUS_CODES.OK });
-  } catch {
-    const errorResponse = createServerErrorResponse(
-      'Failed to delete content slot'
-    );
-    return NextResponse.json(errorResponse, {
-      status: getHttpStatusForErrorCode(errorResponse.error.code),
+  } catch (error) {
+    return handleApiError(error, {
+      operation: 'DELETE /api/content-slots/[contentSlotId]',
+      source: 'api/content-slots/[contentSlotId]/route.ts',
     });
   }
 }

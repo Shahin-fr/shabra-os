@@ -18,8 +18,21 @@ vi.mock('@tanstack/react-query', () => ({
   })),
 }));
 
-vi.mock('next-auth/react', () => ({
-  useSession: vi.fn(() => ({ data: { user: { role: 'ADMIN' } } })),
+vi.mock('@/hooks/useAuth', () => ({
+  useAuth: vi.fn(() => ({
+    user: {
+      id: 'user-123',
+      email: 'admin@example.com',
+      name: 'Admin User',
+      roles: ['ADMIN'],
+      avatar: null,
+    },
+    isAuthenticated: true,
+    isLoading: false,
+    login: vi.fn(),
+    logout: vi.fn(),
+    status: 'authenticated',
+  })),
 }));
 
 vi.mock('@/components/ui/button', () => ({
@@ -199,3 +212,4 @@ describe('StoryTypeManager', () => {
     expect(triggerButton).toHaveAttribute('data-size', 'sm');
   });
 });
+

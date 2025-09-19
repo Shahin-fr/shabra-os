@@ -9,14 +9,14 @@ export interface ValidationRule {
   maxLength?: number;
   pattern?: RegExp;
   type?: 'string' | 'number' | 'email' | 'url' | 'date' | 'boolean';
-  custom?: (value: any) => boolean;
+  custom?: (value: unknown) => boolean;
   sanitize?: boolean;
 }
 
 export interface ValidationResult {
   isValid: boolean;
   errors: string[];
-  sanitizedValue?: any;
+  sanitizedValue?: unknown;
 }
 
 export interface ValidationSchema {

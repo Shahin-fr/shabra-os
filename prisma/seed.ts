@@ -82,6 +82,127 @@ async function main() {
   });
   console.log('Regular user created successfully');
 
+  // Create checklist templates
+  console.log('Creating checklist templates...');
+  
+  // Get the admin user ID for createdById
+  const adminUser = await prisma.user.findUnique({
+    where: { email: 'admin@shabra.com' },
+    select: { id: true },
+  });
+
+  if (adminUser) {
+    // Create onboarding template
+    const onboardingTemplate = await prisma.checklistTemplate.create({
+      data: {
+        name: 'فرآیند استخدام جدید',
+        type: 'ONBOARDING',
+        description: 'چک‌لیست کامل برای فرآیند استخدام کارمند جدید',
+        createdById: adminUser.id,
+        isActive: true,
+      },
+    });
+
+    // Create onboarding tasks
+    await prisma.checklistTemplateTask.createMany({
+      data: [
+        {
+          templateId: onboardingTemplate.id,
+          title: 'تکمیل فرم‌های استخدام',
+          description: 'کارمند باید فرم‌های استخدام را تکمیل کند',
+          defaultAssigneeRole: 'EMPLOYEE',
+          order: 1,
+          isRequired: true,
+          estimatedDays: 1,
+        },
+        {
+          templateId: onboardingTemplate.id,
+          title: 'ارائه مدارک هویتی',
+          description: 'ارائه کپی شناسنامه و کارت ملی',
+          defaultAssigneeRole: 'EMPLOYEE',
+          order: 2,
+          isRequired: true,
+          estimatedDays: 1,
+        },
+        {
+          templateId: onboardingTemplate.id,
+          title: 'تایید مدیر مستقیم',
+          description: 'تایید نهایی توسط مدیر مستقیم',
+          defaultAssigneeRole: 'MANAGER',
+          order: 3,
+          isRequired: true,
+          estimatedDays: 1,
+        },
+        {
+          templateId: onboardingTemplate.id,
+          title: 'تنظیم دسترسی‌های سیستم',
+          description: 'ایجاد حساب کاربری و تنظیم دسترسی‌ها',
+          defaultAssigneeRole: 'ADMIN',
+          order: 4,
+          isRequired: true,
+          estimatedDays: 1,
+        },
+      ],
+    });
+
+    // Create offboarding template
+    const offboardingTemplate = await prisma.checklistTemplate.create({
+      data: {
+        name: 'فرآیند ترک کار',
+        type: 'OFFBOARDING',
+        description: 'چک‌لیست کامل برای فرآیند ترک کار کارمند',
+        createdById: adminUser.id,
+        isActive: true,
+      },
+    });
+
+    // Create offboarding tasks
+    await prisma.checklistTemplateTask.createMany({
+      data: [
+        {
+          templateId: offboardingTemplate.id,
+          title: 'تسویه حساب مالی',
+          description: 'محاسبه و پرداخت حقوق و مزایای باقی‌مانده',
+          defaultAssigneeRole: 'ADMIN',
+          order: 1,
+          isRequired: true,
+          estimatedDays: 3,
+        },
+        {
+          templateId: offboardingTemplate.id,
+          title: 'تحویل تجهیزات',
+          description: 'تحویل لپ‌تاپ، تلفن و سایر تجهیزات شرکت',
+          defaultAssigneeRole: 'EMPLOYEE',
+          order: 2,
+          isRequired: true,
+          estimatedDays: 1,
+        },
+        {
+          templateId: offboardingTemplate.id,
+          title: 'بازگردانی دسترسی‌ها',
+          description: 'غیرفعال کردن دسترسی‌های سیستم و ایمیل',
+          defaultAssigneeRole: 'ADMIN',
+          order: 3,
+          isRequired: true,
+          estimatedDays: 1,
+        },
+        {
+          templateId: offboardingTemplate.id,
+          title: 'تایید نهایی مدیر',
+          description: 'تایید نهایی فرآیند ترک کار توسط مدیر',
+          defaultAssigneeRole: 'MANAGER',
+          order: 4,
+          isRequired: true,
+          estimatedDays: 1,
+        },
+      ],
+    });
+
+    console.log('Checklist templates created successfully');
+  } else {
+    console.log('⚠️ Admin user not found, skipping checklist template creation');
+  }
+
   console.log('🎉 Database seeding completed!');
 }
 

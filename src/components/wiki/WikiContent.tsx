@@ -6,9 +6,10 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
 import { Badge } from '@/components/ui/badge';
-import { ClientOnly } from '@/components/ui/ClientOnly';
+import ClientOnly from '@/components/ui/ClientOnly';
 import { formatJalaliDate } from '@/lib/date-utils';
 import { logger } from '@/lib/logger';
+import { sanitizeHtml } from '@/lib/security/html-sanitizer';
 
 interface WikiDocument {
   id: string;
@@ -219,7 +220,7 @@ export function WikiContent({ documentId }: WikiContentProps) {
         <div className='bg-white rounded-xl border border-gray-200/50 shadow-sm overflow-hidden'>
           <div className='p-8 prose prose-lg max-w-none prose-headings:text-gray-800 prose-p:text-gray-700 prose-strong:text-gray-800 prose-code:text-gray-800 prose-pre:bg-gray-50 prose-pre:text-gray-800'>
             {document.htmlContent ? (
-              <div dangerouslySetInnerHTML={{ __html: document.htmlContent }} />
+              <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(document.htmlContent) }} />
             ) : (
               <ReactMarkdown remarkPlugins={[remarkGfm]}>
                 {document.content}
@@ -231,3 +232,4 @@ export function WikiContent({ documentId }: WikiContentProps) {
     </div>
   );
 }
+

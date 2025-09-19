@@ -4,12 +4,12 @@ import { auth } from '@/auth';
 import {
   createSuccessResponse,
   createAuthErrorResponse,
-  createServerErrorResponse,
   HTTP_STATUS_CODES,
   getHttpStatusForErrorCode,
 } from '@/lib/api/response-utils';
 import { logger } from '@/lib/logger';
-import { prismaLocal as prisma } from '@/lib/prisma-local';
+import { prisma } from '@/lib/prisma';
+import { handleApiError } from '@/lib/utils/error-handler';
 
 // POST handler for clock-in/clock-out
 export async function POST() {
@@ -55,7 +55,7 @@ export async function POST() {
         },
       });
 
-      logger.info('User ${userId} clocked in at ${currentTime}');
+      logger.info(`User ${userId} clocked in at ${currentTime}`);
     } else {
       // Clock-out: Update existing record
       attendanceRecord = await prisma.attendance.update({
@@ -67,7 +67,7 @@ export async function POST() {
         },
       });
 
-      logger.info('User ${userId} clocked out at ${currentTime}');
+      logger.info(`User ${userId} clocked out at ${currentTime}`);
     }
 
     const successResponse = createSuccessResponse({
@@ -79,17 +79,10 @@ export async function POST() {
       attendance: attendanceRecord,
     });
     return NextResponse.json(successResponse, { status: HTTP_STATUS_CODES.OK });
-  } catch (_error) {
-    logger.error(
-      'Attendance API error:',
-      _error instanceof Error ? _error : undefined,
-      {
-        context: 'attendance-api',
-      }
-    );
-    const errorResponse = createServerErrorResponse('Internal server error');
-    return NextResponse.json(errorResponse, {
-      status: getHttpStatusForErrorCode(errorResponse.error.code),
+  } catch (error) {
+    return handleApiError(error, {
+      operation: 'POST /api/attendance',
+      source: 'api/attendance/route.ts',
     });
   }
 }
@@ -149,17 +142,10 @@ export async function GET() {
       currentTime,
     });
     return NextResponse.json(successResponse, { status: HTTP_STATUS_CODES.OK });
-  } catch (_error) {
-    logger.error(
-      'Attendance status API error:',
-      _error instanceof Error ? _error : undefined,
-      {
-        context: 'attendance-api',
-      }
-    );
-    const errorResponse = createServerErrorResponse('Internal server error');
-    return NextResponse.json(errorResponse, {
-      status: getHttpStatusForErrorCode(errorResponse.error.code),
+  } catch (error) {
+    return handleApiError(error, {
+      operation: 'GET /api/attendance',
+      source: 'api/attendance/route.ts',
     });
   }
 }

@@ -10,7 +10,7 @@ import {
   getHttpStatusForErrorCode,
 } from '@/lib/api/response-utils';
 import { logger } from '@/lib/logger';
-import { prismaLocal as prisma } from '@/lib/prisma-local';
+import { prisma } from '@/lib/prisma';
 
 // Validation schema for the request body
 const UpdatePageSchema = z.object({
@@ -125,7 +125,9 @@ export async function PATCH(
     if (error instanceof Error) {
       // Handle "Record not found" error
       if (error.message.includes('Record to update not found')) {
-        const errorResponse = createNotFoundErrorResponse('Tracked Instagram page');
+        const errorResponse = createNotFoundErrorResponse(
+          'Tracked Instagram page'
+        );
         return NextResponse.json(errorResponse, {
           status: getHttpStatusForErrorCode(errorResponse.error.code),
         });

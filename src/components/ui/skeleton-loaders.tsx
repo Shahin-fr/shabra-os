@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { OptimizedMotion } from '@/components/ui/OptimizedMotion';
 
 import { cn } from '@/lib/utils';
 
@@ -18,7 +18,7 @@ export function Skeleton({
   rounded = true,
 }: SkeletonProps) {
   return (
-    <motion.div
+    <OptimizedMotion
       className={cn(
         'bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%]',
         rounded && 'rounded-md',
@@ -144,14 +144,14 @@ export function SkeletonListStaggered({ count = 5 }: { count?: number }) {
   return (
     <div className='space-y-3'>
       {Array.from({ length: count }).map((_, index) => (
-        <motion.div
+        <OptimizedMotion
           key={index}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: index * 0.1, duration: 0.3 }}
         >
           <SkeletonCard />
-        </motion.div>
+        </OptimizedMotion>
       ))}
     </div>
   );
@@ -161,14 +161,14 @@ export function SkeletonTaskListStaggered({ count = 5 }: { count?: number }) {
   return (
     <div className='space-y-3'>
       {Array.from({ length: count }).map((_, index) => (
-        <motion.div
+        <OptimizedMotion
           key={index}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: index * 0.1, duration: 0.3 }}
         >
           <SkeletonTaskCard />
-        </motion.div>
+        </OptimizedMotion>
       ))}
     </div>
   );
@@ -182,14 +182,14 @@ export function SkeletonProjectListStaggered({
   return (
     <div className='space-y-3'>
       {Array.from({ length: count }).map((_, index) => (
-        <motion.div
+        <OptimizedMotion
           key={index}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: index * 0.1, duration: 0.3 }}
         >
           <SkeletonProjectCard />
-        </motion.div>
+        </OptimizedMotion>
       ))}
     </div>
   );
@@ -198,7 +198,7 @@ export function SkeletonProjectListStaggered({
 // Pulse skeleton for quick loading states
 export function SkeletonPulse({ className }: { className?: string }) {
   return (
-    <motion.div
+    <OptimizedMotion
       className={cn('bg-gray-200 rounded-md', className)}
       animate={{
         opacity: [0.5, 1, 0.5],
@@ -211,3 +211,4 @@ export function SkeletonPulse({ className }: { className?: string }) {
     />
   );
 }
+

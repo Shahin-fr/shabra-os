@@ -1,6 +1,8 @@
 'use client';
 
-import { motion, AnimatePresence, PanInfo } from 'framer-motion';
+import { AnimatePresence } from '@/lib/framer-motion-optimized';
+import type { PanInfo } from 'framer-motion';
+import { OptimizedMotion } from '@/components/ui/OptimizedMotion';
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import React, { useState } from 'react';
 
@@ -114,7 +116,7 @@ export function SwipeableStatsCard({
 
   return (
     <div className={`relative overflow-hidden ${className}`}>
-      <motion.div
+      <OptimizedMotion
         drag='x'
         dragConstraints={{ left: 0, right: 0 }}
         dragElastic={0.2}
@@ -124,7 +126,7 @@ export function SwipeableStatsCard({
         whileDrag={{ scale: 0.98 }}
       >
         <AnimatePresence mode='wait'>
-          <motion.div
+          <OptimizedMotion
             key={currentIndex}
             initial={{ opacity: 0, x: dragDirection === 'left' ? 100 : -100 }}
             animate={{ opacity: 1, x: 0 }}
@@ -164,18 +166,18 @@ export function SwipeableStatsCard({
 
             {/* Progress Bar */}
             <div className='mt-4'>
-              <div className='w-full bg-gray-200 rounded-full h-2'>
-                <motion.div
+              <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden overflow-hidden">
+                <OptimizedMotion
                   className={`h-2 rounded-full ${colors.bg.replace('100', '500')}`}
-                  initial={{ width: 0 }}
+                  initial={{ scaleX: 0 }}
                   animate={{ width: '75%' }}
                   transition={{ duration: 1, delay: 0.5 }}
                 />
               </div>
             </div>
-          </motion.div>
+          </OptimizedMotion>
         </AnimatePresence>
-      </motion.div>
+      </OptimizedMotion>
 
       {/* Swipe Indicator */}
       <div className='absolute bottom-2 left-1/2 transform -translate-x-1/2'>
@@ -193,23 +195,24 @@ export function SwipeableStatsCard({
 
       {/* Swipe Hint */}
       <div className='absolute top-1/2 left-2 transform -translate-y-1/2 opacity-30'>
-        <motion.div
+        <OptimizedMotion
           animate={{ x: [0, 5, 0] }}
           transition={{ duration: 1.5, repeat: Infinity }}
           className='text-gray-400'
         >
           ←
-        </motion.div>
+        </OptimizedMotion>
       </div>
       <div className='absolute top-1/2 right-2 transform -translate-y-1/2 opacity-30'>
-        <motion.div
+        <OptimizedMotion
           animate={{ x: [0, -5, 0] }}
           transition={{ duration: 1.5, repeat: Infinity }}
           className='text-gray-400'
         >
           →
-        </motion.div>
+        </OptimizedMotion>
       </div>
     </div>
   );
 }
+

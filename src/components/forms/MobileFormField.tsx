@@ -1,7 +1,7 @@
 'use client';
 
 import React, { forwardRef } from 'react';
-import { motion } from 'framer-motion';
+import { OptimizedMotion } from '@/components/ui/OptimizedMotion';
 
 import { cn } from '@/lib/utils';
 
@@ -16,12 +16,12 @@ interface MobileFormFieldProps {
 export const MobileFormField = forwardRef<HTMLDivElement, MobileFormFieldProps>(
   ({ label, error, required, className, children }, ref) => {
     return (
-      <motion.div
+      <OptimizedMotion
         ref={ref}
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.2 }}
-        className={cn('space-y-2', className)}
+        className={cn('space-y-3', className)}
       >
         <label className='block text-sm font-medium text-gray-900'>
           {label}
@@ -29,17 +29,19 @@ export const MobileFormField = forwardRef<HTMLDivElement, MobileFormFieldProps>(
         </label>
         {children}
         {error && (
-          <motion.p
+          <OptimizedMotion
+            as="p"
             initial={{ opacity: 0, y: -5 }}
             animate={{ opacity: 1, y: 0 }}
             className='text-sm text-red-600'
           >
             {error}
-          </motion.p>
+          </OptimizedMotion>
         )}
-      </motion.div>
+      </OptimizedMotion>
     );
   }
 );
 
 MobileFormField.displayName = 'MobileFormField';
+

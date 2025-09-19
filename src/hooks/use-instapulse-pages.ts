@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { instapulseKeys } from '@/lib/queries';
 import { logger } from '@/lib/logger';
+import { useApiErrorHandler } from '@/hooks/useApiErrorHandler';
 
 // Type definition for TrackedInstagramPage
 export interface TrackedInstagramPage {
@@ -29,24 +30,23 @@ interface ApiResponse<T> {
 // API functions
 const fetchPages = async (): Promise<TrackedInstagramPage[]> => {
   const response = await fetch('/api/instapulse/pages');
-  
+
   if (!response.ok) {
     throw new Error(`Failed to fetch pages: ${response.statusText}`);
   }
-  
+
   const result: ApiResponse<TrackedInstagramPage[]> = await response.json();
-  
+
   if (!result.success) {
     throw new Error(result.error?.message || 'Failed to fetch pages');
   }
-  
+
   return result.data;
 };
 
 const addPage = async (username: string): Promise<TrackedInstagramPage> => {
-  console.log('Hook: About to send username to API:', username);
-  console.log('Hook: Request body will be:', JSON.stringify({ username }));
-  
+  // Preparing API request
+
   const response = await fetch('/api/instapulse/pages', {
     method: 'POST',
     headers: {
@@ -54,18 +54,20 @@ const addPage = async (username: string): Promise<TrackedInstagramPage> => {
     },
     body: JSON.stringify({ username }),
   });
-  
+
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.error?.message || `Failed to add page: ${response.statusText}`);
+    throw new Error(
+      errorData.error?.message || `Failed to add page: ${response.statusText}`
+    );
   }
-  
+
   const result: ApiResponse<TrackedInstagramPage> = await response.json();
-  
+
   if (!result.success) {
     throw new Error(result.error?.message || 'Failed to add page');
   }
-  
+
   return result.data;
 };
 
@@ -73,20 +75,30 @@ const deletePage = async (id: number): Promise<void> => {
   const response = await fetch(`/api/instapulse/pages?id=${id}`, {
     method: 'DELETE',
   });
-  
+
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.error?.message || `Failed to delete page: ${response.statusText}`);
+    throw new Error(
+      errorData.error?.message ||
+        `Failed to delete page: ${response.statusText}`
+    );
   }
-  
-  const result: ApiResponse<{ id: number; username: string }> = await response.json();
-  
+
+  const result: ApiResponse<{ id: number; username: string }> =
+    await response.json();
+
   if (!result.success) {
     throw new Error(result.error?.message || 'Failed to delete page');
   }
 };
 
-const updatePageFollowers = async ({ id, followerCount }: { id: number; followerCount: number }): Promise<TrackedInstagramPage> => {
+const updatePageFollowers = async ({
+  id,
+  followerCount,
+}: {
+  id: number;
+  followerCount: number;
+}): Promise<TrackedInstagramPage> => {
   const response = await fetch(`/api/instapulse/pages/${id}`, {
     method: 'PATCH',
     headers: {
@@ -94,24 +106,28 @@ const updatePageFollowers = async ({ id, followerCount }: { id: number; follower
     },
     body: JSON.stringify({ followerCount }),
   });
-  
+
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.error?.message || `Failed to update page: ${response.statusText}`);
+    throw new Error(
+      errorData.error?.message ||
+        `Failed to update page: ${response.statusText}`
+    );
   }
-  
+
   const result: ApiResponse<TrackedInstagramPage> = await response.json();
-  
+
   if (!result.success) {
     throw new Error(result.error?.message || 'Failed to update page');
   }
-  
+
   return result.data;
 };
 
 // Custom hook
 export function useInstapulsePages() {
   const queryClient = useQueryClient();
+  const { handleError } = useApiErrorHandler();
 
   // Fetch pages query
   const {
@@ -129,10 +145,10 @@ export function useInstapulsePages() {
   // Add page mutation
   const addPageMutation = useMutation({
     mutationFn: addPage,
-    onSuccess: (newPage) => {
+    onSuccess: newPage => {
       // Invalidate and refetch pages
       queryClient.invalidateQueries({ queryKey: instapulseKeys.pages() });
-      
+
       logger.info('Page added successfully', {
         context: 'use-instapulse-pages',
         operation: 'addPage',
@@ -140,18 +156,15 @@ export function useInstapulsePages() {
         pageId: newPage.id,
       });
     },
-    onError: (error) => {
-      logger.error('Failed to add page', error, {
-        context: 'use-instapulse-pages',
-        operation: 'addPage',
-      });
+    onError: error => {
+      handleError(error, 'use-instapulse-pages');
     },
   });
 
   // Delete page mutation with optimistic updates
   const deletePageMutation = useMutation({
     mutationFn: deletePage,
-    onMutate: async (pageId) => {
+    onMutate: async pageId => {
       // Cancel any outgoing refetches
       await queryClient.cancelQueries({ queryKey: instapulseKeys.pages() });
 
@@ -171,17 +184,13 @@ export function useInstapulsePages() {
       // Return a context object with the snapshotted value
       return { previousPages };
     },
-    onError: (error, pageId, context) => {
+    onError: (error, _pageId, context) => {
       // If the mutation fails, use the context returned from onMutate to roll back
       if (context?.previousPages) {
         queryClient.setQueryData(instapulseKeys.pages(), context.previousPages);
       }
-      
-      logger.error('Failed to delete page', error, {
-        context: 'use-instapulse-pages',
-        operation: 'deletePage',
-        pageId,
-      });
+
+      handleError(error, 'use-instapulse-pages');
     },
     onSettled: () => {
       // Always refetch after error or success to ensure server state
@@ -205,8 +214,8 @@ export function useInstapulsePages() {
       if (previousPages) {
         queryClient.setQueryData<TrackedInstagramPage[]>(
           instapulseKeys.pages(),
-          previousPages.map(page => 
-            page.id === id 
+          previousPages.map(page =>
+            page.id === id
               ? { ...page, followerCount, updatedAt: new Date().toISOString() }
               : page
           )
@@ -216,10 +225,10 @@ export function useInstapulsePages() {
       // Return a context object with the snapshotted value
       return { previousPages };
     },
-    onSuccess: (updatedPage) => {
+    onSuccess: updatedPage => {
       // Invalidate and refetch pages to ensure server state
       queryClient.invalidateQueries({ queryKey: instapulseKeys.pages() });
-      
+
       logger.info('Page updated successfully', {
         context: 'use-instapulse-pages',
         operation: 'updatePage',
@@ -228,39 +237,35 @@ export function useInstapulsePages() {
         newFollowerCount: updatedPage.followerCount,
       });
     },
-    onError: (error, { id }, context) => {
+    onError: (error, { id: _id }, context) => {
       // If the mutation fails, use the context returned from onMutate to roll back
       if (context?.previousPages) {
         queryClient.setQueryData(instapulseKeys.pages(), context.previousPages);
       }
-      
-      logger.error('Failed to update page', error, {
-        context: 'use-instapulse-pages',
-        operation: 'updatePage',
-        pageId: id,
-      });
+
+      handleError(error, 'use-instapulse-pages');
     },
   });
 
   return {
     // Data
     pages,
-    
+
     // Loading states
     isLoading,
     isError,
     error,
-    
+
     // Mutations
     addPage: addPageMutation.mutate,
     deletePage: deletePageMutation.mutate,
     updatePage: updatePageMutation.mutate,
-    
+
     // Mutation states
     isAddingPage: addPageMutation.isPending,
     isDeletingPage: deletePageMutation.isPending,
     isUpdatingPage: updatePageMutation.isPending,
-    
+
     // Mutation errors
     addPageError: addPageMutation.error,
     deletePageError: deletePageMutation.error,

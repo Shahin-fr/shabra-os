@@ -2,17 +2,24 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import {
   createValidationErrorResponse,
-  createServerErrorResponse,
   HTTP_STATUS_CODES,
   getHttpStatusForErrorCode,
 } from '@/lib/api/response-utils';
-import { DatabasePerformanceMonitor } from '@/lib/database/query-optimizer';
-import { StoryQueryOptimizer } from '@/lib/database/query-optimizer';
 import { logger } from '@/lib/logger';
-import { prismaLocal as prisma } from '@/lib/prisma-local';
+import { StoryService } from '@/services/story.service';
+import { validate } from '@/lib/middleware/validation-middleware';
+import { handleApiError } from '@/lib/utils/error-handler';
+import { CreateStorySchema } from '@/lib/validators/story-validators';
+import { withApiRateLimit } from '@/lib/middleware/rate-limit-middleware';
 
 // GET /api/stories - Get stories for a specific day
 export async function GET(request: NextRequest) {
+  // Apply rate limiting
+  const rateLimitResult = withApiRateLimit(request);
+  if (!rateLimitResult.allowed) {
+    return rateLimitResult.response!;
+  }
+
   try {
     // Add authorization check
     const { withAuth } = await import('@/lib/middleware/auth-middleware');
@@ -48,34 +55,26 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    // Use optimized query with performance monitoring
-    // Pass the dayParam string directly instead of converting to Date
-    const result = await DatabasePerformanceMonitor.monitorQueryPerformance(
-      'getStoriesByDay',
-      () => StoryQueryOptimizer.getStoriesByDay(dayParam)
-    );
+    // Use StoryService to get stories
+    const stories = await StoryService.getStoriesByDay(dayParam);
 
     // Return stories directly in the expected format
-    return NextResponse.json(result.result, { status: HTTP_STATUS_CODES.OK });
+    return NextResponse.json(stories, { status: HTTP_STATUS_CODES.OK });
   } catch (error) {
-    logger.error(
-      'Stories fetch error:',
-      error instanceof Error ? error : undefined,
-      {
-        context: 'stories-api',
-        operation: 'GET /api/stories',
-        source: 'api/stories/route.ts',
-      }
-    );
-
-    const errorResponse = createServerErrorResponse('خطا در دریافت استوری‌ها');
-    return NextResponse.json(errorResponse, {
-      status: getHttpStatusForErrorCode(errorResponse.error.code),
+    return handleApiError(error, {
+      operation: 'GET /api/stories',
+      source: 'api/stories/route.ts',
     });
   }
 }
 
 export async function POST(request: NextRequest) {
+  // Apply rate limiting
+  const rateLimitResult = withApiRateLimit(request);
+  if (!rateLimitResult.allowed) {
+    return rateLimitResult.response!;
+  }
+
   try {
     // Add authorization check
     const { withAuth } = await import('@/lib/middleware/auth-middleware');
@@ -89,148 +88,38 @@ export async function POST(request: NextRequest) {
       return authResult.response;
     }
 
-    const body = await request.json();
-    let {
-      title,
-      notes,
-      visualNotes,
-      link,
-      day,
-      order,
-      status,
-      projectId,
-      storyTypeId,
-      storyIdeaId,
-      customTitle,
-      type,
-      ideaId,
-    } = body;
+    // Validate request body using middleware
+    const validatedData = await validate(CreateStorySchema)(request);
 
-    // Fix old project IDs - convert to valid ones
-    if (projectId === 'cmf5o9m110001u35cldria860') {
-      // Get the first available project
-      const firstProject = await prisma.project.findFirst({
-        select: { id: true }
-      });
-      if (firstProject) {
-        projectId = firstProject.id;
-        console.log('🔄 Fixed project ID:', projectId);
-      }
-    }
+    // Prepare story data for service
+    const storyData = {
+      ...validatedData,
+      authorId: authResult.context.userId,
+    };
 
-    // Fix story idea ID if needed
-    if (storyIdeaId && storyIdeaId.length > 0) {
-      // Check if storyIdeaId is actually a story idea name
-      const storyIdea = await prisma.storyIdea.findFirst({
-        where: {
-          OR: [
-            { id: storyIdeaId },
-            { title: storyIdeaId }
-          ]
-        },
-        select: { id: true, title: true }
-      });
-      
-      if (storyIdea) {
-        storyIdeaId = storyIdea.id;
-        console.log('🔄 Fixed story idea ID:', storyIdeaId, 'for:', storyIdea.title);
-      } else {
-        console.log('⚠️ Story idea not found:', storyIdeaId);
-        storyIdeaId = null;
-      }
-    }
 
     logger.info('Story creation request received', {
-      body,
       userId: authResult.context.userId,
       operation: 'POST /api/stories',
       source: 'api/stories/route.ts',
+      // Only log non-sensitive fields
+      title: validatedData.title?.substring(0, 50) + (validatedData.title && validatedData.title.length > 50 ? '...' : ''),
+      day: validatedData.day,
+      projectId: validatedData.projectId,
+      storyTypeId: validatedData.storyTypeId,
     });
 
-    if (!title || !day) {
-      logger.warn('Story creation failed: missing required fields', {
-        body,
-        userId: authResult.context.userId,
-        operation: 'POST /api/stories',
-        source: 'api/stories/route.ts',
-      });
-      const errorResponse = createValidationErrorResponse(
-        'عنوان و تاریخ الزامی است',
-        !title ? 'title' : 'day'
-      );
-      return NextResponse.json(errorResponse, {
-        status: getHttpStatusForErrorCode(errorResponse.error.code),
-      });
-    }
-
-    // Validate required IDs - no hardcoded fallbacks
-    if (!projectId) {
-      const errorResponse = createValidationErrorResponse(
-        'شناسه پروژه الزامی است',
-        'projectId'
-      );
-      return NextResponse.json(errorResponse, {
-        status: getHttpStatusForErrorCode(errorResponse.error.code),
-      });
-    }
-
-    if (!storyTypeId) {
-      const errorResponse = createValidationErrorResponse(
-        'شناسه نوع استوری الزامی است',
-        'storyTypeId'
-      );
-      return NextResponse.json(errorResponse, {
-        status: getHttpStatusForErrorCode(errorResponse.error.code),
-      });
-    }
-
-    // Use optimized story creation with validation
-    const result = await DatabasePerformanceMonitor.monitorQueryPerformance(
-      'createStory',
-      () =>
-        StoryQueryOptimizer.createStory({
-          title: title.trim(),
-          notes: notes?.trim() || null,
-          visualNotes: visualNotes?.trim() || null,
-          link: link?.trim() || null,
-          day,
-          order: order || 0,
-          status: status || 'DRAFT',
-          projectId,
-          storyTypeId,
-          storyIdeaId: storyIdeaId || null,
-          customTitle: customTitle?.trim() || null,
-          type: type?.trim() || null,
-          ideaId: ideaId || null,
-          authorId: authResult.context.userId,
-        })
-    );
-
-    logger.info('Story created successfully', {
-      storyId: result.result?.id,
-      userId: authResult.context.userId,
-      operation: 'POST /api/stories',
-      source: 'api/stories/route.ts',
-    });
+    // Use StoryService to create story
+    const story = await StoryService.createStory(storyData);
 
     // Return the created story directly
-    return NextResponse.json(result.result, {
+    return NextResponse.json(story, {
       status: HTTP_STATUS_CODES.CREATED,
     });
   } catch (error) {
-    logger.error(
-      'Story creation error:',
-      error instanceof Error ? error : undefined,
-      {
-        context: 'stories-api',
-        operation: 'POST /api/stories',
-        source: 'api/stories/route.ts',
-      }
-    );
-
-    const errorResponse = createServerErrorResponse('خطا در ایجاد استوری');
-    return NextResponse.json(errorResponse, {
-      status: getHttpStatusForErrorCode(errorResponse.error.code),
+    return handleApiError(error, {
+      operation: 'POST /api/stories',
+      source: 'api/stories/route.ts',
     });
   }
 }

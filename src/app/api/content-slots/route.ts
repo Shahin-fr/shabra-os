@@ -8,7 +8,7 @@ import {
   getHttpStatusForErrorCode,
 } from '@/lib/api/response-utils';
 import { logger } from '@/lib/logger';
-import { prismaLocal as prisma } from '@/lib/prisma-local';
+import { prisma } from '@/lib/prisma';
 
 // GET /api/content-slots - Fetch content slots for a specific week
 export async function GET(request: NextRequest) {
@@ -145,16 +145,28 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Create content slot
-    const contentSlot = await prisma.contentSlot.create({
-      data: {
-        title,
-        type: type || 'STORY',
-        description,
-        startDate: new Date(startDate),
-        endDate: new Date(endDate),
-        projectId,
-      },
+    // Create content slot in a transaction
+    const contentSlot = await prisma.$transaction(async (tx) => {
+      const slot = await tx.contentSlot.create({
+        data: {
+          title,
+          type: type || 'STORY',
+          description,
+          startDate: new Date(startDate),
+          endDate: new Date(endDate),
+          projectId,
+        },
+      });
+
+      // Update project's last activity timestamp if projectId is provided
+      if (projectId) {
+        await tx.project.update({
+          where: { id: projectId },
+          data: { updatedAt: new Date() },
+        });
+      }
+
+      return slot;
     });
 
     logger.info('Content slot created successfully', {

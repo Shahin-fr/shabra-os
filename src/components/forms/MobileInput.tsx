@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { OptimizedMotion } from '@/components/ui/OptimizedMotion';
 import { forwardRef } from 'react';
 
 import { Input } from '@/components/ui/input';
@@ -14,7 +14,7 @@ interface MobileInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 export const MobileInput = forwardRef<HTMLInputElement, MobileInputProps>(
   ({ error, className, ...props }, ref) => {
     return (
-      <motion.div
+      <OptimizedMotion
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.2 }}
@@ -32,9 +32,10 @@ export const MobileInput = forwardRef<HTMLInputElement, MobileInputProps>(
           )}
           {...props}
         />
-      </motion.div>
+      </OptimizedMotion>
     );
   }
 );
 
 MobileInput.displayName = 'MobileInput';
+

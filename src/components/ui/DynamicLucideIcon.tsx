@@ -26,7 +26,6 @@ export function DynamicLucideIcon({
   const IconComponent = (LucideIcons as any)[iconName];
 
   if (!IconComponent) {
-    console.warn(`Icon "${iconName}" not found in LucideIcons`);
     return FallbackIcon ? (
       <FallbackIcon className={className} />
     ) : (
@@ -36,3 +35,4 @@ export function DynamicLucideIcon({
 
   return <IconComponent className={className} />;
 }
+

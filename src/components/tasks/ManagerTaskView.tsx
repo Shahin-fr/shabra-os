@@ -9,3 +9,4 @@ interface ManagerTaskViewProps {
 export function ManagerTaskView({ children }: ManagerTaskViewProps) {
   return <>{children}</>;
 }
+

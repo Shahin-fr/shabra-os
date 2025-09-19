@@ -1,6 +1,7 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
+import { OptimizedMotion } from '@/components/ui/OptimizedMotion';
 import {
   CheckSquare,
   Clock,
@@ -164,7 +165,8 @@ export function MobileTaskList({
     return '';
   };
 
-  return (<div className={`space-y-3 ${_className || ''}`}>
+  return (
+    <div className={`space-y-3 ${_className || ''}`}>
       {/* Header with Create Button */}
       <div className='flex items-center justify-between mb-4'>
         <h2 className='text-lg font-semibold text-gray-900'>وظایف من</h2>
@@ -200,7 +202,7 @@ export function MobileTaskList({
                 const PriorityIcon = priorityInfo.icon;
 
                 return (
-                  <motion.div
+                  <OptimizedMotion
                     key={task.id}
                     layout
                     initial={{ opacity: 0, y: 20, scale: 0.95 }}
@@ -216,7 +218,7 @@ export function MobileTaskList({
                     {/* Swipe Action Overlay */}
                     <AnimatePresence>
                       {swipeDirection && (
-                        <motion.div
+                        <OptimizedMotion
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
                           exit={{ opacity: 0 }}
@@ -236,12 +238,12 @@ export function MobileTaskList({
                           <span className='text-white font-medium text-lg'>
                             {getSwipeActionText(task, swipeDirection)}
                           </span>
-                        </motion.div>
+                        </OptimizedMotion>
                       )}
                     </AnimatePresence>
 
                     {/* Task Card */}
-                    <motion.div
+                    <OptimizedMotion
                       whileTap={{ scale: 0.98 }}
                       whileHover={{ scale: 1.02 }}
                       transition={{
@@ -364,7 +366,7 @@ export function MobileTaskList({
                           {/* Expanded Content */}
                           <AnimatePresence>
                             {isExpanded && (
-                              <motion.div
+                              <OptimizedMotion
                                 initial={{ height: 0, opacity: 0 }}
                                 animate={{ height: 'auto', opacity: 1 }}
                                 exit={{ height: 0, opacity: 0 }}
@@ -450,13 +452,13 @@ export function MobileTaskList({
                                     </Button>
                                   </div>
                                 </div>
-                              </motion.div>
+                              </OptimizedMotion>
                             )}
                           </AnimatePresence>
                         </CardContent>
                       </Card>
-                    </motion.div>
-                  </motion.div>
+                    </OptimizedMotion>
+                  </OptimizedMotion>
                 );
               })}
             </>
@@ -466,7 +468,7 @@ export function MobileTaskList({
 
       {/* Empty State */}
       {!isLoading && tasks.length === 0 && (
-        <motion.div
+        <OptimizedMotion
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className='text-center py-12'
@@ -483,8 +485,9 @@ export function MobileTaskList({
             <CheckSquare className='h-4 w-4 mr-2' />
             ایجاد وظیفه جدید
           </Button>
-        </motion.div>
+        </OptimizedMotion>
       )}
     </div>
   );
 }
+

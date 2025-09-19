@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { OptimizedMotion } from '@/components/ui/OptimizedMotion';
 import { CalendarIcon, Palette, Plus, Minus } from 'lucide-react';
 import React, { memo } from 'react';
 
@@ -20,7 +20,7 @@ interface StoryboardCanvasProps {
   onAddSlot: () => void;
   onRemoveSlot: () => void;
   storiesError: boolean;
-  storiesErrorDetails: any;
+  storiesErrorDetails: { message: string; code?: string; details?: Record<string, unknown> } | undefined;
   storiesLoading: boolean;
 }
 
@@ -41,7 +41,7 @@ const StoryboardCanvas = memo<StoryboardCanvasProps>(
     storiesLoading,
   }) => {
     return (
-      <motion.div
+      <OptimizedMotion
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.2 }}
@@ -96,7 +96,7 @@ const StoryboardCanvas = memo<StoryboardCanvasProps>(
             </div>
 
             {storiesError ? (
-              <motion.div
+              <OptimizedMotion
                 className='text-center py-12'
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -125,9 +125,9 @@ const StoryboardCanvas = memo<StoryboardCanvasProps>(
                 >
                   تلاش مجدد
                 </Button>
-              </motion.div>
+              </OptimizedMotion>
             ) : (
-              <motion.div
+              <OptimizedMotion
                 className='relative'
                 initial='hidden'
                 animate='visible'
@@ -144,13 +144,13 @@ const StoryboardCanvas = memo<StoryboardCanvasProps>(
               >
                 {/* No stories found message */}
                 {stories.length === 0 && (
-                  <motion.div
+                  <OptimizedMotion
                     className='text-center py-8 mb-6'
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 0.2 }}
                   >
-                    <motion.div
+                    <OptimizedMotion
                       className='rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4'
                       style={{
                         background: 'rgba(255, 255, 255, 0.25)',
@@ -163,14 +163,14 @@ const StoryboardCanvas = memo<StoryboardCanvasProps>(
                       }}
                     >
                       <Palette className='h-8 w-8 text-[#ff0a54]' />
-                    </motion.div>
+                    </OptimizedMotion>
                     <p className='text-gray-800 text-lg mb-2'>
                       هیچ استوری برای این تاریخ یافت نشد
                     </p>
                     <p className='text-sm text-gray-600'>
                       یک اسلات انتخاب کنید و قالب انتخاب کنید تا شروع کنید
                     </p>
-                  </motion.div>
+                  </OptimizedMotion>
                 )}
 
                 <StoryCanvas
@@ -186,7 +186,7 @@ const StoryboardCanvas = memo<StoryboardCanvasProps>(
 
                 {/* Loading overlay for initial load */}
                 {storiesLoading && (
-                  <motion.div
+                  <OptimizedMotion
                     className='absolute inset-0 bg-white/90 backdrop-blur-sm flex items-center justify-center rounded-lg z-10'
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -199,13 +199,13 @@ const StoryboardCanvas = memo<StoryboardCanvasProps>(
                         در حال بارگذاری استوری‌ها...
                       </p>
                     </div>
-                  </motion.div>
+                  </OptimizedMotion>
                 )}
-              </motion.div>
+              </OptimizedMotion>
             )}
           </CardContent>
         </Card>
-      </motion.div>
+      </OptimizedMotion>
     );
   }
 );
@@ -213,3 +213,4 @@ const StoryboardCanvas = memo<StoryboardCanvasProps>(
 StoryboardCanvas.displayName = 'StoryboardCanvas';
 
 export { StoryboardCanvas };
+

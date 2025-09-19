@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { OptimizedMotion } from '@/components/ui/OptimizedMotion';
 import { forwardRef } from 'react';
 
 import { Textarea } from '@/components/ui/textarea';
@@ -17,7 +17,7 @@ export const MobileTextarea = forwardRef<
   MobileTextareaProps
 >(({ error, className, ...props }, ref) => {
   return (
-    <motion.div
+    <OptimizedMotion
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.2 }}
@@ -35,8 +35,9 @@ export const MobileTextarea = forwardRef<
         )}
         {...props}
       />
-    </motion.div>
+    </OptimizedMotion>
   );
 });
 
 MobileTextarea.displayName = 'MobileTextarea';
+

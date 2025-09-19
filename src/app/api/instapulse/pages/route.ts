@@ -4,12 +4,12 @@ import {
   createSuccessResponse,
   createValidationErrorResponse,
   createNotFoundErrorResponse,
-  createDatabaseErrorResponse,
   HTTP_STATUS_CODES,
   getHttpStatusForErrorCode,
 } from '@/lib/api/response-utils';
-import { logger } from '@/lib/logger';
-import { prismaLocal as prisma } from '@/lib/prisma-local';
+// import { logger } from '@/lib/logger';
+import { prisma } from '@/lib/prisma';
+import { handleApiError } from '@/lib/utils/error-handler';
 
 // GET /api/instapulse/pages - Fetch all tracked Instagram pages
 export async function GET() {
@@ -21,20 +21,9 @@ export async function GET() {
     const successResponse = createSuccessResponse(pages);
     return NextResponse.json(successResponse, { status: HTTP_STATUS_CODES.OK });
   } catch (error) {
-    logger.error(
-      'Failed to fetch tracked Instagram pages:',
-      error instanceof Error ? error : undefined,
-      {
-        context: 'instapulse-pages-api',
-        operation: 'GET',
-      }
-    );
-
-    const errorResponse = createDatabaseErrorResponse(
-      'Failed to fetch tracked Instagram pages'
-    );
-    return NextResponse.json(errorResponse, {
-      status: getHttpStatusForErrorCode(errorResponse.error.code),
+    return handleApiError(error, {
+      operation: 'GET /api/instapulse/pages',
+      source: 'api/instapulse/pages/route.ts',
     });
   }
 }
@@ -43,9 +32,12 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    console.log('API: Received request body:', body);
+    
+    // Processing request body
+    
     const { username } = body;
-    console.log('API: Extracted username:', username);
+    
+    // Extracted username from request
 
     // Validate that username is provided
     if (!username || typeof username !== 'string' || username.trim() === '') {
@@ -60,7 +52,7 @@ export async function POST(request: NextRequest) {
 
     // Clean and validate username format
     const cleanUsername = username.trim().toLowerCase();
-    
+
     // Basic Instagram username validation (alphanumeric, dots, underscores)
     const usernameRegex = /^[a-zA-Z0-9._]+$/;
     if (!usernameRegex.test(cleanUsername)) {
@@ -90,33 +82,13 @@ export async function POST(request: NextRequest) {
       newPage,
       'Instagram page added successfully'
     );
-    return NextResponse.json(successResponse, { status: HTTP_STATUS_CODES.CREATED });
+    return NextResponse.json(successResponse, {
+      status: HTTP_STATUS_CODES.CREATED,
+    });
   } catch (error) {
-    logger.error(
-      'Failed to create tracked Instagram page:',
-      error instanceof Error ? error : undefined,
-      {
-        context: 'instapulse-pages-api',
-        operation: 'POST',
-      }
-    );
-
-    // Handle unique constraint violation (username already exists)
-    if (error instanceof Error && error.message.includes('Unique constraint')) {
-      const errorResponse = createValidationErrorResponse(
-        'A page with this username is already being tracked',
-        'username'
-      );
-      return NextResponse.json(errorResponse, {
-        status: HTTP_STATUS_CODES.CONFLICT,
-      });
-    }
-
-    const errorResponse = createDatabaseErrorResponse(
-      'Failed to create tracked Instagram page'
-    );
-    return NextResponse.json(errorResponse, {
-      status: getHttpStatusForErrorCode(errorResponse.error.code),
+    return handleApiError(error, {
+      operation: 'POST /api/instapulse/pages',
+      source: 'api/instapulse/pages/route.ts',
     });
   }
 }
@@ -156,7 +128,9 @@ export async function DELETE(request: NextRequest) {
     });
 
     if (!existingPage) {
-      const errorResponse = createNotFoundErrorResponse('Tracked Instagram page');
+      const errorResponse = createNotFoundErrorResponse(
+        'Tracked Instagram page'
+      );
       return NextResponse.json(errorResponse, {
         status: getHttpStatusForErrorCode(errorResponse.error.code),
       });
@@ -173,20 +147,9 @@ export async function DELETE(request: NextRequest) {
     );
     return NextResponse.json(successResponse, { status: HTTP_STATUS_CODES.OK });
   } catch (error) {
-    logger.error(
-      'Failed to delete tracked Instagram page:',
-      error instanceof Error ? error : undefined,
-      {
-        context: 'instapulse-pages-api',
-        operation: 'DELETE',
-      }
-    );
-
-    const errorResponse = createDatabaseErrorResponse(
-      'Failed to delete tracked Instagram page'
-    );
-    return NextResponse.json(errorResponse, {
-      status: getHttpStatusForErrorCode(errorResponse.error.code),
+    return handleApiError(error, {
+      operation: 'DELETE /api/instapulse/pages',
+      source: 'api/instapulse/pages/route.ts',
     });
   }
 }

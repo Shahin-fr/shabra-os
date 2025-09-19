@@ -6,12 +6,12 @@ import {
   createAuthErrorResponse,
   createAuthorizationErrorResponse,
   createNotFoundErrorResponse,
-  createServerErrorResponse,
   HTTP_STATUS_CODES,
   getHttpStatusForErrorCode,
 } from '@/lib/api/response-utils';
-import { logger } from '@/lib/logger';
-import { prismaLocal as prisma } from '@/lib/prisma-local';
+// import { logger } from '@/lib/logger';
+import { prisma } from '@/lib/prisma';
+import { handleApiError } from '@/lib/utils/error-handler';
 
 // GET /api/wiki/[documentId] - Get specific document
 export async function GET(
@@ -72,10 +72,9 @@ export async function GET(
 
     return NextResponse.json(response);
   } catch (error) {
-    logger.error('Error fetching document:', error as Error);
-    const errorResponse = createServerErrorResponse('Internal server error');
-    return NextResponse.json(errorResponse, {
-      status: getHttpStatusForErrorCode(errorResponse.error.code),
+    return handleApiError(error, {
+      operation: 'GET /api/wiki/[documentId]',
+      source: 'api/wiki/[documentId]/route.ts',
     });
   }
 }
@@ -136,10 +135,9 @@ export async function PUT(
 
     return NextResponse.json(updatedDocument);
   } catch (error) {
-    logger.error('Error updating document:', error as Error);
-    const errorResponse = createServerErrorResponse('Internal server error');
-    return NextResponse.json(errorResponse, {
-      status: getHttpStatusForErrorCode(errorResponse.error.code),
+    return handleApiError(error, {
+      operation: 'PUT /api/wiki/[documentId]',
+      source: 'api/wiki/[documentId]/route.ts',
     });
   }
 }
@@ -208,10 +206,9 @@ export async function DELETE(
     const successResponse = createSuccessResponse({ success: true });
     return NextResponse.json(successResponse, { status: HTTP_STATUS_CODES.OK });
   } catch (error) {
-    logger.error('Error deleting document:', error as Error);
-    const errorResponse = createServerErrorResponse('Internal server error');
-    return NextResponse.json(errorResponse, {
-      status: getHttpStatusForErrorCode(errorResponse.error.code),
+    return handleApiError(error, {
+      operation: 'DELETE /api/wiki/[documentId]',
+      source: 'api/wiki/[documentId]/route.ts',
     });
   }
 }

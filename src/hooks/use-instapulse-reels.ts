@@ -66,7 +66,7 @@ interface ReelsResponse {
 export function useInstapulseReels(filters: ReelsFilters) {
   const buildQueryParams = (filters: ReelsFilters): URLSearchParams => {
     const params = new URLSearchParams();
-    
+
     // Add date range parameters
     if (filters.dateRange?.from) {
       params.set('startDate', filters.dateRange.from.toISOString());
@@ -74,15 +74,15 @@ export function useInstapulseReels(filters: ReelsFilters) {
     if (filters.dateRange?.to) {
       params.set('endDate', filters.dateRange.to.toISOString());
     }
-    
+
     // Add sort parameters
     params.set('sortBy', filters.sortBy);
     params.set('sortOrder', filters.sortOrder);
-    
+
     // Add pagination parameters (default values)
     params.set('page', '1');
     params.set('pageSize', '20');
-    
+
     return params;
   };
 
@@ -97,7 +97,7 @@ export function useInstapulseReels(filters: ReelsFilters) {
     queryFn: async () => {
       const params = buildQueryParams(filters);
       const url = `/api/instapulse/reels?${params.toString()}`;
-      
+
       const response = await fetchWithCache<ApiResponse<ReelsResponse>>(url);
       return response.data;
     },

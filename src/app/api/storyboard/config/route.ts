@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { prismaLocal as prisma } from '@/lib/prisma-local';
+import { prisma } from '@/lib/prisma';
+import { handleApiError } from '@/lib/utils/error-handler';
 
 export async function GET() {
   try {
@@ -11,8 +12,8 @@ export async function GET() {
           name: true,
         },
         orderBy: {
-          createdAt: 'asc'
-        }
+          createdAt: 'asc',
+        },
       }),
       prisma.storyType.findFirst({
         select: {
@@ -20,12 +21,12 @@ export async function GET() {
           name: true,
         },
         where: {
-          isActive: true
+          isActive: true,
         },
         orderBy: {
-          createdAt: 'asc'
-        }
-      })
+          createdAt: 'asc',
+        },
+      }),
     ]);
 
     if (!project || !storyType) {
@@ -42,14 +43,12 @@ export async function GET() {
         defaultStoryTypeId: storyType.id,
         projectName: project.name,
         storyTypeName: storyType.name,
-      }
+      },
     });
-
   } catch (error) {
-    console.error('Error fetching storyboard config:', error);
-    return NextResponse.json(
-      { success: false, error: 'Failed to fetch config' },
-      { status: 500 }
-    );
+    return handleApiError(error, {
+      operation: 'GET /api/storyboard/config',
+      source: 'api/storyboard/config/route.ts',
+    });
   }
 }

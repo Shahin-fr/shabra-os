@@ -233,8 +233,7 @@ export default function StoryTypeManager() {
       // Invalidate and refetch story types
       queryClient.invalidateQueries({ queryKey: ['storyTypes'] });
     },
-    onError: error => {
-      console.log('Mutation onError called with:', error);
+    onError: () => {
       showStatusMessage('خطا در حذف نوع استوری. لطفاً دوباره تلاش کنید.', 4000);
     },
   });
@@ -540,3 +539,4 @@ export default function StoryTypeManager() {
     </Dialog>
   );
 }
+

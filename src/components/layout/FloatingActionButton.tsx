@@ -1,6 +1,7 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
+import { OptimizedMotion } from '@/components/ui/OptimizedMotion';
 import { Plus, X, FileText, Palette, Calendar, Users } from 'lucide-react';
 import React, { useState } from 'react';
 
@@ -80,7 +81,7 @@ export function FloatingActionButton({ className }: FloatingActionButtonProps) {
       {/* Action Items */}
       <AnimatePresence>
         {isOpen && (
-          <motion.div
+          <OptimizedMotion
             initial={{ opacity: 0, scale: 0.8, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 20 }}
@@ -90,7 +91,8 @@ export function FloatingActionButton({ className }: FloatingActionButtonProps) {
             {fabActions.map((action, index) => {
               const Icon = action.icon;
               return (
-                <motion.button
+                <OptimizedMotion
+                  as="button"
                   key={action.id}
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -121,15 +123,16 @@ export function FloatingActionButton({ className }: FloatingActionButtonProps) {
                   <span className='text-sm font-medium text-gray-900 whitespace-nowrap'>
                     {action.label}
                   </span>
-                </motion.button>
+                </OptimizedMotion>
               );
             })}
-          </motion.div>
+          </OptimizedMotion>
         )}
       </AnimatePresence>
 
       {/* Main FAB Button */}
-      <motion.button
+      <OptimizedMotion
+        as="button"
         onClick={toggleFAB}
         className={cn(
           'w-14 h-14 rounded-full shadow-lg',
@@ -154,7 +157,7 @@ export function FloatingActionButton({ className }: FloatingActionButtonProps) {
       >
         <AnimatePresence mode='wait'>
           {isOpen ? (
-            <motion.div
+            <OptimizedMotion
               key='close'
               initial={{ rotate: -90, opacity: 0 }}
               animate={{ rotate: 0, opacity: 1 }}
@@ -162,9 +165,9 @@ export function FloatingActionButton({ className }: FloatingActionButtonProps) {
               transition={{ duration: 0.2 }}
             >
               <X className='h-6 w-6 text-white' />
-            </motion.div>
+            </OptimizedMotion>
           ) : (
-            <motion.div
+            <OptimizedMotion
               key='plus'
               initial={{ rotate: 90, opacity: 0 }}
               animate={{ rotate: 0, opacity: 1 }}
@@ -172,15 +175,15 @@ export function FloatingActionButton({ className }: FloatingActionButtonProps) {
               transition={{ duration: 0.2 }}
             >
               <Plus className='h-6 w-6 text-white' />
-            </motion.div>
+            </OptimizedMotion>
           )}
         </AnimatePresence>
-      </motion.button>
+      </OptimizedMotion>
 
       {/* Backdrop */}
       <AnimatePresence>
         {isOpen && (
-          <motion.div
+          <OptimizedMotion
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -209,3 +212,4 @@ export function useFAB() {
     toggleFAB,
   };
 }
+

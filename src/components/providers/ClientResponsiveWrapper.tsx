@@ -16,3 +16,4 @@ export function ClientResponsiveWrapper({
 
   return <>{children}</>;
 }
+

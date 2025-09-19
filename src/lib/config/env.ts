@@ -42,7 +42,7 @@ const envSchema = z.object({
   ALLOWED_ORIGINS: z
     .string()
     .default('http://localhost:3000,http://localhost:3001'),
-  
+
   // n8n Integration
   N8N_SECRET_TOKEN: z
     .string()
@@ -134,7 +134,7 @@ function validateEnv(): EnvConfig {
       LOG_BUFFER_SIZE: 1000,
       LOG_FLUSH_INTERVAL: 5000,
       ALLOWED_ORIGINS: 'http://localhost:3000,http://localhost:3001',
-      N8N_SECRET_TOKEN: 'dev-n8n-secret-token-12345',
+      N8N_SECRET_TOKEN: process.env.N8N_SECRET_TOKEN || '',
       TEST_USER_EMAIL: 'test@shabra.com',
       TEST_USER_PASSWORD: 'test-password-123',
       DEV_ADMIN_EMAIL: 'admin@shabra.com',

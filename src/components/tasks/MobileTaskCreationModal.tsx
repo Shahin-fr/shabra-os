@@ -1,6 +1,7 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
+import { OptimizedMotion } from '@/components/ui/OptimizedMotion';
 import { X, Calendar, User, Flag, Tag, Save, Clock } from 'lucide-react';
 import React, { useState } from 'react';
 
@@ -149,7 +150,7 @@ export function MobileTaskCreationModal({
       {isOpen && (
         <>
           {/* Backdrop */}
-          <motion.div
+          <OptimizedMotion
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -158,7 +159,7 @@ export function MobileTaskCreationModal({
           />
 
           {/* Bottom Sheet Modal */}
-          <motion.div
+          <OptimizedMotion
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
@@ -412,9 +413,10 @@ export function MobileTaskCreationModal({
                 </div>
               </form>
             </div>
-          </motion.div>
+          </OptimizedMotion>
         </>
       )}
     </AnimatePresence>
   );
 }
+

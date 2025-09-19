@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prismaLocal as prisma } from '@/lib/prisma-local';
+import { prisma } from '@/lib/prisma';
 
 export async function GET(request: NextRequest) {
   try {
@@ -47,15 +47,18 @@ export async function GET(request: NextRequest) {
     });
 
     const response = NextResponse.json(storyIdeas);
-    
+
     // Add cache control headers to prevent caching
-    response.headers.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+    response.headers.set(
+      'Cache-Control',
+      'no-cache, no-store, must-revalidate'
+    );
     response.headers.set('Pragma', 'no-cache');
     response.headers.set('Expires', '0');
-    
+
     return response;
   } catch (error) {
-    console.error('Error fetching story ideas:', error);
+    // Error occurred while fetching story ideas
     return NextResponse.json(
       { error: { message: 'Failed to fetch story ideas' } },
       { status: 500 }
@@ -102,7 +105,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(storyIdea, { status: 201 });
   } catch (error) {
-    console.error('Error creating story idea:', error);
+    // Error occurred while creating story idea
     return NextResponse.json(
       { error: { message: 'Failed to create story idea' } },
       { status: 500 }

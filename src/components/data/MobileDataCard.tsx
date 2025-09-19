@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { OptimizedMotion } from '@/components/ui/OptimizedMotion';
 import { ChevronRight } from 'lucide-react';
 import React from 'react';
 
@@ -47,7 +47,7 @@ export function MobileDataCard({
   className: _className,
 }: MobileDataCardProps) {
   return (
-    <motion.div
+    <OptimizedMotion
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.2 }}
@@ -128,6 +128,7 @@ export function MobileDataCard({
           )}
         </CardContent>
       </Card>
-    </motion.div>
+    </OptimizedMotion>
   );
 }
+

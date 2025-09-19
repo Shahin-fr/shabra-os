@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { OptimizedMotion } from '@/components/ui/OptimizedMotion';
 import { TrendingUp, Users, CheckCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
@@ -35,7 +35,7 @@ const chartData = [
   { day: 27, newUsers: 22, completedTasks: 24 },
   { day: 28, newUsers: 28, completedTasks: 30 },
   { day: 29, newUsers: 31, completedTasks: 33 },
-  { day: 30, newUsers: 27, completedTasks: 29 }
+  { day: 30, newUsers: 27, completedTasks: 29 },
 ];
 
 export function NewUsersVsTasksChart() {
@@ -71,57 +71,78 @@ export function NewUsersVsTasksChart() {
 
   // Calculate totals
   const totalNewUsers = chartData.reduce((sum, d) => sum + d.newUsers, 0);
-  const totalCompletedTasks = chartData.reduce((sum, d) => sum + d.completedTasks, 0);
+  const totalCompletedTasks = chartData.reduce(
+    (sum, d) => sum + d.completedTasks,
+    0
+  );
 
   return (
-    <motion.div
+    <OptimizedMotion
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
-      className="h-full"
+      className='h-full'
     >
-      <Card className="h-full bg-white border border-gray-200 shadow-sm">
-        <CardHeader className="pb-4">
-          <CardTitle className="text-lg font-bold text-gray-900 flex items-center gap-2">
-            <TrendingUp className="h-5 w-5 text-[#ff0a54]" />
+      <Card className='h-full bg-white border border-gray-200 shadow-sm'>
+        <CardHeader className='pb-4'>
+          <CardTitle className='text-lg font-bold text-gray-900 flex items-center gap-2'>
+            <TrendingUp className='h-5 w-5 text-[#ff0a54]' />
             کاربران جدید در مقابل تسک‌های تکمیل شده
           </CardTitle>
-          <p className="text-sm text-gray-600">آخرین 30 روز</p>
+          <p className='text-sm text-gray-600'>آخرین 30 روز</p>
         </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className='space-y-6'>
           {/* Summary Stats */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="text-center p-4 bg-gray-50 rounded-lg">
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <Users className="h-4 w-4 text-[#ff0a54]" />
-                <span className="text-sm font-medium text-gray-700">کاربران جدید</span>
+          <div className='grid grid-cols-2 gap-4'>
+            <div className='text-center p-4 bg-gray-50 rounded-lg'>
+              <div className='flex items-center justify-center gap-2 mb-2'>
+                <Users className='h-4 w-4 text-[#ff0a54]' />
+                <span className='text-sm font-medium text-gray-700'>
+                  کاربران جدید
+                </span>
               </div>
-              <div className="text-2xl font-bold text-gray-900">{totalNewUsers}</div>
+              <div className='text-2xl font-bold text-gray-900'>
+                {totalNewUsers}
+              </div>
             </div>
-            <div className="text-center p-4 bg-gray-50 rounded-lg">
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <CheckCircle className="h-4 w-4 text-green-500" />
-                <span className="text-sm font-medium text-gray-700">تسک‌های تکمیل شده</span>
+            <div className='text-center p-4 bg-gray-50 rounded-lg'>
+              <div className='flex items-center justify-center gap-2 mb-2'>
+                <CheckCircle className='h-4 w-4 text-green-500' />
+                <span className='text-sm font-medium text-gray-700'>
+                  تسک‌های تکمیل شده
+                </span>
               </div>
-              <div className="text-2xl font-bold text-gray-900">{totalCompletedTasks}</div>
+              <div className='text-2xl font-bold text-gray-900'>
+                {totalCompletedTasks}
+              </div>
             </div>
           </div>
 
           {/* Line Chart */}
-          <div className="relative h-64">
+          <div className='relative h-64'>
             <svg
-              width="100%"
-              height="100%"
-              viewBox="0 0 400 200"
-              className="overflow-visible"
+              width='100%'
+              height='100%'
+              viewBox='0 0 400 200'
+              className='overflow-visible'
             >
               {/* Grid lines */}
               <defs>
-                <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                  <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#f3f4f6" strokeWidth="1"/>
+                <pattern
+                  id='grid'
+                  width='40'
+                  height='40'
+                  patternUnits='userSpaceOnUse'
+                >
+                  <path
+                    d='M 40 0 L 0 0 0 40'
+                    fill='none'
+                    stroke='#f3f4f6'
+                    strokeWidth='1'
+                  />
                 </pattern>
               </defs>
-              <rect width="100%" height="100%" fill="url(#grid)" />
+              <rect width='100%' height='100%' fill='url(#grid)' />
 
               {/* Y-axis labels */}
               {[0, 25, 50, 75, 100].map((value, index) => {
@@ -129,8 +150,21 @@ export function NewUsersVsTasksChart() {
                 const actualValue = Math.round((value / 100) * maxValue);
                 return (
                   <g key={index}>
-                    <line x1="0" y1={yPos} x2="400" y2={yPos} stroke="#e5e7eb" strokeWidth="1" />
-                    <text x="5" y={yPos + 4} fontSize="10" fill="#6b7280" textAnchor="start">
+                    <line
+                      x1='0'
+                      y1={yPos}
+                      x2='400'
+                      y2={yPos}
+                      stroke='#e5e7eb'
+                      strokeWidth='1'
+                    />
+                    <text
+                      x='5'
+                      y={yPos + 4}
+                      fontSize='10'
+                      fill='#6b7280'
+                      textAnchor='start'
+                    >
                       {actualValue}
                     </text>
                   </g>
@@ -138,26 +172,28 @@ export function NewUsersVsTasksChart() {
               })}
 
               {/* New Users Line */}
-              <motion.path
+              <OptimizedMotion
+                as="path"
                 d={newUsersPath}
-                fill="none"
-                stroke="#ff0a54"
-                strokeWidth="3"
-                strokeLinecap="round"
-                strokeLinejoin="round"
+                fill='none'
+                stroke='#ff0a54'
+                strokeWidth='3'
+                strokeLinecap='round'
+                strokeLinejoin='round'
                 initial={{ pathLength: 0 }}
                 animate={{ pathLength: 1 }}
                 transition={{ duration: 2, delay: 0.5 }}
               />
 
               {/* Completed Tasks Line */}
-              <motion.path
+              <OptimizedMotion
+                as="path"
                 d={completedTasksPath}
-                fill="none"
-                stroke="#10b981"
-                strokeWidth="3"
-                strokeLinecap="round"
-                strokeLinejoin="round"
+                fill='none'
+                stroke='#10b981'
+                strokeWidth='3'
+                strokeLinecap='round'
+                strokeLinejoin='round'
                 initial={{ pathLength: 0 }}
                 animate={{ pathLength: 1 }}
                 transition={{ duration: 2, delay: 0.7 }}
@@ -168,16 +204,17 @@ export function NewUsersVsTasksChart() {
                 const x = getXPosition(index) * 4; // Scale to SVG width
                 const y = getYPosition(point.newUsers) * 2; // Scale to SVG height
                 return (
-                  <motion.circle
+                  <OptimizedMotion
+                    as="circle"
                     key={`users-${index}`}
                     cx={x}
                     cy={y}
-                    r="4"
-                    fill="#ff0a54"
+                    r='4'
+                    fill='#ff0a54'
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ delay: 1 + index * 0.05 }}
-                    className="hover:r-6 transition-all cursor-pointer"
+                    className='hover:r-6 transition-all cursor-pointer'
                   />
                 );
               })}
@@ -187,16 +224,17 @@ export function NewUsersVsTasksChart() {
                 const x = getXPosition(index) * 4; // Scale to SVG width
                 const y = getYPosition(point.completedTasks) * 2; // Scale to SVG height
                 return (
-                  <motion.circle
+                  <OptimizedMotion
+                    as="circle"
                     key={`tasks-${index}`}
                     cx={x}
                     cy={y}
-                    r="4"
-                    fill="#10b981"
+                    r='4'
+                    fill='#10b981'
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ delay: 1.2 + index * 0.05 }}
-                    className="hover:r-6 transition-all cursor-pointer"
+                    className='hover:r-6 transition-all cursor-pointer'
                   />
                 );
               })}
@@ -204,18 +242,19 @@ export function NewUsersVsTasksChart() {
           </div>
 
           {/* Legend */}
-          <div className="flex items-center justify-center gap-6">
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-0.5 bg-[#ff0a54]"></div>
-              <span className="text-sm text-gray-600">کاربران جدید</span>
+          <div className='flex items-center justify-center gap-6'>
+            <div className='flex items-center gap-2'>
+              <div className='w-4 h-0.5 bg-[#ff0a54]'></div>
+              <span className='text-sm text-gray-600'>کاربران جدید</span>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-0.5 bg-green-500"></div>
-              <span className="text-sm text-gray-600">تسک‌های تکمیل شده</span>
+            <div className='flex items-center gap-2'>
+              <div className='w-4 h-0.5 bg-green-500'></div>
+              <span className='text-sm text-gray-600'>تسک‌های تکمیل شده</span>
             </div>
           </div>
         </CardContent>
       </Card>
-    </motion.div>
+    </OptimizedMotion>
   );
 }
+

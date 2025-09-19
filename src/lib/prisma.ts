@@ -4,41 +4,69 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
-// Create Prisma client with extensive debugging
+/**
+ * Create Prisma client with proper configuration
+ * Handles both regular database connections and Prisma Accelerate
+ */
 const createPrismaClient = () => {
-  try {
-    console.log('🔍 [PRISMA DEBUG] Starting Prisma client creation...');
-    console.log('🔍 [PRISMA DEBUG] process.env.DATABASE_URL:', process.env.DATABASE_URL);
-    console.log('🔍 [PRISMA DEBUG] process.env.NODE_ENV:', process.env.NODE_ENV);
-    console.log('🔍 [PRISMA DEBUG] All environment variables:', Object.keys(process.env).filter(key => key.includes('DATABASE') || key.includes('POSTGRES')));
-    
-    // Use environment variable for database URL
-    const databaseUrl = process.env.DATABASE_URL;
-    
-    if (!databaseUrl) {
-      throw new Error('DATABASE_URL environment variable is not set');
-    }
-    
-    console.log('🔍 [PRISMA DEBUG] Using DATABASE_URL from environment:', databaseUrl);
-    console.log('🔍 [PRISMA DEBUG] Creating PrismaClient with environment URL...');
+  // Prisma client initialization
 
-    const client = new PrismaClient({
-      log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn', 'info'] : ['error'],
-    });
+  // Determine which database URL to use
+  // Prisma Accelerate takes precedence if available
+  const databaseUrl = process.env.PRISMA_DATABASE_URL || process.env.DATABASE_URL;
 
-    console.log('✅ [PRISMA DEBUG] PrismaClient created successfully');
-    return client;
-  } catch (error) {
-    console.error('❌ [PRISMA DEBUG] Failed to create Prisma client:', error);
-    console.error('❌ [PRISMA DEBUG] Error details:', {
-      message: error instanceof Error ? error.message : String(error),
-      stack: error instanceof Error ? error.stack : undefined,
-      name: error instanceof Error ? error.name : undefined
-    });
-    throw error;
+  if (!databaseUrl) {
+    throw new Error('DATABASE_URL or PRISMA_DATABASE_URL environment variable is not set');
   }
+
+  // Check if using Prisma Accelerate
+  const isUsingAccelerate = !!process.env.PRISMA_DATABASE_URL;
+  const isProduction = process.env.NODE_ENV === 'production';
+
+  // Database configuration determined
+
+  // Configure Prisma client based on environment and connection type
+  const clientConfig: {
+    log: ('query' | 'info' | 'warn' | 'error')[];
+    datasources?: { db: { url: string } };
+  } = {
+    log: isProduction
+      ? ['error']
+      : ['query', 'error', 'warn', 'info'],
+  };
+
+  // Add Prisma Accelerate configuration if using it
+  if (isUsingAccelerate) {
+    clientConfig.datasources = {
+      db: {
+        url: databaseUrl,
+      },
+    };
+  }
+
+  const client = new PrismaClient(clientConfig);
+
+  // PrismaClient created successfully
+
+  return client;
 };
 
+// Create or reuse existing Prisma client instance
+// This prevents multiple instances in development (hot reloading)
 export const prisma = globalForPrisma.prisma ?? createPrismaClient();
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
+// Store the client globally in non-production environments
+// This prevents creating multiple instances during development hot reloads
+if (process.env.NODE_ENV !== 'production') {
+  globalForPrisma.prisma = prisma;
+}
+
+// Export for backward compatibility
+export { prisma as prismaLocal };
+
+// Graceful shutdown handler
+if (typeof process !== 'undefined') {
+  process.on('beforeExit', async () => {
+    await prisma.$disconnect();
+  });
+}

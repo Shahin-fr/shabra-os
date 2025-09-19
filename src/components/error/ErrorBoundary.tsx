@@ -9,7 +9,7 @@ import React, { Component, ErrorInfo, ReactNode } from 'react';
 
 import { ErrorHandler, ErrorNotification } from '@/lib/error-handler';
 import { logger } from '@/lib/logger';
-import { useAppStore } from '@/stores/consolidated-store';
+import { useErrorStore } from '@/stores';
 import { ErrorCategory, ErrorPriority } from '@/types/error';
 
 interface Props {
@@ -155,7 +155,7 @@ export class ErrorBoundary extends Component<Props, State> {
     // Add to store if available - only on client side to prevent hydration issues
     if (typeof window !== 'undefined') {
       try {
-        const store = useAppStore.getState();
+        const store = useErrorStore.getState();
         store.addNotification(notification);
       } catch (_e) {
         // Fallback to console if store is not available
@@ -402,3 +402,4 @@ export function useErrorBoundary() {
 
   return { error, errorInfo, handleError, resetError };
 }
+

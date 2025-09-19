@@ -1,7 +1,8 @@
 'use client';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
+import { OptimizedMotion } from '@/components/ui/OptimizedMotion';
 import { Plus, Edit, Trash2, Eye, EyeOff, Palette } from 'lucide-react';
 import { useState } from 'react';
 
@@ -320,7 +321,7 @@ export function StoryTypeManager() {
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
         <AnimatePresence>
           {storyTypes.map(storyType => (
-            <motion.div
+            <OptimizedMotion
               key={storyType.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -391,7 +392,7 @@ export function StoryTypeManager() {
                   </div>
                 </CardContent>
               </Card>
-            </motion.div>
+            </OptimizedMotion>
           ))}
         </AnimatePresence>
       </div>
@@ -459,3 +460,4 @@ export function StoryTypeManager() {
     </div>
   );
 }
+

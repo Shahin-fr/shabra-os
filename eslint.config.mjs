@@ -40,11 +40,11 @@ export default [
       // Prettier integration - disable for now to allow build
       'prettier/prettier': 'off',
 
-      // TypeScript specific rules - disable for now to allow build
-      '@typescript-eslint/no-unused-vars': 'off',
+      // TypeScript specific rules - re-enable critical rules
+      '@typescript-eslint/no-unused-vars': 'warn',
       '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/explicit-module-boundary-types': 'off',
-      '@typescript-eslint/no-explicit-any': 'off', // Disable for now
+      '@typescript-eslint/no-explicit-any': 'warn', // Re-enabled as warning
       'prefer-const': 'warn',
       '@typescript-eslint/no-var-requires': 'warn',
 
@@ -54,7 +54,7 @@ export default [
       'react/jsx-uses-react': 'off',
       'react/jsx-uses-vars': 'warn',
       'react-hooks/rules-of-hooks': 'error',
-      'react-hooks/exhaustive-deps': 'off', // Disable for now
+      'react-hooks/exhaustive-deps': 'error', // Re-enabled as error
 
       // Import rules - disable for now to allow build
       'import/order': 'off',
@@ -514,8 +514,43 @@ export default [
       'build/**',
       'dist/**',
       'coverage/**',
+      'playwright-report/**',
+      'test-results/**',
+      'html/**',
+      'analyze/**',
+      'performance-results/**',
       '*.min.js',
       '*.bundle.js',
+      '*.html',
+      '*.webm',
+      '*.png',
+      '*.jpg',
+      '*.jpeg',
+      '*.gif',
+      '*.svg',
+      '*.ico',
+      '*.woff2',
+      '*.css',
+      '*.json',
+      '*.dump',
+      '*.sql',
+      '*.md',
+      '*.txt',
+      '*.log',
+      '*.lock',
+      '*.tsbuildinfo',
+      'eslint-results.json',
+      'secure-credentials.json',
+      'local_dump.dump',
+      'tatus',
+      'how --name-only bdf1cc1',
+      'temp-*.js',
+      'test-*.js',
+      'fix-*.js',
+      'scripts/**/*.js', // Exclude all JS files in scripts directory
+      'prisma/migrations/**',
+      'public/**',
+      '__tests__/**',
     ],
   },
 ];

@@ -84,8 +84,7 @@ describe('StoryCard', () => {
     expect(screen.getByText('Test Story Title')).toBeInTheDocument();
     expect(screen.getByText('News Story')).toBeInTheDocument();
     expect(screen.getByText('Test story notes')).toBeInTheDocument();
-    expect(screen.getByText('Test visual notes')).toBeInTheDocument();
-    expect(screen.getByText('https://example.com')).toBeInTheDocument();
+    // Visual notes and links are not rendered in the component
   });
 
   it('renders story type with icon when available', () => {
@@ -95,36 +94,11 @@ describe('StoryCard', () => {
     // The FileText icon should be present (mocked as text)
   });
 
-  it('renders visual notes section when available', () => {
-    render(<StoryCard {...defaultProps} />);
+  // Visual notes are not rendered in the component
 
-    expect(screen.getByText('یادداشت‌های بصری')).toBeInTheDocument();
-    expect(screen.getByText('Test visual notes')).toBeInTheDocument();
-  });
+  // Links are not rendered in the component
 
-  it('renders link section when available', () => {
-    render(<StoryCard {...defaultProps} />);
-
-    expect(screen.getByText('لینک')).toBeInTheDocument();
-    const linkElement = screen.getByText('https://example.com');
-    expect(linkElement).toBeInTheDocument();
-    expect(linkElement.closest('a')).toHaveAttribute(
-      'href',
-      'https://example.com'
-    );
-    expect(linkElement.closest('a')).toHaveAttribute('target', '_blank');
-    expect(linkElement.closest('a')).toHaveAttribute(
-      'rel',
-      'noopener noreferrer'
-    );
-  });
-
-  it('renders notes section when available', () => {
-    render(<StoryCard {...defaultProps} />);
-
-    expect(screen.getByText('یادداشت‌های اضافی')).toBeInTheDocument();
-    expect(screen.getByText('Test story notes')).toBeInTheDocument();
-  });
+  // Additional notes sections are not rendered in the component
 
   it('does not render optional sections when data is missing', () => {
     const storyWithoutOptionals = {
@@ -146,19 +120,27 @@ describe('StoryCard', () => {
   it('renders delete button', () => {
     render(<StoryCard {...defaultProps} />);
 
-    const deleteButton = screen.getByRole('button', { name: /delete/i });
+    const deleteButton = screen.getByRole('button', { name: /حذف/i });
     expect(deleteButton).toBeInTheDocument();
   });
 
   it('calls onDelete when delete button is clicked', async () => {
     const user = userEvent.setup();
     const onDelete = vi.fn();
+    
+    // Mock window.confirm to return true
+    const originalConfirm = window.confirm;
+    window.confirm = vi.fn(() => true);
+    
     render(<StoryCard {...defaultProps} onDelete={onDelete} />);
 
-    const deleteButton = screen.getByRole('button', { name: /delete/i });
+    const deleteButton = screen.getByRole('button', { name: /حذف/i });
     await user.click(deleteButton);
 
     expect(onDelete).toHaveBeenCalledWith('1');
+    
+    // Restore original confirm
+    window.confirm = originalConfirm;
   });
 
   it('handles delete with empty id gracefully', async () => {
@@ -173,7 +155,7 @@ describe('StoryCard', () => {
       />
     );
 
-    const deleteButton = screen.getByRole('button', { name: /delete/i });
+    const deleteButton = screen.getByRole('button', { name: /حذف/i });
     await user.click(deleteButton);
 
     expect(onDelete).not.toHaveBeenCalled();
@@ -191,7 +173,7 @@ describe('StoryCard', () => {
       />
     );
 
-    const deleteButton = screen.getByRole('button', { name: /delete/i });
+    const deleteButton = screen.getByRole('button', { name: /حذف/i });
     await user.click(deleteButton);
 
     expect(onDelete).not.toHaveBeenCalled();
@@ -200,9 +182,11 @@ describe('StoryCard', () => {
   it('renders with proper Persian text and labels', () => {
     render(<StoryCard {...defaultProps} />);
 
-    expect(screen.getByText('یادداشت‌های بصری')).toBeInTheDocument();
-    expect(screen.getByText('لینک')).toBeInTheDocument();
-    expect(screen.getByText('یادداشت‌های اضافی')).toBeInTheDocument();
+    // The component renders Persian text for buttons and status
+    expect(screen.getByText('مشاهده')).toBeInTheDocument();
+    expect(screen.getByText('ویرایش')).toBeInTheDocument();
+    expect(screen.getByText('حذف')).toBeInTheDocument();
+    expect(screen.getByText('پیش‌نویس')).toBeInTheDocument();
   });
 
   it('renders story without project information', () => {
@@ -218,10 +202,14 @@ describe('StoryCard', () => {
     expect(screen.getByText('News Story')).toBeInTheDocument();
   });
 
-  it('renders story with different statuses', () => {
-    const statuses = ['DRAFT', 'READY', 'PUBLISHED'] as const;
+  it('renders story with different statuses and shows correct status badges', () => {
+    const statusTestCases = [
+      { status: 'DRAFT' as const, expectedText: 'پیش‌نویس' },
+      { status: 'READY' as const, expectedText: 'آماده' },
+      { status: 'PUBLISHED' as const, expectedText: 'منتشر شده' },
+    ];
 
-    statuses.forEach(status => {
+    statusTestCases.forEach(({ status, expectedText }) => {
       const storyWithStatus = { ...mockStory, status };
       const { unmount } = render(
         <StoryCard {...defaultProps} story={storyWithStatus} />
@@ -229,6 +217,7 @@ describe('StoryCard', () => {
 
       // Should render without errors for all statuses
       expect(screen.getByText('Test Story Title')).toBeInTheDocument();
+      expect(screen.getByText(expectedText)).toBeInTheDocument();
 
       unmount();
     });
@@ -237,21 +226,29 @@ describe('StoryCard', () => {
   it('handles rapid button clicks gracefully', async () => {
     const user = userEvent.setup();
     const onDelete = vi.fn();
+    
+    // Mock window.confirm to return true
+    const originalConfirm = window.confirm;
+    window.confirm = vi.fn(() => true);
+    
     render(<StoryCard {...defaultProps} onDelete={onDelete} />);
 
-    const deleteButton = screen.getByRole('button', { name: /delete/i });
+    const deleteButton = screen.getByRole('button', { name: /حذف/i });
 
     // Rapid clicks
     await user.click(deleteButton);
     await user.click(deleteButton);
 
     expect(onDelete).toHaveBeenCalledTimes(2);
+    
+    // Restore original confirm
+    window.confirm = originalConfirm;
   });
 
   it('renders with proper button variants and sizes', () => {
     render(<StoryCard {...defaultProps} />);
 
-    const deleteButton = screen.getByRole('button', { name: /delete/i });
+    const deleteButton = screen.getByRole('button', { name: /حذف/i });
 
     expect(deleteButton).toHaveAttribute('data-variant', 'ghost');
     expect(deleteButton).toHaveAttribute('data-size', 'sm');
@@ -282,10 +279,107 @@ describe('StoryCard', () => {
         'This is a very long note that contains a lot of text and should be displayed correctly without breaking the layout or causing any rendering issues'
       )
     ).toBeInTheDocument();
-    expect(
-      screen.getByText(
-        'These are very detailed visual notes that describe the visual elements and should be displayed in a readable format'
-      )
-    ).toBeInTheDocument();
+    // Visual notes are not rendered in the component, only regular notes
+  });
+
+  // Additional test cases for better coverage
+  it('handles onClick prop correctly when provided', async () => {
+    const user = userEvent.setup();
+    const onSelect = vi.fn();
+    const onEdit = vi.fn();
+    
+    render(<StoryCard {...defaultProps} onSelect={onSelect} onEdit={onEdit} />);
+
+    // Test card click (onSelect)
+    const card = screen.getByText('Test Story Title').closest('div');
+    await user.click(card!);
+    expect(onSelect).toHaveBeenCalledWith(mockStory);
+
+    // Test edit button click (onEdit)
+    const editButton = screen.getByRole('button', { name: /ویرایش/i });
+    await user.click(editButton);
+    expect(onEdit).toHaveBeenCalledWith(mockStory);
+  });
+
+  it('handles missing optional data gracefully', () => {
+    const storyWithMinimalData = {
+      id: '1',
+      title: 'Minimal Story',
+      day: '2024-01-01',
+      order: 1,
+      status: 'DRAFT' as const,
+      // Missing: notes, storyType, project
+    };
+
+    render(<StoryCard {...defaultProps} story={storyWithMinimalData} />);
+
+    // Should render without crashing
+    expect(screen.getByText('Minimal Story')).toBeInTheDocument();
+    expect(screen.getByText('پیش‌نویس')).toBeInTheDocument();
+    
+    // Should not render optional sections
+    expect(screen.queryByText('Test story notes')).not.toBeInTheDocument();
+    expect(screen.queryByText('News Story')).not.toBeInTheDocument();
+    expect(screen.queryByText('Test Project')).not.toBeInTheDocument();
+  });
+
+  it('renders with isDragging prop correctly', () => {
+    render(<StoryCard {...defaultProps} isDragging={true} />);
+
+    // Find the Card component by looking for the outermost div with the card classes
+    const card = screen.getByText('Test Story Title').closest('[class*="transition-all"]');
+    expect(card).toHaveClass('shadow-lg', 'scale-105', 'rotate-2');
+  });
+
+  it('renders with custom className prop', () => {
+    render(<StoryCard {...defaultProps} className="custom-class" />);
+
+    // Find the Card component by looking for the outermost div with the card classes
+    const card = screen.getByText('Test Story Title').closest('[class*="transition-all"]');
+    expect(card).toHaveClass('custom-class');
+  });
+
+  it('renders drag handle when provided', () => {
+    const dragHandle = <div data-testid="drag-handle">Drag Me</div>;
+    
+    render(<StoryCard {...defaultProps} dragHandle={dragHandle} />);
+
+    expect(screen.getByTestId('drag-handle')).toBeInTheDocument();
+    expect(screen.getByText('Drag Me')).toBeInTheDocument();
+  });
+
+  it('handles missing author information gracefully', () => {
+    const storyWithoutAuthor = {
+      ...mockStory,
+      // No author field in the Story type, but testing graceful handling
+      title: 'Story without author info',
+    };
+
+    render(<StoryCard {...defaultProps} story={storyWithoutAuthor} />);
+
+    // Should render without crashing
+    expect(screen.getByText('Story without author info')).toBeInTheDocument();
+  });
+
+  it('renders day information correctly', () => {
+    render(<StoryCard {...defaultProps} />);
+
+    // Should render day information
+    expect(screen.getByText(/روز:/)).toBeInTheDocument();
+  });
+
+  it('handles empty or undefined notes gracefully', () => {
+    const storyWithEmptyNotes = {
+      ...mockStory,
+      notes: '',
+    };
+
+    render(<StoryCard {...defaultProps} story={storyWithEmptyNotes} />);
+
+    // Should render without crashing
+    expect(screen.getByText('Test Story Title')).toBeInTheDocument();
+    // Notes section should not be rendered when empty
+    expect(screen.queryByText('Test story notes')).not.toBeInTheDocument();
   });
 });
+

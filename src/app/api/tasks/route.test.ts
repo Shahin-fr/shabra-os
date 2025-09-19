@@ -1,33 +1,60 @@
 import { NextRequest } from 'next/server';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
+
 // Mock the dependencies
 vi.mock('@/auth', () => ({
-  auth: vi.fn(),
+  auth: vi.fn().mockResolvedValue({
+    user: {
+      id: 'user-123',
+      email: 'test@example.com',
+      firstName: 'Test',
+      lastName: 'User',
+      roles: ['MANAGER'], // Add roles property
+    },
+  }),
 }));
 
-vi.mock('@/lib/prisma', () => ({
-  prisma: {
-    task: {
-      findMany: vi.fn(),
-      create: vi.fn(),
-    },
-    project: {
-      findUnique: vi.fn(),
-    },
-  },
+vi.mock('@/lib/middleware/auth-middleware', () => ({
+  withAuth: vi.fn().mockImplementation((request, options) => {
+    // Return different auth levels based on options
+    const role = options?.requiredPrivilegeLevel === 'MANAGER' ? 'MANAGER' : 'EMPLOYEE';
+    return Promise.resolve({
+      response: null,
+      context: {
+        userId: 'user-123',
+        user: {
+          id: 'user-123',
+          email: 'test@example.com',
+          firstName: 'Test',
+          lastName: 'User',
+          role: role, // Dynamically set role
+        },
+      },
+    });
+  }),
 }));
+
+// Remove local prisma mock to use global one
 
 // Import the component after mocking
 import { GET, POST } from './route';
+
+// Remove local prisma mock to use global one
 
 describe('Tasks API Route', () => {
   const mockSession = {
     user: {
       id: 'user-123',
       email: 'test@example.com',
-      roles: ['USER'],
+      roles: ['MANAGER'],
     },
+  };
+
+  const mockAuthContext = {
+    userId: 'user-123',
+    roles: ['MANAGER'],
+    userEmail: 'test@example.com',
   };
 
   const mockTasks = [
@@ -45,7 +72,13 @@ describe('Tasks API Route', () => {
         id: 'project-1',
         name: 'Test Project 1',
       },
-      user: {
+      creator: {
+        id: 'user-123',
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john@example.com',
+      },
+      assignee: {
         id: 'user-123',
         firstName: 'John',
         lastName: 'Doe',
@@ -66,7 +99,13 @@ describe('Tasks API Route', () => {
         id: 'project-2',
         name: 'Test Project 2',
       },
-      user: {
+      creator: {
+        id: 'user-123',
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john@example.com',
+      },
+      assignee: {
         id: 'user-456',
         firstName: 'Jane',
         lastName: 'Smith',
@@ -85,35 +124,29 @@ describe('Tasks API Route', () => {
   };
 
   beforeEach(async () => {
-    vi.clearAllMocks();
-
-    // Setup default mocks using vi.mocked
+    // Setup default mocks using vi.mocked - but don't clear all mocks to preserve transaction mock
     const { auth } = await import('@/auth');
     const { prisma } = await import('@/lib/prisma');
+    const { withAuth } = await import('@/lib/middleware/auth-middleware');
 
     vi.mocked(auth).mockResolvedValue(mockSession);
+    vi.mocked(withAuth).mockResolvedValue({
+      context: mockAuthContext,
+    });
     vi.mocked(prisma.task.findMany).mockResolvedValue(mockTasks as any);
     vi.mocked(prisma.project.findUnique).mockResolvedValue(mockProject as any);
+    vi.mocked(prisma.user.findUnique).mockResolvedValue({
+      id: 'user-123',
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'test@example.com',
+    } as any);
 
-    // Mock task creation to return the actual data being created
-    (vi.mocked(prisma.task.create) as any).mockImplementation(
-      async ({ data }: any) => ({
-        id: 'new-task-id',
-        title: data.title,
-        description: data.description,
-        status: data.status || 'PENDING',
-        priority: data.priority || 'medium',
-        projectId: data.projectId,
-        assignedTo: data.assignedTo,
-        dueDate: null,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      })
-    );
+    // Don't override task.create - let the global transaction mock handle it
   });
 
   afterEach(() => {
-    vi.restoreAllMocks();
+    // Don't restore all mocks to preserve global transaction mock
   });
 
   describe('GET /api/tasks', () => {
@@ -142,20 +175,31 @@ describe('Tasks API Route', () => {
       expect(data).toHaveLength(1);
       expect(data[0].projectId).toBe('project-1');
       expect(prisma.task.findMany).toHaveBeenCalledWith({
-        where: { projectId: 'project-1' },
+        where: { 
+          projectId: 'project-1',
+          createdBy: 'user-123',
+        },
         include: {
-          project: {
-            select: {
-              id: true,
-              name: true,
-            },
-          },
-          user: {
+          creator: {
             select: {
               id: true,
               firstName: true,
               lastName: true,
               email: true,
+            },
+          },
+          assignee: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              email: true,
+            },
+          },
+          project: {
+            select: {
+              id: true,
+              name: true,
             },
           },
         },
@@ -181,18 +225,26 @@ describe('Tasks API Route', () => {
       expect(prisma.task.findMany).toHaveBeenCalledWith({
         where: { assignedTo: 'user-456' },
         include: {
-          project: {
-            select: {
-              id: true,
-              name: true,
-            },
-          },
-          user: {
+          creator: {
             select: {
               id: true,
               firstName: true,
               lastName: true,
               email: true,
+            },
+          },
+          assignee: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              email: true,
+            },
+          },
+          project: {
+            select: {
+              id: true,
+              name: true,
             },
           },
         },
@@ -216,20 +268,28 @@ describe('Tasks API Route', () => {
       expect(data).toHaveLength(1);
       expect(data[0].assignedTo).toBe('user-123');
       expect(prisma.task.findMany).toHaveBeenCalledWith({
-        where: { assignedTo: 'user-123' },
+        where: { createdBy: 'user-123' },
         include: {
-          project: {
-            select: {
-              id: true,
-              name: true,
-            },
-          },
-          user: {
+          creator: {
             select: {
               id: true,
               firstName: true,
               lastName: true,
               email: true,
+            },
+          },
+          assignee: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              email: true,
+            },
+          },
+          project: {
+            select: {
+              id: true,
+              name: true,
             },
           },
         },
@@ -257,18 +317,26 @@ describe('Tasks API Route', () => {
           assignedTo: 'user-123',
         },
         include: {
-          project: {
-            select: {
-              id: true,
-              name: true,
-            },
-          },
-          user: {
+          creator: {
             select: {
               id: true,
               firstName: true,
               lastName: true,
               email: true,
+            },
+          },
+          assignee: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              email: true,
+            },
+          },
+          project: {
+            select: {
+              id: true,
+              name: true,
             },
           },
         },
@@ -289,7 +357,7 @@ describe('Tasks API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(401);
-      expect(data.error).toBe('Unauthorized');
+      expect(data.error.message).toBe('Unauthorized');
     });
 
     it('returns 401 when assignedTo=me and session has no user', async () => {
@@ -303,7 +371,7 @@ describe('Tasks API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(401);
-      expect(data.error).toBe('Unauthorized');
+      expect(data.error.message).toBe('Unauthorized');
     });
 
     it('returns 401 when assignedTo=me and user has no ID', async () => {
@@ -319,7 +387,7 @@ describe('Tasks API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(401);
-      expect(data.error).toBe('Unauthorized');
+      expect(data.error.message).toBe('Unauthorized');
     });
 
     it('handles empty results gracefully', async () => {
@@ -345,7 +413,7 @@ describe('Tasks API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(500);
-      expect(data.error).toBe('خطا در دریافت وظایف');
+      expect(data.error.message).toBe('Database error');
     });
 
     it('includes correct project and user data in response', async () => {
@@ -356,11 +424,13 @@ describe('Tasks API Route', () => {
       expect(data[0].project).toBeDefined();
       expect(data[0].project.id).toBe('project-1');
       expect(data[0].project.name).toBe('Test Project 1');
-      expect(data[0].user).toBeDefined();
-      expect(data[0].user.id).toBe('user-123');
-      expect(data[0].user.firstName).toBe('John');
-      expect(data[0].user.lastName).toBe('Doe');
-      expect(data[0].user.email).toBe('john@example.com');
+      expect(data[0].creator).toBeDefined();
+      expect(data[0].creator.id).toBe('user-123');
+      expect(data[0].creator.firstName).toBe('John');
+      expect(data[0].creator.lastName).toBe('Doe');
+      expect(data[0].creator.email).toBe('john@example.com');
+      expect(data[0].assignee).toBeDefined();
+      expect(data[0].assignee.id).toBe('user-123');
     });
 
     it('orders tasks by creation date descending', async () => {
@@ -385,7 +455,7 @@ describe('Tasks API Route', () => {
         title: 'New Task',
         description: 'New Task Description',
         projectId: 'project-1',
-        assigneeId: 'user-123',
+        assignedTo: 'user-123',
       };
 
       const request = new NextRequest('http://localhost:3000/api/tasks', {
@@ -397,12 +467,13 @@ describe('Tasks API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(201);
-      expect(data.title).toBe('New Task');
-      expect(data.description).toBe('New Task Description');
-      expect(data.projectId).toBe('project-1');
-      expect(data.assignedTo).toBe('user-123');
-      expect(data.status).toBe('PENDING');
-      expect(data.priority).toBe('medium');
+      expect(data.success).toBe(true);
+      expect(data.data.title).toBe('New Task');
+      expect(data.data.description).toBe('New Task Description');
+      expect(data.data.projectId).toBe('project-1');
+      expect(data.data.assignedTo).toBe('user-123');
+      expect(data.data.status).toBe('Todo');
+      expect(data.data.priority).toBeUndefined();
     });
 
     it('creates task with minimal required data', async () => {
@@ -420,9 +491,10 @@ describe('Tasks API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(201);
-      expect(data.title).toBe('Minimal Task');
-      expect(data.description).toBeNull();
-      expect(data.assignedTo).toBeNull();
+      expect(data.success).toBe(true);
+      expect(data.data.title).toBe('Minimal Task');
+      expect(data.data.description).toBeNull();
+      expect(data.data.assignedTo).toBeNull();
     });
 
     it('trims whitespace from title and description', async () => {
@@ -441,8 +513,8 @@ describe('Tasks API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(201);
-      expect(data.title).toBe('Trimmed Task');
-      expect(data.description).toBe('Trimmed Description');
+      expect(data.data.title).toBe('Trimmed Task');
+      expect(data.data.description).toBe('Trimmed Description');
     });
 
     it('returns 400 when title is missing', async () => {
@@ -460,7 +532,7 @@ describe('Tasks API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(400);
-      expect(data.error).toBe('عنوان وظیفه الزامی است');
+      expect(data.error.message).toBe('عنوان وظیفه الزامی است');
     });
 
     it('returns 400 when title is empty string', async () => {
@@ -478,7 +550,7 @@ describe('Tasks API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(400);
-      expect(data.error).toBe('عنوان وظیفه الزامی است');
+      expect(data.error.message).toBe('عنوان وظیفه الزامی است');
     });
 
     it('returns 400 when title is only whitespace', async () => {
@@ -496,7 +568,7 @@ describe('Tasks API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(400);
-      expect(data.error).toBe('عنوان وظیفه الزامی است');
+      expect(data.error.message).toBe('عنوان وظیفه الزامی است');
     });
 
     it('returns 400 when title is not a string', async () => {
@@ -514,7 +586,7 @@ describe('Tasks API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(400);
-      expect(data.error).toBe('عنوان وظیفه الزامی است');
+      expect(data.error.message).toBe('عنوان وظیفه الزامی است');
     });
 
     it('returns 400 when title is null', async () => {
@@ -532,10 +604,10 @@ describe('Tasks API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(400);
-      expect(data.error).toBe('عنوان وظیفه الزامی است');
+      expect(data.error.message).toBe('عنوان وظیفه الزامی است');
     });
 
-    it('returns 400 when projectId is missing', async () => {
+    it('creates task without projectId when not provided', async () => {
       const taskData = {
         title: 'New Task',
         description: 'Task Description',
@@ -549,11 +621,13 @@ describe('Tasks API Route', () => {
       const response = await POST(request);
       const data = await response.json();
 
-      expect(response.status).toBe(400);
-      expect(data.error).toBe('شناسه پروژه الزامی است');
+      expect(response.status).toBe(201);
+      expect(data.success).toBe(true);
+      expect(data.data.title).toBe('New Task');
+      expect(data.data.projectId).toBeNull();
     });
 
-    it('returns 400 when projectId is not a string', async () => {
+    it('creates task with non-string projectId (converts to string)', async () => {
       const taskData = {
         title: 'New Task',
         projectId: 123,
@@ -567,11 +641,13 @@ describe('Tasks API Route', () => {
       const response = await POST(request);
       const data = await response.json();
 
-      expect(response.status).toBe(400);
-      expect(data.error).toBe('شناسه پروژه الزامی است');
+      expect(response.status).toBe(201);
+      expect(data.success).toBe(true);
+      expect(data.data.title).toBe('New Task');
+      expect(data.data.projectId).toBe(123);
     });
 
-    it('returns 400 when projectId is null', async () => {
+    it('creates task with null projectId', async () => {
       const taskData = {
         title: 'New Task',
         projectId: null,
@@ -585,8 +661,10 @@ describe('Tasks API Route', () => {
       const response = await POST(request);
       const data = await response.json();
 
-      expect(response.status).toBe(400);
-      expect(data.error).toBe('شناسه پروژه الزامی است');
+      expect(response.status).toBe(201);
+      expect(data.success).toBe(true);
+      expect(data.data.title).toBe('New Task');
+      expect(data.data.projectId).toBeNull();
     });
 
     it('returns 404 when project does not exist', async () => {
@@ -607,7 +685,7 @@ describe('Tasks API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(404);
-      expect(data.error).toBe('پروژه مورد نظر یافت نشد');
+      expect(data.error.message).toBe('Resource not found');
     });
 
     it('creates task without assignee when assigneeId is not provided', async () => {
@@ -625,7 +703,7 @@ describe('Tasks API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(201);
-      expect(data.assignedTo).toBeNull();
+      expect(data.data.assignedTo).toBeNull();
     });
 
     it('creates task with null description when description is not provided', async () => {
@@ -643,7 +721,7 @@ describe('Tasks API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(201);
-      expect(data.description).toBeNull();
+      expect(data.data.description).toBeNull();
     });
 
     it('creates task with empty string description converted to null', async () => {
@@ -662,12 +740,12 @@ describe('Tasks API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(201);
-      expect(data.description).toBeNull();
+      expect(data.data.description).toBeNull();
     });
 
     it('handles database errors gracefully', async () => {
       const { prisma } = await import('@/lib/prisma');
-      vi.mocked(prisma.task.create).mockRejectedValue(
+      vi.mocked(prisma.$transaction).mockRejectedValue(
         new Error('Database error')
       );
 
@@ -685,7 +763,45 @@ describe('Tasks API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(500);
-      expect(data.error).toBe('خطا در ایجاد وظیفه');
+      expect(data.error.message).toContain('Database error');
+      
+      // Reset the transaction mock to its original implementation
+      vi.mocked(prisma.$transaction).mockImplementation(async (callback) => {
+        const txMock = {
+          task: {
+            create: vi.fn().mockImplementation(async ({ data, include }) => {
+              const mockTask = {
+                id: 'new-task-id',
+                ...data,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+                dueDate: data.dueDate ? (data.dueDate instanceof Date ? data.dueDate.toISOString() : data.dueDate) : null,
+              };
+
+              if (include) {
+                if (include.creator) {
+                  mockTask.creator = { id: 'user-123', firstName: 'John', lastName: 'Doe', email: 'john@example.com' };
+                }
+                if (include.assignee) {
+                  mockTask.assignee = data.assignedTo ? { id: data.assignedTo, firstName: 'Jane', lastName: 'Smith', email: 'jane@example.com' } : null;
+                }
+                if (include.project) {
+                  mockTask.project = data.projectId ? { id: data.projectId, name: 'Test Project' } : null;
+                }
+              }
+
+              return mockTask;
+            }),
+          },
+          project: {
+            update: vi.fn().mockImplementation(async ({ where, data }) => {
+              return { id: where.id, name: 'Test Project', updatedAt: new Date() };
+            }),
+          },
+        };
+        
+        return await callback(txMock);
+      });
     });
 
     it('handles JSON parsing errors gracefully', async () => {
@@ -698,7 +814,7 @@ describe('Tasks API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(500);
-      expect(data.error).toBe('خطا در ایجاد وظیفه');
+      expect(data.error.message).toContain('Unexpected token');
     });
 
     it('sets default status and priority correctly', async () => {
@@ -716,8 +832,8 @@ describe('Tasks API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(201);
-      expect(data.status).toBe('PENDING');
-      expect(data.priority).toBe('medium');
+      expect(data.data.status).toBe('Todo');
+      expect(data.data.priority).toBeUndefined();
     });
 
     it('verifies project exists before creating task', async () => {
@@ -758,7 +874,7 @@ describe('Tasks API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(201);
-      expect(data.title).toBe(longTitle);
+      expect(data.data.title).toBe(longTitle);
     });
 
     it('handles very long task descriptions', async () => {
@@ -778,7 +894,7 @@ describe('Tasks API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(201);
-      expect(data.description).toBe(longDescription);
+      expect(data.data.description).toBe(longDescription);
     });
 
     it('handles special characters in task data', async () => {
@@ -800,8 +916,8 @@ describe('Tasks API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(201);
-      expect(data.title).toBe(specialTitle);
-      expect(data.description).toBe(specialDescription);
+      expect(data.data.title).toBe(specialTitle);
+      expect(data.data.description).toBe(specialDescription);
     });
 
     it('handles unicode characters in task data', async () => {
@@ -823,8 +939,8 @@ describe('Tasks API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(201);
-      expect(data.title).toBe(unicodeTitle);
-      expect(data.description).toBe(unicodeDescription);
+      expect(data.data.title).toBe(unicodeTitle);
+      expect(data.data.description).toBe(unicodeDescription);
     });
   });
 });

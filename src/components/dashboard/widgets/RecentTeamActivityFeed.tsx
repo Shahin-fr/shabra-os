@@ -1,7 +1,16 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
-import { Activity, CheckCircle, Plus, MessageSquare, Calendar, FileText, ChevronDown } from 'lucide-react';
+import { AnimatePresence } from 'framer-motion';
+import { OptimizedMotion } from '@/components/ui/OptimizedMotion';
+import {
+  Activity,
+  CheckCircle,
+  Plus,
+  MessageSquare,
+  Calendar,
+  FileText,
+  ChevronDown,
+} from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -17,7 +26,7 @@ const activityData = [
     time: '5 دقیقه پیش',
     icon: CheckCircle,
     color: 'text-green-500',
-    bgColor: 'bg-green-500/20'
+    bgColor: 'bg-green-500/20',
   },
   {
     id: 2,
@@ -28,7 +37,7 @@ const activityData = [
     time: '15 دقیقه پیش',
     icon: Plus,
     color: 'text-purple-500',
-    bgColor: 'bg-purple-500/20'
+    bgColor: 'bg-purple-500/20',
   },
   {
     id: 3,
@@ -39,7 +48,7 @@ const activityData = [
     time: '30 دقیقه پیش',
     icon: MessageSquare,
     color: 'text-purple-500',
-    bgColor: 'bg-purple-500/20'
+    bgColor: 'bg-purple-500/20',
   },
   {
     id: 4,
@@ -50,7 +59,7 @@ const activityData = [
     time: '1 ساعت پیش',
     icon: Calendar,
     color: 'text-orange-500',
-    bgColor: 'bg-orange-500/20'
+    bgColor: 'bg-orange-500/20',
   },
   {
     id: 5,
@@ -61,18 +70,16 @@ const activityData = [
     time: '2 ساعت پیش',
     icon: FileText,
     color: 'text-blue-500',
-    bgColor: 'bg-blue-500/20'
-  }
+    bgColor: 'bg-blue-500/20',
+  },
 ];
 
 export function RecentTeamActivityFeed() {
   const [expandedItems, setExpandedItems] = useState<number[]>([]);
 
   const toggleExpanded = (id: number) => {
-    setExpandedItems(prev => 
-      prev.includes(id) 
-        ? prev.filter(item => item !== id)
-        : [...prev, id]
+    setExpandedItems(prev =>
+      prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
     );
   };
 
@@ -94,61 +101,59 @@ export function RecentTeamActivityFeed() {
   };
 
   return (
-    <motion.div
+    <OptimizedMotion
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
-      className="h-full"
+      className='h-full'
     >
-      <Card className="h-full bg-white border border-gray-200 shadow-sm">
-        <CardHeader className="pb-4">
-          <CardTitle className="text-lg font-bold text-gray-900 flex items-center gap-2">
-            <Activity className="h-5 w-5 text-[#ff0a54]" />
+      <Card className='h-full bg-white border border-gray-200 shadow-sm'>
+        <CardHeader className='pb-4'>
+          <CardTitle className='text-lg font-bold text-gray-900 flex items-center gap-2'>
+            <Activity className='h-5 w-5 text-[#ff0a54]' />
             فعالیت‌های اخیر
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-3">
+        <CardContent className='space-y-3'>
           {activityData.map((item, index) => {
             const IconComponent = item.icon;
             const isExpanded = expandedItems.includes(item.id);
-            
+
             return (
-              <motion.div
+              <OptimizedMotion
                 key={item.id}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-sm transition-shadow"
+                className='border border-gray-200 rounded-lg overflow-hidden hover:shadow-sm transition-shadow'
               >
                 {/* Collapsed View - Always Visible */}
                 <button
                   onClick={() => toggleExpanded(item.id)}
-                  className="w-full p-4 text-right hover:bg-gray-50 transition-colors"
+                  className='w-full p-4 text-right hover:bg-gray-50 transition-colors'
                 >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
+                  <div className='flex items-center justify-between'>
+                    <div className='flex items-center gap-3'>
                       <div className={`p-2 rounded-lg ${item.bgColor}`}>
                         <IconComponent className={`h-4 w-4 ${item.color}`} />
                       </div>
-                      <div className="text-right">
-                        <div className="text-sm font-medium text-gray-900">
+                      <div className='text-right'>
+                        <div className='text-sm font-medium text-gray-900'>
                           {item.user}
                         </div>
-                        <div className="text-xs text-gray-600">
+                        <div className='text-xs text-gray-600'>
                           {getActionTypeText(item.type)}
                         </div>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs text-gray-500">
-                        {item.time}
-                      </span>
-                      <motion.div
+                    <div className='flex items-center gap-2'>
+                      <span className='text-xs text-gray-500'>{item.time}</span>
+                      <OptimizedMotion
                         animate={{ rotate: isExpanded ? 180 : 0 }}
                         transition={{ duration: 0.2 }}
                       >
-                        <ChevronDown className="h-4 w-4 text-gray-400" />
-                      </motion.div>
+                        <ChevronDown className='h-4 w-4 text-gray-400' />
+                      </OptimizedMotion>
                     </div>
                   </div>
                 </button>
@@ -156,55 +161,52 @@ export function RecentTeamActivityFeed() {
                 {/* Expanded View - Accordion */}
                 <AnimatePresence>
                   {isExpanded && (
-                    <motion.div
+                    <OptimizedMotion
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
                       transition={{ duration: 0.3 }}
-                      className="border-t border-gray-200 bg-gray-50"
+                      className='border-t border-gray-200 bg-gray-50'
                     >
-                      <div className="p-4">
-                        <div className="space-y-2">
-                          <div className="text-sm text-gray-700">
+                      <div className='p-4'>
+                        <div className='space-y-2'>
+                          <div className='text-sm text-gray-700'>
                             {item.fullAction}
                           </div>
-                          <div className="flex items-center justify-between">
+                          <div className='flex items-center justify-between'>
                             <Badge
-                              variant="outline"
+                              variant='outline'
                               className={`text-xs ${item.color} ${item.bgColor} border-0`}
                             >
                               {getActionTypeText(item.type)}
                             </Badge>
-                            <span className="text-xs text-gray-500">
+                            <span className='text-xs text-gray-500'>
                               {item.time}
                             </span>
                           </div>
                         </div>
                       </div>
-                    </motion.div>
+                    </OptimizedMotion>
                   )}
                 </AnimatePresence>
-              </motion.div>
+              </OptimizedMotion>
             );
           })}
 
           {/* View All Button */}
-          <motion.div
+          <OptimizedMotion
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6 }}
-            className="pt-4 border-t border-gray-200"
+            className='pt-4 border-t border-gray-200'
           >
-            <Button
-              variant="outline"
-              size="sm"
-              className="w-full text-xs"
-            >
+            <Button variant='outline' size='sm' className='w-full text-xs'>
               مشاهده همه فعالیت‌ها
             </Button>
-          </motion.div>
+          </OptimizedMotion>
         </CardContent>
       </Card>
-    </motion.div>
+    </OptimizedMotion>
   );
 }
+

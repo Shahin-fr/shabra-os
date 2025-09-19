@@ -233,3 +233,4 @@ export function MobileProjectsList({
     </div>
   );
 }
+

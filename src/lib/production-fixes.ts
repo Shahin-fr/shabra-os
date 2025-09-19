@@ -28,13 +28,14 @@ export function initializeProductionFixes() {
     if (!process.env.LOG_LEVEL) {
       process.env.LOG_LEVEL = 'error';
     }
-    
+
     if (!process.env.LOG_ENABLE_CONSOLE) {
       process.env.LOG_ENABLE_CONSOLE = 'false';
     }
 
     if (!process.env.ALLOWED_ORIGINS) {
-      process.env.ALLOWED_ORIGINS = process.env.NEXTAUTH_URL || 'https://localhost:3000';
+      process.env.ALLOWED_ORIGINS =
+        process.env.NEXTAUTH_URL || 'https://localhost:3000';
     }
   }
 }
@@ -42,7 +43,10 @@ export function initializeProductionFixes() {
 /**
  * Check if all required environment variables are set
  */
-export function validateProductionEnvironment(): { isValid: boolean; missing: string[] } {
+export function validateProductionEnvironment(): {
+  isValid: boolean;
+  missing: string[];
+} {
   const required = [
     'PRISMA_DATABASE_URL',
     'POSTGRES_URL',
@@ -66,7 +70,7 @@ export function getSafeEnvironmentConfig() {
     NODE_ENV: process.env.NODE_ENV || 'development',
     VERCEL: !!process.env.VERCEL,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL || 'http://localhost:3000',
-    NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET || 'fallback-secret',
+    NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET || '',
     PRISMA_DATABASE_URL: process.env.PRISMA_DATABASE_URL || '',
     POSTGRES_URL: process.env.POSTGRES_URL || '',
     LOG_LEVEL: process.env.LOG_LEVEL || 'error',

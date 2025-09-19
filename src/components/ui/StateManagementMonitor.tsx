@@ -29,7 +29,7 @@ import {
   useCacheActions,
   useAppSettings,
   useAppActions,
-} from '@/stores/consolidated-store';
+} from '@/stores';
 
 export function StateManagementMonitor() {
   const [isVisible, setIsVisible] = useState(false);
@@ -324,3 +324,4 @@ export function StateManagementMonitor() {
 }
 
 export default StateManagementMonitor;
+

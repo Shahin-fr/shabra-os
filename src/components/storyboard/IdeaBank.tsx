@@ -1,6 +1,7 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
+import { OptimizedMotion } from '@/components/ui/OptimizedMotion';
 import { X, Search, Filter, Lightbulb, ArrowLeft } from 'lucide-react';
 import { useState, useMemo } from 'react';
 
@@ -117,7 +118,7 @@ export function IdeaBank({
         }}
         hideCloseButton
       >
-        <motion.div
+        <OptimizedMotion
           initial={{ opacity: 0, scale: 0.95, y: 10 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 10 }}
@@ -165,7 +166,7 @@ export function IdeaBank({
           <div className='flex-1 overflow-hidden flex flex-col'>
             <AnimatePresence mode='wait'>
               {!selectedIdea ? (
-                <motion.div
+                <OptimizedMotion
                   key='list'
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -254,13 +255,13 @@ export function IdeaBank({
                       ) : (
                         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pb-4'>
                           {filteredIdeas.map(idea => (
-                            <motion.div
+                            <OptimizedMotion
                               key={idea.id}
                               initial={{ opacity: 0, y: 20 }}
                               animate={{ opacity: 1, y: 0 }}
                               transition={{ duration: 0.3 }}
-                              whileHover={{ scale: 1.02, y: -2 }}
-                              whileTap={{ scale: 0.98 }}
+                              whileHover={{ scale: 1.01 }}
+                              whileTap={{ scale: 0.99 }}
                             >
                               <Card
                                 className='cursor-pointer transition-all duration-300 hover:shadow-lg border-gray-200 hover:border-[#ff0a54]/30'
@@ -301,15 +302,15 @@ export function IdeaBank({
                                   </div>
                                 </CardContent>
                               </Card>
-                            </motion.div>
+                            </OptimizedMotion>
                           ))}
                         </div>
                       )}
                     </div>
                   </div>
-                </motion.div>
+                </OptimizedMotion>
               ) : (
-                <motion.div
+                <OptimizedMotion
                   key='detail'
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -403,12 +404,13 @@ export function IdeaBank({
                       </Button>
                     </div>
                   </div>
-                </motion.div>
+                </OptimizedMotion>
               )}
             </AnimatePresence>
           </div>
-        </motion.div>
+        </OptimizedMotion>
       </DialogContent>
     </Dialog>
   );
 }
+

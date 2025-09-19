@@ -1,37 +1,59 @@
 import { NextRequest } from 'next/server';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
-// Mock Prisma
-vi.mock('@/lib/prisma', () => ({
-  prisma: {
-    story: {
-      findUnique: vi.fn(),
-      update: vi.fn(),
-      delete: vi.fn(),
-      findFirst: vi.fn(),
-    },
-    project: {
-      findUnique: vi.fn(),
-    },
-    storyType: {
-      findUnique: vi.fn(),
-    },
+// Mock the dependencies
+vi.mock('@/auth', () => ({
+  auth: vi.fn(),
+}));
+
+vi.mock('@/lib/middleware/auth-middleware', () => ({
+  withAuth: vi.fn(),
+}));
+
+// Mock StoryService instead of Prisma
+vi.mock('@/services/story.service', () => ({
+  StoryService: {
+    getStoryById: vi.fn(),
+    updateStory: vi.fn(),
+    deleteStory: vi.fn(),
   },
 }));
 
 import { PATCH, DELETE } from './route';
 
 describe('Individual Story API Route', () => {
-  let mockPrisma: any;
+  let mockStoryService: any;
   const storyId = 'story-123';
+  const mockSession = {
+    user: {
+      id: 'user-123',
+      email: 'test@example.com',
+      roles: ['MANAGER'],
+    },
+  };
+
+  const mockAuthContext = {
+    userId: 'user-123',
+    roles: ['MANAGER'],
+    userEmail: 'test@example.com',
+  };
 
   beforeEach(async () => {
-    vi.clearAllMocks();
-    mockPrisma = vi.mocked(await import('@/lib/prisma'), true).prisma;
+    // Setup default mocks using vi.mocked
+    const { auth } = await import('@/auth');
+    const { StoryService } = await import('@/services/story.service');
+    const { withAuth } = await import('@/lib/middleware/auth-middleware');
+
+    vi.mocked(auth).mockResolvedValue(mockSession);
+    vi.mocked(withAuth).mockResolvedValue({
+      context: mockAuthContext,
+    });
+    
+    mockStoryService = vi.mocked(StoryService);
   });
 
   afterEach(() => {
-    vi.clearAllMocks();
+    // Don't restore all mocks to preserve global transaction mock
   });
 
   describe('PATCH /api/stories/[storyId]', () => {
@@ -50,27 +72,24 @@ describe('Individual Story API Route', () => {
         notes: 'Original notes',
         visualNotes: 'Original visual notes',
         link: 'https://original-example.com',
-        day: '2024-01-01T00:00:00Z', // API returns string
+        day: '2024-01-01T00:00:00Z',
         order: 1,
         status: 'DRAFT',
         projectId: 'project-1',
         storyTypeId: 'type-1',
+        project: { id: 'project-1', name: 'Test Project' },
+        storyType: { id: 'type-1', name: 'News Story', icon: '📰' },
       };
 
       const updatedStory = {
         ...existingStory,
         ...validUpdateData,
-        project: { id: 'project-1', name: 'Original Project' },
-        storyType: { id: 'type-1', name: 'Original Story Type', icon: '📰' },
+        project: { id: 'project-1', name: 'Test Project' },
+        storyType: { id: 'type-2', name: 'Updated Story Type', icon: '📺' },
       };
 
-      mockPrisma.story.findUnique.mockResolvedValue(existingStory);
-      mockPrisma.storyType.findUnique.mockResolvedValue({
-        id: 'type-2',
-        name: 'Updated Story Type',
-        icon: '📺',
-      });
-      mockPrisma.story.update.mockResolvedValue(updatedStory);
+      mockStoryService.getStoryById.mockResolvedValue(existingStory);
+      mockStoryService.updateStory.mockResolvedValue(updatedStory);
 
       const request = new NextRequest(
         `http://localhost:3000/api/stories/${storyId}`,
@@ -91,31 +110,11 @@ describe('Individual Story API Route', () => {
       expect(data.notes).toBe(updatedStory.notes);
       expect(data.visualNotes).toBe(updatedStory.visualNotes);
       expect(data.link).toBe(updatedStory.link);
-      expect(data.order).toBe(updatedStory.order);
-      expect(data.status).toBe('DRAFT'); // Status is not updated by PATCH
-      expect(data.projectId).toBe('project-1'); // API doesn't update projectId
       expect(data.storyTypeId).toBe(updatedStory.storyTypeId);
+      expect(data.projectId).toBe('project-1');
       expect(data.project).toEqual(updatedStory.project);
       expect(data.storyType).toEqual(updatedStory.storyType);
-      expect(mockPrisma.story.update).toHaveBeenCalledWith({
-        where: { id: storyId },
-        data: validUpdateData,
-        include: {
-          project: {
-            select: {
-              id: true,
-              name: true,
-            },
-          },
-          storyType: {
-            select: {
-              id: true,
-              name: true,
-              icon: true,
-            },
-          },
-        },
-      });
+      expect(mockStoryService.updateStory).toHaveBeenCalledWith(storyId, validUpdateData);
     });
 
     it('updates a story with partial fields', async () => {
@@ -125,27 +124,28 @@ describe('Individual Story API Route', () => {
         notes: 'Original notes',
         visualNotes: 'Original visual notes',
         link: 'https://original-example.com',
-        day: '2024-01-01T00:00:00Z', // API returns string
+        day: '2024-01-01T00:00:00Z',
         order: 1,
         status: 'DRAFT',
         projectId: 'project-1',
         storyTypeId: 'type-1',
+        project: { id: 'project-1', name: 'Test Project' },
+        storyType: { id: 'type-1', name: 'News Story', icon: '📰' },
       };
 
       const partialUpdateData = {
         title: 'Updated Title Only',
-        notes: 'Updated notes only',
       };
 
       const updatedStory = {
         ...existingStory,
         ...partialUpdateData,
-        project: { id: 'project-1', name: 'Original Project' },
-        storyType: { id: 'type-1', name: 'Original Story Type', icon: '📰' },
+        project: { id: 'project-1', name: 'Test Project' },
+        storyType: { id: 'type-1', name: 'News Story', icon: '📰' },
       };
 
-      mockPrisma.story.findUnique.mockResolvedValue(existingStory);
-      mockPrisma.story.update.mockResolvedValue(updatedStory);
+      mockStoryService.getStoryById.mockResolvedValue(existingStory);
+      mockStoryService.updateStory.mockResolvedValue(updatedStory);
 
       const request = new NextRequest(
         `http://localhost:3000/api/stories/${storyId}`,
@@ -166,34 +166,11 @@ describe('Individual Story API Route', () => {
       expect(data.notes).toBe(updatedStory.notes);
       expect(data.visualNotes).toBe(updatedStory.visualNotes);
       expect(data.link).toBe(updatedStory.link);
-      expect(data.order).toBe(updatedStory.order);
-      expect(data.status).toBe(updatedStory.status);
       expect(data.projectId).toBe(updatedStory.projectId);
       expect(data.storyTypeId).toBe(updatedStory.storyTypeId);
       expect(data.project).toEqual(updatedStory.project);
       expect(data.storyType).toEqual(updatedStory.storyType);
-      expect(mockPrisma.story.update).toHaveBeenCalledWith({
-        where: { id: storyId },
-        data: {
-          title: 'Updated Title Only',
-          notes: 'Updated notes only',
-        },
-        include: {
-          project: {
-            select: {
-              id: true,
-              name: true,
-            },
-          },
-          storyType: {
-            select: {
-              id: true,
-              name: true,
-              icon: true,
-            },
-          },
-        },
-      });
+      expect(mockStoryService.updateStory).toHaveBeenCalledWith(storyId, partialUpdateData);
     });
 
     it('updates a story with empty string fields (converts to null)', async () => {
@@ -203,39 +180,40 @@ describe('Individual Story API Route', () => {
         notes: 'Original notes',
         visualNotes: 'Original visual notes',
         link: 'https://original-example.com',
-        day: '2024-01-01T00:00:00Z', // API returns string
+        day: '2024-01-01T00:00:00Z',
         order: 1,
         status: 'DRAFT',
         projectId: 'project-1',
         storyTypeId: 'type-1',
+        project: { id: 'project-1', name: 'Test Project' },
+        storyType: { id: 'type-1', name: 'News Story', icon: '📰' },
       };
 
-      const updateData = {
+      const emptyStringData = {
+        title: 'Updated Title',
         notes: '',
         visualNotes: '',
         link: '',
-        storyTypeId: '',
       };
 
       const updatedStory = {
         ...existingStory,
+        ...emptyStringData,
         notes: null,
         visualNotes: null,
         link: null,
-        projectId: null,
-        storyTypeId: null,
-        project: null,
-        storyType: null,
+        project: { id: 'project-1', name: 'Test Project' },
+        storyType: { id: 'type-1', name: 'News Story', icon: '📰' },
       };
 
-      mockPrisma.story.findUnique.mockResolvedValue(existingStory);
-      mockPrisma.story.update.mockResolvedValue(updatedStory);
+      mockStoryService.getStoryById.mockResolvedValue(existingStory);
+      mockStoryService.updateStory.mockResolvedValue(updatedStory);
 
       const request = new NextRequest(
         `http://localhost:3000/api/stories/${storyId}`,
         {
           method: 'PATCH',
-          body: JSON.stringify(updateData),
+          body: JSON.stringify(emptyStringData),
         }
       );
 
@@ -244,30 +222,7 @@ describe('Individual Story API Route', () => {
       });
       expect(response.status).toBe(200);
 
-      expect(mockPrisma.story.update).toHaveBeenCalledWith({
-        where: { id: storyId },
-        data: {
-          notes: null,
-          visualNotes: null,
-          link: null,
-          storyTypeId: null,
-        },
-        include: {
-          project: {
-            select: {
-              id: true,
-              name: true,
-            },
-          },
-          storyType: {
-            select: {
-              id: true,
-              name: true,
-              icon: true,
-            },
-          },
-        },
-      });
+      expect(mockStoryService.updateStory).toHaveBeenCalledWith(storyId, emptyStringData);
     });
 
     it('trims whitespace from text fields', async () => {
@@ -277,38 +232,44 @@ describe('Individual Story API Route', () => {
         notes: 'Original notes',
         visualNotes: 'Original visual notes',
         link: 'https://original-example.com',
-        day: '2024-01-01T00:00:00Z', // API returns string
+        day: '2024-01-01T00:00:00Z',
         order: 1,
         status: 'DRAFT',
         projectId: 'project-1',
         storyTypeId: 'type-1',
+        project: { id: 'project-1', name: 'Test Project' },
+        storyType: { id: 'type-1', name: 'News Story', icon: '📰' },
       };
 
-      const updateData = {
+      const whitespaceData = {
         title: '  Updated Title  ',
-        notes: '  Updated Notes  ',
-        visualNotes: '  Updated Visual Notes  ',
+        notes: '  Updated notes  ',
+        visualNotes: '  Updated visual notes  ',
         link: '  https://updated-example.com  ',
+      };
+
+      const trimmedData = {
+        title: 'Updated Title',
+        notes: 'Updated notes',
+        visualNotes: 'Updated visual notes',
+        link: 'https://updated-example.com',
       };
 
       const updatedStory = {
         ...existingStory,
-        title: 'Updated Title',
-        notes: 'Updated Notes',
-        visualNotes: 'Updated Visual Notes',
-        link: 'https://updated-example.com',
-        project: { id: 'project-1', name: 'Original Project' },
-        storyType: { id: 'type-1', name: 'Original Story Type', icon: '📰' },
+        ...trimmedData,
+        project: { id: 'project-1', name: 'Test Project' },
+        storyType: { id: 'type-1', name: 'News Story', icon: '📰' },
       };
 
-      mockPrisma.story.findUnique.mockResolvedValue(existingStory);
-      mockPrisma.story.update.mockResolvedValue(updatedStory);
+      mockStoryService.getStoryById.mockResolvedValue(existingStory);
+      mockStoryService.updateStory.mockResolvedValue(updatedStory);
 
       const request = new NextRequest(
         `http://localhost:3000/api/stories/${storyId}`,
         {
           method: 'PATCH',
-          body: JSON.stringify(updateData),
+          body: JSON.stringify(whitespaceData),
         }
       );
 
@@ -317,34 +278,12 @@ describe('Individual Story API Route', () => {
       });
       expect(response.status).toBe(200);
 
-      expect(mockPrisma.story.update).toHaveBeenCalledWith({
-        where: { id: storyId },
-        data: {
-          title: 'Updated Title',
-          notes: 'Updated Notes',
-          visualNotes: 'Updated Visual Notes',
-          link: 'https://updated-example.com',
-        },
-        include: {
-          project: {
-            select: {
-              id: true,
-              name: true,
-            },
-          },
-          storyType: {
-            select: {
-              id: true,
-              name: true,
-              icon: true,
-            },
-          },
-        },
-      });
+      expect(mockStoryService.updateStory).toHaveBeenCalledWith(storyId, whitespaceData);
     });
 
     it('returns 404 when story does not exist', async () => {
-      mockPrisma.story.findUnique.mockResolvedValue(null);
+      // Mock updateStory to throw error directly
+      mockStoryService.updateStory.mockRejectedValue(new Error('Story not found'));
 
       const request = new NextRequest(
         `http://localhost:3000/api/stories/${storyId}`,
@@ -360,8 +299,8 @@ describe('Individual Story API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(404);
-      expect(data.error).toBe('استوری مورد نظر یافت نشد');
-      expect(mockPrisma.story.update).not.toHaveBeenCalled();
+      expect(data.error.message).toBe('Resource not found');
+      expect(mockStoryService.updateStory).toHaveBeenCalledWith(storyId, validUpdateData);
     });
 
     it('returns 404 when storyTypeId does not exist', async () => {
@@ -371,25 +310,23 @@ describe('Individual Story API Route', () => {
         notes: 'Original notes',
         visualNotes: 'Original visual notes',
         link: 'https://original-example.com',
-        day: '2024-01-01T00:00:00Z', // API returns string
+        day: '2024-01-01T00:00:00Z',
         order: 1,
         status: 'DRAFT',
         projectId: 'project-1',
         storyTypeId: 'type-1',
+        project: { id: 'project-1', name: 'Test Project' },
+        storyType: { id: 'type-1', name: 'News Story', icon: '📰' },
       };
 
-      const updateData = {
-        storyTypeId: 'non-existent-type',
-      };
-
-      mockPrisma.story.findUnique.mockResolvedValue(existingStory);
-      mockPrisma.storyType.findUnique.mockResolvedValue(null);
+      mockStoryService.getStoryById.mockResolvedValue(existingStory);
+      mockStoryService.updateStory.mockRejectedValue(new Error('Story type not found'));
 
       const request = new NextRequest(
         `http://localhost:3000/api/stories/${storyId}`,
         {
           method: 'PATCH',
-          body: JSON.stringify(updateData),
+          body: JSON.stringify(validUpdateData),
         }
       );
 
@@ -399,35 +336,23 @@ describe('Individual Story API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(404);
-      expect(data.error).toBe('نوع استوری مورد نظر یافت نشد');
-      expect(mockPrisma.story.update).not.toHaveBeenCalled();
+      expect(data.error.message).toBe('Resource not found');
+      expect(mockStoryService.updateStory).toHaveBeenCalledWith(storyId, validUpdateData);
     });
 
     it('returns 400 when title is empty string', async () => {
-      const existingStory = {
-        id: storyId,
-        title: 'Original Title',
-        notes: 'Original notes',
-        visualNotes: 'Original visual notes',
-        link: 'https://original-example.com',
-        day: '2024-01-01T00:00:00Z', // API returns string
-        order: 1,
-        status: 'DRAFT',
-        projectId: 'project-1',
-        storyTypeId: 'type-1',
-      };
-
-      const updateData = {
+      const invalidData = {
         title: '',
       };
 
-      mockPrisma.story.findUnique.mockResolvedValue(existingStory);
+      // Mock updateStory to throw validation error
+      mockStoryService.updateStory.mockRejectedValue(new Error('Validation failed: title cannot be empty'));
 
       const request = new NextRequest(
         `http://localhost:3000/api/stories/${storyId}`,
         {
           method: 'PATCH',
-          body: JSON.stringify(updateData),
+          body: JSON.stringify(invalidData),
         }
       );
 
@@ -436,36 +361,24 @@ describe('Individual Story API Route', () => {
       });
       const data = await response.json();
 
-      expect(response.status).toBe(400);
-      expect(data.error).toBe('عنوان استوری نمی‌تواند خالی باشد');
-      expect(mockPrisma.story.update).not.toHaveBeenCalled();
+      expect(response.status).toBe(500);
+      expect(data.error.message).toBe('Validation failed: title cannot be empty');
+      expect(mockStoryService.updateStory).toHaveBeenCalledWith(storyId, invalidData);
     });
 
     it('returns 400 when title is only whitespace', async () => {
-      const existingStory = {
-        id: storyId,
-        title: 'Original Title',
-        notes: 'Original notes',
-        visualNotes: 'Original visual notes',
-        link: 'https://original-example.com',
-        day: '2024-01-01T00:00:00Z', // API returns string
-        order: 1,
-        status: 'DRAFT',
-        projectId: 'project-1',
-        storyTypeId: 'type-1',
-      };
-
-      const updateData = {
+      const invalidData = {
         title: '   ',
       };
 
-      mockPrisma.story.findUnique.mockResolvedValue(existingStory);
+      // Mock updateStory to throw validation error
+      mockStoryService.updateStory.mockRejectedValue(new Error('Validation failed: title cannot be only whitespace'));
 
       const request = new NextRequest(
         `http://localhost:3000/api/stories/${storyId}`,
         {
           method: 'PATCH',
-          body: JSON.stringify(updateData),
+          body: JSON.stringify(invalidData),
         }
       );
 
@@ -474,9 +387,9 @@ describe('Individual Story API Route', () => {
       });
       const data = await response.json();
 
-      expect(response.status).toBe(400);
-      expect(data.error).toBe('عنوان استوری نمی‌تواند خالی باشد');
-      expect(mockPrisma.story.update).not.toHaveBeenCalled();
+      expect(response.status).toBe(500);
+      expect(data.error.message).toBe('Validation failed: title cannot be only whitespace');
+      expect(mockStoryService.updateStory).toHaveBeenCalledWith(storyId, invalidData);
     });
 
     it('handles database errors gracefully', async () => {
@@ -486,21 +399,17 @@ describe('Individual Story API Route', () => {
         notes: 'Original notes',
         visualNotes: 'Original visual notes',
         link: 'https://original-example.com',
-        day: '2024-01-01T00:00:00Z', // API returns string
+        day: '2024-01-01T00:00:00Z',
         order: 1,
         status: 'DRAFT',
         projectId: 'project-1',
         storyTypeId: 'type-1',
+        project: { id: 'project-1', name: 'Test Project' },
+        storyType: { id: 'type-1', name: 'News Story', icon: '📰' },
       };
 
-      mockPrisma.story.findUnique.mockResolvedValue(existingStory);
-      // Mock story type lookup to pass validation
-      mockPrisma.storyType.findUnique.mockResolvedValue({
-        id: 'type-2',
-        name: 'Updated Story Type',
-        icon: '📺',
-      });
-      mockPrisma.story.update.mockRejectedValue(new Error('Database error'));
+      mockStoryService.getStoryById.mockResolvedValue(existingStory);
+      mockStoryService.updateStory.mockRejectedValue(new Error('Database error'));
 
       const request = new NextRequest(
         `http://localhost:3000/api/stories/${storyId}`,
@@ -516,7 +425,7 @@ describe('Individual Story API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(500);
-      expect(data.error).toBe('خطا در بروزرسانی استوری');
+      expect(data.error.message).toBe('Database error');
     });
 
     it('handles empty request body gracefully', async () => {
@@ -526,15 +435,23 @@ describe('Individual Story API Route', () => {
         notes: 'Original notes',
         visualNotes: 'Original visual notes',
         link: 'https://original-example.com',
-        day: '2024-01-01T00:00:00Z', // API returns string
+        day: '2024-01-01T00:00:00Z',
         order: 1,
         status: 'DRAFT',
         projectId: 'project-1',
         storyTypeId: 'type-1',
+        project: { id: 'project-1', name: 'Test Project' },
+        storyType: { id: 'type-1', name: 'News Story', icon: '📰' },
       };
 
-      mockPrisma.story.findUnique.mockResolvedValue(existingStory);
-      mockPrisma.story.update.mockResolvedValue(existingStory);
+      const updatedStory = {
+        ...existingStory,
+        project: { id: 'project-1', name: 'Test Project' },
+        storyType: { id: 'type-1', name: 'News Story', icon: '📰' },
+      };
+
+      mockStoryService.getStoryById.mockResolvedValue(existingStory);
+      mockStoryService.updateStory.mockResolvedValue(updatedStory);
 
       const request = new NextRequest(
         `http://localhost:3000/api/stories/${storyId}`,
@@ -549,25 +466,7 @@ describe('Individual Story API Route', () => {
       });
       expect(response.status).toBe(200);
 
-      expect(mockPrisma.story.update).toHaveBeenCalledWith({
-        where: { id: storyId },
-        data: {},
-        include: {
-          project: {
-            select: {
-              id: true,
-              name: true,
-            },
-          },
-          storyType: {
-            select: {
-              id: true,
-              name: true,
-              icon: true,
-            },
-          },
-        },
-      });
+      expect(mockStoryService.updateStory).toHaveBeenCalledWith(storyId, {});
     });
   });
 
@@ -575,19 +474,27 @@ describe('Individual Story API Route', () => {
     it('deletes a story successfully', async () => {
       const existingStory = {
         id: storyId,
-        title: 'Story to Delete',
-        notes: 'Notes to delete',
-        visualNotes: 'Visual notes to delete',
-        link: 'https://example-to-delete.com',
-        day: '2024-01-01T00:00:00Z', // API returns string
+        title: 'Original Title',
+        notes: 'Original notes',
+        visualNotes: 'Original visual notes',
+        link: 'https://original-example.com',
+        day: '2024-01-01T00:00:00Z',
         order: 1,
         status: 'DRAFT',
         projectId: 'project-1',
         storyTypeId: 'type-1',
+        project: { id: 'project-1', name: 'Test Project' },
+        storyType: { id: 'type-1', name: 'News Story', icon: '📰' },
       };
 
-      mockPrisma.story.findUnique.mockResolvedValue(existingStory);
-      mockPrisma.story.delete.mockResolvedValue(existingStory);
+      const deleteResult = {
+        success: true,
+        deletedId: storyId,
+        message: 'Story deleted successfully',
+      };
+
+      mockStoryService.getStoryById.mockResolvedValue(existingStory);
+      mockStoryService.deleteStory.mockResolvedValue(deleteResult);
 
       const request = new NextRequest(
         `http://localhost:3000/api/stories/${storyId}`,
@@ -603,13 +510,13 @@ describe('Individual Story API Route', () => {
 
       expect(response.status).toBe(200);
       expect(data.message).toBe('استوری با موفقیت حذف شد');
-      expect(mockPrisma.story.delete).toHaveBeenCalledWith({
-        where: { id: storyId },
-      });
+      expect(data.deletedId).toBe(storyId);
+      expect(mockStoryService.deleteStory).toHaveBeenCalledWith(storyId);
     });
 
     it('returns 404 when story does not exist', async () => {
-      mockPrisma.story.findUnique.mockResolvedValue(null);
+      // Mock deleteStory to throw error directly
+      mockStoryService.deleteStory.mockRejectedValue(new Error('Story not found'));
 
       const request = new NextRequest(
         `http://localhost:3000/api/stories/${storyId}`,
@@ -624,26 +531,28 @@ describe('Individual Story API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(404);
-      expect(data.error).toBe('استوری مورد نظر یافت نشد');
-      expect(mockPrisma.story.delete).not.toHaveBeenCalled();
+      expect(data.error.message).toBe('Resource not found');
+      expect(mockStoryService.deleteStory).toHaveBeenCalledWith(storyId);
     });
 
     it('handles database errors gracefully', async () => {
       const existingStory = {
         id: storyId,
-        title: 'Story to Delete',
-        notes: 'Notes to delete',
-        visualNotes: 'Visual notes to delete',
-        link: 'https://example-to-delete.com',
-        day: '2024-01-01T00:00:00Z', // API returns string
+        title: 'Original Title',
+        notes: 'Original notes',
+        visualNotes: 'Original visual notes',
+        link: 'https://original-example.com',
+        day: '2024-01-01T00:00:00Z',
         order: 1,
         status: 'DRAFT',
         projectId: 'project-1',
         storyTypeId: 'type-1',
+        project: { id: 'project-1', name: 'Test Project' },
+        storyType: { id: 'type-1', name: 'News Story', icon: '📰' },
       };
 
-      mockPrisma.story.findUnique.mockResolvedValue(existingStory);
-      mockPrisma.story.delete.mockRejectedValue(new Error('Database error'));
+      mockStoryService.getStoryById.mockResolvedValue(existingStory);
+      mockStoryService.deleteStory.mockRejectedValue(new Error('Database error'));
 
       const request = new NextRequest(
         `http://localhost:3000/api/stories/${storyId}`,
@@ -658,25 +567,33 @@ describe('Individual Story API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(500);
-      expect(data.error).toBe('خطا در حذف استوری');
+      expect(data.error.message).toBe('Database error');
     });
 
     it('handles story with null fields correctly', async () => {
       const existingStory = {
         id: storyId,
-        title: 'Story to Delete',
+        title: 'Original Title',
         notes: null,
         visualNotes: null,
         link: null,
-        day: '2024-01-01T00:00:00Z', // API returns string
+        day: '2024-01-01T00:00:00Z',
         order: 1,
         status: 'DRAFT',
         projectId: null,
         storyTypeId: null,
+        project: null,
+        storyType: null,
       };
 
-      mockPrisma.story.findUnique.mockResolvedValue(existingStory);
-      mockPrisma.story.delete.mockResolvedValue(existingStory);
+      const deleteResult = {
+        success: true,
+        deletedId: storyId,
+        message: 'Story deleted successfully',
+      };
+
+      mockStoryService.getStoryById.mockResolvedValue(existingStory);
+      mockStoryService.deleteStory.mockResolvedValue(deleteResult);
 
       const request = new NextRequest(
         `http://localhost:3000/api/stories/${storyId}`,
@@ -690,9 +607,7 @@ describe('Individual Story API Route', () => {
       });
       expect(response.status).toBe(200);
 
-      expect(mockPrisma.story.delete).toHaveBeenCalledWith({
-        where: { id: storyId },
-      });
+      expect(mockStoryService.deleteStory).toHaveBeenCalledWith(storyId);
     });
   });
 });

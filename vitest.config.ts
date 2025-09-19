@@ -15,8 +15,8 @@ export default defineConfig({
       '**/cypress/**',
       '**/.{idea,git,cache,output,temp}/**',
       '**/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress,tsup,build}.config.*',
+      '**/e2e/**',
       '**/*.e2e.*',
-      '**/*.spec.ts',
     ],
     coverage: {
       provider: 'v8',
@@ -29,7 +29,6 @@ export default defineConfig({
         '**/*.setup.*',
         '**/e2e/**',
         '**/*.e2e.*',
-        '**/*.spec.ts',
       ],
     },
   },

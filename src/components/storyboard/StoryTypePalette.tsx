@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { OptimizedMotion } from '@/components/ui/OptimizedMotion';
 import {
   Sunrise,
   Package,
@@ -92,13 +92,13 @@ export function StoryTypePalette({
             const isHovered = hoveredType === storyType.id;
 
             return (
-              <motion.div
+              <OptimizedMotion
                 key={storyType.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 onHoverStart={() => setHoveredType(storyType.id)}
                 onHoverEnd={() => setHoveredType(null)}
               >
@@ -143,27 +143,27 @@ export function StoryTypePalette({
                           {storyType.name}
                         </h4>
                         {isHovered && (
-                          <motion.div
+                          <OptimizedMotion
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: 10 }}
                             className='text-xs text-gray-600'
                           >
                             کلیک برای انتخاب
-                          </motion.div>
+                          </OptimizedMotion>
                         )}
                       </div>
                     </div>
                   </CardContent>
                 </Card>
-              </motion.div>
+              </OptimizedMotion>
             );
           })}
       </div>
 
       {/* Instructions */}
       {selectedSlotIndex === null && (
-        <motion.div
+        <OptimizedMotion
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           className='mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg'
@@ -177,8 +177,9 @@ export function StoryTypePalette({
               نوع استوری را انتخاب کنید
             </p>
           </div>
-        </motion.div>
+        </OptimizedMotion>
       )}
     </div>
   );
 }
+

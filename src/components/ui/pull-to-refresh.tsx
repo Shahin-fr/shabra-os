@@ -1,6 +1,7 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from '@/lib/framer-motion-optimized';
+import { OptimizedMotion } from '@/components/ui/OptimizedMotion';
 import { RefreshCw, CheckCircle } from 'lucide-react';
 import React from 'react';
 
@@ -47,14 +48,14 @@ export function PullToRefresh({
       {/* Pull to refresh indicator */}
       <AnimatePresence>
         {(isPulling || isRefreshing) && (
-          <motion.div
+          <OptimizedMotion
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             className='absolute top-0 left-0 right-0 z-10 flex justify-center pt-2'
           >
             <div className='flex flex-col items-center space-y-1'>
-              <motion.div
+              <OptimizedMotion
                 animate={{ rotate: isRefreshing ? 360 : rotation }}
                 transition={{
                   duration: isRefreshing ? 1 : 0,
@@ -74,9 +75,10 @@ export function PullToRefresh({
                 ) : (
                   <RefreshCw className='h-5 w-5' />
                 )}
-              </motion.div>
+              </OptimizedMotion>
 
-              <motion.p
+              <OptimizedMotion
+                as="p"
                 animate={{ opacity: canRefresh ? 1 : 0.5 }}
                 className={cn(
                   'text-xs font-medium transition-colors duration-200',
@@ -90,9 +92,9 @@ export function PullToRefresh({
                   : canRefresh
                     ? 'رها کنید تا بارگذاری شود'
                     : 'کشیدن برای بارگذاری مجدد'}
-              </motion.p>
+              </OptimizedMotion>
             </div>
-          </motion.div>
+          </OptimizedMotion>
         )}
       </AnimatePresence>
 
@@ -153,14 +155,14 @@ export function EnhancedPullToRefresh({
       {/* Pull to refresh indicator */}
       <AnimatePresence>
         {(isPulling || isRefreshing) && (
-          <motion.div
+          <OptimizedMotion
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             className='absolute top-0 left-0 right-0 z-10 flex justify-center pt-2'
           >
             <div className='flex flex-col items-center space-y-1'>
-              <motion.div
+              <OptimizedMotion
                 animate={{ rotate: isRefreshing ? 360 : rotation }}
                 transition={{
                   duration: isRefreshing ? 1 : 0,
@@ -180,9 +182,10 @@ export function EnhancedPullToRefresh({
                 ) : (
                   <RefreshCw className='h-5 w-5' />
                 )}
-              </motion.div>
+              </OptimizedMotion>
 
-              <motion.p
+              <OptimizedMotion
+                as="p"
                 animate={{
                   opacity: canRefresh ? 1 : 0.5,
                   scale: canRefresh ? 1.05 : 1,
@@ -199,9 +202,9 @@ export function EnhancedPullToRefresh({
                   : canRefresh
                     ? 'رها کنید تا بارگذاری شود'
                     : 'کشیدن برای بارگذاری مجدد'}
-              </motion.p>
+              </OptimizedMotion>
             </div>
-          </motion.div>
+          </OptimizedMotion>
         )}
       </AnimatePresence>
 
@@ -223,3 +226,4 @@ export function EnhancedPullToRefresh({
     </div>
   );
 }
+

@@ -1,5 +1,5 @@
 import { logger } from '@/lib/logger';
-import { prismaLocal as prisma } from '@/lib/prisma-local';
+import { prisma } from '@/lib/prisma';
 
 /**
  * Database Query Optimizer
@@ -100,6 +100,14 @@ export class ProjectQueryOptimizer {
         orderBy: { createdAt: 'desc' },
         skip: offset,
         take: limit,
+        include: {
+          _count: {
+            select: {
+              stories: true,
+              tasks: true,
+            },
+          },
+        },
       }),
     ]);
 
@@ -125,6 +133,14 @@ export class ProjectQueryOptimizer {
       where: { status: status as any },
       orderBy: { updatedAt: 'desc' },
       take: limit,
+      include: {
+        _count: {
+          select: {
+            stories: true,
+            tasks: true,
+          },
+        },
+      },
     });
   }
 
@@ -134,6 +150,14 @@ export class ProjectQueryOptimizer {
   static async getProjectWithDetails(projectId: string) {
     return await prisma.project.findUnique({
       where: { id: projectId },
+      include: {
+        _count: {
+          select: {
+            stories: true,
+            tasks: true,
+          },
+        },
+      },
     });
   }
 }
@@ -203,6 +227,38 @@ export class StoryQueryOptimizer {
         orderBy: { createdAt: 'desc' },
         skip: offset,
         take: limit,
+        include: {
+          storyType: {
+            select: {
+              id: true,
+              name: true,
+              icon: true,
+            },
+          },
+          project: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          storyIdea: {
+            select: {
+              id: true,
+              title: true,
+              description: true,
+              category: true,
+              storyType: true,
+            },
+          },
+          author: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              email: true,
+            },
+          },
+        },
       }),
     ]);
 
@@ -233,6 +289,38 @@ export class StoryQueryOptimizer {
     return await prisma.story.findMany({
       where: whereClause,
       orderBy: { createdAt: 'desc' },
+      include: {
+        storyType: {
+          select: {
+            id: true,
+            name: true,
+            icon: true,
+          },
+        },
+        project: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        storyIdea: {
+          select: {
+            id: true,
+            title: true,
+            description: true,
+            category: true,
+            storyType: true,
+          },
+        },
+        author: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+          },
+        },
+      },
     });
   }
 
@@ -326,6 +414,13 @@ export class UserQueryOptimizer {
         orderBy: { createdAt: 'desc' },
         skip: offset,
         take: limit,
+        include: {
+          _count: {
+            select: {
+              // ideas: true, // This field doesn't exist in the schema
+            },
+          },
+        },
       }),
     ]);
 
@@ -349,6 +444,13 @@ export class UserQueryOptimizer {
   static async getUserWithDetails(userId: string) {
     return await prisma.user.findUnique({
       where: { id: userId },
+      include: {
+        _count: {
+          select: {
+            // ideas: true, // This field doesn't exist in the schema
+          },
+        },
+      },
     });
   }
 }

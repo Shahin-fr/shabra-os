@@ -192,7 +192,7 @@ describe('Cache Manager Module', () => {
 
       expect(minimalCacheStatus.status).toBe('unknown');
       expect(minimalCacheStatus.lastCleared).toBeUndefined();
-      expect(minimalCacheStatus.serviceWorkerStatus).toBeUndefined();
+      expect(minimalCacheStatus.serviceWorkerStatus).toBe('unregistered');
     });
   });
 

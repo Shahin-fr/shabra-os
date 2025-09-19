@@ -27,9 +27,9 @@ export async function GET(_request: NextRequest) {
       await prisma.$queryRaw`SELECT 1`;
       debugInfo.database = { status: 'connected' };
     } catch (error) {
-      debugInfo.database = { 
-        status: 'error', 
-        error: error instanceof Error ? error.message : 'Unknown error' 
+      debugInfo.database = {
+        status: 'error',
+        error: error instanceof Error ? error.message : 'Unknown error',
       };
     }
 
@@ -46,7 +46,7 @@ export async function GET(_request: NextRequest) {
     } catch (error) {
       debugInfo.auth = {
         status: 'error',
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       };
     }
 
@@ -55,7 +55,7 @@ export async function GET(_request: NextRequest) {
       const userCount = await prisma.user.count();
       const projectCount = await prisma.project.count();
       const taskCount = await prisma.task.count();
-      
+
       debugInfo.databaseOperations = {
         status: 'working',
         userCount,
@@ -65,19 +65,22 @@ export async function GET(_request: NextRequest) {
     } catch (error) {
       debugInfo.databaseOperations = {
         status: 'error',
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       };
     }
 
     return NextResponse.json(debugInfo, { status: 200 });
   } catch (error) {
-    logger.error('Debug API error:', error instanceof Error ? error : undefined);
+    logger.error(
+      'Debug API error:',
+      error instanceof Error ? error : undefined
+    );
     return NextResponse.json(
-      { 
-        error: 'Debug failed', 
+      {
+        error: 'Debug failed',
         message: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date().toISOString()
-      }, 
+        timestamp: new Date().toISOString(),
+      },
       { status: 500 }
     );
   }

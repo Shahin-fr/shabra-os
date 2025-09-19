@@ -32,9 +32,6 @@ export function ResponsiveProvider({ children }: ResponsiveProviderProps) {
   }, [isClient]);
 
   // Always render the same structure to prevent hydration mismatch
-  return (
-    <ClientResponsiveWrapper>
-      {children}
-    </ClientResponsiveWrapper>
-  );
+  return <ClientResponsiveWrapper>{children}</ClientResponsiveWrapper>;
 }
+

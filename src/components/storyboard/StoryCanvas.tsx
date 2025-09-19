@@ -14,7 +14,7 @@ import {
   sortableKeyboardCoordinates,
   rectSortingStrategy,
 } from '@dnd-kit/sortable';
-import { motion } from 'framer-motion';
+import { OptimizedMotion } from '@/components/ui/OptimizedMotion';
 import { useState, useEffect } from 'react';
 
 import { StorySlot } from './StorySlot';
@@ -123,7 +123,7 @@ export function StoryCanvas({
         >
           <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6'>
             {slots.map((story, index) => (
-              <motion.div
+              <OptimizedMotion
                 key={`slot-${index}`}
                 variants={{
                   hidden: { opacity: 0, y: 20, scale: 0.9 },
@@ -140,7 +140,7 @@ export function StoryCanvas({
                   onClearSlot={onClearSlot}
                   isLoading={isLoading && selectedSlotIndex === index}
                 />
-              </motion.div>
+              </OptimizedMotion>
             ))}
           </div>
         </SortableContext>
@@ -148,3 +148,4 @@ export function StoryCanvas({
     </div>
   );
 }
+

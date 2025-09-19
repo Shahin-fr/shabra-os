@@ -7,7 +7,7 @@
 
 import { useCallback, useState, useRef, useEffect } from 'react';
 import { ErrorHandler, ErrorHandlingResult } from '@/lib/error-handler';
-import { useAppStore } from '@/stores/consolidated-store';
+import { useErrorStore } from '@/stores';
 import { ErrorCategory, ErrorPriority, ErrorContext } from '@/types/error';
 
 export interface UseErrorHandlerOptions {
@@ -34,17 +34,22 @@ export interface ErrorState {
 }
 
 export interface ErrorActions {
-  handleError: (_error: Error | string | unknown, _context?: Partial<ErrorContext>
+  handleError: (
+    _error: Error | string | unknown,
+    _context?: Partial<ErrorContext>
   ) => string;
   clearError: () => void;
   retry: () => void;
-  executeWithErrorHandling: <T>(_operation: () => Promise<T>,
+  executeWithErrorHandling: <T>(
+    _operation: () => Promise<T>,
     context?: Partial<ErrorContext>
   ) => Promise<ErrorHandlingResult<T>>;
-  executeWithRetry: <T>(_operation: () => Promise<T>,
+  executeWithRetry: <T>(
+    _operation: () => Promise<T>,
     context?: Partial<ErrorContext>
   ) => Promise<T>;
-  executeApiCall: <T>(_apiCall: () => Promise<T>,
+  executeApiCall: <T>(
+    _apiCall: () => Promise<T>,
     apiContext?: { [key: string]: any }
   ) => Promise<ErrorHandlingResult<T>>;
 }
@@ -80,7 +85,7 @@ export function useErrorHandler(options: UseErrorHandlerOptions) {
   );
 
   // Get store actions for notifications
-  const { addNotification, removeNotification } = useAppStore(state => ({
+  const { addNotification, removeNotification } = useErrorStore((state: any) => ({
     addNotification: state.addNotification,
     removeNotification: state.removeNotification,
   }));
@@ -152,7 +157,8 @@ export function useErrorHandler(options: UseErrorHandlerOptions) {
   );
 
   // Execute operation with error handling
-  const executeWithErrorHandling = useCallback(async <T>(
+  const executeWithErrorHandling = useCallback(
+    async <T>(
       operation: () => Promise<T>,
       context?: Partial<ErrorContext>
     ): Promise<ErrorHandlingResult<T>> => {
@@ -199,16 +205,12 @@ export function useErrorHandler(options: UseErrorHandlerOptions) {
 
       return result;
     },
-    [
-      options.enableNotifications,
-      options.onSuccess,
-      addNotification,
-      clearError,
-    ]
+    [addNotification, clearError, options]
   );
 
   // Execute operation with retry
-  const executeWithRetry = useCallback(async <T>(
+  const executeWithRetry = useCallback(
+    async <T>(
       operation: () => Promise<T>,
       context?: Partial<ErrorContext>
     ): Promise<T> => {
@@ -239,11 +241,12 @@ export function useErrorHandler(options: UseErrorHandlerOptions) {
         setIsRetrying(false);
       }
     },
-    [options.onSuccess, clearError, handleError]
+    [clearError, handleError, options]
   );
 
   // Execute API call with error handling
-  const executeApiCall = useCallback(async <T>(
+  const executeApiCall = useCallback(
+    async <T>(
       apiCall: () => Promise<T>,
       apiContext: { [key: string]: any } = {}
     ): Promise<ErrorHandlingResult<T>> => {

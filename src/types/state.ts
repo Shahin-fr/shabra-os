@@ -51,7 +51,7 @@ export interface StateMetadata {
 
 export interface ValidationRule {
   type: 'required' | 'minLength' | 'maxLength' | 'pattern' | 'custom';
-  value: any;
+  value: string | number | boolean | RegExp | ((value: unknown) => boolean);
   message: string;
 }
 
@@ -94,7 +94,7 @@ export interface StateSubscriber<T = StateValue> {
   id: string;
   key: string;
   callback: (newValue: T, oldValue: T) => void;
-  selector?: (value: T) => any;
+  selector?: (value: T) => unknown;
   priority: StatePriority;
   active: boolean;
   lastNotified: number;
@@ -140,7 +140,7 @@ export interface OptimizationAction {
   type: 'remove' | 'merge' | 'split' | 'compress';
   description: string;
   target: string;
-  parameters: Record<string, any>;
+  parameters: Record<string, unknown>;
 }
 
 export interface OptimizationCondition {
@@ -175,7 +175,7 @@ export interface StateAlert {
   acknowledged: boolean;
   acknowledgedBy?: string;
   acknowledgedAt?: number;
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
 }
 
 export interface StateMonitoring {
@@ -311,9 +311,9 @@ export interface StateMigration {
 export interface MigrationChange {
   type: 'add' | 'remove' | 'modify' | 'rename';
   target: string;
-  oldValue?: any;
-  newValue?: any;
-  metadata?: Record<string, any>;
+  oldValue?: unknown;
+  newValue?: unknown;
+  metadata?: Record<string, unknown>;
 }
 
 export interface StateEvent {
@@ -321,10 +321,10 @@ export interface StateEvent {
   key: string;
   timestamp: number;
   userId?: string;
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
   changes?: {
-    oldValue: any;
-    newValue: any;
+    oldValue: unknown;
+    newValue: unknown;
   };
 }
 
@@ -340,8 +340,8 @@ export interface StateHook {
 export interface HookContext {
   key: string;
   event: string;
-  data: any;
-  metadata: Record<string, any>;
+  data: unknown;
+  metadata: Record<string, unknown>;
   timestamp: number;
   userId?: string;
 }
@@ -351,9 +351,9 @@ export interface StatePlugin {
   version: string;
   description: string;
   hooks: StateHook[];
-  commands: Record<string, Function>;
+  commands: Record<string, (...args: unknown[]) => unknown>;
   enabled: boolean;
-  config: Record<string, any>;
+  config: Record<string, unknown>;
 }
 
 export interface StateManager {

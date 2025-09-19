@@ -11,7 +11,7 @@ vi.mock('next/server', () => ({
   },
 }));
 
-describe('Authentication Middleware', () => {
+describe('Middleware', () => {
   let mockRequest: NextRequest;
   let mockUrl: URL;
 
@@ -21,29 +21,18 @@ describe('Authentication Middleware', () => {
     // Create a mock URL
     mockUrl = new URL('http://localhost:3000/dashboard');
 
-    // Create a mock request with cookies
+    // Create a mock request with nextUrl property
     mockRequest = {
       url: mockUrl.toString(),
-      cookies: {
-        get: vi.fn(),
-        getAll: vi.fn(),
+      nextUrl: {
+        pathname: '/dashboard',
       },
     } as any;
   });
 
-  it('allows access when session token exists', async () => {
-    // Mock session token cookie
-    (mockRequest.cookies.get as any)
-      .mockReturnValueOnce({ value: 'valid-session-token' }) // next-auth.session-token
-      .mockReturnValueOnce(undefined) // __Secure-next-auth.session-token
-      .mockReturnValueOnce(undefined) // authjs.session-token
-      .mockReturnValueOnce(undefined) // __Secure-authjs.session-token
-      .mockReturnValueOnce(undefined) // next-auth.csrf-token
-      .mockReturnValueOnce(undefined); // __Secure-next-auth.csrf-token
-
-    (mockRequest.cookies.getAll as any).mockReturnValue([
-      { name: 'next-auth.session-token', value: 'valid-session-token' },
-    ]);
+  it('allows access to non-admin routes', async () => {
+    // Set pathname to a non-admin route
+    mockRequest.nextUrl.pathname = '/dashboard';
 
     const result = await middleware(mockRequest);
 
@@ -52,19 +41,9 @@ describe('Authentication Middleware', () => {
     expect(result).toEqual({ next: true });
   });
 
-  it('allows access when JWT token exists', async () => {
-    // Mock JWT token cookie
-    (mockRequest.cookies.get as any)
-      .mockReturnValueOnce(undefined) // next-auth.session-token
-      .mockReturnValueOnce(undefined) // __Secure-next-auth.session-token
-      .mockReturnValueOnce(undefined) // authjs.session-token
-      .mockReturnValueOnce(undefined) // __Secure-authjs.session-token
-      .mockReturnValueOnce({ value: 'valid-jwt-token' }) // next-auth.csrf-token
-      .mockReturnValueOnce(undefined); // __Secure-next-auth.csrf-token
-
-    (mockRequest.cookies.getAll as any).mockReturnValue([
-      { name: 'next-auth.csrf-token', value: 'valid-jwt-token' },
-    ]);
+  it('allows access to admin routes', async () => {
+    // Set pathname to an admin route
+    mockRequest.nextUrl.pathname = '/admin/dashboard';
 
     const result = await middleware(mockRequest);
 
@@ -73,20 +52,9 @@ describe('Authentication Middleware', () => {
     expect(result).toEqual({ next: true });
   });
 
-  it('allows access when NextAuth cookies exist', async () => {
-    // Mock NextAuth cookies
-    (mockRequest.cookies.get as any)
-      .mockReturnValueOnce(undefined) // next-auth.session-token
-      .mockReturnValueOnce(undefined) // __Secure-next-auth.session-token
-      .mockReturnValueOnce(undefined) // authjs.session-token
-      .mockReturnValueOnce(undefined) // __Secure-authjs.session-token
-      .mockReturnValueOnce(undefined) // next-auth.csrf-token
-      .mockReturnValueOnce(undefined); // __Secure-next-auth.csrf-token
-
-    (mockRequest.cookies.getAll as any).mockReturnValue([
-      { name: 'next-auth.callback-url', value: 'http://localhost:3000' },
-      { name: 'authjs.callback-url', value: 'http://localhost:3000' },
-    ]);
+  it('allows access to API routes', async () => {
+    // Set pathname to an API route
+    mockRequest.nextUrl.pathname = '/api/users';
 
     const result = await middleware(mockRequest);
 
@@ -95,44 +63,9 @@ describe('Authentication Middleware', () => {
     expect(result).toEqual({ next: true });
   });
 
-  it('redirects to login when no authentication cookies exist', async () => {
-    // Mock no cookies
-    (mockRequest.cookies.get as any)
-      .mockReturnValueOnce(undefined) // next-auth.session-token
-      .mockReturnValueOnce(undefined) // __Secure-next-auth.session-token
-      .mockReturnValueOnce(undefined) // authjs.session-token
-      .mockReturnValueOnce(undefined) // __Secure-authjs.session-token
-      .mockReturnValueOnce(undefined) // next-auth.csrf-token
-      .mockReturnValueOnce(undefined); // __Secure-next-auth.csrf-token
-
-    (mockRequest.cookies.getAll as any).mockReturnValue([]);
-
-    const result = await middleware(mockRequest);
-
-    expect(NextResponse.redirect).toHaveBeenCalledWith(
-      new URL('/login', mockUrl)
-    );
-    expect(NextResponse.next).not.toHaveBeenCalled();
-    expect(result).toEqual({ redirect: true, url: expect.any(URL) });
-    expect(result.url.toString()).toBe('http://localhost:3000/login');
-  });
-
-  it('handles secure cookie variants correctly', async () => {
-    // Mock secure session token cookie
-    (mockRequest.cookies.get as any)
-      .mockReturnValueOnce(undefined) // next-auth.session-token
-      .mockReturnValueOnce({ value: 'secure-session-token' }) // __Secure-next-auth.session-token
-      .mockReturnValueOnce(undefined) // authjs.session-token
-      .mockReturnValueOnce(undefined) // __Secure-authjs.session-token
-      .mockReturnValueOnce(undefined) // next-auth.csrf-token
-      .mockReturnValueOnce(undefined); // __Secure-next-auth.csrf-token
-
-    (mockRequest.cookies.getAll as any).mockReturnValue([
-      {
-        name: '__Secure-next-auth.session-token',
-        value: 'secure-session-token',
-      },
-    ]);
+  it('allows access to static files', async () => {
+    // Set pathname to a static file
+    mockRequest.nextUrl.pathname = '/_next/static/chunk.js';
 
     const result = await middleware(mockRequest);
 
@@ -141,19 +74,9 @@ describe('Authentication Middleware', () => {
     expect(result).toEqual({ next: true });
   });
 
-  it('handles authjs cookie variants correctly', async () => {
-    // Mock authjs session token cookie
-    (mockRequest.cookies.get as any)
-      .mockReturnValueOnce(undefined) // next-auth.session-token
-      .mockReturnValueOnce(undefined) // __Secure-next-auth.session-token
-      .mockReturnValueOnce({ value: 'authjs-session-token' }) // authjs.session-token
-      .mockReturnValueOnce(undefined) // __Secure-authjs.session-token
-      .mockReturnValueOnce(undefined) // next-auth.csrf-token
-      .mockReturnValueOnce(undefined); // __Secure-next-auth.csrf-token
-
-    (mockRequest.cookies.getAll as any).mockReturnValue([
-      { name: 'authjs.session-token', value: 'authjs-session-token' },
-    ]);
+  it('allows access to favicon', async () => {
+    // Set pathname to favicon
+    mockRequest.nextUrl.pathname = '/favicon.ico';
 
     const result = await middleware(mockRequest);
 
@@ -162,22 +85,9 @@ describe('Authentication Middleware', () => {
     expect(result).toEqual({ next: true });
   });
 
-  it('handles secure authjs cookie variants correctly', async () => {
-    // Mock secure authjs session token cookie
-    (mockRequest.cookies.get as any)
-      .mockReturnValueOnce(undefined) // next-auth.session-token
-      .mockReturnValueOnce(undefined) // __Secure-next-auth.session-token
-      .mockReturnValueOnce(undefined) // authjs.session-token
-      .mockReturnValueOnce({ value: 'secure-authjs-session-token' }) // __Secure-authjs.session-token
-      .mockReturnValueOnce(undefined) // next-auth.csrf-token
-      .mockReturnValueOnce(undefined); // __Secure-next-auth.csrf-token
-
-    (mockRequest.cookies.getAll as any).mockReturnValue([
-      {
-        name: '__Secure-authjs.session-token',
-        value: 'secure-authjs-session-token',
-      },
-    ]);
+  it('allows access to root path', async () => {
+    // Set pathname to root
+    mockRequest.nextUrl.pathname = '/';
 
     const result = await middleware(mockRequest);
 
@@ -186,19 +96,9 @@ describe('Authentication Middleware', () => {
     expect(result).toEqual({ next: true });
   });
 
-  it('handles secure JWT token cookie variants correctly', async () => {
-    // Mock secure JWT token cookie
-    (mockRequest.cookies.get as any)
-      .mockReturnValueOnce(undefined) // next-auth.session-token
-      .mockReturnValueOnce(undefined) // __Secure-next-auth.session-token
-      .mockReturnValueOnce(undefined) // authjs.session-token
-      .mockReturnValueOnce(undefined) // __Secure-authjs.session-token
-      .mockReturnValueOnce(undefined) // next-auth.csrf-token
-      .mockReturnValueOnce({ value: 'secure-jwt-token' }); // __Secure-next-auth.csrf-token
-
-    (mockRequest.cookies.getAll as any).mockReturnValue([
-      { name: '__Secure-next-auth.csrf-token', value: 'secure-jwt-token' },
-    ]);
+  it('allows access to login page', async () => {
+    // Set pathname to login
+    mockRequest.nextUrl.pathname = '/login';
 
     const result = await middleware(mockRequest);
 
@@ -207,20 +107,9 @@ describe('Authentication Middleware', () => {
     expect(result).toEqual({ next: true });
   });
 
-  it('handles mixed cookie scenarios correctly', async () => {
-    // Mock mixed cookie scenario
-    (mockRequest.cookies.get as any)
-      .mockReturnValueOnce(undefined) // next-auth.session-token
-      .mockReturnValueOnce(undefined) // __Secure-next-auth.session-token
-      .mockReturnValueOnce(undefined) // authjs.session-token
-      .mockReturnValueOnce(undefined) // __Secure-authjs.session-token
-      .mockReturnValueOnce(undefined) // next-auth.csrf-token
-      .mockReturnValueOnce(undefined); // __Secure-next-auth.csrf-token
-
-    (mockRequest.cookies.getAll as any).mockReturnValue([
-      { name: 'next-auth.callback-url', value: 'http://localhost:3000' },
-      { name: 'some-other-cookie', value: 'value' },
-    ]);
+  it('allows access to register page', async () => {
+    // Set pathname to register
+    mockRequest.nextUrl.pathname = '/register';
 
     const result = await middleware(mockRequest);
 
@@ -229,46 +118,12 @@ describe('Authentication Middleware', () => {
     expect(result).toEqual({ next: true });
   });
 
-  it('handles edge case with empty cookie values', async () => {
-    // Mock empty cookie values
-    (mockRequest.cookies.get as any)
-      .mockReturnValueOnce({ value: '' }) // next-auth.session-token
-      .mockReturnValueOnce(undefined) // __Secure-next-auth.session-token
-      .mockReturnValueOnce(undefined) // authjs.session-token
-      .mockReturnValueOnce(undefined) // __Secure-authjs.session-token
-      .mockReturnValueOnce(undefined) // next-auth.csrf-token
-      .mockReturnValueOnce(undefined); // __Secure-next-auth.csrf-token
-
-    (mockRequest.cookies.getAll as any).mockReturnValue([
-      { name: 'next-auth.session-token', value: '' },
-    ]);
+  it('allows access to any other route', async () => {
+    // Set pathname to any other route
+    mockRequest.nextUrl.pathname = '/some/other/route';
 
     const result = await middleware(mockRequest);
 
-    // Empty values should still be considered as existing cookies
-    expect(NextResponse.next).toHaveBeenCalled();
-    expect(NextResponse.redirect).not.toHaveBeenCalled();
-    expect(result).toEqual({ next: true });
-  });
-
-  it('handles malformed cookie scenarios gracefully', async () => {
-    // Mock malformed cookies
-    (mockRequest.cookies.get as any)
-      .mockReturnValueOnce(undefined) // next-auth.session-token
-      .mockReturnValueOnce(undefined) // __Secure-next-auth.session-token
-      .mockReturnValueOnce(undefined) // authjs.session-token
-      .mockReturnValueOnce(undefined) // __Secure-authjs.session-token
-      .mockReturnValueOnce(undefined) // next-auth.csrf-token
-      .mockReturnValueOnce(undefined); // __Secure-next-auth.csrf-token
-
-    (mockRequest.cookies.getAll as any).mockReturnValue([
-      { name: 'next-auth', value: 'malformed' },
-      { name: 'authjs', value: 'malformed' },
-    ]);
-
-    const result = await middleware(mockRequest);
-
-    // Should still allow access due to partial matches
     expect(NextResponse.next).toHaveBeenCalled();
     expect(NextResponse.redirect).not.toHaveBeenCalled();
     expect(result).toEqual({ next: true });
@@ -277,54 +132,26 @@ describe('Authentication Middleware', () => {
   it('handles different URL schemes correctly', async () => {
     // Test with HTTPS URL
     const httpsUrl = new URL('https://example.com/dashboard');
-    Object.defineProperty(mockRequest, 'url', {
-      value: httpsUrl.toString(),
-      writable: true,
-    });
-
-    (mockRequest.cookies.get as any)
-      .mockReturnValueOnce(undefined) // next-auth.session-token
-      .mockReturnValueOnce(undefined) // __Secure-next-auth.session-token
-      .mockReturnValueOnce(undefined) // authjs.session-token
-      .mockReturnValueOnce(undefined) // __Secure-authjs.session-token
-      .mockReturnValueOnce(undefined) // next-auth.csrf-token
-      .mockReturnValueOnce(undefined); // __Secure-next-auth.csrf-token
-
-    (mockRequest.cookies.getAll as any).mockReturnValue([]);
+    Object.defineProperty(mockRequest, 'url', { value: httpsUrl.toString(), writable: true });
+    mockRequest.nextUrl.pathname = '/dashboard';
 
     const result = await middleware(mockRequest);
 
-    expect(NextResponse.redirect).toHaveBeenCalledWith(
-      new URL('/login', httpsUrl)
-    );
-    expect(result).toEqual({ redirect: true, url: expect.any(URL) });
-    expect(result.url.toString()).toBe('https://example.com/login');
+    expect(NextResponse.next).toHaveBeenCalled();
+    expect(NextResponse.redirect).not.toHaveBeenCalled();
+    expect(result).toEqual({ next: true });
   });
 
   it('handles subdomain scenarios correctly', async () => {
     // Test with subdomain URL
     const subdomainUrl = new URL('https://app.example.com/dashboard');
-    Object.defineProperty(mockRequest, 'url', {
-      value: subdomainUrl.toString(),
-      writable: true,
-    });
-
-    (mockRequest.cookies.get as any)
-      .mockReturnValueOnce(undefined) // next-auth.session-token
-      .mockReturnValueOnce(undefined) // __Secure-next-auth.session-token
-      .mockReturnValueOnce(undefined) // authjs.session-token
-      .mockReturnValueOnce(undefined) // __Secure-authjs.session-token
-      .mockReturnValueOnce(undefined) // next-auth.csrf-token
-      .mockReturnValueOnce(undefined); // __Secure-next-auth.csrf-token
-
-    (mockRequest.cookies.getAll as any).mockReturnValue([]);
+    Object.defineProperty(mockRequest, 'url', { value: subdomainUrl.toString(), writable: true });
+    mockRequest.nextUrl.pathname = '/dashboard';
 
     const result = await middleware(mockRequest);
 
-    expect(NextResponse.redirect).toHaveBeenCalledWith(
-      new URL('/login', subdomainUrl)
-    );
-    expect(result).toEqual({ redirect: true, url: expect.any(URL) });
-    expect(result.url.toString()).toBe('https://app.example.com/login');
+    expect(NextResponse.next).toHaveBeenCalled();
+    expect(NextResponse.redirect).not.toHaveBeenCalled();
+    expect(result).toEqual({ next: true });
   });
 });

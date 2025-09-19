@@ -9,3 +9,4 @@ interface EmployeeTaskViewProps {
 export function EmployeeTaskView({ children }: EmployeeTaskViewProps) {
   return <>{children}</>;
 }
+

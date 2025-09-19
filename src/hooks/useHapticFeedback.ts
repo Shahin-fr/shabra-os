@@ -44,7 +44,7 @@ export function useHapticFeedback() {
       navigator.vibrate(scaledPattern);
     } catch (error) {
       // Silently fail if vibration is not supported or blocked
-      console.warn('Haptic feedback not available:', error);
+      // Haptic feedback not available
     }
   }, []);
 

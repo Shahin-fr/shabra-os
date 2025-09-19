@@ -306,3 +306,4 @@ function getPriorityConfig(priority: ErrorPriority) {
 
   return configs[priority];
 }
+

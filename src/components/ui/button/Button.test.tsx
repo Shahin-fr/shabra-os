@@ -72,3 +72,4 @@ describe('Button Component', () => {
     expect(button).toHaveClass('custom-class');
   });
 });
+

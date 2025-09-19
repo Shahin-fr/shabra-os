@@ -7,7 +7,10 @@ interface GlassmorphismPanelProps {
   className?: string;
 }
 
-export function GlassmorphismPanel({ children, className }: GlassmorphismPanelProps) {
+export function GlassmorphismPanel({
+  children,
+  className,
+}: GlassmorphismPanelProps) {
   return (
     <div
       className={cn(
@@ -18,9 +21,8 @@ export function GlassmorphismPanel({ children, className }: GlassmorphismPanelPr
         className
       )}
     >
-      <div className="relative z-10 p-6">
-        {children}
-      </div>
+      <div className='relative z-10 p-6'>{children}</div>
     </div>
   );
 }
+

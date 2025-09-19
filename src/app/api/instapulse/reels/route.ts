@@ -9,35 +9,38 @@ import {
   getHttpStatusForErrorCode,
 } from '@/lib/api/response-utils';
 import { logger } from '@/lib/logger';
-import { prismaLocal as prisma } from '@/lib/prisma-local';
+import { prisma } from '@/lib/prisma';
 
 // Query parameters validation schema
 const QueryParamsSchema = z.object({
   startDate: z
     .string()
-    .datetime('Invalid startDate format. Use ISO 8601 format (e.g., 2024-05-20T00:00:00.000Z)')
+    .datetime(
+      'Invalid startDate format. Use ISO 8601 format (e.g., 2024-05-20T00:00:00.000Z)'
+    )
     .optional()
-    .transform((val) => val ? new Date(val) : undefined),
+    .transform(val => (val ? new Date(val) : undefined)),
   endDate: z
     .string()
-    .datetime('Invalid endDate format. Use ISO 8601 format (e.g., 2024-05-20T00:00:00.000Z)')
+    .datetime(
+      'Invalid endDate format. Use ISO 8601 format (e.g., 2024-05-20T00:00:00.000Z)'
+    )
     .optional()
-    .transform((val) => val ? new Date(val) : undefined),
-  sortBy: z
-    .enum(['publishedAt', 'viewCount'])
-    .default('publishedAt'),
-  sortOrder: z
-    .enum(['asc', 'desc'])
-    .default('desc'),
+    .transform(val => (val ? new Date(val) : undefined)),
+  sortBy: z.enum(['publishedAt', 'viewCount']).default('publishedAt'),
+  sortOrder: z.enum(['asc', 'desc']).default('desc'),
   page: z
     .string()
-    .transform((val) => parseInt(val, 10))
-    .refine((val) => !isNaN(val) && val > 0, 'Page must be a positive number')
+    .transform(val => parseInt(val, 10))
+    .refine(val => !isNaN(val) && val > 0, 'Page must be a positive number')
     .default('1'),
   pageSize: z
     .string()
-    .transform((val) => parseInt(val, 10))
-    .refine((val) => !isNaN(val) && val > 0 && val <= 100, 'Page size must be between 1 and 100')
+    .transform(val => parseInt(val, 10))
+    .refine(
+      val => !isNaN(val) && val > 0 && val <= 100,
+      'Page size must be between 1 and 100'
+    )
     .default('10'),
 });
 
@@ -45,7 +48,7 @@ const QueryParamsSchema = z.object({
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    
+
     // Parse and validate query parameters
     const queryParams = QueryParamsSchema.parse({
       startDate: searchParams.get('startDate') || undefined,
@@ -85,14 +88,14 @@ export async function GET(request: NextRequest) {
 
     // Construct the where clause for filtering
     const whereClause: any = {};
-    
+
     if (queryParams.startDate || queryParams.endDate) {
       whereClause.publishedAt = {};
-      
+
       if (queryParams.startDate) {
         whereClause.publishedAt.gte = queryParams.startDate;
       }
-      
+
       if (queryParams.endDate) {
         whereClause.publishedAt.lte = queryParams.endDate;
       }
@@ -138,15 +141,19 @@ export async function GET(request: NextRequest) {
     const hasPreviousPage = queryParams.page > 1;
 
     // Calculate virality score for each reel (view-to-follower ratio)
-    const reelsWithVirality = reels.map((reel) => ({
+    const reelsWithVirality = reels.map(reel => ({
       ...reel,
-      viralityScore: reel.trackedPage.followerCount > 0 
-        ? Number((reel.viewCount / reel.trackedPage.followerCount).toFixed(4))
-        : 0,
+      viralityScore:
+        reel.trackedPage.followerCount > 0
+          ? Number((reel.viewCount / reel.trackedPage.followerCount).toFixed(4))
+          : 0,
     }));
 
     // Sort by virality score if requested
-    if (queryParams.sortBy === 'viewCount' && queryParams.sortOrder === 'desc') {
+    if (
+      queryParams.sortBy === 'viewCount' &&
+      queryParams.sortOrder === 'desc'
+    ) {
       reelsWithVirality.sort((a, b) => b.viralityScore - a.viralityScore);
     }
 

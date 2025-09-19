@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { OptimizedMotion } from '@/components/ui/OptimizedMotion';
 import React from 'react';
 
 interface QuickAction {
@@ -24,8 +24,9 @@ export function QuickActionCard({ action, className }: QuickActionCardProps) {
   };
 
   return (
-    <motion.div whileTap={{ scale: 0.95 }} transition={{ duration: 0.1 }}>
-      <motion.button
+    <OptimizedMotion whileTap={{ scale: 0.95 }} transition={{ duration: 0.1 }}>
+      <OptimizedMotion
+        as="button"
         onClick={handleClick}
         className={`w-full p-4 rounded-xl border border-gray-200/50 transition-all duration-200 hover:shadow-lg hover:border-[#ff0a54]/20 ${className}`}
         style={{
@@ -50,12 +51,13 @@ export function QuickActionCard({ action, className }: QuickActionCardProps) {
         </div>
 
         {/* Hover Effect */}
-        <motion.div
+        <OptimizedMotion
           className='absolute inset-0 rounded-xl bg-[#ff0a54]/5 opacity-0'
           whileHover={{ opacity: 1 }}
           transition={{ duration: 0.2 }}
         />
-      </motion.button>
-    </motion.div>
+      </OptimizedMotion>
+    </OptimizedMotion>
   );
 }
+

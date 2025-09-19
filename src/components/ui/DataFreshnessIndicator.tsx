@@ -103,3 +103,4 @@ const DataFreshnessIndicator = memo<DataFreshnessIndicatorProps>(
 DataFreshnessIndicator.displayName = 'DataFreshnessIndicator';
 
 export { DataFreshnessIndicator };
+

@@ -1,7 +1,8 @@
 'use client';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
+import { OptimizedMotion } from '@/components/ui/OptimizedMotion';
 import {
   Clock,
   LogIn,
@@ -207,9 +208,9 @@ export function MobileClockInCard({ className }: MobileClockInCardProps) {
 
         {/* Work Duration (if clocked in) */}
         {attendanceData.status === 'active' && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
+          <OptimizedMotion
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
             className='mb-4 p-3 bg-green-50/50 rounded-lg border border-green-200/50'
           >
             <div className='flex items-center justify-between'>
@@ -221,11 +222,11 @@ export function MobileClockInCard({ className }: MobileClockInCardProps) {
                 {getWorkDuration()}
               </span>
             </div>
-          </motion.div>
+          </OptimizedMotion>
         )}
 
         {/* Clock In/Out Button */}
-        <motion.div whileTap={{ scale: 0.98 }} transition={{ duration: 0.1 }}>
+        <OptimizedMotion whileTap={{ scale: 0.98 }} transition={{ duration: 0.1 }}>
           <Button
             onClick={handleClockInOut}
             disabled={isLoading}
@@ -243,7 +244,7 @@ export function MobileClockInCard({ className }: MobileClockInCardProps) {
           >
             <AnimatePresence mode='wait'>
               {isLoading ? (
-                <motion.div
+                <OptimizedMotion
                   key='loading'
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -252,9 +253,9 @@ export function MobileClockInCard({ className }: MobileClockInCardProps) {
                 >
                   <div className='w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin' />
                   <span>در حال پردازش...</span>
-                </motion.div>
+                </OptimizedMotion>
               ) : (
-                <motion.div
+                <OptimizedMotion
                   key='button'
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -267,11 +268,11 @@ export function MobileClockInCard({ className }: MobileClockInCardProps) {
                     <LogIn className='h-5 w-5' />
                   )}
                   <span>{statusInfo.buttonText}</span>
-                </motion.div>
+                </OptimizedMotion>
               )}
             </AnimatePresence>
           </Button>
-        </motion.div>
+        </OptimizedMotion>
 
         {/* Quick Stats */}
         <div className='mt-4 grid grid-cols-2 gap-3'>
@@ -288,3 +289,4 @@ export function MobileClockInCard({ className }: MobileClockInCardProps) {
     </Card>
   );
 }
+

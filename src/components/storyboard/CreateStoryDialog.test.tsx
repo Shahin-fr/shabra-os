@@ -616,3 +616,4 @@ describe('CreateStoryDialog', () => {
     expect(linkInput.value).toBe('');
   });
 });
+

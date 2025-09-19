@@ -168,7 +168,8 @@ function JalaliCalendar({
           const isSelected = selected && isSameDay(day, selected);
           const isTodayDate = isToday(day);
 
-          return (<Button
+          return (
+            <Button
               key={index}
               variant='ghost'
               size='icon'
@@ -196,3 +197,4 @@ function JalaliCalendar({
 }
 
 export { JalaliCalendar };
+

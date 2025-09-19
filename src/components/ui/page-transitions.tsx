@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { OptimizedMotion } from '@/components/ui/OptimizedMotion';
 import { ReactNode } from 'react';
 
 interface PageTransitionProps {
@@ -12,104 +12,104 @@ interface PageTransitionProps {
 export const slideVariants = {
   initial: {
     x: '100%',
-    opacity: 0
+    opacity: 0,
   },
   in: {
     x: 0,
-    opacity: 1
+    opacity: 1,
   },
   out: {
     x: '-100%',
-    opacity: 0
-  }
+    opacity: 0,
+  },
 };
 
 // Fade transition variants
 export const fadeVariants = {
   initial: {
     opacity: 0,
-    y: 20
+    y: 20,
   },
   in: {
     opacity: 1,
-    y: 0
+    y: 0,
   },
   out: {
     opacity: 0,
-    y: -20
-  }
+    y: -20,
+  },
 };
 
 // Scale transition variants
 export const scaleVariants = {
   initial: {
     scale: 0.95,
-    opacity: 0
+    opacity: 0,
   },
   in: {
     scale: 1,
-    opacity: 1
+    opacity: 1,
   },
   out: {
     scale: 1.05,
-    opacity: 0
-  }
+    opacity: 0,
+  },
 };
 
 export function PageTransition({ children, className }: PageTransitionProps) {
   return (
-    <motion.div
-      initial="initial"
-      animate="in"
-      exit="out"
+    <OptimizedMotion
+      initial='initial'
+      animate='in'
+      exit='out'
       variants={slideVariants}
       transition={{
         type: 'tween',
         ease: 'easeInOut',
-        duration: 0.3
+        duration: 0.3,
       }}
       className={className}
     >
       {children}
-    </motion.div>
+    </OptimizedMotion>
   );
 }
 
 export function FadeTransition({ children, className }: PageTransitionProps) {
   return (
-    <motion.div
-      initial="initial"
-      animate="in"
-      exit="out"
+    <OptimizedMotion
+      initial='initial'
+      animate='in'
+      exit='out'
       variants={fadeVariants}
       transition={{
         type: 'tween',
         ease: 'easeInOut',
-        duration: 0.2
+        duration: 0.2,
       }}
       className={className}
     >
       {children}
-    </motion.div>
+    </OptimizedMotion>
   );
 }
 
 export function ScaleTransition({ children, className }: PageTransitionProps) {
   return (
-    <motion.div
-      initial="initial"
-      animate="in"
-      exit="out"
+    <OptimizedMotion
+      initial='initial'
+      animate='in'
+      exit='out'
       variants={scaleVariants}
       transition={{
         type: 'tween',
         ease: 'easeInOut',
-        duration: 0.2
+        duration: 0.2,
       }}
       className={className}
     >
       {children}
-    </motion.div>
+    </OptimizedMotion>
   );
 }
 
@@ -118,36 +118,36 @@ export const modalVariants = {
   initial: {
     opacity: 0,
     scale: 0.8,
-    y: 50
+    y: 50,
   },
   in: {
     opacity: 1,
     scale: 1,
-    y: 0
+    y: 0,
   },
   out: {
     opacity: 0,
     scale: 0.8,
-    y: 50
-  }
+    y: 50,
+  },
 };
 
 export function ModalTransition({ children, className }: PageTransitionProps) {
   return (
-    <motion.div
-      initial="initial"
-      animate="in"
-      exit="out"
+    <OptimizedMotion
+      initial='initial'
+      animate='in'
+      exit='out'
       variants={modalVariants}
       transition={{
         type: 'spring',
         damping: 25,
-        stiffness: 300
+        stiffness: 300,
       }}
       className={className}
     >
       {children}
-    </motion.div>
+    </OptimizedMotion>
   );
 }
 
@@ -155,33 +155,37 @@ export function ModalTransition({ children, className }: PageTransitionProps) {
 export const mobileSlideVariants = {
   initial: {
     x: '100%',
-    opacity: 0
+    opacity: 0,
   },
   in: {
     x: 0,
-    opacity: 1
+    opacity: 1,
   },
   out: {
     x: '-100%',
-    opacity: 0
-  }
+    opacity: 0,
+  },
 };
 
-export function MobilePageTransition({ children, className }: PageTransitionProps) {
+export function MobilePageTransition({
+  children,
+  className,
+}: PageTransitionProps) {
   return (
-    <motion.div
-      initial="initial"
-      animate="in"
-      exit="out"
+    <OptimizedMotion
+      initial='initial'
+      animate='in'
+      exit='out'
       variants={mobileSlideVariants}
       transition={{
         type: 'tween',
         ease: [0.25, 0.46, 0.45, 0.94],
-        duration: 0.4
+        duration: 0.4,
       }}
       className={className}
     >
       {children}
-    </motion.div>
+    </OptimizedMotion>
   );
 }
+

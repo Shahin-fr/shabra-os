@@ -16,7 +16,7 @@ export interface ApiErrorResponse {
   error: {
     code: string;
     message: string;
-    details?: any;
+    details?: unknown;
     field?: string;
     errorId: string;
     category: ErrorCategory;
@@ -31,7 +31,7 @@ export interface ApiErrorResponse {
   };
 }
 
-export interface ApiSuccessResponse<T = any> {
+export interface ApiSuccessResponse<T = unknown> {
   success: true;
   data: T;
   message?: string;

@@ -22,7 +22,7 @@ export function useStoryboardOperations(
   setEditingStory: (story: Story | null) => void,
   setIsEditing: (editing: boolean) => void,
   setIsDialogOpen: (open: boolean) => void,
-  setSelectedSlotIndex: (index: number | null) => void
+  _setSelectedSlotIndex: (index: number | null) => void
 ) {
   // Handle template application
   const handleTemplateClick = useCallback(
@@ -77,7 +77,6 @@ export function useStoryboardOperations(
       setEditingStory,
       setIsEditing,
       setIsDialogOpen,
-      setSelectedSlotIndex,
     ]
   );
 

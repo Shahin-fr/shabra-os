@@ -5,8 +5,8 @@ import {
   createSuccessResponse,
   HTTP_STATUS_CODES,
 } from '@/lib/api/response-utils';
-import { logger } from '@/lib/logger';
-import { prismaLocal as prisma } from '@/lib/prisma-local';
+import { StoryService } from '@/services/story.service';
+import { handleApiError } from '@/lib/utils/error-handler';
 
 const reorderSchema = z.object({
   stories: z
@@ -30,7 +30,7 @@ export async function PUT(request: NextRequest) {
     });
     if (authResult.response) return authResult.response;
 
-    const validationResult = await validateRequest(request, reorderSchema);
+    const validationResult = await validateRequest(reorderSchema)(request);
     if (!validationResult.success) {
       return NextResponse.json(
         {
@@ -43,35 +43,9 @@ export async function PUT(request: NextRequest) {
 
     const { stories } = validationResult.data!;
 
-    // Verify that all stories exist
-    const existingStories = await prisma.story.findMany({
-      where: {
-        id: { in: stories.map(s => s.id) },
-      },
-      select: { id: true },
-    });
-
-    if (existingStories.length !== stories.length) {
-      return NextResponse.json(
-        {
-          error: 'دسترسی به برخی از داستان‌ها محدود است',
-          code: 'ACCESS_DENIED',
-        },
-        { status: 403 }
-      );
-    }
-
-    // Update story orders in a transaction
-    const updatedStories = await prisma.$transaction(async (tx: any) => {
-      const updates = stories.map(({ id }) =>
-        tx.story.update({
-          where: { id },
-          data: {},
-        })
-      );
-
-      return Promise.all(updates);
-    });
+    // Use StoryService to reorder stories
+    const storyIds = stories.map(s => s.id);
+    const updatedStories = await StoryService.reorderStories(storyIds);
 
     const successResponse = createSuccessResponse({
       message: 'ترتیب داستان‌ها با موفقیت به‌روزرسانی شد',
@@ -79,13 +53,9 @@ export async function PUT(request: NextRequest) {
     });
     return NextResponse.json(successResponse, { status: HTTP_STATUS_CODES.OK });
   } catch (error) {
-    logger.error('Failed to reorder stories:', error as Error);
-    return NextResponse.json(
-      {
-        error: 'خطا در به‌روزرسانی ترتیب داستان‌ها',
-        details: error instanceof Error ? error.message : 'Unknown error',
-      },
-      { status: 500 }
-    );
+    return handleApiError(error, {
+      operation: 'PUT /api/stories/reorder',
+      source: 'api/stories/reorder/route.ts',
+    });
   }
 }

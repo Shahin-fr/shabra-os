@@ -12,7 +12,7 @@ export function formatJalaliDate(date: Date | string): string {
   try {
     return format(dateObj, 'd MMMM yyyy', { locale: faIR });
   } catch (error) {
-    console.error('Error formatting Jalali date:', error);
+    // Error formatting Jalali date
     return 'تاریخ نامعتبر';
   }
 }
@@ -28,7 +28,7 @@ export function formatJalaliDateShort(date: Date | string): string {
   try {
     return format(dateObj, 'yyyy/MM/dd', { locale: faIR });
   } catch (error) {
-    console.error('Error formatting Jalali date short:', error);
+    // Error formatting Jalali date short
     return 'تاریخ نامعتبر';
   }
 }

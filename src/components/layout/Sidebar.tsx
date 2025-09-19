@@ -1,6 +1,7 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from '@/lib/framer-motion-optimized';
+import { OptimizedMotion } from '@/components/ui/OptimizedMotion';
 import {
   LayoutDashboard,
   FolderOpen,
@@ -17,6 +18,11 @@ import {
   TrendingUp,
   FileText as DocsIcon,
   Instagram,
+  Megaphone,
+  Inbox,
+  Plus,
+  FileText,
+  ClipboardList,
 } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
@@ -33,7 +39,6 @@ import {
 } from '@/stores/uiStore';
 
 import { NavigationItem } from './NavigationItem';
-
 
 // Dynamic import for Image component to improve performance
 const Image = dynamic(() => import('next/image'), {
@@ -77,30 +82,91 @@ export function Sidebar() {
   const adminNavigationItems: NavigationItemType[] = [
     { href: '/', label: 'داشبورد', icon: LayoutDashboard, priority: 'high' },
     { href: '/tasks', label: 'تسک‌ها', icon: CheckSquare, priority: 'high' },
-    { href: '/projects', label: 'پروژه‌ها', icon: FolderOpen, priority: 'high' },
-    { href: '/storyboard', label: 'استوری‌بورد', icon: Palette, priority: 'high' },
-    { href: '/content-calendar', label: 'تقویم محتوا', icon: Calendar, priority: 'high' },
-    { href: '/dashboard/instapulse', label: 'اینستاپالس', icon: Instagram, priority: 'high' },
-    { href: '/calendar', label: 'تقویم', icon: CalendarIcon, priority: 'medium' },
+    {
+      href: '/projects',
+      label: 'پروژه‌ها',
+      icon: FolderOpen,
+      priority: 'high',
+    },
+    {
+      href: '/storyboard',
+      label: 'استوری‌بورد',
+      icon: Palette,
+      priority: 'high',
+    },
+    {
+      href: '/content-calendar',
+      label: 'تقویم محتوا',
+      icon: Calendar,
+      priority: 'high',
+    },
+    {
+      href: '/dashboard/instapulse',
+      label: 'اینستاپالس',
+      icon: Instagram,
+      priority: 'high',
+    },
+    {
+      href: '/calendar',
+      label: 'تقویم',
+      icon: CalendarIcon,
+      priority: 'medium',
+    },
     { href: '/team', label: 'تیم', icon: Users, priority: 'high' },
-    { href: '/attendance', label: 'حضور و غیاب', icon: Clock, priority: 'high' },
-    { href: '/analytics', label: 'تحلیل و گزارش‌ها', icon: TrendingUp, priority: 'medium' },
+    { href: `/profile/${user?.id}`, label: 'پروفایل', icon: User, priority: 'high' },
+    { href: '/announcements', label: 'اعلان‌ها', icon: Megaphone, priority: 'high' },
+    {
+      href: '/attendance',
+      label: 'حضور و غیاب',
+      icon: Clock,
+      priority: 'high',
+    },
+    {
+      href: '/analytics',
+      label: 'تحلیل و گزارش‌ها',
+      icon: TrendingUp,
+      priority: 'medium',
+    },
     { href: '/wiki', label: 'ویکی', icon: BookOpen, priority: 'medium' },
     { href: '/docs', label: 'مستندات', icon: DocsIcon, priority: 'medium' },
+    { href: '/admin/announcements', label: 'مدیریت اعلان‌ها', icon: Megaphone, priority: 'high' },
+    { href: '/admin/attendance', label: 'مدیریت حضور و غیاب', icon: Clock, priority: 'high' },
+    { href: '/admin/holidays', label: 'مدیریت تعطیلات', icon: Calendar, priority: 'high' },
+    { href: '/action-center', label: 'مرکز اقدامات', icon: Inbox, priority: 'high' },
+    { href: '/team-calendar', label: 'تقویم تیم', icon: CalendarIcon, priority: 'high' },
+    { href: '/admin/checklist-templates', label: 'قالب‌های چک‌لیست', icon: ClipboardList, priority: 'high' },
     { href: '/settings', label: 'تنظیمات', icon: Settings, priority: 'low' },
   ];
 
   // Employee navigation items
   const employeeNavigationItems: NavigationItemType[] = [
     { href: '/', label: 'داشبورد من', icon: LayoutDashboard, priority: 'high' },
-    { href: '/tasks', label: 'تسک‌های من', icon: CheckSquare, priority: 'high' },
-    { href: '/dashboard/instapulse', label: 'اینستاپالس', icon: Instagram, priority: 'high' },
-    { href: '/attendance', label: 'حضور و غیاب من', icon: Clock, priority: 'high' },
-    { href: '/profile', label: 'پروفایل من', icon: User, priority: 'medium' },
+    {
+      href: '/tasks',
+      label: 'تسک‌های من',
+      icon: CheckSquare,
+      priority: 'high',
+    },
+    {
+      href: '/dashboard/instapulse',
+      label: 'اینستاپالس',
+      icon: Instagram,
+      priority: 'high',
+    },
+    {
+      href: '/attendance',
+      label: 'حضور و غیاب من',
+      icon: Clock,
+      priority: 'high',
+    },
+    { href: '/new-request', label: 'درخواست جدید', icon: Plus, priority: 'high' },
+    { href: '/requests', label: 'درخواست‌های من', icon: FileText, priority: 'high' },
+    { href: `/profile/${user?.id}`, label: 'پروفایل من', icon: User, priority: 'medium' },
   ];
 
   // Get navigation items based on user role
-  const navigationItems = userRole === 'ADMIN' ? adminNavigationItems : employeeNavigationItems;
+  const navigationItems =
+    userRole === 'ADMIN' ? adminNavigationItems : employeeNavigationItems;
 
   // Instant navigation handler - no debouncing or delays
   const handleItemClick = useCallback(
@@ -121,7 +187,7 @@ export function Sidebar() {
     return (
       <>
         {/* Backdrop */}
-        <motion.div
+        <OptimizedMotion
           className='fixed inset-0 bg-black/50 z-40 lg:hidden'
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -131,7 +197,7 @@ export function Sidebar() {
         />
 
         {/* Sidebar */}
-        <motion.div
+        <OptimizedMotion
           className='fixed right-0 top-0 h-full w-80 max-w-[85vw] z-50 lg:hidden'
           initial={{ x: '100%' }}
           animate={{ x: 0 }}
@@ -204,7 +270,7 @@ export function Sidebar() {
                     const isActive = pathname === item.href;
 
                     return (
-                      <motion.div
+                      <OptimizedMotion
                         key={item.href}
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
@@ -220,14 +286,14 @@ export function Sidebar() {
                           onClick={handleItemClick}
                           isMobile={true}
                         />
-                      </motion.div>
+                      </OptimizedMotion>
                     );
                   })}
                 </nav>
               </div>
             </div>
           </div>
-        </motion.div>
+        </OptimizedMotion>
       </>
     );
   };
@@ -301,3 +367,4 @@ export function Sidebar() {
     </>
   );
 }
+

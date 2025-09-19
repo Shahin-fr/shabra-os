@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prismaLocal as prisma } from '@/lib/prisma-local';
+import { prisma } from '@/lib/prisma';
 
 export async function GET(
   _request: NextRequest,
@@ -20,7 +20,7 @@ export async function GET(
 
     return NextResponse.json(storyIdea);
   } catch (error) {
-    console.error('Error fetching story idea:', error);
+    // Error occurred while fetching story idea
     return NextResponse.json(
       { error: { message: 'Failed to fetch story idea' } },
       { status: 500 }
@@ -62,7 +62,7 @@ export async function PATCH(
 
     return NextResponse.json(storyIdea);
   } catch (error) {
-    console.error('Error updating story idea:', error);
+    // Error occurred while updating story idea
     return NextResponse.json(
       { error: { message: 'Failed to update story idea' } },
       { status: 500 }
@@ -98,7 +98,7 @@ export async function DELETE(
 
     return NextResponse.json({ message: 'Story idea deleted successfully' });
   } catch (error) {
-    console.error('Error deleting story idea:', error);
+    // Error occurred while deleting story idea
     return NextResponse.json(
       { error: { message: 'Failed to delete story idea' } },
       { status: 500 }

@@ -1,15 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 import {
-  createNotFoundErrorResponse,
-  createServerErrorResponse,
   createSuccessResponse,
-  createValidationErrorResponse,
-  getHttpStatusForErrorCode,
   HTTP_STATUS_CODES,
 } from '@/lib/api/response-utils';
 import { logger } from '@/lib/logger';
-import { prismaLocal as prisma } from '@/lib/prisma-local';
+import { ProjectService } from '@/services/project.service';
+import { validate, validateParams } from '@/lib/middleware/validation-middleware';
+import { handleApiError } from '@/lib/utils/error-handler';
+import { UpdateProjectSchema, ProjectIdParamSchema } from '@/lib/validators/project-validators';
 
 export async function GET(
   _request: NextRequest,
@@ -18,32 +17,20 @@ export async function GET(
   try {
     const { projectId } = await params;
 
-    // Fetch the project
-    const project = await prisma.project.findUnique({
-      where: {
-        id: projectId,
-      },
-    });
+    // Validate path parameters
+    const validatedParams = await validateParams(ProjectIdParamSchema)({ projectId });
 
-    if (!project) {
-      const errorResponse = createNotFoundErrorResponse();
-      return NextResponse.json(errorResponse, {
-        status: getHttpStatusForErrorCode(errorResponse.error.code),
-      });
-    }
+    // Use ProjectService to get project
+    const project = await ProjectService.getProjectById(validatedParams.projectId);
 
     const successResponse = createSuccessResponse(project);
     return NextResponse.json(successResponse, {
       status: HTTP_STATUS_CODES.OK,
     });
   } catch (error) {
-    logger.error('Project fetch error:', error as Error, {
+    return handleApiError(error, {
       operation: 'GET /api/projects/[projectId]',
       source: 'api/projects/[projectId]/route.ts',
-    });
-    const errorResponse = createServerErrorResponse('خطا در دریافت پروژه');
-    return NextResponse.json(errorResponse, {
-      status: getHttpStatusForErrorCode(errorResponse.error.code),
     });
   }
 }
@@ -66,59 +53,25 @@ export async function PUT(
     }
 
     const { projectId } = await params;
-    const body = await request.json();
+
+    // Validate path parameters
+    const validatedParams = await validateParams(ProjectIdParamSchema)({ projectId });
+
+    // Validate request body using middleware
+    const validatedData = await validate(UpdateProjectSchema)(request);
 
     logger.info('Project update request received', {
-      projectId,
-      body,
+      projectId: validatedParams.projectId,
       userId: authResult.context.userId,
       operation: 'PUT /api/projects/[projectId]',
       source: 'api/projects/[projectId]/route.ts',
+      // Only log non-sensitive fields
+      name: validatedData.name?.substring(0, 50) + (validatedData.name && validatedData.name.length > 50 ? '...' : ''),
+      status: validatedData.status,
     });
 
-    const { name, description, status, startDate, endDate } = body;
-
-    if (!name) {
-      const errorResponse = createValidationErrorResponse(
-        'نام پروژه الزامی است'
-      );
-      return NextResponse.json(errorResponse, {
-        status: getHttpStatusForErrorCode(errorResponse.error.code),
-      });
-    }
-
-    // Check if project exists
-    const existingProject = await prisma.project.findUnique({
-      where: { id: projectId },
-    });
-
-    if (!existingProject) {
-      const errorResponse = createNotFoundErrorResponse();
-      return NextResponse.json(errorResponse, {
-        status: getHttpStatusForErrorCode(errorResponse.error.code),
-      });
-    }
-
-    // Update project data
-    const updateData = {
-      name,
-      description: description || null,
-      status: status || existingProject.status,
-      startDate: startDate ? new Date(startDate) : existingProject.startDate,
-      endDate: endDate ? new Date(endDate) : existingProject.endDate,
-    };
-
-    const updatedProject = await prisma.project.update({
-      where: { id: projectId },
-      data: updateData,
-    });
-
-    logger.info('Project updated successfully', {
-      projectId,
-      userId: authResult.context.userId,
-      operation: 'PUT /api/projects/[projectId]',
-      source: 'api/projects/[projectId]/route.ts',
-    });
+    // Use ProjectService to update project
+    const updatedProject = await ProjectService.updateProject(validatedParams.projectId, validatedData);
 
     const successResponse = createSuccessResponse(
       updatedProject,
@@ -128,13 +81,9 @@ export async function PUT(
       status: HTTP_STATUS_CODES.OK,
     });
   } catch (error) {
-    logger.error('Project update error:', error as Error, {
+    return handleApiError(error, {
       operation: 'PUT /api/projects/[projectId]',
       source: 'api/projects/[projectId]/route.ts',
-    });
-    const errorResponse = createServerErrorResponse('خطا در به‌روزرسانی پروژه');
-    return NextResponse.json(errorResponse, {
-      status: getHttpStatusForErrorCode(errorResponse.error.code),
     });
   }
 }

@@ -4,12 +4,12 @@ import { auth } from '@/auth';
 import {
   createValidationErrorResponse,
   createNotFoundErrorResponse,
-  createServerErrorResponse,
   createSuccessResponse,
   getHttpStatusForErrorCode,
   HTTP_STATUS_CODES,
 } from '@/lib/api/response-utils';
-import { prismaLocal as prisma } from '@/lib/prisma-local';
+import { prisma } from '@/lib/prisma';
+import { handleApiError } from '@/lib/utils/error-handler';
 
 export async function PATCH(
   request: NextRequest,
@@ -89,10 +89,9 @@ export async function PATCH(
 
     return NextResponse.json(updatedTask);
   } catch (error) {
-    console.error('Update task status error:', error);
-    const errorResponse = createServerErrorResponse('خطا در بروزرسانی وظیفه');
-    return NextResponse.json(errorResponse, {
-      status: getHttpStatusForErrorCode(errorResponse.error.code),
+    return handleApiError(error, {
+      operation: 'PATCH /api/tasks/[taskId]',
+      source: 'api/tasks/[taskId]/route.ts',
     });
   }
 }
@@ -155,10 +154,9 @@ export async function DELETE(
       status: HTTP_STATUS_CODES.OK,
     });
   } catch (error) {
-    console.error('Delete task error:', error);
-    const errorResponse = createServerErrorResponse('خطا در حذف وظیفه');
-    return NextResponse.json(errorResponse, {
-      status: getHttpStatusForErrorCode(errorResponse.error.code),
+    return handleApiError(error, {
+      operation: 'DELETE /api/tasks/[taskId]',
+      source: 'api/tasks/[taskId]/route.ts',
     });
   }
 }

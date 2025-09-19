@@ -1,6 +1,7 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
+import { OptimizedMotion } from '@/components/ui/OptimizedMotion';
 import { Search, Filter, RefreshCw } from 'lucide-react';
 import React, { useState, useCallback } from 'react';
 
@@ -167,7 +168,7 @@ export function MobileDataList({
               <SkeletonListStaggered count={5} />
             ) : filteredData.length > 0 ? (
               filteredData.map((item, index) => (
-                <motion.div
+                <OptimizedMotion
                   key={item.id || index}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -175,10 +176,10 @@ export function MobileDataList({
                   transition={{ duration: 0.2, delay: index * 0.05 }}
                 >
                   <MobileDataCard {...getCardProps(item)} />
-                </motion.div>
+                </OptimizedMotion>
               ))
             ) : (
-              <motion.div
+              <OptimizedMotion
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 className='text-center py-12'
@@ -194,7 +195,7 @@ export function MobileDataList({
                     ? 'نتیجه‌ای برای جستجوی شما یافت نشد'
                     : 'هنوز داده‌ای اضافه نشده است'}
                 </p>
-              </motion.div>
+              </OptimizedMotion>
             )}
           </AnimatePresence>
         </div>
@@ -202,3 +203,4 @@ export function MobileDataList({
     </div>
   );
 }
+

@@ -207,7 +207,8 @@ export function PWARegistration() {
     }
   }, [swRegistration]);
 
-  const invalidateContentCache = useCallback(async (contentType: 'calendar' | 'projects' | 'stories' | 'tasks') => {
+  const invalidateContentCache = useCallback(
+    async (contentType: 'calendar' | 'projects' | 'stories' | 'tasks') => {
       if (!swRegistration?.active) {
         logger.warn('Service Worker not active');
         return false;
@@ -250,7 +251,8 @@ export function PWARegistration() {
     [swRegistration]
   );
 
-  const updateCacheVersion = useCallback(async (newVersion: string) => {
+  const updateCacheVersion = useCallback(
+    async (newVersion: string) => {
       if (!swRegistration?.active) {
         logger.warn('Service Worker not active');
         return false;
@@ -354,3 +356,4 @@ export function PWARegistration() {
 
   return null; // This component doesn't render anything
 }
+

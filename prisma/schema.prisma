@@ -19,18 +19,94 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  // Manager-subordinate hierarchy
+  managerId    String?
+  manager      User?   @relation("ManagerSubordinates", fields: [managerId], references: [id])
+  subordinates User[]  @relation("ManagerSubordinates")
+
+  // Profile relation
+  profile Profile?
+
   // Task relations
   createdTasks Task[] @relation("TaskCreator")
   assignedTasks Task[] @relation("TaskAssignee")
   
   // Story relations
   stories Story[]
+  
+  // Leave relations
+  leaveRequests LeaveRequest[]
+  reviewedLeaveRequests LeaveRequest[] @relation("LeaveRequestReviewer")
+  
+  // Request relations
+  requests Request[]
+  reviewedRequests Request[] @relation("RequestReviewer")
+  
+  // Document relations
+  documents EmployeeDocument[]
+  uploadedDocuments EmployeeDocument[] @relation("DocumentUploader")
+  
+  // Checklist relations
+  employeeChecklists EmployeeChecklist[]
+  createdChecklistTemplates ChecklistTemplate[] @relation("ChecklistTemplateCreator")
+  
+  // Attendance relations
+  attendances Attendance[]
+
+  // Work schedule relation
+  workSchedule WorkSchedule?
+
+  // Announcement relations
+  announcements Announcement[]
 
   @@index([email])
   @@index([isActive])
   @@index([createdAt])
   @@index([firstName, lastName])
+  @@index([managerId])
   @@map("users")
+}
+
+model Profile {
+  id                    String   @id @default(cuid())
+  userId                String   @unique
+  jobTitle              String?
+  department            String?
+  startDate             DateTime?
+  phoneNumber           String?
+  address               String?
+  emergencyContactName  String?
+  emergencyContactPhone String?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([jobTitle])
+  @@index([department])
+  @@map("profiles")
+}
+
+model Announcement {
+  id          String                @id @default(cuid())
+  title       String
+  content     String
+  category    AnnouncementCategory  @default(GENERAL)
+  isPinned    Boolean               @default(false)
+  authorId    String
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+
+  // Relations
+  author      User                  @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([authorId])
+  @@index([category])
+  @@index([isPinned])
+  @@index([createdAt])
+  @@map("announcements")
 }
 
 model Project {
@@ -115,16 +191,135 @@ model Idea {
 }
 
 model LeaveRequest {
-  id        String      @id @default(cuid())
-  userId    String
-  startDate DateTime
-  endDate   DateTime
-  reason    String
-  status    LeaveStatus @default(PENDING)
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @default(now())
+  id               String      @id @default(cuid())
+  userId           String
+  leaveType        LeaveType   @default(ANNUAL)
+  startDate        DateTime
+  endDate          DateTime
+  reason           String
+  status           LeaveStatus @default(PENDING)
+  rejectionReason  String?
+  reviewedBy       String?
+  reviewedAt       DateTime?
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @default(now())
+
+  // Relations
+  user             User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reviewer         User?       @relation("LeaveRequestReviewer", fields: [reviewedBy], references: [id], onDelete: SetNull)
 
   @@map("leave_requests")
+}
+
+model Request {
+  id               String        @id @default(cuid())
+  userId           String
+  type             RequestType
+  details          Json?         // Type-specific data stored as JSON
+  reason           String
+  status           RequestStatus @default(PENDING)
+  rejectionReason  String?
+  reviewedBy       String?
+  reviewedAt       DateTime?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  // Relations
+  user             User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reviewer         User?         @relation("RequestReviewer", fields: [reviewedBy], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([type])
+  @@index([status])
+  @@index([createdAt])
+  @@index([reviewedBy])
+  @@map("requests")
+}
+
+model EmployeeDocument {
+  id           String           @id @default(cuid())
+  userId       String
+  name         String
+  url          String
+  publicId     String
+  fileType     String
+  category     DocumentCategory
+  uploadedById String
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  // Relations
+  user         User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  uploadedBy   User             @relation("DocumentUploader", fields: [uploadedById], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([category])
+  @@index([uploadedById])
+  @@index([createdAt])
+  @@map("employee_documents")
+}
+
+model ChecklistTemplate {
+  id          String                @id @default(cuid())
+  name        String
+  type        ChecklistType
+  description String?
+  isActive    Boolean               @default(true)
+  createdById String
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+
+  // Relations
+  createdBy   User                  @relation("ChecklistTemplateCreator", fields: [createdById], references: [id], onDelete: Cascade)
+  tasks       ChecklistTemplateTask[]
+  employeeChecklists EmployeeChecklist[]
+
+  @@index([type])
+  @@index([isActive])
+  @@index([createdById])
+  @@map("checklist_templates")
+}
+
+model ChecklistTemplateTask {
+  id                  String              @id @default(cuid())
+  templateId          String
+  title               String
+  description         String?
+  defaultAssigneeRole DefaultAssigneeRole
+  order               Int                 @default(0)
+  isRequired          Boolean             @default(true)
+  estimatedDays       Int?                // Estimated days to complete
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+
+  // Relations
+  template            ChecklistTemplate   @relation(fields: [templateId], references: [id], onDelete: Cascade)
+
+  @@index([templateId])
+  @@index([order])
+  @@map("checklist_template_tasks")
+}
+
+model EmployeeChecklist {
+  id          String          @id @default(cuid())
+  employeeId  String
+  templateId  String
+  status      ChecklistStatus @default(PENDING)
+  startDate   DateTime        @default(now())
+  completedAt DateTime?
+  notes       String?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  // Relations
+  employee    User            @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  template    ChecklistTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+
+  @@index([employeeId])
+  @@index([templateId])
+  @@index([status])
+  @@index([startDate])
+  @@map("employee_checklists")
 }
 
 model Attendance {
@@ -134,6 +329,9 @@ model Attendance {
   checkOut  DateTime?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @default(now())
+
+  // Relations
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("attendances")
 }
@@ -237,6 +435,17 @@ enum ProjectAccessLevel {
   RESTRICTED
 }
 
+enum LeaveType {
+  ANNUAL
+  SICK
+  UNPAID
+  EMERGENCY
+  MATERNITY
+  PATERNITY
+  STUDY
+  OTHER
+}
+
 enum LeaveStatus {
   PENDING
   APPROVED
@@ -244,10 +453,59 @@ enum LeaveStatus {
   CANCELLED
 }
 
+enum RequestType {
+  LEAVE
+  OVERTIME
+  EXPENSE_CLAIM
+  GENERAL
+}
+
+enum RequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+enum DocumentCategory {
+  CONTRACT
+  IDENTIFICATION
+  CERTIFICATE
+  PERFORMANCE_REVIEW
+  MEDICAL
+  PAYROLL
+  OTHER
+}
+
+enum ChecklistType {
+  ONBOARDING
+  OFFBOARDING
+}
+
+enum ChecklistStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum DefaultAssigneeRole {
+  EMPLOYEE
+  MANAGER
+  ADMIN
+}
+
 enum TaskStatus {
   Todo
   InProgress
   Done
+}
+
+enum AnnouncementCategory {
+  GENERAL
+  TECHNICAL
+  EVENT
+  IMPORTANT
 }
 
 model TrackedInstagramPage {
@@ -278,4 +536,35 @@ model InstagramReel {
   createdAt       DateTime @default(now())
 
   @@map("instagram_reels")
+}
+
+model WorkSchedule {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  saturday  Boolean  @default(true)
+  sunday    Boolean  @default(true)
+  monday    Boolean  @default(true)
+  tuesday   Boolean  @default(true)
+  wednesday Boolean  @default(true)
+  thursday  Boolean  @default(true)
+  friday    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("work_schedules")
+}
+
+model Holiday {
+  id        String   @id @default(cuid())
+  name      String
+  date      DateTime @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([date])
+  @@map("holidays")
 }

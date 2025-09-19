@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { OptimizedMotion } from '@/components/ui/OptimizedMotion';
 import { useState, useEffect } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -123,7 +123,7 @@ export function CreateStoryDialog({
           `,
         }}
       >
-        <motion.div
+        <OptimizedMotion
           initial={{ opacity: 0, scale: 0.95, y: 10 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 10 }}
@@ -134,7 +134,7 @@ export function CreateStoryDialog({
             {isEditing ? 'ویرایش استوری' : 'ایجاد استوری جدید'}
           </DialogTitle>
 
-          <motion.div
+          <OptimizedMotion
             className='space-y-6'
             initial='hidden'
             animate='visible'
@@ -150,7 +150,7 @@ export function CreateStoryDialog({
             }}
           >
             {/* Title Field */}
-            <motion.div
+            <OptimizedMotion
               variants={{
                 hidden: { opacity: 0, y: 15 },
                 visible: { opacity: 1, y: 0 },
@@ -172,10 +172,10 @@ export function CreateStoryDialog({
                 placeholder='عنوان استوری را وارد کنید'
                 className='mt-2 bg-gray-50 border-gray-200 focus:border-[#ff0a54]/50'
               />
-            </motion.div>
+            </OptimizedMotion>
 
             {/* Story Type Field */}
-            <motion.div
+            <OptimizedMotion
               variants={{
                 hidden: { opacity: 0, y: 15 },
                 visible: { opacity: 1, y: 0 },
@@ -205,10 +205,10 @@ export function CreateStoryDialog({
                   ))}
                 </SelectContent>
               </Select>
-            </motion.div>
+            </OptimizedMotion>
 
             {/* Notes Field */}
-            <motion.div
+            <OptimizedMotion
               variants={{
                 hidden: { opacity: 0, y: 15 },
                 visible: { opacity: 1, y: 0 },
@@ -231,10 +231,10 @@ export function CreateStoryDialog({
                 className='mt-2 bg-gray-50 border-gray-200 focus:border-[#ff0a54]/50'
                 rows={3}
               />
-            </motion.div>
+            </OptimizedMotion>
 
             {/* Visual Notes Field */}
-            <motion.div
+            <OptimizedMotion
               variants={{
                 hidden: { opacity: 0, y: 15 },
                 visible: { opacity: 1, y: 0 },
@@ -257,10 +257,10 @@ export function CreateStoryDialog({
                 className='mt-2 bg-gray-50 border-gray-200 focus:border-[#ff0a54]/50'
                 rows={2}
               />
-            </motion.div>
+            </OptimizedMotion>
 
             {/* Link Field */}
-            <motion.div
+            <OptimizedMotion
               variants={{
                 hidden: { opacity: 0, y: 15 },
                 visible: { opacity: 1, y: 0 },
@@ -282,10 +282,10 @@ export function CreateStoryDialog({
                 placeholder='لینک مرتبط با استوری'
                 className='mt-2 bg-gray-50 border-gray-200 focus:border-[#ff0a54]/50'
               />
-            </motion.div>
+            </OptimizedMotion>
 
             {/* Action Buttons */}
-            <motion.div
+            <OptimizedMotion
               className='flex items-center justify-end gap-3 pt-4'
               variants={{
                 hidden: { opacity: 0, y: 15 },
@@ -312,10 +312,11 @@ export function CreateStoryDialog({
                     ? 'بروزرسانی'
                     : 'ایجاد'}
               </Button>
-            </motion.div>
-          </motion.div>
-        </motion.div>
+            </OptimizedMotion>
+          </OptimizedMotion>
+        </OptimizedMotion>
       </DialogContent>
     </Dialog>
   );
 }
+

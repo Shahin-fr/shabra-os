@@ -29,7 +29,8 @@ export function Pagination({
     }
   };
 
-  return (<div className='flex items-center justify-between px-2 py-4'>
+  return (
+    <div className='flex items-center justify-between px-2 py-4'>
       <div className='flex items-center gap-2'>
         <Button
           variant='outline'
@@ -64,3 +65,4 @@ export function Pagination({
     </div>
   );
 }
+

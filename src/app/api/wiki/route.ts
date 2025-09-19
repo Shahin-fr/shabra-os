@@ -13,7 +13,7 @@ import {
 } from '@/lib/api/response-utils';
 // import { getAllDocs } from '@/lib/docs';
 import { logger } from '@/lib/logger';
-import { prismaLocal as prisma } from '@/lib/prisma-local';
+import { prisma } from '@/lib/prisma';
 
 // Temporary inline getAllDocs function for testing
 function getAllDocs() {
@@ -76,7 +76,9 @@ export async function GET(request: NextRequest) {
       logger.warn('=== WIKI API DEBUG ===');
       logger.warn('Attempting to load markdown docs...');
       markdownDocs = getAllDocs();
-      logger.warn('Markdown docs loaded successfully:', { count: markdownDocs.length });
+      logger.warn('Markdown docs loaded successfully:', {
+        count: markdownDocs.length,
+      });
       if (markdownDocs.length > 0) {
         logger.warn(
           'First few docs:',
@@ -89,9 +91,15 @@ export async function GET(request: NextRequest) {
       }
       logger.warn('=== END WIKI API DEBUG ===');
     } catch (error) {
-      logger.error('Error loading markdown docs:', error instanceof Error ? error : new Error(String(error)));
+      logger.error(
+        'Error loading markdown docs:',
+        error instanceof Error ? error : new Error(String(error))
+      );
       if (error instanceof Error) {
-        logger.error('Error stack:', new Error(error.stack || 'No stack trace available'));
+        logger.error(
+          'Error stack:',
+          new Error(error.stack || 'No stack trace available')
+        );
       }
       markdownDocs = [];
     }
@@ -223,16 +231,18 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Create the document/folder
-    const newItem = await prisma.document.create({
-      data: {
-        title,
-        content: type === 'DOCUMENT' ? content : null,
-        type,
-        parentId,
-        authorId: authResult.context.userId,
-        isPublic: false, // Default to private
-      },
+    // Create the document/folder in a transaction
+    const newItem = await prisma.$transaction(async (tx) => {
+      return await tx.document.create({
+        data: {
+          title,
+          content: type === 'DOCUMENT' ? content : null,
+          type,
+          parentId,
+          authorId: authResult.context.userId,
+          isPublic: false, // Default to private
+        },
+      });
     });
 
     logger.info('Wiki item created successfully', {

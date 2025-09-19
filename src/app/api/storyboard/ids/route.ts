@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { prismaLocal as prisma } from '@/lib/prisma-local';
+import { prisma } from '@/lib/prisma';
+import { handleApiError } from '@/lib/utils/error-handler';
 
 export async function GET() {
   try {
@@ -11,8 +12,8 @@ export async function GET() {
           name: true,
         },
         orderBy: {
-          createdAt: 'asc'
-        }
+          createdAt: 'asc',
+        },
       }),
       prisma.storyType.findMany({
         select: {
@@ -21,12 +22,12 @@ export async function GET() {
           icon: true,
         },
         where: {
-          isActive: true
+          isActive: true,
         },
         orderBy: {
-          createdAt: 'asc'
-        }
-      })
+          createdAt: 'asc',
+        },
+      }),
     ]);
 
     return NextResponse.json({
@@ -36,14 +37,12 @@ export async function GET() {
         storyTypes,
         defaultProject: projects[0]?.id || null,
         defaultStoryType: storyTypes[0]?.id || null,
-      }
+      },
     });
-
   } catch (error) {
-    console.error('Error fetching storyboard IDs:', error);
-    return NextResponse.json(
-      { success: false, error: 'Failed to fetch IDs' },
-      { status: 500 }
-    );
+    return handleApiError(error, {
+      operation: 'GET /api/storyboard/ids',
+      source: 'api/storyboard/ids/route.ts',
+    });
   }
 }

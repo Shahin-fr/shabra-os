@@ -1,7 +1,8 @@
 'use client';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
+import { OptimizedMotion } from '@/components/ui/OptimizedMotion';
 import {
   Plus,
   Edit,
@@ -529,7 +530,7 @@ export function StoryIdeaManager() {
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
         <AnimatePresence>
           {storyIdeas.map(idea => (
-            <motion.div
+            <OptimizedMotion
               key={idea.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -600,7 +601,7 @@ export function StoryIdeaManager() {
                   </div>
                 </CardContent>
               </Card>
-            </motion.div>
+            </OptimizedMotion>
           ))}
         </AnimatePresence>
       </div>
@@ -746,3 +747,4 @@ export function StoryIdeaManager() {
     </div>
   );
 }
+

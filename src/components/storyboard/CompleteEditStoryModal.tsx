@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { OptimizedMotion } from '@/components/ui/OptimizedMotion';
 import { Edit3, Lightbulb, X, Save, Trash2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
@@ -139,7 +139,7 @@ export function CompleteEditStoryModal({
         }}
         hideCloseButton
       >
-        <motion.div
+        <OptimizedMotion
           initial={{ opacity: 0, scale: 0.95, y: 10 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 10 }}
@@ -311,7 +311,7 @@ export function CompleteEditStoryModal({
               </div>
             </div>
           </div>
-        </motion.div>
+        </OptimizedMotion>
       </DialogContent>
 
       {/* Idea Bank Modal */}
@@ -325,3 +325,4 @@ export function CompleteEditStoryModal({
     </Dialog>
   );
 }
+

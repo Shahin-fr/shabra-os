@@ -8,7 +8,7 @@ import { prisma } from '@/lib/prisma';
 
 // Simple auth configuration for local development
 const authConfig = {
-  secret: process.env.NEXTAUTH_SECRET || 'local-development-secret-key-minimum-32-characters-long',
+  secret: process.env.NEXTAUTH_SECRET,
   trustHost: true, // Allow localhost
   useSecureCookies: false, // Use HTTP for local development
   providers: [
@@ -61,7 +61,7 @@ const authConfig = {
             roles: user.roles ? [user.roles] : ['EMPLOYEE'],
           };
         } catch (error) {
-          console.error('Auth error:', error);
+          // Authentication error occurred
           return null;
         }
       },
@@ -91,7 +91,40 @@ const authConfig = {
   },
   session: {
     strategy: 'jwt' as const,
-    maxAge: 24 * 60 * 60, // 24 hours
+    maxAge: 30 * 24 * 60 * 60, // 30 days in seconds
+    updateAge: 24 * 60 * 60, // 24 hours in seconds - how often to update the session
+  },
+  cookies: {
+    sessionToken: {
+      name: 'next-auth.session-token',
+      options: {
+        httpOnly: true,
+        sameSite: 'lax' as const,
+        path: '/',
+        secure: false, // HTTP for local development
+        maxAge: 30 * 24 * 60 * 60, // 30 days
+      },
+    },
+    callbackUrl: {
+      name: 'next-auth.callback-url',
+      options: {
+        httpOnly: true,
+        sameSite: 'lax' as const,
+        path: '/',
+        secure: false, // HTTP for local development
+        maxAge: 30 * 24 * 60 * 60, // 30 days
+      },
+    },
+    csrfToken: {
+      name: 'next-auth.csrf-token',
+      options: {
+        httpOnly: true,
+        sameSite: 'lax' as const,
+        path: '/',
+        secure: false, // HTTP for local development
+        maxAge: 30 * 24 * 60 * 60, // 30 days
+      },
+    },
   },
 };
 

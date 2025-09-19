@@ -6,12 +6,12 @@ import {
   createValidationErrorResponse,
   createAuthErrorResponse,
   createNotFoundErrorResponse,
-  createServerErrorResponse,
   HTTP_STATUS_CODES,
   getHttpStatusForErrorCode,
 } from '@/lib/api/response-utils';
-import { logger } from '@/lib/logger';
+// import { logger } from '@/lib/logger';
 import { prisma } from '@/lib/prisma';
+import { handleApiError } from '@/lib/utils/error-handler';
 
 export async function GET(request: NextRequest) {
   try {
@@ -99,16 +99,9 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(tasks);
   } catch (error) {
-    logger.error(
-      'Tasks API error:',
-      error instanceof Error ? error : undefined,
-      {
-        context: 'tasks-api',
-      }
-    );
-    const errorResponse = createServerErrorResponse('خطا در دریافت وظایف');
-    return NextResponse.json(errorResponse, {
-      status: getHttpStatusForErrorCode(errorResponse.error.code),
+    return handleApiError(error, {
+      operation: 'GET /api/tasks',
+      source: 'api/tasks/route.ts',
     });
   }
 }
@@ -177,41 +170,53 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Create the task
-    const task = await prisma.task.create({
-      data: {
-        title: title.trim(),
-        description: description?.trim() || null,
-        createdBy: session.user.id,
-        assignedTo: assignedTo || null,
-        projectId: projectId || null,
-        dueDate: dueDate ? new Date(dueDate) : null,
-        status: 'Todo', // Default status
-      },
-      include: {
-        creator: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            email: true,
+    // Create the task in a transaction
+    const task = await prisma.$transaction(async (tx) => {
+      const newTask = await tx.task.create({
+        data: {
+          title: title.trim(),
+          description: description?.trim() || null,
+          createdBy: session.user.id,
+          assignedTo: assignedTo || null,
+          projectId: projectId || null,
+          dueDate: dueDate ? new Date(dueDate) : null,
+          status: 'Todo', // Default status
+        },
+        include: {
+          creator: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              email: true,
+            },
+          },
+          assignee: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              email: true,
+            },
+          },
+          project: {
+            select: {
+              id: true,
+              name: true,
+            },
           },
         },
-        assignee: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            email: true,
-          },
-        },
-        project: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-      },
+      });
+
+      // Update project's last activity timestamp if projectId is provided
+      if (projectId) {
+        await tx.project.update({
+          where: { id: projectId },
+          data: { updatedAt: new Date() },
+        });
+      }
+
+      return newTask;
     });
 
     const successResponse = createSuccessResponse(task);
@@ -219,16 +224,9 @@ export async function POST(request: NextRequest) {
       status: HTTP_STATUS_CODES.CREATED,
     });
   } catch (error) {
-    logger.error(
-      'Create task API error:',
-      error instanceof Error ? error : undefined,
-      {
-        context: 'create-task-api',
-      }
-    );
-    const errorResponse = createServerErrorResponse('خطا در ایجاد وظیفه');
-    return NextResponse.json(errorResponse, {
-      status: getHttpStatusForErrorCode(errorResponse.error.code),
+    return handleApiError(error, {
+      operation: 'POST /api/tasks',
+      source: 'api/tasks/route.ts',
     });
   }
 }

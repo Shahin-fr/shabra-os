@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { OptimizedMotion } from '@/components/ui/OptimizedMotion';
 import { Loader2 } from 'lucide-react';
 import React, { useEffect, useRef, useCallback } from 'react';
 
@@ -59,7 +59,7 @@ export function MobileInfiniteScroll({
       {hasMore && (
         <div ref={observerRef} className='py-4'>
           {isLoading ? (
-            <motion.div
+            <OptimizedMotion
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               className='flex items-center justify-center py-4'
@@ -68,7 +68,7 @@ export function MobileInfiniteScroll({
               <span className='text-sm text-gray-500 mr-2'>
                 در حال بارگذاری...
               </span>
-            </motion.div>
+            </OptimizedMotion>
           ) : (
             <div className='h-4' /> // Spacer when not loading
           )}
@@ -77,3 +77,4 @@ export function MobileInfiniteScroll({
     </div>
   );
 }
+

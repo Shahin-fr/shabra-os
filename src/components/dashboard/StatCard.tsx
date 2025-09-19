@@ -53,3 +53,4 @@ export function StatCard({
     </Card>
   );
 }
+

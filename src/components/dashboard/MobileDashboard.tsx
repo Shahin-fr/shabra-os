@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { OptimizedMotion } from '@/components/ui/OptimizedMotion';
 import {
   Clock,
   CheckSquare,
@@ -166,14 +166,14 @@ export function MobileDashboard({ className }: MobileDashboardProps) {
       enabled={true}
       showSuccessFeedback={true}
     >
-      <motion.div
+      <OptimizedMotion
         className={`space-y-6 ${className}`}
         variants={containerVariants}
         initial='hidden'
         animate='visible'
       >
         {/* Welcome Header */}
-        <motion.div variants={itemVariants}>
+        <OptimizedMotion variants={itemVariants}>
           <Card
             className='overflow-hidden'
             style={{
@@ -210,17 +210,17 @@ export function MobileDashboard({ className }: MobileDashboardProps) {
               </div>
             </CardContent>
           </Card>
-        </motion.div>
+        </OptimizedMotion>
 
         {/* Clock-in Card - Only for Employees */}
         {user?.roles && user.roles.includes('EMPLOYEE') && (
-          <motion.div variants={itemVariants}>
+          <OptimizedMotion variants={itemVariants}>
             <MobileClockInCard />
-          </motion.div>
+          </OptimizedMotion>
         )}
 
         {/* Swipeable Stats Cards */}
-        <motion.div variants={itemVariants}>
+        <OptimizedMotion variants={itemVariants}>
           <Card
             className='overflow-hidden'
             style={{
@@ -274,11 +274,11 @@ export function MobileDashboard({ className }: MobileDashboardProps) {
               />
             </CardContent>
           </Card>
-        </motion.div>
+        </OptimizedMotion>
 
         {/* Quick Actions Grid - Only for Employees */}
         {user?.roles && user.roles.includes('EMPLOYEE') && (
-          <motion.div variants={itemVariants}>
+          <OptimizedMotion variants={itemVariants}>
             <Card
               className='overflow-hidden'
               style={{
@@ -300,11 +300,11 @@ export function MobileDashboard({ className }: MobileDashboardProps) {
                 </div>
               </CardContent>
             </Card>
-          </motion.div>
+          </OptimizedMotion>
         )}
 
         {/* Recent Activity */}
-        <motion.div variants={itemVariants}>
+        <OptimizedMotion variants={itemVariants}>
           <Card
             className='overflow-hidden'
             style={{
@@ -362,8 +362,9 @@ export function MobileDashboard({ className }: MobileDashboardProps) {
               </div>
             </CardContent>
           </Card>
-        </motion.div>
-      </motion.div>
+        </OptimizedMotion>
+      </OptimizedMotion>
     </PullToRefresh>
   );
 }
+

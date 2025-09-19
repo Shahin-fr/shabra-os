@@ -46,7 +46,7 @@ const SORT_OPTIONS = [
   },
 ];
 
-export default function ReelsFilters({
+export default function ReelsFiltersComponent({
   onFiltersChange,
   onApply,
   onReset,
@@ -55,9 +55,7 @@ export default function ReelsFilters({
   const [dateRange, setDateRange] = useState<DateRange | undefined>(
     initialFilters.dateRange
   );
-  const [sortBy, setSortBy] = useState(
-    initialFilters.sortBy || 'publishedAt'
-  );
+  const [sortBy, setSortBy] = useState(initialFilters.sortBy || 'publishedAt');
   const [sortOrder, setSortOrder] = useState(
     initialFilters.sortOrder || 'desc'
   );
@@ -99,37 +97,38 @@ export default function ReelsFilters({
     onReset();
   };
 
-  const hasActiveFilters = dateRange?.from || sortBy !== 'publishedAt' || sortOrder !== 'desc';
+  const hasActiveFilters =
+    dateRange?.from || sortBy !== 'publishedAt' || sortOrder !== 'desc';
 
   return (
-    <div className="flex flex-wrap items-center gap-4 p-4 bg-muted/30 rounded-lg border">
+    <div className='flex flex-wrap items-center gap-4 p-4 bg-muted/30 rounded-lg border'>
       {/* Date Range Picker */}
-      <div className="flex-1 min-w-[280px]">
-        <label className="text-sm font-medium text-foreground mb-2 block">
+      <div className='flex-1 min-w-[280px]'>
+        <label className='text-sm font-medium text-foreground mb-2 block'>
           بازه زمانی
         </label>
         <DateRangePicker
           date={dateRange}
           onDateChange={handleDateRangeChange}
-          placeholder="یک بازه زمانی انتخاب کنید"
-          className="w-full"
+          placeholder='یک بازه زمانی انتخاب کنید'
+          className='w-full'
         />
       </div>
 
       {/* Sort By Dropdown */}
-      <div className="min-w-[200px]">
-        <label className="text-sm font-medium text-foreground mb-2 block">
+      <div className='min-w-[200px]'>
+        <label className='text-sm font-medium text-foreground mb-2 block'>
           مرتب‌سازی بر اساس
         </label>
         <Select
           value={`${sortBy}_${sortOrder}`}
           onValueChange={handleSortChange}
         >
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="انتخاب معیار مرتب‌سازی" />
+          <SelectTrigger className='w-full'>
+            <SelectValue placeholder='انتخاب معیار مرتب‌سازی' />
           </SelectTrigger>
           <SelectContent>
-            {SORT_OPTIONS.map((option) => (
+            {SORT_OPTIONS.map(option => (
               <SelectItem key={option.value} value={option.value}>
                 {option.label}
               </SelectItem>
@@ -139,27 +138,24 @@ export default function ReelsFilters({
       </div>
 
       {/* Action Buttons */}
-      <div className="flex items-end gap-2">
+      <div className='flex items-end gap-2'>
         {hasActiveFilters && (
           <Button
-            variant="outline"
-            size="sm"
+            variant='outline'
+            size='sm'
             onClick={handleReset}
-            className="h-10"
+            className='h-10'
           >
-            <X className="h-4 w-4 mr-2" />
+            <X className='h-4 w-4 mr-2' />
             حذف فیلترها
           </Button>
         )}
-        
-        <Button
-          size="sm"
-          onClick={handleApply}
-          className="h-10"
-        >
+
+        <Button size='sm' onClick={handleApply} className='h-10'>
           اعمال فیلترها
         </Button>
       </div>
     </div>
   );
 }
+

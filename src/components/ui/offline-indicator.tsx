@@ -1,6 +1,7 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from '@/lib/framer-motion-optimized';
+import { OptimizedMotion } from '@/components/ui/OptimizedMotion';
 import { Wifi, WifiOff, AlertCircle, CheckCircle } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
@@ -124,7 +125,7 @@ export function OfflineIndicator({
 
   return (
     <AnimatePresence>
-      <motion.div
+      <OptimizedMotion
         initial={{ y: position === 'top' ? -50 : 50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: position === 'top' ? -50 : 50, opacity: 0 }}
@@ -145,7 +146,7 @@ export function OfflineIndicator({
           <Icon className='h-4 w-4' />
           <span className='text-sm font-medium'>{config.message}</span>
         </div>
-      </motion.div>
+      </OptimizedMotion>
     </AnimatePresence>
   );
 }
@@ -197,3 +198,4 @@ export function useConnectionStatus() {
     isOffline: !isOnline,
   };
 }
+

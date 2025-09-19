@@ -2,7 +2,7 @@
 
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { motion } from 'framer-motion';
+import { OptimizedMotion } from '@/components/ui/OptimizedMotion';
 import { Plus, FileText, Image, Trash2 } from 'lucide-react';
 import React from 'react';
 
@@ -93,10 +93,10 @@ export function StorySlot({
   };
 
   return (
-    <motion.div
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
-      transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+    <OptimizedMotion
+      whileHover={{ scale: 1.01 }}
+      whileTap={{ scale: 0.99 }}
+      transition={{ duration: 0.2, ease: 'easeOut' }}
     >
       <Card
         ref={setNodeRef}
@@ -142,7 +142,7 @@ export function StorySlot({
               {/* Top row - Status badge in corner and Order number */}
               <div className='flex items-start justify-between mb-3'>
                 {status && (
-                  <motion.div
+                  <OptimizedMotion
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.3 }}
@@ -155,11 +155,11 @@ export function StorySlot({
                     >
                       {status.label}
                     </Badge>
-                  </motion.div>
+                  </OptimizedMotion>
                 )}
                 <div className='flex items-center gap-2'>
                   {/* Clear slot button */}
-                  <motion.div
+                  <OptimizedMotion
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.3, delay: 0.1 }}
@@ -173,21 +173,21 @@ export function StorySlot({
                     >
                       <Trash2 className='h-3 w-3' />
                     </Button>
-                  </motion.div>
-                  <motion.div
+                  </OptimizedMotion>
+                  <OptimizedMotion
                     {...listeners}
                     className='w-8 h-8 bg-[#ff0a54]/30 rounded-full flex items-center justify-center text-sm font-medium text-[#ff0a54] cursor-grab active:cursor-grabbing'
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                   >
                     {index + 1}
-                  </motion.div>
+                  </OptimizedMotion>
                 </div>
               </div>
 
               {/* Main content - Large centered icon */}
               <div className='flex-1 flex flex-col items-center justify-center text-center'>
-                <motion.div
+                <OptimizedMotion
                   className={cn(
                     'w-20 h-20 rounded-full flex items-center justify-center mb-6',
                     'bg-gradient-to-br from-[#ff0a54]/40 to-[#ff0a54]/60',
@@ -199,15 +199,15 @@ export function StorySlot({
                       inset 0 1px 0 rgba(255, 255, 255, 0.6)
                     `,
                   }}
-                  whileHover={{ scale: 1.05, rotate: 5 }}
-                  transition={{ type: 'spring', stiffness: 300, damping: 10 }}
+                  whileHover={{ scale: 1.02 }}
+                  transition={{ duration: 0.2, ease: 'easeOut' }}
                 >
                   <DynamicLucideIcon
                     iconName={story.storyType?.icon}
                     className='h-10 w-10 text-white'
                     fallbackIcon={FileText}
                   />
-                </motion.div>
+                </OptimizedMotion>
 
                 {/* Story type name - Most prominent text */}
                 <h3 className='text-lg font-bold text-gray-900 mb-3 leading-tight line-clamp-2'>
@@ -237,19 +237,19 @@ export function StorySlot({
             <div className='flex flex-col items-center justify-center h-full text-gray-600'>
               {/* Order number */}
               <div className='absolute top-3 right-3'>
-                <motion.div
+                <OptimizedMotion
                   {...listeners}
                   className='w-8 h-8 bg-[#ff0a54]/30 rounded-full flex items-center justify-center text-sm font-medium text-[#ff0a54] cursor-grab active:cursor-grabbing'
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                 >
                   {index + 1}
-                </motion.div>
+                </OptimizedMotion>
               </div>
 
               {/* Main content */}
               <div className='flex flex-col items-center'>
-                <motion.div
+                <OptimizedMotion
                   className={cn(
                     'w-20 h-20 rounded-full flex items-center justify-center mb-6',
                     'bg-gradient-to-br from-[#ff0a54]/30 to-[#ff0a54]/40',
@@ -261,11 +261,11 @@ export function StorySlot({
                       inset 0 1px 0 rgba(255, 255, 255, 0.4)
                     `,
                   }}
-                  whileHover={{ scale: 1.05, rotate: 5 }}
-                  transition={{ type: 'spring', stiffness: 300, damping: 10 }}
+                  whileHover={{ scale: 1.02 }}
+                  transition={{ duration: 0.2, ease: 'easeOut' }}
                 >
                   <Plus className='h-10 w-10 text-[#ff0a54]' />
-                </motion.div>
+                </OptimizedMotion>
                 <p className='text-base text-center font-medium text-gray-800 mb-2'>
                   اسلات خالی
                 </p>
@@ -277,6 +277,7 @@ export function StorySlot({
           )}
         </CardContent>
       </Card>
-    </motion.div>
+    </OptimizedMotion>
   );
 }
+

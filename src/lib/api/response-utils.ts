@@ -3,7 +3,7 @@
  * Ensures consistent response structure across all API endpoints
  */
 
-export interface ApiSuccessResponse<T = any> {
+export interface ApiSuccessResponse<T = unknown> {
   success: true;
   data: T;
   message?: string;
@@ -24,7 +24,7 @@ export interface ApiErrorResponse {
   error: {
     code: string;
     message: string;
-    details?: any;
+    details?: unknown;
     field?: string;
   };
   meta?: {
@@ -34,7 +34,7 @@ export interface ApiErrorResponse {
   };
 }
 
-export type ApiResponse<T = any> = ApiSuccessResponse<T> | ApiErrorResponse;
+export type ApiResponse<T = unknown> = ApiSuccessResponse<T> | ApiErrorResponse;
 
 /**
  * Creates a standardized success response
@@ -61,7 +61,7 @@ export function createSuccessResponse<T>(
 export function createErrorResponse(
   code: string,
   message: string,
-  details?: any,
+  details?: unknown,
   meta?: Partial<ApiErrorResponse['meta']>
 ): ApiErrorResponse {
   return {
@@ -85,7 +85,7 @@ export function createErrorResponse(
 export function createValidationErrorResponse(
   message: string,
   _field?: string,
-  details?: any
+  details?: unknown
 ): ApiErrorResponse {
   return createErrorResponse('VALIDATION_ERROR', message, details, {
     retryable: false,

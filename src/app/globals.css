@@ -2,6 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 3D Perspective utilities for showcase animations */
+@layer utilities {
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+  
+  .perspective-2000 {
+    perspective: 2000px;
+  }
+  
+  .transform-style-preserve-3d {
+    transform-style: preserve-3d;
+  }
+}
+
 /* Mobile-First PWA Enhancements */
 @layer base {
   /* Safe area support for mobile devices */

@@ -1,6 +1,7 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
+import { OptimizedMotion } from '@/components/ui/OptimizedMotion';
 import Link from 'next/link';
 import React, { memo, useState } from 'react';
 
@@ -94,7 +95,7 @@ export const NavigationItem = memo<NavigationItemProps>(
         {isCollapsed && (
           <AnimatePresence>
             {isHovered && (
-              <motion.div
+              <OptimizedMotion
                 className='absolute left-full ml-4 z-50 pointer-events-none'
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -106,7 +107,7 @@ export const NavigationItem = memo<NavigationItemProps>(
                     {item.label}
                   </span>
                 </div>
-              </motion.div>
+              </OptimizedMotion>
             )}
           </AnimatePresence>
         )}
@@ -152,3 +153,4 @@ export const NavigationItem = memo<NavigationItemProps>(
 
 // Set display name for debugging
 NavigationItem.displayName = 'NavigationItem';
+

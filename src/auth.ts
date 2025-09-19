@@ -1,13 +1,4 @@
-// ✅✅✅ [AUTH BOOTSTRAP] NextAuth configuration file loaded. NODE_ENV: ${process.env.NODE_ENV}
-console.log("✅✅✅ [AUTH BOOTSTRAP] NextAuth configuration file loaded. NODE_ENV:", process.env.NODE_ENV);
-console.log("✅✅✅ [AUTH BOOTSTRAP] Vercel environment:", !!process.env.VERCEL);
-console.log("✅✅✅ [AUTH BOOTSTRAP] Database URL set:", !!process.env.DATABASE_URL);
-
-// ✅ [AUTH CONFIG] Environment Variables Check
-console.log("✅ [AUTH CONFIG] NEXTAUTH_URL:", process.env.NEXTAUTH_URL);
-console.log("✅ [AUTH CONFIG] NEXTAUTH_SECRET is set:", !!process.env.NEXTAUTH_SECRET);
-console.log("✅ [AUTH CONFIG] DATABASE_URL is set:", !!process.env.DATABASE_URL);
-console.log("✅ [AUTH CONFIG] NODE_ENV:", process.env.NODE_ENV);
+// NextAuth configuration
 
 import bcrypt from 'bcryptjs';
 import NextAuth from 'next-auth';
@@ -22,7 +13,11 @@ initializeProductionFixes();
 
 // Ensure environment variables are set (only at runtime, not during build)
 // Skip validation during build time to prevent Vercel deployment issues
-if (typeof window === 'undefined' && process.env.NODE_ENV === 'production' && !process.env.VERCEL) {
+if (
+  typeof window === 'undefined' &&
+  process.env.NODE_ENV === 'production' &&
+  !process.env.VERCEL
+) {
   if (!process.env.NEXTAUTH_SECRET) {
     throw new Error('NEXTAUTH_SECRET environment variable is required');
   }
@@ -33,7 +28,7 @@ if (typeof window === 'undefined' && process.env.NODE_ENV === 'production' && !p
 }
 
 const authConfig = {
-  secret: process.env.NEXTAUTH_SECRET || 'local-development-secret-key-minimum-32-characters-long',
+  secret: process.env.NEXTAUTH_SECRET,
   // Add production-specific configuration
   trustHost: true, // Allow localhost for development
   useSecureCookies: process.env.NODE_ENV === 'production',
@@ -55,11 +50,7 @@ const authConfig = {
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
-        // Log the entry point
-        console.log("✅ [AUTH DEBUG] Authorize function STARTED with credentials:", credentials?.email);
-
         if (!credentials?.email || !credentials?.password) {
-          console.log('❌ [AUTH DEBUG] Missing credentials - email or password not provided');
           return null;
         }
 
@@ -67,8 +58,6 @@ const authConfig = {
         const { prisma } = require('@/lib/prisma');
 
         try {
-          console.log('🔍 [AUTH DEBUG] Searching for user in database with email:', credentials.email);
-          
           const user = await prisma.user.findUnique({
             where: {
               email: credentials.email as string,
@@ -85,74 +74,28 @@ const authConfig = {
             },
           });
 
-          console.log('👤 [AUTH DEBUG] User found in DB:', {
-            found: !!user,
-            userId: user?.id,
-            email: user?.email,
-            isActive: user?.isActive,
-            hasPassword: !!user?.password,
-            roles: user?.roles
-          });
-
-          if (!user) {
-            console.log('❌ [AUTH DEBUG] User not found in database');
+          if (!user || !user.isActive) {
             return null;
           }
 
-          if (!user.isActive) {
-            console.log('❌ [AUTH DEBUG] User authentication failed: user not active', {
-              email: user.email,
-              isActive: user.isActive
-            });
-            return null;
-          }
-
-          console.log('🔐 [AUTH DEBUG] Comparing password...');
-          console.log('🔐 [AUTH DEBUG] Input password:', credentials.password);
-          console.log('🔐 [AUTH DEBUG] Stored password hash:', user.password);
-          
           const isPasswordValid = await bcrypt.compare(
             credentials.password as string,
             user.password
           );
 
-          console.log('🔐 [AUTH DEBUG] Password comparison result:', {
-            isValid: isPasswordValid,
-            email: user.email,
-            inputPassword: credentials.password,
-            storedHash: user.password
-          });
-
           if (!isPasswordValid) {
-            console.log('❌ [AUTH DEBUG] User authentication failed: invalid password', {
-              email: user.email
-            });
             return null;
           }
 
-          const userToReturn = {
+          return {
             id: user.id,
             email: user.email,
             name: `${user.firstName} ${user.lastName}`,
             avatar: user.avatar || undefined,
             roles: user.roles ? [user.roles] : ['EMPLOYEE'], // Convert string to array for compatibility
           };
-
-          console.log('✅ [AUTH DEBUG] Authentication successful, returning user:', {
-            id: userToReturn.id,
-            email: userToReturn.email,
-            name: userToReturn.name,
-            roles: userToReturn.roles
-          });
-          
-          return userToReturn;
         } catch (error) {
-          console.log('💥 [AUTH DEBUG] Authorization error occurred:', {
-            error: error instanceof Error ? error.message : String(error),
-            email: credentials.email,
-            stack: error instanceof Error ? error.stack : undefined
-          });
-          
+          // Authorization error occurred
           return null;
         }
       },
@@ -160,19 +103,11 @@ const authConfig = {
   ],
   session: {
     strategy: 'jwt' as const,
+    maxAge: 30 * 24 * 60 * 60, // 30 days in seconds
+    updateAge: 24 * 60 * 60, // 24 hours in seconds - how often to update the session
   },
   callbacks: {
     async jwt({ token, user }: { token: JWT; user?: any }) {
-      // DEBUG: Log JWT callback (production debugging)
-      console.log('🔑 [AUTH DEBUG] JWT callback triggered:', {
-        hasUser: !!user,
-        tokenSub: token.sub,
-        hasRoles: !!user?.roles?.length,
-        timestamp: new Date().toISOString()
-      });
-
-      process.stdout.write(`🔑 [AUTH DEBUG] JWT callback triggered - hasUser: ${!!user}, tokenSub: ${token.sub}\n`);
-
       if (user) {
         // Set the sub field to the user ID for NextAuth compatibility
         token.sub = user.id;
@@ -180,32 +115,12 @@ const authConfig = {
         token.avatar = user.avatar;
         token.email = user.email;
         token.name = user.name;
-
-        console.log('🔑 [AUTH DEBUG] JWT callback: token updated successfully:', {
-          userId: user.id,
-          email: user.email,
-          roles: user.roles,
-        });
-
-        process.stdout.write(`🔑 [AUTH DEBUG] JWT callback: token updated successfully - ${user.email}\n`);
       }
       return token;
     },
     async session({ session, token }: { session: Session; token: JWT }) {
-      // DEBUG: Log session callback (production debugging)
-      console.log('📋 [AUTH DEBUG] Session callback triggered:', {
-        hasSessionUser: !!session.user,
-        hasToken: !!token,
-        tokenSub: token.sub,
-        timestamp: new Date().toISOString()
-      });
-
-      process.stdout.write(`📋 [AUTH DEBUG] Session callback triggered - hasSessionUser: ${!!session.user}, tokenSub: ${token.sub}\n`);
-
       // Ensure session.user exists and has all required properties
       if (!session.user) {
-        console.log('📋 [AUTH DEBUG] Session callback: creating session.user');
-        process.stdout.write(`📋 [AUTH DEBUG] Session callback: creating session.user\n`);
         session.user = {
           id: '',
           email: '',
@@ -215,29 +130,12 @@ const authConfig = {
       }
 
       if (token && token.sub) {
-        console.log('📋 [AUTH DEBUG] Session callback: updating session with token data:', {
-          userId: token.sub,
-          email: token.email,
-        });
-
-        process.stdout.write(`📋 [AUTH DEBUG] Session callback: updating session with token data - ${token.email}\n`);
         session.user.id = token.sub;
         session.user.email = token.email || '';
         session.user.name = token.name || '';
         // Add custom properties to session
         (session.user as any).roles = token.roles || [];
         (session.user as any).avatar = token.avatar;
-
-        console.log('📋 [AUTH DEBUG] Session callback: final session prepared:', {
-          userId: session.user.id,
-          email: session.user.email,
-          hasRoles: !!(session.user as any).roles?.length,
-        });
-
-        process.stdout.write(`📋 [AUTH DEBUG] Session callback: final session prepared - ${session.user.email}\n`);
-      } else {
-        console.log('📋 [AUTH DEBUG] Session callback: no token or token.sub found');
-        process.stdout.write(`📋 [AUTH DEBUG] Session callback: no token or token.sub found\n`);
       }
 
       return session;
@@ -249,38 +147,61 @@ const authConfig = {
   },
   cookies: {
     sessionToken: {
-      name: process.env.NODE_ENV === 'production' ? '__Secure-next-auth.session-token' : 'next-auth.session-token',
+      name:
+        process.env.NODE_ENV === 'production'
+          ? '__Secure-next-auth.session-token'
+          : 'next-auth.session-token',
       options: {
         httpOnly: true,
         sameSite: 'lax' as const,
         path: '/',
         secure: process.env.NODE_ENV === 'production',
-      }
+        maxAge: 30 * 24 * 60 * 60, // 30 days
+      },
     },
     callbackUrl: {
-      name: process.env.NODE_ENV === 'production' ? '__Secure-next-auth.callback-url' : 'next-auth.callback-url',
+      name:
+        process.env.NODE_ENV === 'production'
+          ? '__Secure-next-auth.callback-url'
+          : 'next-auth.callback-url',
       options: {
         httpOnly: true,
         sameSite: 'lax' as const,
         path: '/',
         secure: process.env.NODE_ENV === 'production',
-      }
+        maxAge: 30 * 24 * 60 * 60, // 30 days
+      },
     },
     csrfToken: {
-      name: process.env.NODE_ENV === 'production' ? '__Host-next-auth.csrf-token' : 'next-auth.csrf-token',
+      name:
+        process.env.NODE_ENV === 'production'
+          ? '__Host-next-auth.csrf-token'
+          : 'next-auth.csrf-token',
       options: {
         httpOnly: true,
         sameSite: 'lax' as const,
         path: '/',
         secure: process.env.NODE_ENV === 'production',
-      }
-    }
+        maxAge: 30 * 24 * 60 * 60, // 30 days
+      },
+    },
+    pkceCodeVerifier: {
+      name:
+        process.env.NODE_ENV === 'production'
+          ? '__Secure-next-auth.pkce.code_verifier'
+          : 'next-auth.pkce.code_verifier',
+      options: {
+        httpOnly: true,
+        sameSite: 'lax' as const,
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 15 * 60, // 15 minutes
+      },
+    },
   },
   debug: process.env.NODE_ENV === 'development',
 };
 
 export const { handlers, auth, signIn, signOut } = NextAuth(authConfig);
 
-// ✅✅✅ [AUTH BOOTSTRAP] NextAuth configuration completed and exported
-console.log("✅✅✅ [AUTH BOOTSTRAP] NextAuth configuration completed and exported");
-process.stdout.write("✅✅✅ [AUTH BOOTSTRAP] NextAuth configuration completed and exported\n");
+// NextAuth configuration completed

@@ -2,15 +2,22 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import {
   createSuccessResponse,
-  createValidationErrorResponse,
-  createServerErrorResponse,
   HTTP_STATUS_CODES,
-  getHttpStatusForErrorCode,
 } from '@/lib/api/response-utils';
 import { logger } from '@/lib/logger';
-import { prismaLocal as prisma } from '@/lib/prisma-local';
+import { ProjectService } from '@/services/project.service';
+import { validate, validateQuery } from '@/lib/middleware/validation-middleware';
+import { handleApiError } from '@/lib/utils/error-handler';
+import { CreateProjectSchema, GetProjectsQuerySchema } from '@/lib/validators/project-validators';
+import { withApiRateLimit } from '@/lib/middleware/rate-limit-middleware';
 
 export async function GET(request: NextRequest) {
+  // Apply rate limiting
+  const rateLimitResult = withApiRateLimit(request);
+  if (!rateLimitResult.allowed) {
+    return rateLimitResult.response!;
+  }
+
   try {
     // Add authorization check
     const { withAuth } = await import('@/lib/middleware/auth-middleware');
@@ -21,66 +28,29 @@ export async function GET(request: NextRequest) {
       return authResult.response;
     }
 
-    const { searchParams } = new URL(request.url);
-    const pageParam = searchParams.get('page') || '1';
-    const limitParam = searchParams.get('limit') || '20';
+    // Validate query parameters using middleware
+    const queryParams = await validateQuery(GetProjectsQuerySchema)(request);
 
-    const page = parseInt(pageParam);
-    const limit = parseInt(limitParam);
+    // Use ProjectService to get projects
+    const result = await ProjectService.getProjects(queryParams);
 
-    if (isNaN(page) || isNaN(limit) || page < 1 || limit < 1 || limit > 100) {
-      const errorResponse = createValidationErrorResponse(
-        'پارامترهای صفحه و محدوده نامعتبر هستند'
-      );
-      return NextResponse.json(errorResponse, {
-        status: getHttpStatusForErrorCode(errorResponse.error.code),
-      });
-    }
-
-    const skip = (page - 1) * limit;
-
-    // Get projects with pagination
-    const [projects, totalProjects] = await Promise.all([
-      prisma.project.findMany({
-        skip,
-        take: limit,
-        orderBy: { createdAt: 'desc' },
-        include: {
-          _count: {
-            select: {
-              stories: true,
-              tasks: true,
-            },
-          },
-        },
-      }),
-      prisma.project.count(),
-    ]);
-
-    const totalPages = Math.ceil(totalProjects / limit);
-
-    const successResponse = createSuccessResponse({
-      projects,
-      currentPage: page,
-      totalPages,
-      totalProjects,
-      hasNextPage: page < totalPages,
-      hasPreviousPage: page > 1,
-    });
+    const successResponse = createSuccessResponse(result);
     return NextResponse.json(successResponse, { status: HTTP_STATUS_CODES.OK });
   } catch (error) {
-    logger.error('Projects fetch error:', error as Error, {
+    return handleApiError(error, {
       operation: 'GET /api/projects',
       source: 'api/projects/route.ts',
-    });
-    const errorResponse = createServerErrorResponse('خطا در دریافت پروژه‌ها');
-    return NextResponse.json(errorResponse, {
-      status: getHttpStatusForErrorCode(errorResponse.error.code),
     });
   }
 }
 
 export async function POST(request: NextRequest) {
+  // Apply rate limiting
+  const rateLimitResult = withApiRateLimit(request);
+  if (!rateLimitResult.allowed) {
+    return rateLimitResult.response!;
+  }
+
   try {
     // Add authorization check
     const { withAuth } = await import('@/lib/middleware/auth-middleware');
@@ -94,71 +64,29 @@ export async function POST(request: NextRequest) {
       return authResult.response;
     }
 
-    const body = await request.json();
+    // Validate request body using middleware
+    const validatedData = await validate(CreateProjectSchema)(request);
+
     logger.info('Project creation request received', {
-      body,
       userId: authResult.context.userId,
       operation: 'POST /api/projects',
       source: 'api/projects/route.ts',
+      // Only log non-sensitive fields
+      name: validatedData.name?.substring(0, 50) + (validatedData.name && validatedData.name.length > 50 ? '...' : ''),
+      status: validatedData.status,
     });
 
-    const { name, description, status, startDate, endDate } = body;
-
-    if (!name) {
-      logger.warn('Project creation failed: missing name', {
-        body,
-        userId: authResult.context.userId,
-        operation: 'POST /api/projects',
-        source: 'api/projects/route.ts',
-      });
-      const errorResponse = createValidationErrorResponse(
-        'نام پروژه الزامی است'
-      );
-      return NextResponse.json(errorResponse, {
-        status: getHttpStatusForErrorCode(errorResponse.error.code),
-      });
-    }
-
-    // Create project with proper data structure
-    const projectData = {
-      name,
-      description: description || null,
-      status: status || 'ACTIVE',
-      startDate: startDate ? new Date(startDate) : null,
-      endDate: endDate ? new Date(endDate) : null,
-      accessLevel: 'PRIVATE' as const, // Default access level
-    };
-
-    logger.info('Creating project in database', {
-      projectData,
-      userId: authResult.context.userId,
-      operation: 'POST /api/projects',
-      source: 'api/projects/route.ts',
-    });
-
-    const project = await prisma.project.create({
-      data: projectData,
-    });
-
-    logger.info('Project created successfully', {
-      projectId: project.id,
-      userId: authResult.context.userId,
-      operation: 'POST /api/projects',
-      source: 'api/projects/route.ts',
-    });
+    // Use ProjectService to create project
+    const project = await ProjectService.createProject(validatedData);
 
     const successResponse = createSuccessResponse(project);
     return NextResponse.json(successResponse, {
       status: HTTP_STATUS_CODES.CREATED,
     });
   } catch (error) {
-    logger.error('Project creation error:', error as Error, {
+    return handleApiError(error, {
       operation: 'POST /api/projects',
       source: 'api/projects/route.ts',
-    });
-    const errorResponse = createServerErrorResponse('خطا در ایجاد پروژه');
-    return NextResponse.json(errorResponse, {
-      status: getHttpStatusForErrorCode(errorResponse.error.code),
     });
   }
 }
@@ -181,12 +109,7 @@ export async function DELETE(request: NextRequest) {
     const projectId = searchParams.get('id');
 
     if (!projectId) {
-      const errorResponse = createValidationErrorResponse(
-        'شناسه پروژه الزامی است'
-      );
-      return NextResponse.json(errorResponse, {
-        status: getHttpStatusForErrorCode(errorResponse.error.code),
-      });
+      throw new Error('Project ID is required');
     }
 
     logger.info('Project deletion request received', {
@@ -196,47 +119,20 @@ export async function DELETE(request: NextRequest) {
       source: 'api/projects/route.ts',
     });
 
-    // Check if project exists
-    const existingProject = await prisma.project.findUnique({
-      where: { id: projectId },
-    });
-
-    if (!existingProject) {
-      const errorResponse = createValidationErrorResponse(
-        'پروژه مورد نظر یافت نشد'
-      );
-      return NextResponse.json(errorResponse, {
-        status: getHttpStatusForErrorCode(errorResponse.error.code),
-      });
-    }
-
-    // Delete the project
-    await prisma.project.delete({
-      where: { id: projectId },
-    });
-
-    logger.info('Project deleted successfully', {
-      projectId,
-      userId: authResult.context.userId,
-      operation: 'DELETE /api/projects',
-      source: 'api/projects/route.ts',
-    });
+    // Use ProjectService to delete project
+    const result = await ProjectService.deleteProject(projectId);
 
     const successResponse = createSuccessResponse(
-      { id: projectId },
+      { id: result.deletedId },
       'پروژه با موفقیت حذف شد'
     );
     return NextResponse.json(successResponse, {
       status: HTTP_STATUS_CODES.OK,
     });
   } catch (error) {
-    logger.error('Project deletion error:', error as Error, {
+    return handleApiError(error, {
       operation: 'DELETE /api/projects',
       source: 'api/projects/route.ts',
-    });
-    const errorResponse = createServerErrorResponse('خطا در حذف پروژه');
-    return NextResponse.json(errorResponse, {
-      status: getHttpStatusForErrorCode(errorResponse.error.code),
     });
   }
 }

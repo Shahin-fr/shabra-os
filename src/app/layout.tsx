@@ -4,9 +4,9 @@ import React from 'react';
 
 import './globals.css';
 import './navigation-states.css';
-import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { ResponsiveProvider } from '@/components/providers/ResponsiveProvider';
 import { PWARegistration } from '@/components/ui/PWARegistration';
+import NextTopLoader from 'nextjs-toploader';
 
 import Providers from './providers';
 
@@ -80,13 +80,23 @@ export default function RootLayout({
         <link rel='icon' href='/favicon.ico' />
       </head>
       <body className={`${vazirmatn.variable} font-sans antialiased`}>
+        <NextTopLoader
+          color="#EC4899"
+          initialPosition={0.08}
+          crawlSpeed={200}
+          height={3}
+          crawl={true}
+          showSpinner={false}
+          easing="ease"
+          speed={200}
+          shadow="0 0 10px #EC4899,0 0 5px #EC4899"
+        />
         <ResponsiveProvider>
-          <Providers>
-            <DashboardLayout>{children}</DashboardLayout>
-          </Providers>
+          <Providers>{children}</Providers>
         </ResponsiveProvider>
         <PWARegistration />
       </body>
     </html>
   );
 }
+

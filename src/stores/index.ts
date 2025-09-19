@@ -1,21 +1,80 @@
-// Export from consolidated store (new system)
-export * from './consolidated-store';
+/**
+ * Store Index - Centralized Export
+ *
+ * This file provides centralized exports for all domain-specific stores,
+ * making it easier to import and use stores throughout the application.
+ */
 
-// Export new UI store (migration in progress)
+// ============================================================================
+// STORE EXPORTS
+// ============================================================================
+
+// App Store
+export * from './app.store';
+
+// Cache Store
+export * from './cache.store';
+
+// Error Store
+export * from './error.store';
+
+// UI Store
 export * from './uiStore';
 
-// Export new User store (migration in progress)
-export { useUserStore } from './userStore';
+// User Store - export individual items to avoid conflicts
+export {
+  useUserStore,
+  useUserProfile,
+  useIsAuthenticated,
+  useUserPreferences,
+  useUserActions,
+  useIsLoading as useUserIsLoading,
+  useTheme as useUserTheme,
+} from './userStore';
 
-// Legacy exports for backward compatibility during migration
-// TODO: Remove these after migration is complete
-// Note: These are commented out to avoid conflicts during development
-// export * from './useUserStore';
-// export * from './useCacheStore';
+// ============================================================================
+// CONVENIENCE EXPORTS
+// ============================================================================
 
-// Export authentication hook
-export { useAuth } from '@/hooks/useAuth';
+// Re-export commonly used store hooks for convenience
+export {
+  // App Store
+  useAppStore,
+  useAppSettings,
+  useIsOnline,
+  useIsInitialized,
+  usePerformanceMetrics,
+  useFeatureFlag,
+  useAppActions,
+} from './app.store';
 
-// Migration notice
-// Migration notice - UI state has been moved to uiStore.ts, User state has been moved to userStore.ts
-// Please update imports to use the new stores. See MIGRATION_GUIDE.md for details.
+export {
+  // Cache Store
+  useCacheStore,
+  useCacheStats,
+  useCacheEntry,
+  useHasCacheEntry,
+  useCacheActions,
+} from './cache.store';
+
+export {
+  // Error Store
+  useErrorStore,
+  useErrorMetrics,
+  useErrorNotifications,
+  useErrorActions,
+} from './error.store';
+
+export {
+  // UI Store
+  useUIStore,
+  useSidebarCollapsed,
+  useModals,
+  useUINotifications,
+  useUIActions,
+  // Rename conflicting exports
+  useIsLoading as useUIIsLoading,
+  useTheme as useUITheme,
+} from './uiStore';
+
+// User Store exports are handled above

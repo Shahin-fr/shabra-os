@@ -107,7 +107,7 @@ describe('Providers Component', () => {
 
     const sessionProvider = screen.getByTestId('session-provider');
 
-    expect(sessionProvider).toHaveAttribute('data-refetch-interval', '300'); // 5 minutes (300 seconds)
+    expect(sessionProvider).toHaveAttribute('data-refetch-interval', '0'); // No auto-refetch
     expect(sessionProvider).toHaveAttribute(
       'data-refetch-on-window-focus',
       'false'
@@ -295,8 +295,8 @@ describe('Providers Component', () => {
 
     const sessionProvider = screen.getByTestId('session-provider');
 
-    // Check that the refetch interval is set to 5 minutes (300 seconds)
-    expect(sessionProvider).toHaveAttribute('data-refetch-interval', '300');
+    // Check that the refetch interval is set to 0 (no auto-refetch)
+    expect(sessionProvider).toHaveAttribute('data-refetch-interval', '0');
   });
 
   it('configures session refetch on window focus correctly', () => {
@@ -339,3 +339,4 @@ describe('Providers Component', () => {
     expect(updatedElement).toBe(initialElement);
   });
 });
+

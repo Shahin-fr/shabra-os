@@ -199,7 +199,7 @@ describe('Queries Module', () => {
 
     describe('fetchProjects', () => {
       it('fetches projects successfully', async () => {
-        const mockData = { projects: [], total: 0, page: 1 };
+        const mockData = { success: true, data: { projects: [], total: 0, page: 1 } };
         mockFetch.mockResolvedValue(mockResponse(mockData));
 
         const result = await fetchProjects(2);
@@ -208,15 +208,16 @@ describe('Queries Module', () => {
           '/api/projects?page=2&limit=20',
           {
             headers: {
-              'Cache-Control': 'max-age=60, stale-while-revalidate=300',
+              'Cache-Control': 'no-cache, no-store, must-revalidate',
+              'Content-Type': 'application/json',
             },
           }
         );
-        expect(result).toEqual(mockData);
+        expect(result).toEqual(mockData.data);
       });
 
       it('uses default page when no page provided', async () => {
-        const mockData = { projects: [], total: 0, page: 1 };
+        const mockData = { success: true, data: { projects: [], total: 0, page: 1 } };
         mockFetch.mockResolvedValue(mockResponse(mockData));
 
         await fetchProjects();
@@ -233,7 +234,7 @@ describe('Queries Module', () => {
         mockFetch.mockResolvedValue(mockResponse({}, false, 404));
 
         await expect(fetchProjects()).rejects.toThrow(
-          'Failed to fetch projects: HTTP 404: Not Found'
+          'HTTP 404: Not Found'
         );
       });
 
@@ -242,14 +243,14 @@ describe('Queries Module', () => {
         mockFetch.mockRejectedValue(networkError);
 
         await expect(fetchProjects()).rejects.toThrow(
-          'Failed to fetch projects: Network error'
+          'Network error'
         );
       });
     });
 
     describe('fetchProject', () => {
       it('fetches project successfully', async () => {
-        const mockData = { id: 'project-123', name: 'Test Project' };
+        const mockData = { success: true, data: { id: 'project-123', name: 'Test Project' } };
         mockFetch.mockResolvedValue(mockResponse(mockData));
 
         const result = await fetchProject('project-123');
@@ -257,9 +258,10 @@ describe('Queries Module', () => {
         expect(mockFetch).toHaveBeenCalledWith('/api/projects/project-123', {
           headers: {
             'Cache-Control': 'max-age=300, stale-while-revalidate=600',
+            'Content-Type': 'application/json',
           },
         });
-        expect(result).toEqual(mockData);
+        expect(result).toEqual(mockData.data);
       });
 
       // Performance timing test removed - focusing on core functionality
@@ -268,7 +270,7 @@ describe('Queries Module', () => {
         mockFetch.mockResolvedValue(mockResponse({}, false, 500));
 
         await expect(fetchProject('project-123')).rejects.toThrow(
-          'Failed to fetch project: HTTP 500: Not Found'
+          'HTTP 500: Not Found'
         );
       });
     });
@@ -283,6 +285,7 @@ describe('Queries Module', () => {
         expect(mockFetch).toHaveBeenCalledWith('/api/tasks', {
           headers: {
             'Cache-Control': 'max-age=30, stale-while-revalidate=60',
+            'Content-Type': 'application/json',
           },
         });
         expect(result).toEqual(mockData);
@@ -299,6 +302,7 @@ describe('Queries Module', () => {
           {
             headers: {
               'Cache-Control': 'max-age=30, stale-while-revalidate=60',
+              'Content-Type': 'application/json',
             },
           }
         );
@@ -317,7 +321,8 @@ describe('Queries Module', () => {
 
         expect(mockFetch).toHaveBeenCalledWith('/api/stories', {
           headers: {
-            'Cache-Control': 'max-age=60, stale-while-revalidate=120',
+            'Cache-Control': 'max-age=30, stale-while-revalidate=60',
+            'Content-Type': 'application/json',
           },
         });
         expect(result).toEqual(mockData);
@@ -336,6 +341,7 @@ describe('Queries Module', () => {
         expect(mockFetch).toHaveBeenCalledWith('/api/stories?day=2024-01-15', {
           headers: {
             'Cache-Control': 'max-age=30, stale-while-revalidate=60',
+            'Content-Type': 'application/json',
           },
         });
         expect(result).toEqual(mockData);
@@ -354,6 +360,7 @@ describe('Queries Module', () => {
         expect(mockFetch).toHaveBeenCalledWith('/api/story-types', {
           headers: {
             'Cache-Control': 'max-age=300, stale-while-revalidate=600',
+            'Content-Type': 'application/json',
           },
         });
         expect(result).toEqual(mockData);

@@ -64,7 +64,8 @@ export const instapulseKeys = {
   all: ['instapulse'] as const,
   pages: () => [...instapulseKeys.all, 'pages'] as const,
   reels: () => [...instapulseKeys.all, 'reels'] as const,
-  reelsList: (filters: string) => [...instapulseKeys.reels(), 'list', { filters }] as const,
+  reelsList: (filters: string) =>
+    [...instapulseKeys.reels(), 'list', { filters }] as const,
 };
 
 // Generic fetch function with error handling and caching
