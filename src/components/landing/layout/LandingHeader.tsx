@@ -82,15 +82,14 @@ export function LandingHeader() {
                   ? 'text-gray-700 hover:text-blue-600' 
                   : 'text-white hover:text-blue-200'
               }`}
-              icon={<Phone className="w-4 h-4" />}
             >
+              <Phone className="w-4 h-4 mr-2" />
               تماس
             </Button>
             <Button
               onClick={() => scrollToSection('#cta')}
               variant="default"
               className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl"
-              icon={<ArrowLeft className="w-4 h-4" />}
             >
               درخواست دمو
             </Button>
@@ -133,15 +132,14 @@ export function LandingHeader() {
               <Button
                 variant="ghost"
                 className="w-full justify-start text-gray-700"
-                icon={<Phone className="w-4 h-4" />}
               >
+                <Phone className="w-4 h-4 mr-2" />
                 تماس
               </Button>
               <Button
                 onClick={() => scrollToSection('#cta')}
                 variant="default"
                 className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-                icon={<ArrowLeft className="w-4 h-4" />}
               >
                 درخواست دمو
               </Button>

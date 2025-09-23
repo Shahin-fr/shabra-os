@@ -8,7 +8,7 @@ const QuickLinksWidget = () => {
       id: 1,
       label: 'تخصیص وظیفه جدید',
       icon: '+',
-      variant: 'primary' as const,
+      variant: 'default' as const,
       onClick: () => {
         console.log('New task assignment clicked!');
         // TODO: Implement new task assignment functionality

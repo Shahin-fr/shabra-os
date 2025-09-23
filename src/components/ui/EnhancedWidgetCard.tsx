@@ -1,11 +1,11 @@
 'use client';
 
 import { ReactNode } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { AlertCircle, RefreshCw, CheckCircle, XCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { widgetVariants, statusColors } from '@/lib/design-system';
+import { widgetVariants } from '@/lib/design-system';
 
 interface EnhancedWidgetCardProps {
   title: string;
@@ -50,7 +50,7 @@ export function EnhancedWidgetCard({
       scale: 1,
       transition: {
         duration: 0.3,
-        ease: [0.4, 0, 0.2, 1],
+        ease: "easeOut",
         staggerChildren: 0.1,
       }
     },

@@ -30,7 +30,7 @@ export function MobileFormModal({
   onDelete,
   deleteLabel = 'حذف',
   showDelete = false,
-  className,
+  // className, // Removed unused parameter
 }: MobileFormModalProps) {
   const handleSubmit = (e: any) => {
     e.preventDefault();

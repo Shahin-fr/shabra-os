@@ -212,7 +212,7 @@ export function HolidayManagement() {
   };
 
   const handleDeleteHoliday = (holiday: Holiday) => {
-    if (window.confirm(`آیا از حذف تعطیل "${holiday.name}" اطمینان دارید؟`)) {
+    if (typeof window !== 'undefined' && window.confirm(`آیا از حذف تعطیل "${holiday.name}" اطمینان دارید؟`)) {
       deleteHolidayMutation.mutate(holiday.id);
     }
   };

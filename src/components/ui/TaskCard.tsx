@@ -5,8 +5,7 @@ import { Button } from '@/components/ui/button';
 import { 
   CheckCircle, 
   Clock, 
-  AlertCircle,
-  User
+  AlertCircle
 } from 'lucide-react';
 
 // Placeholder Avatar Component (inline for now)

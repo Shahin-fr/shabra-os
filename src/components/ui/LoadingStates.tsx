@@ -150,7 +150,7 @@ interface SkeletonChartProps {
 
 export function SkeletonChart({ 
   className, 
-  type = 'bar' 
+  // type = 'bar' // Removed unused parameter 
 }: SkeletonChartProps) {
   return (
     <motion.div

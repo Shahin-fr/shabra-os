@@ -49,7 +49,9 @@ export const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
       onRetry();
     } else {
       // Default retry behavior
-      window.location.reload();
+      if (typeof window !== 'undefined') {
+        window.location.reload();
+      }
     }
   };
 

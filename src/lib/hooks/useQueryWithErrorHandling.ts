@@ -51,23 +51,23 @@ export function useMutationWithErrorHandling<TData = unknown, TError = unknown, 
 
   return useMutation({
     ...mutationOptions,
-    onMutate: (variables) => {
+    onMutate: (variables, context) => {
       if (showLoadingToast && loadingMessage) {
         handleLoading(loadingMessage, errorContext);
       }
-      return mutationOptions.onMutate?.(variables);
+      return mutationOptions.onMutate?.(variables, context);
     },
-    onError: (error, variables, context) => {
+    onError: (error, variables, context, onMutateResult) => {
       if (showErrorToast) {
         handleError(error, errorContext);
       }
-      mutationOptions.onError?.(error, variables, context);
+      mutationOptions.onError?.(error, variables, context, onMutateResult);
     },
-    onSuccess: (data, variables, context) => {
+    onSuccess: (data, variables, context, onMutateResult) => {
       if (showSuccessToast && successMessage) {
         handleSuccess(successMessage, errorContext);
       }
-      mutationOptions.onSuccess?.(data, variables, context);
+      mutationOptions.onSuccess?.(data, variables, context, onMutateResult);
     },
   });
 }

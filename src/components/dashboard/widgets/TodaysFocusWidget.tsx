@@ -386,7 +386,11 @@ export function TodaysFocusWidget({ className }: TodaysFocusWidgetProps) {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => window.location.href = '/tasks'}
+              onClick={() => {
+                if (typeof window !== 'undefined') {
+                  window.location.href = '/tasks';
+                }
+              }}
               className="text-xs font-vazirmatn"
             >
               مشاهده همه تسک‌ها
