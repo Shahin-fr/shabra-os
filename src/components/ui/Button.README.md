@@ -60,7 +60,7 @@ function MyComponent() {
 Uses the hot pink (#ff0a54) brand color from the design system.
 
 ```tsx
-<Button variant="primary">Primary Button</Button>
+<Button variant="default">Default Button</Button>
 ```
 
 ### Secondary
@@ -214,7 +214,7 @@ import { Plus, Save } from 'lucide-react';
 ### Persian/Farsi Examples
 
 ```tsx
-<Button variant="primary">دکمه اصلی</Button>
+<Button variant="default">دکمه پیش‌فرض</Button>
 <Button variant="secondary">دکمه ثانویه</Button>
 <Button variant="ghost">دکمه شبح</Button>
 <Button variant="destructive">حذف</Button>

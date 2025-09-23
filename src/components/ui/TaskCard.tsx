@@ -158,7 +158,7 @@ const TaskCard = React.forwardRef<HTMLDivElement, TaskCardProps>(
           {/* Action button */}
           <Button 
             size="sm" 
-            variant={isCompleted ? "ghost" : "primary"}
+            variant={isCompleted ? "ghost" : "default"}
             className="text-xs px-3 py-1 h-7 flex-shrink-0"
             onClick={(e) => {
               e.stopPropagation();

@@ -22,7 +22,7 @@ interface EmptyStateProps {
   action?: {
     label: string;
     onClick: () => void;
-    variant?: 'primary' | 'secondary' | 'outline';
+    variant?: 'default' | 'secondary' | 'outline';
   };
   className?: string;
   animated?: boolean;
@@ -102,7 +102,7 @@ export function EmptyState({
         <motion.div variants={animated ? itemVariants : undefined}>
           <Button
             onClick={action.onClick}
-            variant={action.variant || 'primary'}
+            variant={action.variant || 'default'}
             className="font-vazirmatn"
           >
             {action.label}
@@ -127,7 +127,7 @@ export function EmptyTasks({ onAddTask }: { onAddTask: () => void }) {
       action={{
         label: "کار جدید ایجاد کنید",
         onClick: onAddTask,
-        variant: "primary"
+        variant: "default"
       }}
     />
   );
@@ -146,7 +146,7 @@ export function EmptyRequests({ onNewRequest }: { onNewRequest: () => void }) {
       action={{
         label: "درخواست جدید",
         onClick: onNewRequest,
-        variant: "primary"
+        variant: "default"
       }}
     />
   );
@@ -165,7 +165,7 @@ export function EmptyTeam({ onInviteMember }: { onInviteMember: () => void }) {
       action={{
         label: "دعوت عضو جدید",
         onClick: onInviteMember,
-        variant: "primary"
+        variant: "default"
       }}
     />
   );
@@ -184,7 +184,7 @@ export function EmptyCalendar({ onAddEvent }: { onAddEvent: () => void }) {
       action={{
         label: "رویداد جدید",
         onClick: onAddEvent,
-        variant: "primary"
+        variant: "default"
       }}
     />
   );
@@ -222,7 +222,7 @@ export function EmptyError({ onRetry }: { onRetry: () => void }) {
       action={{
         label: "تلاش مجدد",
         onClick: onRetry,
-        variant: "primary"
+        variant: "default"
       }}
     />
   );

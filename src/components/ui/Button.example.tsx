@@ -38,7 +38,7 @@ export function ButtonExamples() {
           {/* Primary Button */}
           <div className="space-y-2">
             <h3 className="text-sm font-medium text-muted-foreground">Primary</h3>
-            <Button variant="primary">
+            <Button variant="default">
               دکمه اصلی
             </Button>
           </div>
@@ -76,13 +76,13 @@ export function ButtonExamples() {
         </h2>
         
         <div className="flex flex-wrap items-center gap-4">
-          <Button size="sm" variant="primary">
+          <Button size="sm" variant="default">
             کوچک
           </Button>
-          <Button size="md" variant="primary">
+          <Button size="md" variant="default">
             متوسط
           </Button>
-          <Button size="lg" variant="primary">
+          <Button size="lg" variant="default">
             بزرگ
           </Button>
         </div>
@@ -98,7 +98,7 @@ export function ButtonExamples() {
           {/* Normal State */}
           <div className="space-y-2">
             <h3 className="text-sm font-medium text-muted-foreground">عادی</h3>
-            <Button variant="primary">
+            <Button variant="default">
               دکمه عادی
             </Button>
           </div>
@@ -106,7 +106,7 @@ export function ButtonExamples() {
           {/* Loading State */}
           <div className="space-y-2">
             <h3 className="text-sm font-medium text-muted-foreground">در حال بارگذاری</h3>
-            <Button variant="primary" isLoading>
+            <Button variant="default" isLoading>
               در حال بارگذاری...
             </Button>
           </div>
@@ -114,7 +114,7 @@ export function ButtonExamples() {
           {/* Disabled State */}
           <div className="space-y-2">
             <h3 className="text-sm font-medium text-muted-foreground">غیرفعال</h3>
-            <Button variant="primary" isDisabled>
+            <Button variant="default" isDisabled>
               غیرفعال
             </Button>
           </div>
@@ -134,7 +134,7 @@ export function ButtonExamples() {
           
           <div className="flex flex-wrap gap-4">
             <Button 
-              variant="primary" 
+              variant="default" 
               isLoading={isLoading}
               onClick={handleLoadingDemo}
             >
@@ -198,7 +198,7 @@ export function ButtonExamples() {
           </p>
           
           <div className="flex flex-wrap gap-4">
-            <Button variant="primary">
+            <Button variant="default">
               دکمه فارسی
             </Button>
             <Button variant="secondary">

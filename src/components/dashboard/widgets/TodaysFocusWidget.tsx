@@ -26,10 +26,9 @@ interface Task {
 
 interface TodaysFocusWidgetProps {
   className?: string;
-  variant?: 'mobile' | 'desktop';
 }
 
-export function TodaysFocusWidget({ className, variant = 'desktop' }: TodaysFocusWidgetProps) {
+export function TodaysFocusWidget({ className }: TodaysFocusWidgetProps) {
   const queryClient = useQueryClient();
   const [expandedTask, setExpandedTask] = useState<string | null>(null);
 
@@ -79,7 +78,7 @@ export function TodaysFocusWidget({ className, variant = 'desktop' }: TodaysFocu
       
       return response.json();
     },
-    onSuccess: (data, variables) => {
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['tasks', 'today'] });
       const statusText = variables.status === 'Done' ? 'تکمیل' : 
                         variables.status === 'InProgress' ? 'شروع' : 'بازگشت';
@@ -181,8 +180,9 @@ export function TodaysFocusWidget({ className, variant = 'desktop' }: TodaysFocu
           className
         )}
         loading={true}
-        variant={variant}
-      />
+      >
+        <div></div>
+      </WidgetCard>
     );
   }
 
@@ -194,7 +194,6 @@ export function TodaysFocusWidget({ className, variant = 'desktop' }: TodaysFocu
           'bg-gradient-to-br from-red-50 to-pink-50',
           className
         )}
-        variant={variant}
       >
         <div className="text-center py-4">
           <p className="text-red-600 text-sm">خطا در بارگذاری تسک‌ها</p>
@@ -210,7 +209,6 @@ export function TodaysFocusWidget({ className, variant = 'desktop' }: TodaysFocu
         'bg-gradient-to-br from-blue-50 to-indigo-50',
         className
       )}
-      variant={variant}
     >
       <div className="space-y-4">
         {/* Progress Header */}

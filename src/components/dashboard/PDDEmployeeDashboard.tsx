@@ -19,7 +19,7 @@ export function PDDEmployeeDashboard() {
         <div className="min-h-screen p-4 pb-20">
           <div className="max-w-7xl mx-auto space-y-6">
             <SmartStatusCard variant="mobile" />
-            <TodaysFocusWidget variant="mobile" />
+            <TodaysFocusWidget />
             <NextUpWidget variant="mobile" />
             <MyRequestsWidget variant="mobile" />
             <AnnouncementsWidget variant="mobile" />
@@ -37,7 +37,7 @@ export function PDDEmployeeDashboard() {
 
               {/* Center Column - Main Content */}
               <div className="col-span-12 lg:col-span-6 space-y-6">
-                <TodaysFocusWidget variant="desktop" />
+                <TodaysFocusWidget />
                 <AnnouncementsWidget variant="desktop" />
               </div>
 

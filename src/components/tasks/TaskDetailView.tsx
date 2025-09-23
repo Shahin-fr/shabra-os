@@ -274,7 +274,7 @@ const TaskDetailView: React.FC<TaskDetailViewProps> = ({ task }) => {
         <Button variant="outline" size="sm">
           ویرایش
         </Button>
-        <Button variant="primary" size="sm">
+        <Button variant="default" size="sm">
           {isCompleted ? 'بازگشت به کار' : 'تکمیل کار'}
         </Button>
       </div>

@@ -18,14 +18,14 @@ const TeamWorkloadWidget = () => {
   };
 
   // const getWorkloadLabel = (taskCount: number) => {
-    if (taskCount >= 7) {
-      return 'بار کاری بالا';
-    } else if (taskCount >= 4) {
-      return 'بار کاری متوسط';
-    } else {
-      return 'بار کاری کم';
-    }
-  };
+  //   if (taskCount >= 7) {
+  //     return 'بار کاری بالا';
+  //   } else if (taskCount >= 4) {
+  //     return 'بار کاری متوسط';
+  //   } else {
+  //     return 'بار کاری کم';
+  //   }
+  // };
 
   return (
     <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm p-6">

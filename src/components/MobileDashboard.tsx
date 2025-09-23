@@ -96,7 +96,7 @@ const TaskCard: React.FC<{
         <span className="text-xs text-gray-500">{dueDate}</span>
         <Button 
           size="sm" 
-          variant={isCompleted ? "ghost" : "primary"}
+          variant={isCompleted ? "ghost" : "default"}
           className="text-xs px-3 py-1 h-7"
         >
           {isCompleted ? 'تکمیل شده' : 'مشاهده'}
@@ -334,7 +334,7 @@ const MobileDashboard: React.FC = () => {
           
           <div className="grid grid-cols-2 gap-4">
             <Button 
-              variant="primary" 
+              variant="default" 
               size="lg" 
               className="h-16 flex-col gap-2 glass-morphism"
             >

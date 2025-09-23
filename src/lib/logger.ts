@@ -263,11 +263,11 @@ class Logger {
   // Performance logging
   time(operation: string, source?: string): () => void {
     const startTime = Date.now();
-    const startMemory = process.memoryUsage().heapUsed;
+    const startMemory = typeof process !== 'undefined' && process.memoryUsage ? process.memoryUsage().heapUsed : 0;
 
     return () => {
       const endTime = Date.now();
-      const endMemory = process.memoryUsage().heapUsed;
+      const endMemory = typeof process !== 'undefined' && process.memoryUsage ? process.memoryUsage().heapUsed : 0;
       const duration = endTime - startTime;
       const memoryUsed = endMemory - startMemory;
 

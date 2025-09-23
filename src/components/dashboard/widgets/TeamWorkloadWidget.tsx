@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { Users, BarChart3, User, AlertCircle } from 'lucide-react';
+import { Users, User, AlertCircle } from 'lucide-react';
 import { WidgetCard } from './WidgetCard';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -30,7 +30,7 @@ export function TeamWorkloadWidget({ className, variant = 'desktop' }: TeamWorkl
       return Array.isArray(data.data) ? data.data : [];
     },
     staleTime: 1000 * 60 * 10, // 10 minutes - workload changes less frequently
-    cacheTime: 1000 * 60 * 30, // 30 minutes
+    gcTime: 1000 * 60 * 30, // 30 minutes
     refetchInterval: 300000, // Refetch every 5 minutes
   });
 
