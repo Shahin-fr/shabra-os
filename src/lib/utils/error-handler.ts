@@ -6,6 +6,10 @@ import {
   createServerErrorResponse,
   createNotFoundErrorResponse,
   createAuthErrorResponse,
+  createAuthorizationErrorResponse,
+  createDatabaseErrorResponse,
+  createRateLimitErrorResponse,
+  createErrorResponse,
   HTTP_STATUS_CODES,
 } from '@/lib/api/response-utils';
 import { logger } from '@/lib/logger';
@@ -54,6 +58,36 @@ export class ForbiddenError extends AppError {
 export class BadRequestError extends AppError {
   constructor(message: string = 'Bad request') {
     super(message, 400, 'BAD_REQUEST');
+  }
+}
+
+export class ValidationError extends AppError {
+  constructor(message: string = 'Validation failed') {
+    super(message, 422, 'VALIDATION_ERROR');
+  }
+}
+
+export class ConflictError extends AppError {
+  constructor(message: string = 'Resource conflict') {
+    super(message, 409, 'CONFLICT');
+  }
+}
+
+export class RateLimitError extends AppError {
+  constructor(message: string = 'Rate limit exceeded') {
+    super(message, 429, 'RATE_LIMIT_EXCEEDED');
+  }
+}
+
+export class DatabaseError extends AppError {
+  constructor(message: string = 'Database operation failed') {
+    super(message, 500, 'DATABASE_ERROR');
+  }
+}
+
+export class ExternalServiceError extends AppError {
+  constructor(message: string = 'External service error') {
+    super(message, 502, 'EXTERNAL_SERVICE_ERROR');
   }
 }
 
@@ -110,41 +144,85 @@ export function handleApiError(error: unknown, context?: {
     });
   }
 
-  // Handle custom AppError types
+  // Handle custom AppError types using switch for better scalability
   if (error instanceof AppError) {
-    if (error instanceof NotFoundError) {
-      const errorResponse = createNotFoundErrorResponse();
-      return NextResponse.json(errorResponse, {
-        status: error.statusCode,
-      });
-    }
+    switch (error.constructor) {
+      case NotFoundError: {
+        const errorResponse = createNotFoundErrorResponse(error.message);
+        return NextResponse.json(errorResponse, {
+          status: error.statusCode,
+        });
+      }
 
-    if (error instanceof UnauthorizedError) {
-      const errorResponse = createAuthErrorResponse('Unauthorized');
-      return NextResponse.json(errorResponse, {
-        status: error.statusCode,
-      });
-    }
+      case UnauthorizedError: {
+        const errorResponse = createAuthErrorResponse(error.message);
+        return NextResponse.json(errorResponse, {
+          status: error.statusCode,
+        });
+      }
 
-    if (error instanceof ForbiddenError) {
-      const errorResponse = createErrorResponse('Forbidden', 403);
-      return NextResponse.json(errorResponse, {
-        status: error.statusCode,
-      });
-    }
+      case ForbiddenError: {
+        const errorResponse = createAuthorizationErrorResponse(error.message);
+        return NextResponse.json(errorResponse, {
+          status: error.statusCode,
+        });
+      }
 
-    if (error instanceof BadRequestError) {
-      const errorResponse = createValidationErrorResponse(error.message);
-      return NextResponse.json(errorResponse, {
-        status: error.statusCode,
-      });
-    }
+      case BadRequestError: {
+        const errorResponse = createValidationErrorResponse(error.message);
+        return NextResponse.json(errorResponse, {
+          status: error.statusCode,
+        });
+      }
 
-    // Generic AppError
-    const errorResponse = createServerErrorResponse(error.message);
-    return NextResponse.json(errorResponse, {
-      status: error.statusCode,
-    });
+      case ValidationError: {
+        const errorResponse = createValidationErrorResponse(error.message);
+        return NextResponse.json(errorResponse, {
+          status: error.statusCode,
+        });
+      }
+
+      case ConflictError: {
+        const errorResponse = createErrorResponse('CONFLICT', error.message);
+        return NextResponse.json(errorResponse, {
+          status: error.statusCode,
+        });
+      }
+
+      case RateLimitError: {
+        const errorResponse = createRateLimitErrorResponse();
+        return NextResponse.json(errorResponse, {
+          status: error.statusCode,
+        });
+      }
+
+      case DatabaseError: {
+        const errorResponse = createDatabaseErrorResponse(error.message);
+        return NextResponse.json(errorResponse, {
+          status: error.statusCode,
+        });
+      }
+
+      case ExternalServiceError: {
+        const errorResponse = createErrorResponse('EXTERNAL_SERVICE_ERROR', error.message);
+        return NextResponse.json(errorResponse, {
+          status: error.statusCode,
+        });
+      }
+
+      // Default case for any unhandled AppError subtypes
+      default: {
+        // Use the error's own status code and message, or fallback to generic server error
+        const statusCode = error.statusCode || 500;
+        const errorResponse = statusCode >= 500 
+          ? createServerErrorResponse(error.message)
+          : createErrorResponse(error.code || 'UNKNOWN_ERROR', error.message);
+        
+        return NextResponse.json(errorResponse, {
+          status: statusCode,
+        });
+      }
+    }
   }
 
   // Handle Prisma errors
@@ -192,38 +270,47 @@ export function handleApiError(error: unknown, context?: {
     }
   }
 
-  // Handle generic Error
+  // Handle generic Error instances
   if (error instanceof Error) {
     // Check for specific error messages that we can handle gracefully
-    if (error.message.includes('not found')) {
-      const errorResponse = createNotFoundErrorResponse();
+    const message = error.message.toLowerCase();
+    
+    if (message.includes('not found')) {
+      const errorResponse = createNotFoundErrorResponse(error.message);
       return NextResponse.json(errorResponse, {
         status: HTTP_STATUS_CODES.NOT_FOUND,
       });
     }
 
-    if (error.message.includes('unauthorized') || error.message.includes('Unauthorized')) {
-      const errorResponse = createAuthErrorResponse('Unauthorized');
+    if (message.includes('unauthorized') || message.includes('authentication')) {
+      const errorResponse = createAuthErrorResponse(error.message);
       return NextResponse.json(errorResponse, {
         status: HTTP_STATUS_CODES.UNAUTHORIZED,
       });
     }
 
-    if (error.message.includes('forbidden') || error.message.includes('Forbidden')) {
-      const errorResponse = createErrorResponse('Forbidden', 403);
+    if (message.includes('forbidden') || message.includes('authorization')) {
+      const errorResponse = createAuthorizationErrorResponse(error.message);
       return NextResponse.json(errorResponse, {
         status: HTTP_STATUS_CODES.FORBIDDEN,
       });
     }
 
-    // Generic error
-    const errorResponse = createServerErrorResponse(error.message);
+    if (message.includes('validation') || message.includes('invalid')) {
+      const errorResponse = createValidationErrorResponse(error.message);
+      return NextResponse.json(errorResponse, {
+        status: HTTP_STATUS_CODES.BAD_REQUEST,
+      });
+    }
+
+    // Generic error - always return 500 to prevent information leakage
+    const errorResponse = createServerErrorResponse('An internal server error occurred');
     return NextResponse.json(errorResponse, {
       status: HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
     });
   }
 
-  // Handle unknown error types
+  // Final catch-all for unknown error types - always return 500
   const errorResponse = createServerErrorResponse('An unexpected error occurred');
   return NextResponse.json(errorResponse, {
     status: HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
@@ -249,19 +336,4 @@ export function withErrorHandling<T extends any[]>(
   };
 }
 
-/**
- * Utility function to create standardized error responses
- */
-export function createErrorResponse(
-  message: string,
-  _statusCode: number = 500,
-  code: string = 'INTERNAL_ERROR'
-) {
-  return {
-    error: {
-      message,
-      code,
-      timestamp: new Date().toISOString(),
-    },
-  };
-}
+// createErrorResponse is imported from response-utils.ts

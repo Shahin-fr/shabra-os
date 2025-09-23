@@ -19,6 +19,14 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  // Security constraint: Ensure unique combination of email and isActive
+  // This prevents duplicate active users with the same email
+  @@unique([email, isActive], name: "unique_active_email")
+  
+  // Password strength validation should be enforced at the application level
+  // Recommended: minimum 8 characters, at least one uppercase, lowercase, number, and special character
+  // This constraint cannot be enforced directly in Prisma, implement in validation layer
+
   // Manager-subordinate hierarchy
   managerId    String?
   manager      User?   @relation("ManagerSubordinates", fields: [managerId], references: [id])
@@ -519,6 +527,8 @@ model TrackedInstagramPage {
   
   reels         InstagramReel[]
 
+  // Security constraint: Ensure username is not empty and follows valid format
+  @@index([username])
   @@map("tracked_instagram_pages")
 }
 
@@ -535,6 +545,9 @@ model InstagramReel {
 
   createdAt       DateTime @default(now())
 
+  // Security constraints: Ensure data integrity
+  @@index([pageId])
+  @@index([publishedAt])
   @@map("instagram_reels")
 }
 

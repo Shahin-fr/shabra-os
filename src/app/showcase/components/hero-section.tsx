@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, useMotionValue, useSpring, useTransform, useAnimation } from 'framer-motion';
+import { useIsMobile } from '../../../hooks/useMediaQuery';
 import { t } from '../utils/i18n';
 
 /**
@@ -11,6 +12,7 @@ import { t } from '../utils/i18n';
  * refined typography, and narrative-driven design.
  */
 export default function HeroSection() {
+  const isMobile = useIsMobile();
   const [, setMousePosition] = useState({ x: 0, y: 0 });
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -30,13 +32,20 @@ export default function HeroSection() {
       mouseY.set(e.clientY);
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
+    // Only add mouse move listener on desktop
+    if (!isMobile) {
+      window.addEventListener('mousemove', handleMouseMove);
+    }
     
     // Start entrance animation
     controls.start("visible");
     
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, [mouseX, mouseY, controls]);
+    return () => {
+      if (!isMobile) {
+        window.removeEventListener('mousemove', handleMouseMove);
+      }
+    };
+  }, [mouseX, mouseY, controls, isMobile]);
 
   // Animation variants
   const containerVariants = {
@@ -92,63 +101,67 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-transparent overflow-hidden">
-      {/* Animated background elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        {/* Floating geometric shapes */}
-        <motion.div
-          className="absolute top-20 left-10 w-32 h-32 border border-[#E000A0]/20 rounded-full"
-          animate={{
-            y: [0, -20, 0],
-            rotate: [0, 180, 360],
-            scale: [1, 1.1, 1]
-          }}
-          transition={{
-            duration: 8,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-        />
-        <motion.div
-          className="absolute top-40 right-20 w-24 h-24 border border-[#E000A0]/15 rounded-lg"
-          animate={{
-            y: [0, 30, 0],
-            rotate: [0, -90, 0],
-            scale: [1, 0.9, 1]
-          }}
-          transition={{
-            duration: 6,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 1
-          }}
-        />
-        <motion.div
-          className="absolute bottom-40 left-1/4 w-16 h-16 border border-[#E000A0]/10 rounded-full"
-          animate={{
-            y: [0, -15, 0],
-            x: [0, 10, 0],
-            scale: [1, 1.2, 1]
-          }}
-          transition={{
-            duration: 7,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 2
-          }}
-        />
-      </div>
+    <section className={`relative ${isMobile ? 'min-h-[80vh] py-8' : 'min-h-screen'} flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-transparent overflow-hidden`}>
+      {/* Animated background elements - reduced on mobile */}
+      {!isMobile && (
+        <div className="absolute inset-0 overflow-hidden">
+          {/* Floating geometric shapes */}
+          <motion.div
+            className="absolute top-20 left-10 w-32 h-32 border border-[#E000A0]/20 rounded-full"
+            animate={{
+              y: [0, -20, 0],
+              rotate: [0, 180, 360],
+              scale: [1, 1.1, 1]
+            }}
+            transition={{
+              duration: 8,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          />
+          <motion.div
+            className="absolute top-40 right-20 w-24 h-24 border border-[#E000A0]/15 rounded-lg"
+            animate={{
+              y: [0, 30, 0],
+              rotate: [0, -90, 0],
+              scale: [1, 0.9, 1]
+            }}
+            transition={{
+              duration: 6,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 1
+            }}
+          />
+          <motion.div
+            className="absolute bottom-40 left-1/4 w-16 h-16 border border-[#E000A0]/10 rounded-full"
+            animate={{
+              y: [0, -15, 0],
+              x: [0, 10, 0],
+              scale: [1, 1.2, 1]
+            }}
+            transition={{
+              duration: 7,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 2
+            }}
+          />
+        </div>
+      )}
 
-      {/* Interactive cursor glow */}
-      <motion.div
-        className="absolute pointer-events-none z-10"
-        style={{
-          x: glowX,
-          y: glowY,
-        }}
-      >
-        <div className="w-96 h-96 bg-gradient-radial from-[#E000A0]/20 via-[#E000A0]/5 to-transparent rounded-full blur-3xl" />
-      </motion.div>
+      {/* Interactive cursor glow - only on desktop */}
+      {!isMobile && (
+        <motion.div
+          className="absolute pointer-events-none z-10"
+          style={{
+            x: glowX,
+            y: glowY,
+          }}
+        >
+          <div className="w-96 h-96 bg-gradient-radial from-[#E000A0]/20 via-[#E000A0]/5 to-transparent rounded-full blur-3xl" />
+        </motion.div>
+      )}
 
       <motion.div 
         className="max-w-7xl mx-auto text-center relative z-20"
@@ -166,9 +179,9 @@ export default function HeroSection() {
           </div>
         </motion.div>
 
-        {/* Main headline - refined typography */}
+        {/* Main headline - mobile optimized typography */}
         <motion.h1 
-          className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#F5F5F5] mb-6 leading-tight"
+          className={`${isMobile ? 'text-3xl sm:text-4xl' : 'text-4xl sm:text-5xl lg:text-6xl'} font-bold text-[#F5F5F5] ${isMobile ? 'mb-4' : 'mb-6'} leading-tight`}
           variants={itemVariants}
         >
           {t('hero_brand_name')}
@@ -176,7 +189,7 @@ export default function HeroSection() {
 
         {/* Subtitle */}
         <motion.p 
-          className="text-lg sm:text-xl lg:text-2xl text-[#A1A1A1] mb-8 max-w-4xl mx-auto leading-relaxed"
+          className={`${isMobile ? 'text-base sm:text-lg' : 'text-lg sm:text-xl lg:text-2xl'} text-[#A1A1A1] ${isMobile ? 'mb-6' : 'mb-8'} max-w-4xl mx-auto leading-relaxed`}
           variants={itemVariants}
         >
           {t('hero_title')}
@@ -184,20 +197,20 @@ export default function HeroSection() {
 
         {/* Description */}
         <motion.p 
-          className="text-base sm:text-lg text-[#666666] mb-12 max-w-3xl mx-auto leading-relaxed"
+          className={`${isMobile ? 'text-sm sm:text-base' : 'text-base sm:text-lg'} text-[#666666] ${isMobile ? 'mb-8' : 'mb-12'} max-w-3xl mx-auto leading-relaxed`}
           variants={itemVariants}
         >
           {t('hero_subtitle')}
         </motion.p>
 
-        {/* Sophisticated animated visual */}
+        {/* Sophisticated animated visual - mobile optimized */}
         <motion.div 
-          className="relative max-w-4xl mx-auto"
+          className={`relative ${isMobile ? 'max-w-sm' : 'max-w-4xl'} mx-auto`}
           variants={visualVariants}
         >
-          <div className="relative bg-gradient-to-br from-[#1A1A1A] to-[#0F0F0F] rounded-3xl border border-[#2A2A2A] p-8 shadow-2xl">
+          <div className={`relative bg-gradient-to-br from-[#1A1A1A] to-[#0F0F0F] rounded-3xl border border-[#2A2A2A] ${isMobile ? 'p-4' : 'p-8'} shadow-2xl`}>
             {/* Animated dashboard mockup */}
-            <div className="relative h-80 bg-[#0A0A0A] rounded-2xl overflow-hidden">
+            <div className={`relative ${isMobile ? 'h-48' : 'h-80'} bg-[#0A0A0A] rounded-2xl overflow-hidden`}>
               {/* Animated grid background */}
               <div className="absolute inset-0 opacity-20">
                 <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">

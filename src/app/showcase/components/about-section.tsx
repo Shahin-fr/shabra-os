@@ -3,6 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
+import { useIsMobile } from '../../../hooks/useMediaQuery';
 
 /**
  * AboutSection Component - Completely Re-architected
@@ -11,6 +12,7 @@ import { useInView } from 'react-intersection-observer';
  * developer bio, and interactive social media links.
  */
 export default function AboutSection() {
+  const isMobile = useIsMobile();
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1
@@ -91,38 +93,38 @@ export default function AboutSection() {
           className="mb-12"
           variants={itemVariants}
         >
-          <div className="bg-gradient-to-br from-[#1A1A1A] to-[#0F0F0F] rounded-3xl border border-[#2A2A2A] p-8 sm:p-12 shadow-2xl">
+          <div className={`bg-gradient-to-br from-[#1A1A1A] to-[#0F0F0F] rounded-3xl border border-[#2A2A2A] ${isMobile ? 'p-6' : 'p-8 sm:p-12'} shadow-2xl`}>
             {/* Profile Image Placeholder */}
             <motion.div 
-              className="w-24 h-24 bg-gradient-to-br from-[#E000A0] to-[#B8008A] rounded-full mx-auto mb-6 flex items-center justify-center"
+              className={`${isMobile ? 'w-20 h-20 mb-4' : 'w-24 h-24 mb-6'} bg-gradient-to-br from-[#E000A0] to-[#B8008A] rounded-full mx-auto flex items-center justify-center`}
               whileHover={{ scale: 1.05, rotate: 5 }}
               transition={{ duration: 0.3 }}
             >
-              <span className="text-3xl font-bold text-white">S</span>
+              <span className={`${isMobile ? 'text-2xl' : 'text-3xl'} font-bold text-white`}>S</span>
             </motion.div>
 
             {/* Bio Text */}
-            <div className="space-y-6">
-              <h3 className="text-2xl font-bold text-[#F5F5F5] mb-4">
+            <div className={`space-y-${isMobile ? '4' : '6'}`}>
+              <h3 className={`${isMobile ? 'text-xl' : 'text-2xl'} font-bold text-[#F5F5F5] ${isMobile ? 'mb-3' : 'mb-4'}`}>
                 سلام، من شابرا هستم
               </h3>
               
-              <p className="text-[#A1A1A1] leading-relaxed text-lg">
+              <p className={`text-[#A1A1A1] leading-relaxed ${isMobile ? 'text-base' : 'text-lg'}`}>
                 یک توسعه‌دهنده فول‌استک با بیش از ۵ سال تجربه در ایجاد نرم‌افزارهای مدرن و کاربردی. 
                 من عاشق حل مسائل پیچیده و ایجاد تجربه‌های دیجیتال بی‌نظیر هستم.
               </p>
               
-              <p className="text-[#A1A1A1] leading-relaxed text-lg">
+              <p className={`text-[#A1A1A1] leading-relaxed ${isMobile ? 'text-base' : 'text-lg'}`}>
                 پروژه شابرا OS نتیجه سال‌ها تحقیق، طراحی و توسعه است که با هدف ساده‌سازی 
                 و یکپارچه‌سازی ابزارهای مختلف کاری ایجاد شده است.
               </p>
 
               {/* Skills */}
-              <div className="flex flex-wrap justify-center gap-3 mt-8">
+              <div className={`flex flex-wrap justify-center gap-2 ${isMobile ? 'mt-6' : 'mt-8'}`}>
                 {['React', 'TypeScript', 'Node.js', 'PostgreSQL', 'UI/UX Design', 'DevOps'].map((skill) => (
                   <motion.span
                     key={skill}
-                    className="px-4 py-2 bg-[#E000A0]/10 text-[#E000A0] rounded-full text-sm font-medium border border-[#E000A0]/20"
+                    className={`${isMobile ? 'px-3 py-1 text-xs' : 'px-4 py-2 text-sm'} bg-[#E000A0]/10 text-[#E000A0] rounded-full font-medium border border-[#E000A0]/20`}
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.1 }}
@@ -146,7 +148,7 @@ export default function AboutSection() {
           </h3>
           
           <motion.div 
-            className="flex flex-wrap justify-center gap-4"
+            className={`flex flex-wrap justify-center ${isMobile ? 'gap-3' : 'gap-4'}`}
             variants={containerVariants}
           >
             {socialLinks.map((social) => (
@@ -163,13 +165,13 @@ export default function AboutSection() {
                 whileTap={{ scale: 0.95 }}
               >
                 <div 
-                  className="flex items-center space-x-3 rtl:space-x-reverse px-6 py-3 bg-[#1A1A1A] rounded-xl border border-[#2A2A2A] hover:border-[#E000A0]/50 transition-all duration-300 cursor-pointer group-hover:shadow-lg group-hover:shadow-[#E000A0]/10"
+                  className={`flex items-center ${isMobile ? 'space-x-2 px-4 py-2' : 'space-x-3 px-6 py-3'} rtl:space-x-reverse bg-[#1A1A1A] rounded-xl border border-[#2A2A2A] hover:border-[#E000A0]/50 transition-all duration-300 cursor-pointer group-hover:shadow-lg group-hover:shadow-[#E000A0]/10`}
                   style={{ borderColor: `${social.color}20` }}
                 >
-                  <span className="text-xl group-hover:scale-110 transition-transform duration-300">
+                  <span className={`${isMobile ? 'text-lg' : 'text-xl'} group-hover:scale-110 transition-transform duration-300`}>
                     {social.icon}
                   </span>
-                  <span className="text-[#F5F5F5] group-hover:text-[#E000A0] transition-colors duration-300 font-medium">
+                  <span className={`${isMobile ? 'text-sm' : 'text-base'} text-[#F5F5F5] group-hover:text-[#E000A0] transition-colors duration-300 font-medium`}>
                     {social.name}
                   </span>
                 </div>
@@ -185,7 +187,7 @@ export default function AboutSection() {
         >
           <motion.a
             href="mailto:contact@shabra.dev"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-[#E000A0] to-[#B8008A] text-white font-semibold rounded-xl shadow-lg shadow-[#E000A0]/25 hover:shadow-[#E000A0]/40 transition-all duration-300"
+            className={`inline-flex items-center gap-2 ${isMobile ? 'px-6 py-3 text-sm' : 'px-8 py-4 text-base'} bg-gradient-to-r from-[#E000A0] to-[#B8008A] text-white font-semibold rounded-xl shadow-lg shadow-[#E000A0]/25 hover:shadow-[#E000A0]/40 transition-all duration-300`}
             whileHover={{ 
               scale: 1.05,
               boxShadow: "0 20px 40px rgba(224, 0, 160, 0.3)"

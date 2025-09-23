@@ -2,6 +2,7 @@ import { DatabasePerformanceMonitor } from '@/lib/database/query-optimizer';
 import { StoryQueryOptimizer } from '@/lib/database/query-optimizer';
 import { logger } from '@/lib/logger';
 import { prisma } from '@/lib/prisma';
+import { ProjectIdResolver } from '@/lib/utils/ProjectIdResolver';
 import {
   CreateStorySchema,
   UpdateStorySchema,
@@ -87,17 +88,12 @@ export class StoryService {
     // Validate input data
     const validatedData = CreateStorySchema.parse(data);
 
-    // Fix old project IDs - convert to valid ones
-    let projectId = validatedData.projectId;
-    if (projectId === 'cmf5o9m110001u35cldria860') {
-      const firstProject = await prisma.project.findFirst({
-        select: { id: true },
-      });
-      if (firstProject) {
-        projectId = firstProject.id;
-        // Project ID fixed for compatibility
-      }
+    // Resolve project ID using the utility class
+    const resolvedProjectId = await ProjectIdResolver.resolve(validatedData.projectId);
+    if (!resolvedProjectId) {
+      throw new Error('Invalid project ID provided');
     }
+    const projectId = resolvedProjectId;
 
     // Fix story idea ID if needed
     let storyIdeaId = validatedData.storyIdeaId;

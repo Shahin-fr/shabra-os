@@ -18,7 +18,8 @@ export async function GET(request: NextRequest) {
     }
 
     // Check if user is admin or manager
-    if (!['ADMIN', 'MANAGER'].includes(session.user.roles)) {
+    const userRoles = Array.isArray(session.user.roles) ? session.user.roles : [session.user.roles];
+    if (!userRoles.some(role => ['ADMIN', 'MANAGER'].includes(role))) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
@@ -33,7 +34,7 @@ export async function GET(request: NextRequest) {
     };
 
     // If not admin, only show requests from direct subordinates
-    if (session.user.roles === 'MANAGER') {
+    if (userRoles.includes('MANAGER')) {
       whereClause.user = {
         managerId: session.user.id,
       };
@@ -71,7 +72,7 @@ export async function GET(request: NextRequest) {
     // Get subordinates for filter dropdown
     const subordinates = await prisma.user.findMany({
       where: {
-        managerId: session.user.roles === 'ADMIN' ? undefined : session.user.id,
+        managerId: userRoles.includes('ADMIN') ? undefined : session.user.id,
         isActive: true,
       },
       select: {
@@ -87,7 +88,7 @@ export async function GET(request: NextRequest) {
     const stats = await prisma.request.groupBy({
       by: ['type', 'status'],
       where: {
-        user: session.user.roles === 'ADMIN' ? {} : {
+        user: userRoles.includes('ADMIN') ? {} : {
           managerId: session.user.id,
         },
       },

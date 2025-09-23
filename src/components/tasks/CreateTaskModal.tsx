@@ -54,11 +54,13 @@ interface CreateTaskData {
 }
 
 const fetchUsers = async (): Promise<User[]> => {
-  const response = await fetch('/api/users');
+  const response = await fetch('/api/users/assignable');
   if (!response.ok) {
     throw new Error('خطا در دریافت کاربران');
   }
-  return response.json();
+  const data = await response.json();
+  // The API returns a wrapped response, so we need to extract the data array
+  return data.data || [];
 };
 
 const fetchProjects = async (): Promise<Project[]> => {
@@ -112,17 +114,21 @@ export function CreateTaskModal({
 
   const queryClient = useQueryClient();
 
-  const { data: users = [], isLoading: usersLoading } = useQuery({
+  const { data: users, isLoading: usersLoading } = useQuery({
     queryKey: ['users'],
     queryFn: fetchUsers,
     enabled: isOpen,
   });
 
-  const { data: projects = [], isLoading: projectsLoading } = useQuery({
+  const { data: projects, isLoading: projectsLoading } = useQuery({
     queryKey: ['projects'],
     queryFn: fetchProjects,
     enabled: isOpen,
   });
+
+  // Safety checks to ensure data is always an array
+  const safeUsers = Array.isArray(users) ? users : [];
+  const safeProjects = Array.isArray(projects) ? projects : [];
 
   const createTaskMutation = useMutation({
     mutationFn: createTask,
@@ -220,7 +226,7 @@ export function CreateTaskModal({
                       />
                     </SelectTrigger>
                     <SelectContent>
-                      {users.map(user => (
+                      {safeUsers.map(user => (
                         <SelectItem key={user.id} value={user.id}>
                           {user.firstName} {user.lastName}
                         </SelectItem>
@@ -248,7 +254,7 @@ export function CreateTaskModal({
                       />
                     </SelectTrigger>
                     <SelectContent>
-                      {projects.map(project => (
+                      {safeProjects.map(project => (
                         <SelectItem key={project.id} value={project.id}>
                           {project.name}
                         </SelectItem>

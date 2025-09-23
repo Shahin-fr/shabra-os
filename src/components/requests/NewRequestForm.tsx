@@ -17,7 +17,7 @@ import {
 import { toast } from 'sonner';
 
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -114,7 +114,13 @@ export function NewRequestForm() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.error || 'Failed to create request');
+        console.error('API Error Response:', error);
+        console.error('Response status:', response.status);
+        console.error('Response headers:', Object.fromEntries(response.headers.entries()));
+        
+        // Handle the standardized error response format
+        const errorMessage = error.error?.message || error.message || `Request failed with status ${response.status}`;
+        throw new Error(errorMessage);
       }
 
       return response.json();
@@ -125,7 +131,11 @@ export function NewRequestForm() {
       router.push('/requests');
     },
     onError: (error: Error) => {
+      console.error('Request submission error:', error);
       toast.error(`خطا در ارسال درخواست: ${error.message}`);
+    },
+    onSettled: () => {
+      setIsSubmitting(false);
     },
   });
 
@@ -154,6 +164,11 @@ export function NewRequestForm() {
       toast.error('لطفاً دلیل درخواست را وارد کنید');
       return;
     }
+    
+    if (formData.reason.trim().length < 10) {
+      toast.error('دلیل درخواست باید حداقل 10 کاراکتر باشد');
+      return;
+    }
 
     // Validate details based on type
     if (formData.type === 'LEAVE') {
@@ -178,8 +193,41 @@ export function NewRequestForm() {
       }
     }
 
+    // Convert date strings to ISO datetime format for API
+    const processedFormData = { ...formData };
+    if (formData.type === 'LEAVE') {
+      const startDate = new Date(formData.details.startDate);
+      const endDate = new Date(formData.details.endDate);
+      
+      console.log('Original dates:', { 
+        startDate: formData.details.startDate, 
+        endDate: formData.details.endDate 
+      });
+      console.log('Converted dates:', { 
+        startDate: startDate.toISOString(), 
+        endDate: endDate.toISOString() 
+      });
+      
+      processedFormData.details = {
+        ...formData.details,
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
+      };
+    } else if (formData.type === 'OVERTIME') {
+      const date = new Date(formData.details.date);
+      console.log('Original overtime date:', formData.details.date);
+      console.log('Converted overtime date:', date.toISOString());
+      
+      processedFormData.details = {
+        ...formData.details,
+        date: date.toISOString(),
+      };
+    }
+    
+    console.log('Processed form data:', JSON.stringify(processedFormData, null, 2));
+
     setIsSubmitting(true);
-    createRequestMutation.mutate(formData);
+    createRequestMutation.mutate(processedFormData);
   };
 
   const renderTypeSpecificFields = () => {
@@ -420,24 +468,19 @@ export function NewRequestForm() {
                 {REQUEST_TYPES.map((type) => {
                   const IconComponent = type.icon;
                   return (
-                    <button
+                    <Button
                       key={type.value}
                       type="button"
                       onClick={() => handleTypeChange(type.value)}
-                      className={`p-4 border-2 rounded-lg text-right transition-colors ${
-                        formData.type === type.value
-                          ? 'border-[#ff0a54] bg-[#ff0a54]/5'
-                          : 'border-gray-200 hover:border-gray-300'
-                      }`}
+                      variant={formData.type === type.value ? 'default' : 'outline'}
+                      className="p-4 h-auto text-right justify-start"
                     >
-                      <div className="flex items-center gap-3">
-                        <IconComponent className="h-5 w-5 text-gray-600" />
-                        <div>
-                          <div className="font-medium">{type.label}</div>
-                          <div className="text-sm text-gray-500">{type.description}</div>
-                        </div>
+                      <IconComponent className="h-5 w-5 text-gray-600" />
+                      <div>
+                        <div className="font-medium">{type.label}</div>
+                        <div className="text-sm text-gray-500">{type.description}</div>
                       </div>
-                    </button>
+                    </Button>
                   );
                 })}
               </div>
@@ -464,13 +507,9 @@ export function NewRequestForm() {
               <Button
                 type="submit"
                 disabled={isSubmitting || createRequestMutation.isPending}
-                className="bg-[#ff0a54] hover:bg-[#ff0a54]/90"
+                variant="default"
+                icon={isSubmitting || createRequestMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
               >
-                {isSubmitting || createRequestMutation.isPending ? (
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                ) : (
-                  <Send className="h-4 w-4 mr-2" />
-                )}
                 ارسال درخواست
               </Button>
             </div>

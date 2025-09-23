@@ -1,6 +1,7 @@
 'use client';
 
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/Button';
 
 interface SegmentedControlOption {
   value: string;
@@ -39,11 +40,13 @@ export function SegmentedControl({
       />
 
       {options.map(option => (
-        <button
+        <Button
           key={option.value}
           onClick={() => onValueChange(option.value)}
+          variant={value === option.value ? 'default' : 'ghost'}
+          size="sm"
           className={cn(
-            'relative z-10 px-3 py-2 text-sm font-medium transition-colors duration-200 rounded-lg flex-1 text-center',
+            'relative z-10 flex-1 text-center',
             'hover:text-white/90',
             value === option.value
               ? 'text-white font-semibold'
@@ -51,7 +54,7 @@ export function SegmentedControl({
           )}
         >
           {option.label}
-        </button>
+        </Button>
       ))}
     </div>
   );

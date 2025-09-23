@@ -4,6 +4,9 @@ import { AnimatePresence } from 'framer-motion';
 import { OptimizedMotion } from '@/components/ui/OptimizedMotion';
 import { X, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ReactNode } from 'react';
 
 interface MobileFormModalProps {
@@ -145,22 +148,21 @@ export function MobileCreateTaskModal({
     >
       <div className='space-y-4'>
         <div>
-          <label className='block text-sm font-medium text-gray-700 mb-2'>
+          <Label className='block text-sm font-medium text-gray-700 mb-2'>
             عنوان تسک
-          </label>
-          <input
+          </Label>
+          <Input
             type='text'
-            className='mobile-input w-full'
             placeholder='عنوان تسک را وارد کنید'
           />
         </div>
 
         <div>
-          <label className='block text-sm font-medium text-gray-700 mb-2'>
+          <Label className='block text-sm font-medium text-gray-700 mb-2'>
             توضیحات
-          </label>
+          </Label>
           <textarea
-            className='mobile-input w-full resize-none'
+            className='flex min-h-[80px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50'
             rows={4}
             placeholder='توضیحات تسک را وارد کنید'
           />
@@ -168,21 +170,26 @@ export function MobileCreateTaskModal({
 
         <div className='grid grid-cols-2 gap-4'>
           <div>
-            <label className='block text-sm font-medium text-gray-700 mb-2'>
+            <Label className='block text-sm font-medium text-gray-700 mb-2'>
               اولویت
-            </label>
-            <select className='mobile-input w-full'>
-              <option value='low'>پایین</option>
-              <option value='medium'>متوسط</option>
-              <option value='high'>بالا</option>
-            </select>
+            </Label>
+            <Select>
+              <SelectTrigger>
+                <SelectValue placeholder="انتخاب اولویت" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value='low'>پایین</SelectItem>
+                <SelectItem value='medium'>متوسط</SelectItem>
+                <SelectItem value='high'>بالا</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           <div>
-            <label className='block text-sm font-medium text-gray-700 mb-2'>
+            <Label className='block text-sm font-medium text-gray-700 mb-2'>
               تاریخ موعد
-            </label>
-            <input type='date' className='mobile-input w-full' />
+            </Label>
+            <Input type='date' />
           </div>
         </div>
       </div>

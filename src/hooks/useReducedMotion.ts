@@ -9,8 +9,14 @@ import { useEffect, useState } from 'react';
 export function useReducedMotion() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
+    // Only run on client side
+    if (typeof window === 'undefined') return;
+
+    setIsClient(true);
+
     // Check for reduced motion preference
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     setPrefersReducedMotion(mediaQuery.matches);
@@ -36,9 +42,10 @@ export function useReducedMotion() {
   return {
     prefersReducedMotion,
     isMobile,
-    shouldAnimate: !prefersReducedMotion && !isMobile,
-    animationDuration: prefersReducedMotion || isMobile ? 0 : 0.3,
-    staggerDelay: prefersReducedMotion || isMobile ? 0 : 0.1,
+    isClient,
+    shouldAnimate: isClient && !prefersReducedMotion && !isMobile,
+    animationDuration: !isClient || prefersReducedMotion || isMobile ? 0 : 0.3,
+    staggerDelay: !isClient || prefersReducedMotion || isMobile ? 0 : 0.1,
   };
 }
 

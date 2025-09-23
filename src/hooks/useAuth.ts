@@ -89,11 +89,14 @@ export function useAuth() {
       });
 
       // Transform NextAuth session to our User format
+      const sessionRoles = (session.user as any).roles;
+      const userRoles = Array.isArray(sessionRoles) ? sessionRoles : [sessionRoles || 'EMPLOYEE'];
+      
       const user: AuthUser = {
         id: session.user.id || '',
         email: session.user.email || '',
         name: session.user.name || '',
-        roles: (session.user as any).roles || ['EMPLOYEE'],
+        roles: userRoles,
         avatar: (session.user as any).avatar,
         preferences: {
           theme: 'light',

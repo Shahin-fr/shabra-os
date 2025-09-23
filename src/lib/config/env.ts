@@ -3,6 +3,14 @@
 // See: docs/ROADMAP/PHASE_2_STRATEGIC_PLAN.md, Section 3.2
 
 import { z } from 'zod';
+import { 
+  DEFAULT_ADMIN_EMAIL, 
+  DEFAULT_ADMIN_PASSWORD,
+  DEFAULT_MANAGER_EMAIL,
+  DEFAULT_MANAGER_PASSWORD,
+  DEFAULT_USER_EMAIL,
+  DEFAULT_USER_PASSWORD
+} from './constants';
 
 import { logError, logger } from '@/lib/logger';
 
@@ -137,12 +145,12 @@ function validateEnv(): EnvConfig {
       N8N_SECRET_TOKEN: process.env.N8N_SECRET_TOKEN || 'dev-n8n-secret-token-12345',
       TEST_USER_EMAIL: 'test@shabra.com',
       TEST_USER_PASSWORD: 'test-password-123',
-      DEV_ADMIN_EMAIL: 'admin@shabra.com',
-      DEV_ADMIN_PASSWORD: 'admin-password-123',
-      DEV_USER_EMAIL: 'user@shabra.com',
-      DEV_USER_PASSWORD: 'user-password-123',
-      DEV_MANAGER_EMAIL: 'manager@shabra.com',
-      DEV_MANAGER_PASSWORD: 'manager-password-123',
+      DEV_ADMIN_EMAIL: DEFAULT_ADMIN_EMAIL,
+      DEV_ADMIN_PASSWORD: DEFAULT_ADMIN_PASSWORD,
+      DEV_USER_EMAIL: DEFAULT_USER_EMAIL,
+      DEV_USER_PASSWORD: DEFAULT_USER_PASSWORD,
+      DEV_MANAGER_EMAIL: DEFAULT_MANAGER_EMAIL,
+      DEV_MANAGER_PASSWORD: DEFAULT_MANAGER_PASSWORD,
       NEXT_PUBLIC_WS_URL: 'ws://localhost:3001',
       PERFORMANCE_ENDPOINT: '/api/performance',
     };

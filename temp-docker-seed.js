@@ -1,6 +1,14 @@
 
 const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcryptjs');
+const { 
+  DEFAULT_ADMIN_EMAIL, 
+  DEFAULT_ADMIN_PASSWORD,
+  DEFAULT_MANAGER_EMAIL,
+  DEFAULT_MANAGER_PASSWORD,
+  DEFAULT_USER_EMAIL,
+  DEFAULT_USER_PASSWORD
+} = require('./src/lib/config/constants');
 
 const prisma = new PrismaClient();
 
@@ -31,10 +39,10 @@ async function main() {
 
     // Create admin user
     console.log('Creating admin user...');
-    const adminHashedPassword = await bcrypt.hash('admin-password-123', 12);
+    const adminHashedPassword = await bcrypt.hash(DEFAULT_ADMIN_PASSWORD, 12);
     await prisma.user.create({
       data: {
-        email: 'admin@shabra.com',
+        email: DEFAULT_ADMIN_EMAIL,
         firstName: 'Admin',
         lastName: 'User',
         password: adminHashedPassword,
@@ -46,10 +54,10 @@ async function main() {
 
     // Create regular user
     console.log('Creating regular user...');
-    const userHashedPassword = await bcrypt.hash('user-password-123', 12);
+    const userHashedPassword = await bcrypt.hash(DEFAULT_USER_PASSWORD, 12);
     await prisma.user.create({
       data: {
-        email: 'user@shabra.com',
+        email: DEFAULT_USER_EMAIL,
         firstName: 'Regular',
         lastName: 'User',
         password: userHashedPassword,
@@ -61,10 +69,10 @@ async function main() {
 
     // Create manager user
     console.log('Creating manager user...');
-    const managerHashedPassword = await bcrypt.hash('manager-password-123', 12);
+    const managerHashedPassword = await bcrypt.hash(DEFAULT_MANAGER_PASSWORD, 12);
     await prisma.user.create({
       data: {
-        email: 'manager@shabra.com',
+        email: DEFAULT_MANAGER_EMAIL,
         firstName: 'Manager',
         lastName: 'User',
         password: managerHashedPassword,
@@ -89,8 +97,8 @@ async function main() {
 
     // Create sample tasks
     console.log('Creating sample tasks...');
-    const adminUser = await prisma.user.findUnique({ where: { email: 'admin@shabra.com' } });
-    const userUser = await prisma.user.findUnique({ where: { email: 'user@shabra.com' } });
+    const adminUser = await prisma.user.findUnique({ where: { email: DEFAULT_ADMIN_EMAIL } });
+    const userUser = await prisma.user.findUnique({ where: { email: DEFAULT_USER_EMAIL } });
 
     const tasks = [
       {
@@ -126,9 +134,9 @@ async function main() {
 
     console.log('🎉 Database seeding completed!');
     console.log('\n📋 Login credentials:');
-    console.log('   Admin: admin@shabra.com / admin-password-123');
-    console.log('   Manager: manager@shabra.com / manager-password-123');
-    console.log('   User: user@shabra.com / user-password-123');
+    console.log(`   Admin: ${DEFAULT_ADMIN_EMAIL} / ${DEFAULT_ADMIN_PASSWORD}`);
+    console.log(`   Manager: ${DEFAULT_MANAGER_EMAIL} / ${DEFAULT_MANAGER_PASSWORD}`);
+    console.log(`   User: ${DEFAULT_USER_EMAIL} / ${DEFAULT_USER_PASSWORD}`);
 
   } catch (error) {
     console.error('❌ Error during seeding:', error);

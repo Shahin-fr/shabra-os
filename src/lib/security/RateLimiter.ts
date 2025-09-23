@@ -92,7 +92,7 @@ export class RateLimiter {
    * Record a failed request (if skipFailedRequests is false)
    */
   recordFailure(identifier: string): void {
-    if (this.isDestroyed || !this.config.skipFailedRequests) return;
+    if (this.isDestroyed || this.config.skipFailedRequests) return;
 
     const entry = this.store.get(identifier);
     if (entry) {

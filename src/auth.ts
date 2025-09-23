@@ -7,6 +7,7 @@ import type { JWT } from 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
 import { initializeProductionFixes } from '@/lib/production-fixes';
+import { prisma } from '@/lib/prisma';
 
 // Initialize production fixes
 initializeProductionFixes();
@@ -25,6 +26,11 @@ if (
   if (!process.env.NEXTAUTH_URL) {
     throw new Error('NEXTAUTH_URL environment variable is required');
   }
+}
+
+// Critical production security check - fail fast if NEXTAUTH_SECRET is missing in production
+if (process.env.NODE_ENV === 'production' && !process.env.NEXTAUTH_SECRET) {
+  throw new Error('FATAL: NEXTAUTH_SECRET environment variable is required for production deployment. Application cannot start in an insecure state.');
 }
 
 const authConfig = {
@@ -55,7 +61,6 @@ const authConfig = {
         }
 
         // Use the standard Prisma Client
-        const { prisma } = require('@/lib/prisma');
 
         try {
           const user = await prisma.user.findUnique({

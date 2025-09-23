@@ -9,6 +9,14 @@
 const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcryptjs');
 const { execSync } = require('child_process');
+const { 
+  DEFAULT_ADMIN_EMAIL, 
+  DEFAULT_ADMIN_PASSWORD,
+  DEFAULT_MANAGER_EMAIL,
+  DEFAULT_MANAGER_PASSWORD,
+  DEFAULT_USER_EMAIL,
+  DEFAULT_USER_PASSWORD
+} = require('../src/lib/config/constants');
 
 // Check if we're in development mode
 if (process.env.NODE_ENV === 'production') {
@@ -52,24 +60,24 @@ async function setupLocalDatabase() {
 
     const users = [
       {
-        email: 'admin@shabra.com',
-        password: await bcrypt.hash('admin123', 12),
+        email: DEFAULT_ADMIN_EMAIL,
+        password: await bcrypt.hash(DEFAULT_ADMIN_PASSWORD, 12),
         firstName: 'Admin',
         lastName: 'User',
         roles: 'ADMIN',
         isActive: true,
       },
       {
-        email: 'manager@shabra.com',
-        password: await bcrypt.hash('manager123', 12),
+        email: DEFAULT_MANAGER_EMAIL,
+        password: await bcrypt.hash(DEFAULT_MANAGER_PASSWORD, 12),
         firstName: 'Manager',
         lastName: 'User',
         roles: 'MANAGER',
         isActive: true,
       },
       {
-        email: 'user@shabra.com',
-        password: await bcrypt.hash('user123', 12),
+        email: DEFAULT_USER_EMAIL,
+        password: await bcrypt.hash(DEFAULT_USER_PASSWORD, 12),
         firstName: 'Regular',
         lastName: 'User',
         roles: 'EMPLOYEE',
@@ -106,14 +114,14 @@ async function setupLocalDatabase() {
         title: 'Setup local development',
         description: 'Configure local development environment',
         status: 'Done',
-        createdBy: (await prisma.user.findUnique({ where: { email: 'admin@shabra.com' } })).id,
+        createdBy: (await prisma.user.findUnique({ where: { email: DEFAULT_ADMIN_EMAIL } })).id,
         projectId: project.id,
       },
       {
         title: 'Test authentication',
         description: 'Test login functionality',
         status: 'InProgress',
-        createdBy: (await prisma.user.findUnique({ where: { email: 'admin@shabra.com' } })).id,
+        createdBy: (await prisma.user.findUnique({ where: { email: DEFAULT_ADMIN_EMAIL } })).id,
         projectId: project.id,
       },
     ];
@@ -128,9 +136,9 @@ async function setupLocalDatabase() {
 
     console.log('\n🎉 Local database setup completed successfully!');
     console.log('\n📋 Login credentials:');
-    console.log('   Admin: admin@shabra.com / admin123');
-    console.log('   Manager: manager@shabra.com / manager123');
-    console.log('   User: user@shabra.com / user123');
+    console.log(`   Admin: ${DEFAULT_ADMIN_EMAIL} / ${DEFAULT_ADMIN_PASSWORD}`);
+    console.log(`   Manager: ${DEFAULT_MANAGER_EMAIL} / ${DEFAULT_MANAGER_PASSWORD}`);
+    console.log(`   User: ${DEFAULT_USER_EMAIL} / ${DEFAULT_USER_PASSWORD}`);
     console.log('\n🌐 Start the development server with: npm run dev');
 
   } catch (error) {

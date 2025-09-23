@@ -18,8 +18,8 @@ export function MainLayout({ children }: MainLayoutProps) {
 
       <Header />
       <Sidebar />
-      <main className='relative md:mr-64 p-6 mt-16 z-5'>
-        <div className='relative z-5'>{children}</div>
+      <main className='relative md:mr-64 p-6 mt-16 z-10'>
+        <div className='relative z-10'>{children}</div>
       </main>
     </div>
   );

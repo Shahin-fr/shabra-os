@@ -7,6 +7,10 @@
 
 const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcryptjs');
+const { 
+  DEFAULT_ADMIN_EMAIL, 
+  DEFAULT_ADMIN_PASSWORD
+} = require('../src/lib/config/constants');
 
 const prisma = new PrismaClient();
 
@@ -20,14 +24,14 @@ async function testAuth() {
 
     // Test user creation
     const testUser = await prisma.user.findFirst({
-      where: { email: 'admin@shabra.com' }
+      where: { email: DEFAULT_ADMIN_EMAIL }
     });
 
     if (testUser) {
       console.log('✅ Test user found');
       
       // Test password verification
-      const isValid = await bcrypt.compare('admin123', testUser.password);
+      const isValid = await bcrypt.compare(DEFAULT_ADMIN_PASSWORD, testUser.password);
       if (isValid) {
         console.log('✅ Password verification successful');
       } else {
@@ -39,9 +43,9 @@ async function testAuth() {
 
     console.log('\n🎉 Authentication test completed!');
     console.log('\n📋 You can now login with:');
-    console.log('   Admin: admin@shabra.com / admin123');
-    console.log('   Manager: manager@shabra.com / manager123');
-    console.log('   User: user@shabra.com / user123');
+    console.log(`   Admin: ${DEFAULT_ADMIN_EMAIL} / ${DEFAULT_ADMIN_PASSWORD}`);
+    console.log('   Manager: manager@shabra.com / manager-password-123');
+    console.log('   User: user@shabra.com / user-password-123');
 
   } catch (error) {
     console.error('❌ Authentication test failed:', error.message);

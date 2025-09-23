@@ -2,6 +2,7 @@
 
 import React, { forwardRef } from 'react';
 import { OptimizedMotion } from '@/components/ui/OptimizedMotion';
+import { Label } from '@/components/ui/label';
 
 import { cn } from '@/lib/utils';
 
@@ -23,10 +24,10 @@ export const MobileFormField = forwardRef<HTMLDivElement, MobileFormFieldProps>(
         transition={{ duration: 0.2 }}
         className={cn('space-y-3', className)}
       >
-        <label className='block text-sm font-medium text-gray-900'>
+        <Label className='block text-sm font-medium text-gray-900'>
           {label}
           {required && <span className='text-red-500 mr-1'>*</span>}
-        </label>
+        </Label>
         {children}
         {error && (
           <OptimizedMotion

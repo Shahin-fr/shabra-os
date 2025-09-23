@@ -5,7 +5,7 @@ import { ComponentType } from 'react';
 
 // Lazy load utility components that are not needed on initial load
 export const TaskBottlenecks = dynamic(
-  () => import('@/components/dashboard/widgets/TaskBottlenecks').then(mod => ({ default: mod.TaskBottlenecks })),
+  () => import('@/components/dashboard/widgets/TaskBottlenecks').then(mod => mod.TaskBottlenecks),
   {
     loading: () => (
       <div className="flex items-center justify-center h-64 bg-gray-50 dark:bg-gray-800 rounded-lg">
@@ -17,7 +17,7 @@ export const TaskBottlenecks = dynamic(
 ) as ComponentType<any>;
 
 export const QuarterlyGoals = dynamic(
-  () => import('@/components/dashboard/widgets/QuarterlyGoals').then(mod => ({ default: mod.QuarterlyGoals })),
+  () => import('@/components/dashboard/widgets/QuarterlyGoals').then(mod => mod.QuarterlyGoals),
   {
     loading: () => (
       <div className="flex items-center justify-center h-64 bg-gray-50 dark:bg-gray-800 rounded-lg">
@@ -29,7 +29,7 @@ export const QuarterlyGoals = dynamic(
 ) as ComponentType<any>;
 
 export const RecentTeamActivityFeed = dynamic(
-  () => import('@/components/dashboard/widgets/RecentTeamActivityFeed').then(mod => ({ default: mod.RecentTeamActivityFeed })),
+  () => import('@/components/dashboard/widgets/RecentTeamActivityFeed').then(mod => mod.RecentTeamActivityFeed),
   {
     loading: () => (
       <div className="flex items-center justify-center h-64 bg-gray-50 dark:bg-gray-800 rounded-lg">

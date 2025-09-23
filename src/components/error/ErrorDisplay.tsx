@@ -6,6 +6,7 @@
 import React, { useState } from 'react';
 
 import { ErrorCategory, ErrorPriority } from '../../types/error';
+import { Button } from '@/components/ui/Button';
 
 interface ErrorDisplayProps {
   error: Error;
@@ -82,20 +83,24 @@ export const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
           </div>
           <div className='flex items-center space-x-2'>
             {onRetry && (
-              <button
+              <Button
                 onClick={handleRetry}
-                className='text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition-colors'
+                variant="outline"
+                size="sm"
+                className='text-xs'
               >
                 Retry
-              </button>
+              </Button>
             )}
             {onDismiss && (
-              <button
+              <Button
                 onClick={handleDismiss}
-                className='text-xs px-2 py-1 bg-gray-100 text-gray-600 rounded hover:bg-gray-200 transition-colors'
+                variant="ghost"
+                size="sm"
+                className='text-xs'
               >
                 Dismiss
-              </button>
+              </Button>
             )}
           </div>
         </div>

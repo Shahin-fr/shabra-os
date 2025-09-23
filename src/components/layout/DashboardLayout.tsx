@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils';
 
 import { FloatingActionButton } from './FloatingActionButton';
 import { Header } from './Header';
-import { MobileBottomNavigation } from './MobileBottomNavigation';
+import { EnhancedMobileBottomNavigation } from './EnhancedMobileBottomNavigation';
 import { Sidebar } from './Sidebar';
 
 interface DashboardLayoutProps {
@@ -21,7 +21,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const isMobile = useMobile();
 
   return (
-    <div className='relative flex flex-col bg-gradient-to-br from-slate-50 via-pink-50/50 to-purple-50/30'>
+    <div className='relative flex flex-col'>
       <OfflineIndicator position='top' />
       <Header />
       <Sidebar />
@@ -43,11 +43,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       {/* Mobile Navigation Components */}
       {isMobile && (
         <>
-          <MobileBottomNavigation />
-          {/* Only show FAB for non-employee roles (MANAGER, ADMIN) */}
-          {user?.roles && !user.roles.includes('EMPLOYEE') && (
-            <FloatingActionButton />
-          )}
+          <EnhancedMobileBottomNavigation />
         </>
       )}
     </div>

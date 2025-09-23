@@ -99,27 +99,31 @@ export function QuickActions() {
               <Button
                 variant='ghost'
                 className='w-full h-auto p-4 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 transition-all duration-300 group'
-                asChild
+                asChild={true}
               >
                 <a href={action.href}>
-                  <div className='flex items-center gap-4 w-full'>
-                    <div
-                      className={`w-12 h-12 ${action.color} rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg`}
-                    >
-                      <action.icon className={`h-6 w-6 ${action.iconColor}`} />
-                    </div>
-                    <div className='flex-1 text-right'>
-                      <h4 className='font-semibold text-sm text-foreground group-hover:text-[#ff0a54] transition-colors mb-1'>
-                        {action.title}
-                      </h4>
-                      <p className='text-xs text-muted-foreground'>
-                        {action.description}
-                      </p>
-                    </div>
-                    <div className='opacity-0 group-hover:opacity-100 transition-opacity'>
-                      <div className='w-2 h-2 bg-[#ff0a54] rounded-full'></div>
+                  {/* === SINGLE WRAPPER STARTS HERE === */}
+                  <div>
+                    <div className='flex items-center gap-4 w-full'>
+                      <div
+                        className={`w-12 h-12 ${action.color} rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg`}
+                      >
+                        <action.icon className={`h-6 w-6 ${action.iconColor}`} />
+                      </div>
+                      <div className='flex-1 text-right'>
+                        <h4 className='font-semibold text-sm text-foreground group-hover:text-[#ff0a54] transition-colors mb-1'>
+                          {action.title}
+                        </h4>
+                        <p className='text-xs text-muted-foreground'>
+                          {action.description}
+                        </p>
+                      </div>
+                      <div className='opacity-0 group-hover:opacity-100 transition-opacity'>
+                        <div className='w-2 h-2 bg-[#ff0a54] rounded-full'></div>
+                      </div>
                     </div>
                   </div>
+                  {/* === SINGLE WRAPPER ENDS HERE === */}
                 </a>
               </Button>
             </OptimizedMotion>

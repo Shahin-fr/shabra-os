@@ -19,13 +19,20 @@ export function useAnimationPerformance() {
     averageFrameTime: 16.67,
     isLowPerformance: false,
   });
+  const [isClient, setIsClient] = useState(false);
 
   const frameCount = useRef(0);
-  const lastTime = useRef(performance.now());
+  const lastTime = useRef(0);
   const frameTimes = useRef<number[]>([]);
   const animationId = useRef<number | undefined>(undefined);
 
   useEffect(() => {
+    // Only run on client side
+    if (typeof window === 'undefined') return;
+
+    setIsClient(true);
+    lastTime.current = performance.now();
+
     const measurePerformance = (currentTime: number) => {
       const deltaTime = currentTime - lastTime.current;
       lastTime.current = currentTime;
@@ -67,10 +74,11 @@ export function useAnimationPerformance() {
 
   return {
     ...metrics,
+    isClient,
     // Performance recommendations
-    shouldReduceAnimations: metrics.isLowPerformance,
-    shouldDisableComplexAnimations: metrics.fps < 20,
-    shouldUseSimpleTransitions: metrics.frameDrops > 5,
+    shouldReduceAnimations: !isClient || metrics.isLowPerformance,
+    shouldDisableComplexAnimations: !isClient || metrics.fps < 20,
+    shouldUseSimpleTransitions: !isClient || metrics.frameDrops > 5,
   };
 }
 
@@ -84,9 +92,13 @@ export function useDeviceCapabilities() {
     supportsHardwareAcceleration: true,
     hasReducedMotion: false,
     memoryWarning: false,
+    isClient: false,
   });
 
   useEffect(() => {
+    // Only run on client side
+    if (typeof window === 'undefined') return;
+
     // Detect mobile device
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
       navigator.userAgent
@@ -113,6 +125,7 @@ export function useDeviceCapabilities() {
       supportsHardwareAcceleration,
       hasReducedMotion,
       memoryWarning,
+      isClient: true,
     });
   }, []);
 
@@ -128,20 +141,21 @@ export function useOptimalAnimationSettings() {
 
   return {
     // Animation settings
-    duration: device.hasReducedMotion || performance.shouldReduceAnimations ? 0 : 0.3,
-    staggerDelay: device.hasReducedMotion || performance.shouldReduceAnimations ? 0 : 0.1,
-    easing: device.isLowEndDevice ? 'linear' : 'easeOut',
+    duration: !device.isClient || device.hasReducedMotion || performance.shouldReduceAnimations ? 0 : 0.3,
+    staggerDelay: !device.isClient || device.hasReducedMotion || performance.shouldReduceAnimations ? 0 : 0.1,
+    easing: !device.isClient || device.isLowEndDevice ? 'linear' : 'easeOut',
     
     // Feature flags
-    enableAnimations: !device.hasReducedMotion && !performance.shouldDisableComplexAnimations,
-    enableComplexAnimations: !device.isLowEndDevice && !performance.shouldDisableComplexAnimations,
-    enableStaggerAnimations: !device.isMobile && !performance.shouldUseSimpleTransitions,
-    enableDragAnimations: device.supportsHardwareAcceleration && !performance.isLowPerformance,
+    enableAnimations: device.isClient && !device.hasReducedMotion && !performance.shouldDisableComplexAnimations,
+    enableComplexAnimations: device.isClient && !device.isLowEndDevice && !performance.shouldDisableComplexAnimations,
+    enableStaggerAnimations: device.isClient && !device.isMobile && !performance.shouldUseSimpleTransitions,
+    enableDragAnimations: device.isClient && device.supportsHardwareAcceleration && !performance.isLowPerformance,
     
     // Performance warnings
-    showPerformanceWarning: performance.isLowPerformance && !device.hasReducedMotion,
+    showPerformanceWarning: device.isClient && performance.isLowPerformance && !device.hasReducedMotion,
     
     // Device info
+    isClient: device.isClient,
     isMobile: device.isMobile,
     isLowEndDevice: device.isLowEndDevice,
     hasReducedMotion: device.hasReducedMotion,

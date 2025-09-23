@@ -43,7 +43,22 @@ export async function POST(request: NextRequest) {
   try {
     // 1. Authentication - Check for N8N secret token
     const authHeader = request.headers.get('authorization');
-    const expectedToken = process.env.N8N_SECRET_TOKEN || 'dev-n8n-secret-token-12345';
+    
+    // Fail-fast mechanism for missing N8N_SECRET_TOKEN
+    if (!process.env.N8N_SECRET_TOKEN) {
+      logger.error('N8N_SECRET_TOKEN environment variable is not configured', {
+        context: 'instapulse-save-result-api',
+        operation: 'POST',
+      });
+      const errorResponse = createAuthErrorResponse(
+        'Server configuration error: N8N_SECRET_TOKEN not configured'
+      );
+      return NextResponse.json(errorResponse, {
+        status: HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
+      });
+    }
+    
+    const expectedToken = process.env.N8N_SECRET_TOKEN;
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       logger.warn('Missing or invalid authorization header', {

@@ -5,7 +5,7 @@ import { OptimizedMotion } from '@/components/ui/OptimizedMotion';
 import { Plus } from 'lucide-react';
 import { DateRange } from 'react-day-picker';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 import { AnimatedBackground } from '@/components/ui/animated-background';
 import {
   Dialog,
@@ -74,32 +74,22 @@ export default function InstaPulsePage() {
                 {/* Center: Sort Segmented Control */}
                 <div className='flex items-center justify-center order-2 lg:order-2 w-full lg:w-auto self-stretch lg:self-center'>
                   <div className='flex gap-3 backdrop-blur-xl bg-gradient-to-r from-white/25 via-pink-500/20 to-rose-500/25 rounded-2xl p-3 border border-white/40 shadow-lg shadow-pink-500/30 w-full max-w-lg relative overflow-hidden before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-r before:from-pink-400/25 before:to-rose-400/25 before:-z-10'>
-                    <button
+                    <Button
                       onClick={() => handleSortChange('newest')}
-                      className={`px-6 py-3 rounded-xl text-sm font-semibold transition-all duration-300 flex-1 text-center whitespace-nowrap relative overflow-hidden ${
-                        currentSort === 'newest'
-                          ? 'bg-gradient-to-r from-pink-500 via-rose-500 to-pink-600 text-white shadow-lg shadow-pink-500/50 border border-pink-300/60'
-                          : 'text-white/80 hover:text-white hover:bg-white/10 backdrop-blur-sm hover:shadow-md hover:shadow-pink-500/20'
-                      }`}
+                      variant={currentSort === 'newest' ? 'default' : 'ghost'}
+                      size="sm"
+                      className="flex-1"
                     >
-                      {currentSort === 'newest' && (
-                        <div className='absolute inset-0 bg-gradient-to-r from-white/25 via-transparent to-white/15 rounded-xl'></div>
-                      )}
-                      <span className='relative z-10'>جدیدترین</span>
-                    </button>
-                    <button
+                      جدیدترین
+                    </Button>
+                    <Button
                       onClick={() => handleSortChange('most_viewed')}
-                      className={`px-6 py-3 rounded-xl text-sm font-semibold transition-all duration-300 flex-1 text-center whitespace-nowrap relative overflow-hidden ${
-                        currentSort === 'most_viewed'
-                          ? 'bg-gradient-to-r from-pink-500 via-rose-500 to-pink-600 text-white shadow-lg shadow-pink-500/50 border border-pink-300/60'
-                          : 'text-white/80 hover:text-white hover:bg-white/10 backdrop-blur-sm hover:shadow-md hover:shadow-pink-500/20'
-                      }`}
+                      variant={currentSort === 'most_viewed' ? 'default' : 'ghost'}
+                      size="sm"
+                      className="flex-1"
                     >
-                      {currentSort === 'most_viewed' && (
-                        <div className='absolute inset-0 bg-gradient-to-r from-white/25 via-transparent to-white/15 rounded-xl'></div>
-                      )}
-                      <span className='relative z-10'>پربازدیدترین</span>
-                    </button>
+                      پربازدیدترین
+                    </Button>
                   </div>
                 </div>
 
@@ -119,13 +109,12 @@ export default function InstaPulsePage() {
                         whileTap={{ scale: 0.98 }}
                       >
                         <Button
-                          className='bg-gradient-to-r from-pink-500 via-rose-500 to-pink-600 hover:from-pink-600 hover:via-rose-600 hover:to-pink-700 text-white font-semibold px-6 py-3 rounded-2xl shadow-lg shadow-pink-500/50 border border-pink-300/60 w-full sm:w-auto relative overflow-hidden backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-pink-500/60 before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-r before:from-white/25 before:via-transparent before:to-white/15 before:pointer-events-none'
+                          variant='default'
                           size='lg'
+                          className='w-full sm:w-auto'
+                          icon={<Plus className='w-5 h-5' />}
                         >
-                          <span className='relative z-10 flex items-center'>
-                            <Plus className='w-5 h-5 ml-2' />
-                            مدیریت پیج ها
-                          </span>
+                          مدیریت پیج ها
                         </Button>
                       </OptimizedMotion>
                     </DialogTrigger>

@@ -1,6 +1,6 @@
 'use client';
 
-import { LogOut, User, Settings, Menu, UserCircle } from 'lucide-react';
+import { LogOut, User, Settings, Menu, UserCircle, Bell } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { memo } from 'react';
 
@@ -17,6 +17,7 @@ import {
 import { useAuth } from '@/hooks/useAuth';
 import { useMobile } from '@/hooks/useResponsive';
 import { useToggleMobileSidebar } from '@/stores/uiStore';
+import { usePathname } from 'next/navigation';
 
 // Simple status message component - memoized to prevent unnecessary re-renders
 const StatusMessage = memo(
@@ -42,6 +43,7 @@ export function Header() {
   const [isMessageVisible, setIsMessageVisible] = useState(false);
   const toggleMobileSidebar = useToggleMobileSidebar();
   const isMobile = useMobile();
+  const pathname = usePathname();
 
   // Get user role for display
   const getUserRole = () => {
@@ -50,6 +52,34 @@ export function Header() {
     if (user.roles.includes('MANAGER')) return 'مدیر پروژه';
     if (user.roles.includes('EMPLOYEE')) return 'کارمند';
     return 'کاربر';
+  };
+
+  // Get page title based on current path
+  const getPageTitle = () => {
+    switch (pathname) {
+      case '/':
+        return 'خانه';
+      case '/tasks':
+        return 'کارها';
+      case '/calendar':
+        return 'تقویم';
+      case '/inbox':
+        return 'صندوق ورودی';
+      case '/projects':
+        return 'پروژه‌ها';
+      case '/requests':
+        return 'درخواست‌های من';
+      case '/attendance':
+        return 'حضور و غیاب';
+      case '/wiki':
+        return 'شبرالوگ';
+      case '/docs':
+        return 'مستندات من';
+      case '/settings':
+        return 'تنظیمات';
+      default:
+        return 'شبرا سیستم';
+    }
   };
 
   // Listen for custom status events
@@ -82,12 +112,12 @@ export function Header() {
   };
 
   return (
-    <header className='fixed top-0 left-0 right-0 z-50'>
+    <header className='fixed top-0 left-0 right-0 z-50 bg-transparent'>
       <div className='flex items-center justify-between h-16 px-4 sm:px-6'>
-        {/* Left Section - Mobile Menu Button and Status Message */}
-        <div className='flex items-center space-x-3 rtl:space-x-reverse'>
-          {/* Hamburger Menu Button - Only visible on mobile */}
-          {isMobile && (
+        {/* Mobile Layout - PDD Compliant */}
+        {isMobile ? (
+          <>
+            {/* Left: Hamburger Menu */}
             <Button
               variant='ghost'
               size='sm'
@@ -96,89 +126,105 @@ export function Header() {
             >
               <Menu className='h-5 w-5' />
             </Button>
-          )}
 
-          {/* Status Message - Hidden on very small screens */}
-          <div className='hidden sm:block'>
-            <StatusMessage
-              message={statusMessage}
-              isVisible={isMessageVisible}
-            />
-          </div>
-        </div>
+            {/* Center: Empty space */}
+            <div className='flex-1'></div>
 
-        {/* Right Section - Only User Profile */}
-        {user && (
-          <div className='flex items-center'>
-            {/* Ultra-Minimalist User Profile - Only Avatar */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant='ghost'
-                  className='p-2 hover:bg-[#ff0a54]/10 hover:scale-105 transition-all duration-200 rounded-full'
-                >
-                  <Avatar className='h-10 w-10 ring-2 ring-[#ff0a54]/20 hover:ring-[#ff0a54]/40 transition-all duration-200'>
-                    <AvatarImage
-                      src={user.avatar || ''}
-                      alt={user.name || ''}
-                    />
-                    <AvatarFallback className='bg-[#ff0a54]/20 text-[#ff0a54] font-semibold'>
-                      <UserCircle className='h-6 w-6' />
-                    </AvatarFallback>
-                  </Avatar>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                className='w-56 ml-4 mt-2'
-                align='end'
-                style={{
-                  background: 'rgba(255, 255, 255, 0.95)',
-                  backdropFilter: 'blur(20px)',
-                  border: '1px solid rgba(255, 255, 255, 0.3)',
-                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-                }}
-              >
-                <DropdownMenuLabel className='font-semibold'>
-                  <div className='flex items-center space-x-2 rtl:space-x-reverse'>
-                    <Avatar className='h-8 w-8'>
-                      <AvatarImage
-                        src={user.avatar || ''}
-                        alt={user.name || ''}
-                      />
-                      <AvatarFallback className='bg-[#ff0a54]/20 text-[#ff0a54] font-semibold'>
-                        {user.name?.charAt(0) || 'U'}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <div className='text-sm font-medium'>
-                        {user.name || 'کاربر'}
+            {/* Right: Notification Icon */}
+            <Button
+              variant='ghost'
+              size='sm'
+              className='p-2 hover:bg-[#ff0a54]/10 hover:text-[#ff0a54] transition-all duration-200 rounded-lg relative'
+            >
+              <Bell className='h-5 w-5' />
+              {/* Notification Badge */}
+              <div className='absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse' />
+            </Button>
+          </>
+        ) : (
+          /* Desktop Layout - Keep existing design */
+          <>
+            {/* Left Section - Status Message */}
+            <div className='flex items-center space-x-3 rtl:space-x-reverse'>
+              <StatusMessage
+                message={statusMessage}
+                isVisible={isMessageVisible}
+              />
+            </div>
+
+            {/* Right Section - User Profile */}
+            {user && (
+              <div className='flex items-center'>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant='ghost'
+                      className='p-2 hover:bg-[#ff0a54]/10 hover:scale-105 transition-all duration-200 rounded-full'
+                    >
+                      <Avatar className='h-10 w-10 ring-2 ring-[#ff0a54]/20 hover:ring-[#ff0a54]/40 transition-all duration-200'>
+                        <AvatarImage
+                          src={user.avatar || ''}
+                          alt={user.name || ''}
+                        />
+                        <AvatarFallback className='bg-[#ff0a54]/20 text-[#ff0a54] font-semibold'>
+                          <UserCircle className='h-6 w-6' />
+                        </AvatarFallback>
+                      </Avatar>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    className='w-56 ml-4 mt-2'
+                    align='end'
+                    style={{
+                      background: 'rgba(255, 255, 255, 0.95)',
+                      backdropFilter: 'blur(20px)',
+                      border: '1px solid rgba(255, 255, 255, 0.3)',
+                      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                    }}
+                  >
+                    <DropdownMenuLabel className='font-semibold'>
+                      <div className='flex items-center space-x-2 rtl:space-x-reverse'>
+                        <Avatar className='h-8 w-8'>
+                          <AvatarImage
+                            src={user.avatar || ''}
+                            alt={user.name || ''}
+                          />
+                          <AvatarFallback className='bg-[#ff0a54]/20 text-[#ff0a54] font-semibold'>
+                            {user.name?.charAt(0) || 'U'}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <div className='text-sm font-medium'>
+                            {user.name || 'کاربر'}
+                          </div>
+                          <div className='text-xs text-gray-500'>
+                            {getUserRole()}
+                          </div>
+                        </div>
                       </div>
-                      <div className='text-xs text-gray-500'>
-                        {getUserRole()}
-                      </div>
-                    </div>
-                  </div>
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem className='cursor-pointer'>
-                  <User className='mr-2 h-4 w-4' />
-                  <span>پروفایل</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem className='cursor-pointer'>
-                  <Settings className='mr-2 h-4 w-4' />
-                  <span>تنظیمات</span>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  className='cursor-pointer text-red-600 focus:text-red-600'
-                  onClick={handleSignOut}
-                >
-                  <LogOut className='mr-2 h-4 w-4' />
-                  <span>خروج</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem className='cursor-pointer'>
+                      <User className='mr-2 h-4 w-4' />
+                      <span>پروفایل</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className='cursor-pointer'>
+                      <Settings className='mr-2 h-4 w-4' />
+                      <span>تنظیمات</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      className='cursor-pointer text-red-600 focus:text-red-600'
+                      onClick={handleSignOut}
+                    >
+                      <LogOut className='mr-2 h-4 w-4' />
+                      <span>خروج</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            )}
+          </>
         )}
       </div>
     </header>

@@ -18,12 +18,12 @@ import { validateLeaveRequestPeriod } from '@/lib/work-schedule-utils';
 // Validation schemas for different request types
 const leaveRequestDetailsSchema = z.object({
   leaveType: z.enum(['ANNUAL', 'SICK', 'UNPAID', 'EMERGENCY', 'MATERNITY', 'PATERNITY', 'STUDY', 'OTHER']),
-  startDate: z.string().datetime('Invalid start date format'),
-  endDate: z.string().datetime('Invalid end date format'),
+  startDate: z.string().refine((date) => !isNaN(Date.parse(date)), 'Invalid start date format'),
+  endDate: z.string().refine((date) => !isNaN(Date.parse(date)), 'Invalid end date format'),
 });
 
 const overtimeRequestDetailsSchema = z.object({
-  date: z.string().datetime('Invalid date format'),
+  date: z.string().refine((date) => !isNaN(Date.parse(date)), 'Invalid date format'),
   startTime: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, 'Invalid time format'),
   endTime: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, 'Invalid time format'),
   description: z.string().min(10, 'Description must be at least 10 characters'),
@@ -147,14 +147,18 @@ export async function POST(request: NextRequest) {
 
     // Parse and validate request body
     const body = await request.json();
+    console.log('Request body received:', JSON.stringify(body, null, 2));
     const validationResult = CreateRequestSchema.safeParse(body);
 
     if (!validationResult.success) {
+      console.log('Validation failed:', validationResult.error.errors);
       const errorResponse = createValidationErrorResponse(
         'Validation failed',
         undefined,
         validationResult.error.errors
       );
+      console.log('Error response created:', JSON.stringify(errorResponse, null, 2));
+      console.log('HTTP status code:', getHttpStatusForErrorCode(errorResponse.error.code));
       return NextResponse.json(errorResponse, {
         status: getHttpStatusForErrorCode(errorResponse.error.code),
       });

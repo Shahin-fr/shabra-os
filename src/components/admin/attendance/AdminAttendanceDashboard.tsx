@@ -16,7 +16,7 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -145,8 +145,7 @@ export function AdminAttendanceDashboard() {
           <p className='text-gray-600 text-center mb-4'>
             متأسفانه خطایی در بارگذاری آمار حضور رخ داده است.
           </p>
-          <Button onClick={handleRefresh} variant='outline'>
-            <RefreshCw className='h-4 w-4 mr-2' />
+          <Button onClick={handleRefresh} variant='outline' icon={<RefreshCw className='h-4 w-4' />}>
             تلاش مجدد
           </Button>
         </CardContent>
@@ -164,32 +163,24 @@ export function AdminAttendanceDashboard() {
         <Card>
           <CardContent className="p-0">
             <div className="flex border-b">
-              <button
+              <Button
                 onClick={() => setActiveTab('attendance')}
-                className={`flex-1 px-6 py-4 text-sm font-medium transition-colors ${
-                  activeTab === 'attendance'
-                    ? 'border-b-2 border-[#ff0a54] text-[#ff0a54]'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
+                variant={activeTab === 'attendance' ? 'default' : 'ghost'}
+                size="sm"
+                className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-primary"
               >
-                <div className="flex items-center justify-center gap-2">
-                  <Calendar className="h-4 w-4" />
-                  حضور و غیاب
-                </div>
-              </button>
-              <button
+                <Calendar className="h-4 w-4" />
+                حضور و غیاب
+              </Button>
+              <Button
                 onClick={() => setActiveTab('work-schedule')}
-                className={`flex-1 px-6 py-4 text-sm font-medium transition-colors ${
-                  activeTab === 'work-schedule'
-                    ? 'border-b-2 border-[#ff0a54] text-[#ff0a54]'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
+                variant={activeTab === 'work-schedule' ? 'default' : 'ghost'}
+                size="sm"
+                className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-primary"
               >
-                <div className="flex items-center justify-center gap-2">
-                  <Clock className="h-4 w-4" />
-                  برنامه کاری
-                </div>
-              </button>
+                <Clock className="h-4 w-4" />
+                برنامه کاری
+              </Button>
             </div>
           </CardContent>
         </Card>
@@ -276,8 +267,8 @@ export function AdminAttendanceDashboard() {
                 variant='outline'
                 size='sm'
                 className='w-full'
+                icon={<Filter className='h-4 w-4' />}
               >
-                <Filter className='h-4 w-4 mr-2' />
                 فیلترها
               </Button>
               <Button
@@ -285,8 +276,8 @@ export function AdminAttendanceDashboard() {
                 variant='outline'
                 size='sm'
                 className='w-full'
+                icon={<Download className='h-4 w-4' />}
               >
-                <Download className='h-4 w-4 mr-2' />
                 صادرات
               </Button>
             </CardContent>
@@ -385,8 +376,8 @@ export function AdminAttendanceDashboard() {
                 </Button>
                 <Button
                   onClick={handleApplyFilters}
+                  variant='default'
                   size='sm'
-                  className='bg-[#ff0a54] hover:bg-[#ff0a54]/90 text-white'
                 >
                   اعمال فیلترها
                 </Button>

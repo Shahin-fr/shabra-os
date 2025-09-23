@@ -52,7 +52,7 @@ function setupLocalAuth() {
           defaultValue = 'admin@shabra.com';
           break;
         case 'DEV_ADMIN_PASSWORD':
-          defaultValue = 'admin123';
+          defaultValue = DEFAULT_ADMIN_PASSWORD;
           break;
         case 'DEV_USER_EMAIL':
           defaultValue = 'user@shabra.com';
@@ -90,6 +90,10 @@ function setupLocalAuth() {
 
 const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcryptjs');
+const { 
+  DEFAULT_ADMIN_EMAIL, 
+  DEFAULT_ADMIN_PASSWORD
+} = require('../src/lib/config/constants');
 
 const prisma = new PrismaClient();
 
@@ -110,7 +114,7 @@ async function testAuth() {
       console.log('✅ Test user found');
       
       // Test password verification
-      const isValid = await bcrypt.compare('admin123', testUser.password);
+      const isValid = await bcrypt.compare(DEFAULT_ADMIN_PASSWORD, testUser.password);
       if (isValid) {
         console.log('✅ Password verification successful');
       } else {
@@ -122,7 +126,7 @@ async function testAuth() {
 
     console.log('\\n🎉 Authentication test completed!');
     console.log('\\n📋 You can now login with:');
-    console.log('   Admin: admin@shabra.com / admin123');
+    console.log(`   Admin: ${DEFAULT_ADMIN_EMAIL} / ${DEFAULT_ADMIN_PASSWORD}`);
     console.log('   Manager: manager@shabra.com / manager123');
     console.log('   User: user@shabra.com / user123');
 

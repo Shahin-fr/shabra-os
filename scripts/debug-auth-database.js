@@ -7,6 +7,10 @@
 
 const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcryptjs');
+const { 
+  DEFAULT_ADMIN_EMAIL, 
+  DEFAULT_ADMIN_PASSWORD
+} = require('../src/lib/config/constants');
 
 // Test with different database URLs
 const databaseUrls = [
@@ -50,12 +54,12 @@ async function debugAuthDatabase() {
         
         // Test admin user specifically
         const adminUser = await prisma.user.findUnique({
-          where: { email: 'admin@shabra.com' },
+          where: { email: DEFAULT_ADMIN_EMAIL },
           select: { password: true, email: true, firstName: true, lastName: true, roles: true }
         });
         
         if (adminUser) {
-          const isValid = await bcrypt.compare('admin123', adminUser.password);
+          const isValid = await bcrypt.compare(DEFAULT_ADMIN_PASSWORD, adminUser.password);
           console.log(`   🔐 Admin password test: ${isValid ? 'SUCCESS' : 'FAILED'}`);
         } else {
           console.log('   ❌ Admin user not found');

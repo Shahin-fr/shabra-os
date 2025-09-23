@@ -10,74 +10,55 @@ import {
   Calendar,
   FileText,
   ChevronDown,
+  RefreshCw,
+  Target,
+  Clock,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { DashboardService, ActivityItem } from '@/services/dashboard.service';
 
-const activityData = [
-  {
-    id: 1,
-    type: 'task_completed',
-    user: 'احمد محمدی',
-    action: 'تکمیل تسک',
-    fullAction: 'تسک "طراحی صفحه اصلی" را تکمیل کرد',
-    time: '5 دقیقه پیش',
-    icon: CheckCircle,
-    color: 'text-green-500',
-    bgColor: 'bg-green-500/20',
-  },
-  {
-    id: 2,
-    type: 'task_created',
-    user: 'فاطمه احمدی',
-    action: 'ایجاد تسک',
-    fullAction: 'تسک جدید "بهینه‌سازی UI" ایجاد کرد',
-    time: '15 دقیقه پیش',
-    icon: Plus,
-    color: 'text-purple-500',
-    bgColor: 'bg-purple-500/20',
-  },
-  {
-    id: 3,
-    type: 'comment',
-    user: 'علی رضایی',
-    action: 'نظر جدید',
-    fullAction: 'نظری روی پروژه "وب‌سایت جدید" گذاشت',
-    time: '30 دقیقه پیش',
-    icon: MessageSquare,
-    color: 'text-purple-500',
-    bgColor: 'bg-purple-500/20',
-  },
-  {
-    id: 4,
-    type: 'meeting',
-    user: 'مریم حسینی',
-    action: 'برنامه‌ریزی جلسه',
-    fullAction: 'جلسه "بررسی عملکرد ماهانه" را برنامه‌ریزی کرد',
-    time: '1 ساعت پیش',
-    icon: Calendar,
-    color: 'text-orange-500',
-    bgColor: 'bg-orange-500/20',
-  },
-  {
-    id: 5,
-    type: 'document',
-    user: 'حسن کریمی',
-    action: 'آپلود فایل',
-    fullAction: 'فایل "گزارش هفتگی" را آپلود کرد',
-    time: '2 ساعت پیش',
-    icon: FileText,
-    color: 'text-blue-500',
-    bgColor: 'bg-blue-500/20',
-  },
-];
+// Icon mapping for different activity types
+const getIconComponent = (iconName: string) => {
+  const iconProps = { className: 'h-4 w-4' };
+  
+  switch (iconName) {
+    case 'CheckCircle':
+      return <CheckCircle {...iconProps} />;
+    case 'Plus':
+      return <Plus {...iconProps} />;
+    case 'MessageSquare':
+      return <MessageSquare {...iconProps} />;
+    case 'Calendar':
+      return <Calendar {...iconProps} />;
+    case 'FileText':
+      return <FileText {...iconProps} />;
+    case 'Target':
+      return <Target {...iconProps} />;
+    case 'Clock':
+      return <Clock {...iconProps} />;
+    default:
+      return <Activity {...iconProps} />;
+  }
+};
 
 export function RecentTeamActivityFeed() {
-  const [expandedItems, setExpandedItems] = useState<number[]>([]);
+  const [expandedItems, setExpandedItems] = useState<string[]>([]);
 
-  const toggleExpanded = (id: number) => {
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: ['team-activity'],
+    queryFn: async () => {
+      return await DashboardService.getRecentTeamActivity();
+    },
+    staleTime: 2 * 60 * 1000, // 2 minutes
+    refetchInterval: 5 * 60 * 1000, // 5 minutes
+  });
+
+  const toggleExpanded = (id: string) => {
     setExpandedItems(prev =>
       prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
     );
@@ -100,6 +81,100 @@ export function RecentTeamActivityFeed() {
     }
   };
 
+  if (isLoading) {
+    return (
+      <Card className='h-full bg-white border border-gray-200 shadow-sm'>
+        <CardHeader className='pb-4'>
+          <CardTitle className='text-lg font-bold text-gray-900 flex items-center gap-2'>
+            <Activity className='h-5 w-5 text-[#ff0a54]' />
+            فعالیت‌های اخیر
+          </CardTitle>
+        </CardHeader>
+        <CardContent className='space-y-3'>
+          {Array.from({ length: 5 }).map((_, index) => (
+            <div key={index} className='border border-gray-200 rounded-lg p-4'>
+              <div className='flex items-center justify-between'>
+                <div className='flex items-center gap-3'>
+                  <Skeleton className='w-8 h-8 rounded-lg' />
+                  <div className='space-y-2'>
+                    <Skeleton className='h-4 w-20' />
+                    <Skeleton className='h-3 w-16' />
+                  </div>
+                </div>
+                <div className='flex items-center gap-2'>
+                  <Skeleton className='h-3 w-12' />
+                  <Skeleton className='w-4 h-4' />
+                </div>
+              </div>
+            </div>
+          ))}
+          <div className='pt-4 border-t border-gray-200'>
+            <Skeleton className='h-8 w-full rounded' />
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (error) {
+    return (
+      <Card className='h-full bg-white border border-gray-200 shadow-sm'>
+        <CardHeader className='pb-4'>
+          <CardTitle className='text-lg font-bold text-gray-900 flex items-center gap-2'>
+            <Activity className='h-5 w-5 text-[#ff0a54]' />
+            فعالیت‌های اخیر
+          </CardTitle>
+        </CardHeader>
+        <CardContent className='flex flex-col items-center justify-center text-center py-8'>
+          <div className='space-y-4'>
+            <div className='p-4 rounded-full bg-red-100'>
+              <RefreshCw className='h-8 w-8 text-red-500' />
+            </div>
+            <div>
+              <h3 className='text-lg font-semibold text-gray-900 mb-2'>
+                خطا در بارگذاری فعالیت‌ها
+              </h3>
+              <p className='text-sm text-gray-600 mb-4'>
+                متأسفانه امکان بارگذاری فعالیت‌های اخیر وجود ندارد
+              </p>
+              <Button onClick={() => refetch()} variant='outline' size='sm'>
+                تلاش مجدد
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (!data?.data || data.data.length === 0) {
+    return (
+      <Card className='h-full bg-white border border-gray-200 shadow-sm'>
+        <CardHeader className='pb-4'>
+          <CardTitle className='text-lg font-bold text-gray-900 flex items-center gap-2'>
+            <Activity className='h-5 w-5 text-[#ff0a54]' />
+            فعالیت‌های اخیر
+          </CardTitle>
+        </CardHeader>
+        <CardContent className='flex flex-col items-center justify-center text-center py-8'>
+          <div className='space-y-4'>
+            <div className='p-4 rounded-full bg-gray-100'>
+              <Activity className='h-8 w-8 text-gray-500' />
+            </div>
+            <div>
+              <h3 className='text-lg font-semibold text-gray-900 mb-2'>
+                فعالیتی موجود نیست
+              </h3>
+              <p className='text-sm text-gray-600'>
+                در حال حاضر فعالیتی برای نمایش وجود ندارد
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <OptimizedMotion
       initial={{ opacity: 0, y: 20 }}
@@ -115,8 +190,8 @@ export function RecentTeamActivityFeed() {
           </CardTitle>
         </CardHeader>
         <CardContent className='space-y-3'>
-          {activityData.map((item, index) => {
-            const IconComponent = item.icon;
+          {data.data.map((item, index) => {
+            const IconComponent = getIconComponent(item.icon);
             const isExpanded = expandedItems.includes(item.id);
 
             return (
@@ -135,7 +210,9 @@ export function RecentTeamActivityFeed() {
                   <div className='flex items-center justify-between'>
                     <div className='flex items-center gap-3'>
                       <div className={`p-2 rounded-lg ${item.bgColor}`}>
-                        <IconComponent className={`h-4 w-4 ${item.color}`} />
+                        <div className={item.color}>
+                          {IconComponent}
+                        </div>
                       </div>
                       <div className='text-right'>
                         <div className='text-sm font-medium text-gray-900'>

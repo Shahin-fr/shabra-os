@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 import { Menu, X, ArrowLeft, Phone } from 'lucide-react';
 
 const navigation = [
@@ -39,11 +39,7 @@ export function LandingHeader() {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.8 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled 
-          ? 'bg-white/95 backdrop-blur-md shadow-lg' 
-          : 'bg-transparent'
-      }`}
+      className="fixed top-0 left-0 right-0 z-50 bg-transparent"
     >
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
@@ -86,16 +82,17 @@ export function LandingHeader() {
                   ? 'text-gray-700 hover:text-blue-600' 
                   : 'text-white hover:text-blue-200'
               }`}
+              icon={<Phone className="w-4 h-4" />}
             >
-              <Phone className="w-4 h-4 ml-2" />
               تماس
             </Button>
             <Button
               onClick={() => scrollToSection('#cta')}
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-2 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+              variant="default"
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl"
+              icon={<ArrowLeft className="w-4 h-4" />}
             >
               درخواست دمو
-              <ArrowLeft className="w-4 h-4 mr-2" />
             </Button>
           </div>
 
@@ -136,16 +133,17 @@ export function LandingHeader() {
               <Button
                 variant="ghost"
                 className="w-full justify-start text-gray-700"
+                icon={<Phone className="w-4 h-4" />}
               >
-                <Phone className="w-4 h-4 ml-2" />
                 تماس
               </Button>
               <Button
                 onClick={() => scrollToSection('#cta')}
-                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl font-semibold"
+                variant="default"
+                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                icon={<ArrowLeft className="w-4 h-4" />}
               >
                 درخواست دمو
-                <ArrowLeft className="w-4 h-4 mr-2" />
               </Button>
             </div>
           </div>

@@ -21,7 +21,8 @@ export async function GET(
     }
 
     // Check if user is admin or manager
-    if (!['ADMIN', 'MANAGER'].includes(session.user.roles)) {
+    const userRoles = Array.isArray(session.user.roles) ? session.user.roles : [session.user.roles];
+    if (!userRoles.some(role => ['ADMIN', 'MANAGER'].includes(role))) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
@@ -57,7 +58,7 @@ export async function GET(
     }
 
     // Check if user has permission to view this request
-    if (session.user.roles === 'MANAGER') {
+    if (userRoles.includes('MANAGER')) {
       if (requestData.user.managerId !== session.user.id) {
         return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
       }
@@ -87,7 +88,8 @@ export async function PUT(
     }
 
     // Check if user is admin or manager
-    if (!['ADMIN', 'MANAGER'].includes(session.user.roles)) {
+    const userRoles = Array.isArray(session.user.roles) ? session.user.roles : [session.user.roles];
+    if (!userRoles.some(role => ['ADMIN', 'MANAGER'].includes(role))) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
@@ -112,7 +114,7 @@ export async function PUT(
     }
 
     // Check if user has permission to act on this request
-    if (session.user.roles === 'MANAGER') {
+    if (userRoles.includes('MANAGER')) {
       if (requestData.user.managerId !== session.user.id) {
         return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
       }

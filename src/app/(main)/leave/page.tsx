@@ -5,6 +5,7 @@ import { Calendar, FileText, Clock } from 'lucide-react';
 
 import { NewLeaveRequestForm } from '@/components/leave/NewLeaveRequestForm';
 import { MyLeaveRequestsTable } from '@/components/leave/MyLeaveRequestsTable';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function LeavePage() {
   return (
@@ -36,22 +37,26 @@ export default function LeavePage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
           >
-            <div className='bg-white rounded-xl shadow-sm border border-gray-200 p-6'>
-              <div className='flex items-center gap-3 mb-6'>
-                <div className='p-2 bg-blue-100 rounded-lg'>
-                  <FileText className='h-5 w-5 text-blue-600' />
-                </div>
-                <div>
-                  <h2 className='text-xl font-semibold text-gray-900'>
-                    درخواست مرخصی جدید
-                  </h2>
-                  <p className='text-gray-600 text-sm'>
-                    فرم درخواست مرخصی خود را تکمیل کنید
-                  </p>
-                </div>
-              </div>
-              <NewLeaveRequestForm />
-            </div>
+            <Card>
+              <CardHeader>
+                <CardTitle className='flex items-center gap-3'>
+                  <div className='p-2 bg-blue-100 rounded-lg'>
+                    <FileText className='h-5 w-5 text-blue-600' />
+                  </div>
+                  <div>
+                    <h2 className='text-xl font-semibold text-gray-900'>
+                      درخواست مرخصی جدید
+                    </h2>
+                    <p className='text-gray-600 text-sm'>
+                      فرم درخواست مرخصی خود را تکمیل کنید
+                    </p>
+                  </div>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <NewLeaveRequestForm />
+              </CardContent>
+            </Card>
           </OptimizedMotion>
 
           {/* My Leave Requests History */}
@@ -60,22 +65,26 @@ export default function LeavePage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <div className='bg-white rounded-xl shadow-sm border border-gray-200 p-6'>
-              <div className='flex items-center gap-3 mb-6'>
-                <div className='p-2 bg-green-100 rounded-lg'>
-                  <Clock className='h-5 w-5 text-green-600' />
-                </div>
-                <div>
-                  <h2 className='text-xl font-semibold text-gray-900'>
-                    تاریخچه درخواست‌های مرخصی
-                  </h2>
-                  <p className='text-gray-600 text-sm'>
-                    مشاهده وضعیت درخواست‌های قبلی شما
-                  </p>
-                </div>
-              </div>
-              <MyLeaveRequestsTable />
-            </div>
+            <Card>
+              <CardHeader>
+                <CardTitle className='flex items-center gap-3'>
+                  <div className='p-2 bg-green-100 rounded-lg'>
+                    <Clock className='h-5 w-5 text-green-600' />
+                  </div>
+                  <div>
+                    <h2 className='text-xl font-semibold text-gray-900'>
+                      تاریخچه درخواست‌های مرخصی
+                    </h2>
+                    <p className='text-gray-600 text-sm'>
+                      مشاهده وضعیت درخواست‌های قبلی شما
+                    </p>
+                  </div>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <MyLeaveRequestsTable />
+              </CardContent>
+            </Card>
           </OptimizedMotion>
         </div>
       </div>

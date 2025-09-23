@@ -2,29 +2,27 @@
 
 import React from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { useInView } from 'react-intersection-observer';
+import { useIsMobile } from '../../../hooks/useMediaQuery';
 import { t } from '../utils/i18n';
 
 /**
- * RoadmapSection Component - Completely Re-architected
+ * RoadmapSection Component - Perfectly Synchronized Scroll Timeline
  * 
- * An epic, visually impressive timeline with enhanced glassmorphism,
- * animated background elements, and wider cards with more content.
+ * A clean, elegant timeline where scroll progress drives milestone animations.
+ * The journey: scroll progress bar fills the track, triggering beautiful
+ * circle animations at each milestone with perfect synchronization.
  */
 export default function RoadmapSection() {
-  const [ref, inView] = useInView({
-    triggerOnce: true,
-    threshold: 0.1
-  });
-
+  const isMobile = useIsMobile();
   const containerRef = React.useRef<HTMLDivElement>(null);
+  const sectionRef = React.useRef<HTMLDivElement>(null);
+
+
+  // Main scroll progress with better offset for smoother tracking
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start end", "end start"]
+    offset: ["start center", "end center"]
   });
-
-  // Transform scroll progress to timeline animation
-  const timelineProgress = useTransform(scrollYProgress, [0, 1], [0, 1]);
 
   const phases = [
     {
@@ -33,7 +31,6 @@ export default function RoadmapSection() {
       status: 'current',
       features: t('roadmap_phase1_features').split(','),
       color: '#E000A0',
-      bgPattern: 'grid',
       icon: '🚀'
     },
     {
@@ -42,7 +39,6 @@ export default function RoadmapSection() {
       status: 'upcoming',
       features: t('roadmap_phase2_features').split(','),
       color: '#3B82F6',
-      bgPattern: 'flowing',
       icon: '⚡'
     },
     {
@@ -51,73 +47,31 @@ export default function RoadmapSection() {
       status: 'future',
       features: t('roadmap_phase3_features').split(','),
       color: '#8B5CF6',
-      bgPattern: 'nodes',
       icon: '🌐'
     }
   ];
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'current':
-        return 'text-[#E000A0] border-[#E000A0] bg-[#E000A0]/10';
-      case 'upcoming':
-        return 'text-[#3B82F6] border-[#3B82F6] bg-[#3B82F6]/10';
-      case 'future':
-        return 'text-[#8B5CF6] border-[#8B5CF6] bg-[#8B5CF6]/10';
-      default:
-        return 'text-[#A1A1A1] border-[#A1A1A1] bg-[#A1A1A1]/10';
-    }
-  };
+  // Precise milestone trigger points with smooth transitions
+  // Milestone 1 at ~20% of section height
+  const milestone1Progress = useTransform(scrollYProgress, [0.15, 0.25], [0, 1]);
+  const milestone1Fill = useTransform(milestone1Progress, [0.3, 1], [0, 1]);
+  const milestone1Scale = useTransform(milestone1Progress, [0.2, 0.5, 0.8], [1, 1.15, 1]);
+  const milestone1Glow = useTransform(milestone1Progress, [0.4, 0.8], [0, 1]);
+  const card1Visible = useTransform(milestone1Progress, [0.2, 0.6], [0, 1]);
 
-  const getStatusText = (status: string) => {
-    switch (status) {
-      case 'current':
-        return 'Current Phase';
-      case 'upcoming':
-        return 'Upcoming';
-      case 'future':
-        return 'Future Vision';
-      default:
-        return 'Phase';
-    }
-  };
+  // Milestone 2 at ~50% of section height
+  const milestone2Progress = useTransform(scrollYProgress, [0.4, 0.6], [0, 1]);
+  const milestone2Fill = useTransform(milestone2Progress, [0.3, 1], [0, 1]);
+  const milestone2Scale = useTransform(milestone2Progress, [0.2, 0.5, 0.8], [1, 1.15, 1]);
+  const milestone2Glow = useTransform(milestone2Progress, [0.4, 0.8], [0, 1]);
+  const card2Visible = useTransform(milestone2Progress, [0.2, 0.6], [0, 1]);
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.3,
-        delayChildren: 0.2
-      }
-    }
-  };
-
-  const titleVariants = {
-    hidden: { 
-      opacity: 0, 
-      y: 50,
-      scale: 0.9
-    },
-    visible: { 
-      opacity: 1, 
-      y: 0,
-      scale: 1
-    }
-  };
-
-  const phaseVariants = {
-    hidden: { 
-      opacity: 0, 
-      y: 100,
-      scale: 0.9
-    },
-    visible: { 
-      opacity: 1, 
-      y: 0,
-      scale: 1
-    }
-  };
+  // Milestone 3 at ~80% of section height
+  const milestone3Progress = useTransform(scrollYProgress, [0.7, 0.9], [0, 1]);
+  const milestone3Fill = useTransform(milestone3Progress, [0.3, 1], [0, 1]);
+  const milestone3Scale = useTransform(milestone3Progress, [0.2, 0.5, 0.8], [1, 1.15, 1]);
+  const milestone3Glow = useTransform(milestone3Progress, [0.4, 0.8], [0, 1]);
+  const card3Visible = useTransform(milestone3Progress, [0.2, 0.6], [0, 1]);
 
   const isRTL = (text: string) => {
     return /[\u0600-\u06FF]/.test(text);
@@ -125,82 +79,22 @@ export default function RoadmapSection() {
 
   return (
     <section 
-      ref={containerRef}
+      ref={sectionRef}
       className="relative py-20 px-4 sm:px-6 lg:px-8 bg-transparent overflow-hidden"
     >
-      {/* Animated background elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        {/* Flowing data lines */}
-        <motion.svg
-          className="absolute inset-0 w-full h-full"
-          viewBox="0 0 1200 800"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <motion.path
-            d="M 0 200 Q 300 100 600 200 T 1200 200"
-            stroke="#E000A0"
-            strokeWidth="2"
-            opacity="0.1"
-            initial={{ pathLength: 0 }}
-            animate={{ pathLength: 1 }}
-            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.path
-            d="M 0 400 Q 300 300 600 400 T 1200 400"
-            stroke="#3B82F6"
-            strokeWidth="2"
-            opacity="0.1"
-            initial={{ pathLength: 0 }}
-            animate={{ pathLength: 1 }}
-            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-          />
-          <motion.path
-            d="M 0 600 Q 300 500 600 600 T 1200 600"
-            stroke="#8B5CF6"
-            strokeWidth="2"
-            opacity="0.1"
-            initial={{ pathLength: 0 }}
-            animate={{ pathLength: 1 }}
-            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-          />
-        </motion.svg>
-
-        {/* Floating nodes */}
-        {[...Array(12)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-4 h-4 bg-[#E000A0]/20 rounded-full"
-            style={{
-              left: `${10 + i * 8}%`,
-              top: `${20 + (i % 3) * 25}%`
-            }}
-            animate={{
-              y: [0, -20, 0],
-              scale: [1, 1.2, 1],
-              opacity: [0.3, 0.8, 0.3]
-            }}
-            transition={{
-              duration: 3 + i * 0.5,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: i * 0.2
-            }}
-          />
-        ))}
-      </div>
-
       <motion.div 
+        ref={containerRef}
         className="max-w-7xl mx-auto relative z-10"
-        ref={ref}
-        variants={containerVariants}
-        initial="hidden"
-        animate={inView ? "visible" : "hidden"}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
       >
         {/* Section title */}
         <motion.div 
           className="text-center mb-20"
-          variants={titleVariants}
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
         >
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#F5F5F5] mb-6">
             {t('roadmap_title')}
@@ -210,165 +104,337 @@ export default function RoadmapSection() {
           </p>
         </motion.div>
 
-        {/* Epic timeline */}
-        <div className="relative">
-          {/* Central timeline line */}
+        {/* Scroll-Driven Timeline */}
+        <div className="relative min-h-[800px]">
+          {/* Central Track Line - Simple and clean with rounded ends */}
+          <div className={`absolute w-1 h-full bg-[#2A2A2A] rounded-full ${
+            isMobile ? 'left-8' : 'left-1/2 transform -translate-x-1/2'
+          }`} 
+          style={{
+            borderRadius: '0.5rem'
+          }} />
+          
+          {/* Progress Bar - Perfectly aligned with rounded ends */}
           <motion.div
-            className="absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-gradient-to-b from-[#E000A0] via-[#3B82F6] to-[#8B5CF6] rounded-full"
+            className={`absolute w-1 h-full rounded-full ${
+              isMobile ? 'left-8' : 'left-1/2'
+            }`}
             style={{
-              height: useTransform(timelineProgress, [0, 1], ['0%', '100%'])
+              scaleY: scrollYProgress,
+              background: 'linear-gradient(to bottom, #E000A0, #3B82F6, #8B5CF6)',
+              borderRadius: '0.5rem',
+              transformOrigin: 'top',
+              transform: 'translateX(-50%)'
             }}
           />
 
-          {/* Timeline cards */}
-          <div className="space-y-16">
-            {phases.map((phase, index) => (
-              <motion.div
-                key={index}
-                className={`relative flex items-center ${
-                  index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'
-                }`}
-                variants={phaseVariants}
-              >
-                {/* Timeline node */}
-                <div className="absolute left-1/2 transform -translate-x-1/2 z-20">
+          {/* Milestone Circles with Perfect Synchronization */}
+          <div className="space-y-32">
+            {/* Milestone 1 - Positioned at ~20% */}
+            <div className={`relative flex items-center ${isMobile ? 'justify-start' : 'justify-center'}`}>
+              <div className={`absolute z-20 ${
+                isMobile ? 'left-6' : 'left-1/2 transform -translate-x-1/2'
+              }`}>
+                <motion.div
+                  className={`rounded-full border-4 border-[#E000A0] bg-[#1A1A1A] flex items-center justify-center shadow-lg relative overflow-hidden ${
+                    isMobile ? 'w-12 h-12 text-xl' : 'w-16 h-16 text-2xl'
+                  }`}
+                  style={{
+                    scale: milestone1Scale,
+                    boxShadow: useTransform(milestone1Glow, [0, 1], [
+                      '0 0 0px rgba(224, 0, 160, 0)',
+                      '0 0 20px rgba(224, 0, 160, 0.6), 0 0 40px rgba(224, 0, 160, 0.3)'
+                    ])
+                  }}
+                >
+                  {/* Animated background fill */}
                   <motion.div
-                    className={`w-16 h-16 rounded-full border-4 ${getStatusColor(phase.status)} flex items-center justify-center text-2xl shadow-lg`}
-                    whileHover={{ scale: 1.1 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    {phase.icon}
-                  </motion.div>
-                </div>
-
-                {/* Phase card - Much wider and more content */}
-                <div className={`w-5/12 ${
-                  index % 2 === 0 ? 'mr-auto pr-8' : 'ml-auto pl-8'
-                }`}>
+                    className="absolute inset-0 rounded-full"
+                    style={{
+                      background: useTransform(milestone1Fill, [0, 1], [
+                        'transparent',
+                        'linear-gradient(135deg, #E000A0, #FF1493)'
+                      ]),
+                      opacity: useTransform(milestone1Fill, [0, 0.3, 1], [0, 0, 0.9])
+                    }}
+                  />
+                  
+                  {/* Pulsing ring effect */}
                   <motion.div
-                    className="relative bg-gradient-to-br from-[#1A1A1A]/80 to-[#0F0F0F]/80 backdrop-blur-xl rounded-3xl border border-[#2A2A2A]/50 p-8 shadow-2xl hover:shadow-3xl transition-all duration-500 group"
-                    whileHover={{ 
-                      y: -10,
-                      scale: 1.02,
-                      boxShadow: `0 25px 50px ${phase.color}20`
+                    className="absolute inset-0 rounded-full border-2 border-[#E000A0]"
+                    style={{
+                      scale: useTransform(milestone1Fill, [0, 1], [1, 1.2]),
+                      opacity: useTransform(milestone1Fill, [0, 0.5, 1], [0, 0.6, 0])
+                    }}
+                  />
+                  
+                  {/* Icon with smooth color transition */}
+                  <motion.div 
+                    className="relative z-10"
+                    style={{
+                      filter: useTransform(milestone1Fill, [0, 1], [
+                        'brightness(1)',
+                        'brightness(1.2) drop-shadow(0 0 8px rgba(255, 255, 255, 0.3))'
+                      ])
                     }}
                   >
-                    {/* Status badge */}
-                    <div className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold mb-6 ${getStatusColor(phase.status)}`}>
-                      {getStatusText(phase.status)}
-                    </div>
-
-                    {/* Phase title */}
-                    <h3 className={`text-2xl font-bold text-[#F5F5F5] mb-4 ${
-                      isRTL(phase.title) ? 'text-right' : 'text-left'
-                    }`}>
-                      {phase.title}
-                    </h3>
-
-                    {/* Phase description */}
-                    <p className={`text-[#A1A1A1] mb-6 leading-relaxed ${
-                      isRTL(phase.description) ? 'text-right' : 'text-left'
-                    }`}>
-                      {phase.description}
-                    </p>
-
-                    {/* Features list */}
-                    <div className="space-y-3">
-                      <h4 className={`text-lg font-semibold text-[#F5F5F5] ${
-                        isRTL('Key Features') ? 'text-right' : 'text-left'
-                      }`}>
-                        Key Features
-                      </h4>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        {phase.features.map((feature, featureIndex) => (
-                          <motion.div
-                            key={featureIndex}
-                            className="flex items-start space-x-3 rtl:space-x-reverse"
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: featureIndex * 0.1 }}
-                          >
-                            <div 
-                              className="w-2 h-2 rounded-full flex-shrink-0 mt-2"
-                              style={{ backgroundColor: phase.color }}
-                            />
-                            <span className={`text-sm text-[#A1A1A1] ${
-                              isRTL(feature) ? 'text-right' : 'text-left'
-                            }`}>
-                              {feature.trim()}
-                            </span>
-                          </motion.div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Animated background pattern */}
-                    <div className="absolute inset-0 rounded-3xl overflow-hidden pointer-events-none">
-                      {phase.bgPattern === 'grid' && (
-                        <div className="absolute inset-0 opacity-5">
-                          <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-                            <defs>
-                              <pattern id={`grid-${index}`} width="10" height="10" patternUnits="userSpaceOnUse">
-                                <path d="M 10 0 L 0 0 0 10" fill="none" stroke={phase.color} strokeWidth="0.5"/>
-                              </pattern>
-                            </defs>
-                            <rect width="100" height="100" fill={`url(#grid-${index})`} />
-                          </svg>
-                        </div>
-                      )}
-                      
-                      {phase.bgPattern === 'flowing' && (
-                        <motion.div
-                          className="absolute inset-0"
-                          animate={{
-                            background: [
-                              `linear-gradient(45deg, ${phase.color}10 0%, transparent 50%)`,
-                              `linear-gradient(225deg, ${phase.color}10 0%, transparent 50%)`,
-                              `linear-gradient(45deg, ${phase.color}10 0%, transparent 50%)`
-                            ]
-                          }}
-                          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                        />
-                      )}
-                      
-                      {phase.bgPattern === 'nodes' && (
-                        <div className="absolute inset-0 opacity-10">
-                          {[...Array(8)].map((_, i) => (
-                            <motion.div
-                              key={i}
-                              className="absolute w-3 h-3 rounded-full"
-                              style={{
-                                backgroundColor: phase.color,
-                                left: `${10 + i * 12}%`,
-                                top: `${20 + (i % 3) * 20}%`
-                              }}
-                              animate={{
-                                scale: [1, 1.5, 1],
-                                opacity: [0.3, 0.8, 0.3]
-                              }}
-                              transition={{
-                                duration: 2 + i * 0.3,
-                                repeat: Infinity,
-                                ease: "easeInOut",
-                                delay: i * 0.2
-                              }}
-                            />
-                          ))}
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Subtle glow effect */}
-                    <div 
-                      className="absolute inset-0 rounded-3xl pointer-events-none"
-                      style={{
-                        background: `radial-gradient(circle at 50% 50%, ${phase.color}10 0%, transparent 70%)`
-                      }}
-                    />
+                    {phases[0]?.icon}
                   </motion.div>
+                </motion.div>
+              </div>
+
+              {/* Card 1 */}
+              <motion.div
+                className={`${isMobile ? 'w-full ml-20' : 'w-5/12 ml-auto pl-8'}`}
+                style={{
+                  opacity: card1Visible,
+                  y: useTransform(card1Visible, [0, 1], [30, 0]),
+                  scale: useTransform(card1Visible, [0, 1], [0.95, 1]),
+                  rotateY: useTransform(card1Visible, [0, 1], [15, 0])
+                }}
+              >
+                <div className={`bg-gradient-to-br from-[#1A1A1A]/80 to-[#0F0F0F]/80 backdrop-blur-xl rounded-3xl border border-[#2A2A2A]/50 shadow-2xl ${
+                  isMobile ? 'p-6' : 'p-8'
+                }`}>
+                  <div className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold mb-6 text-[#E000A0] border-[#E000A0] bg-[#E000A0]/10">
+                    Current Phase
+                  </div>
+                  <h3 className={`text-2xl font-bold text-[#F5F5F5] mb-4 ${
+                    isRTL(phases[0]?.title || '') ? 'text-right' : 'text-left'
+                  }`}>
+                    {phases[0]?.title}
+                  </h3>
+                  <p className={`text-[#A1A1A1] mb-6 leading-relaxed ${
+                    isRTL(phases[0]?.description || '') ? 'text-right' : 'text-left'
+                  }`}>
+                    {phases[0]?.description}
+                  </p>
+                  <div className="space-y-3">
+                    <h4 className={`text-lg font-semibold text-[#F5F5F5] ${
+                      isRTL('Key Features') ? 'text-right' : 'text-left'
+                    }`}>
+                      Key Features
+                    </h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {phases[0]?.features?.map((feature, featureIndex) => (
+                        <div key={featureIndex} className="flex items-start space-x-3 rtl:space-x-reverse">
+                          <div className="w-2 h-2 rounded-full flex-shrink-0 mt-2 bg-[#E000A0]" />
+                          <span className={`text-sm text-[#A1A1A1] ${
+                            isRTL(feature) ? 'text-right' : 'text-left'
+                          }`}>
+                            {feature?.trim()}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </motion.div>
-            ))}
+            </div>
+
+            {/* Milestone 2 - Positioned at ~50% */}
+            <div className={`relative flex items-center ${isMobile ? 'justify-start' : 'justify-center'}`}>
+              <div className={`absolute z-20 ${
+                isMobile ? 'left-6' : 'left-1/2 transform -translate-x-1/2'
+              }`}>
+                <motion.div
+                  className={`rounded-full border-4 border-[#3B82F6] bg-[#1A1A1A] flex items-center justify-center shadow-lg relative overflow-hidden ${
+                    isMobile ? 'w-12 h-12 text-xl' : 'w-16 h-16 text-2xl'
+                  }`}
+                  style={{
+                    scale: milestone2Scale,
+                    boxShadow: useTransform(milestone2Glow, [0, 1], [
+                      '0 0 0px rgba(59, 130, 246, 0)',
+                      '0 0 20px rgba(59, 130, 246, 0.6), 0 0 40px rgba(59, 130, 246, 0.3)'
+                    ])
+                  }}
+                >
+                  {/* Animated background fill */}
+                  <motion.div
+                    className="absolute inset-0 rounded-full"
+                    style={{
+                      background: useTransform(milestone2Fill, [0, 1], [
+                        'transparent',
+                        'linear-gradient(135deg, #3B82F6, #60A5FA)'
+                      ]),
+                      opacity: useTransform(milestone2Fill, [0, 0.3, 1], [0, 0, 0.9])
+                    }}
+                  />
+                  
+                  {/* Pulsing ring effect */}
+                  <motion.div
+                    className="absolute inset-0 rounded-full border-2 border-[#3B82F6]"
+                    style={{
+                      scale: useTransform(milestone2Fill, [0, 1], [1, 1.2]),
+                      opacity: useTransform(milestone2Fill, [0, 0.5, 1], [0, 0.6, 0])
+                    }}
+                  />
+                  
+                  {/* Icon with smooth color transition */}
+                  <motion.div 
+                    className="relative z-10"
+                    style={{
+                      filter: useTransform(milestone2Fill, [0, 1], [
+                        'brightness(1)',
+                        'brightness(1.2) drop-shadow(0 0 8px rgba(255, 255, 255, 0.3))'
+                      ])
+                    }}
+                  >
+                    {phases[1]?.icon}
+                  </motion.div>
+                </motion.div>
+              </div>
+
+              {/* Card 2 */}
+              <motion.div
+                className={`${isMobile ? 'w-full ml-20' : 'w-5/12 mr-auto pr-8'}`}
+                style={{
+                  opacity: card2Visible,
+                  y: useTransform(card2Visible, [0, 1], [30, 0]),
+                  scale: useTransform(card2Visible, [0, 1], [0.95, 1]),
+                  rotateY: useTransform(card2Visible, [0, 1], [-15, 0])
+                }}
+              >
+                <div className={`bg-gradient-to-br from-[#1A1A1A]/80 to-[#0F0F0F]/80 backdrop-blur-xl rounded-3xl border border-[#2A2A2A]/50 shadow-2xl ${
+                  isMobile ? 'p-6' : 'p-8'
+                }`}>
+                  <div className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold mb-6 text-[#3B82F6] border-[#3B82F6] bg-[#3B82F6]/10">
+                    Upcoming
+                  </div>
+                  <h3 className={`text-2xl font-bold text-[#F5F5F5] mb-4 ${
+                    isRTL(phases[1]?.title || '') ? 'text-right' : 'text-left'
+                  }`}>
+                    {phases[1]?.title}
+                  </h3>
+                  <p className={`text-[#A1A1A1] mb-6 leading-relaxed ${
+                    isRTL(phases[1]?.description || '') ? 'text-right' : 'text-left'
+                  }`}>
+                    {phases[1]?.description}
+                  </p>
+                  <div className="space-y-3">
+                    <h4 className={`text-lg font-semibold text-[#F5F5F5] ${
+                      isRTL('Key Features') ? 'text-right' : 'text-left'
+                    }`}>
+                      Key Features
+                    </h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {phases[1]?.features?.map((feature, featureIndex) => (
+                        <div key={featureIndex} className="flex items-start space-x-3 rtl:space-x-reverse">
+                          <div className="w-2 h-2 rounded-full flex-shrink-0 mt-2 bg-[#3B82F6]" />
+                          <span className={`text-sm text-[#A1A1A1] ${
+                            isRTL(feature) ? 'text-right' : 'text-left'
+                          }`}>
+                            {feature?.trim()}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Milestone 3 - Positioned at ~80% */}
+            <div className={`relative flex items-center ${isMobile ? 'justify-start' : 'justify-center'}`}>
+              <div className={`absolute z-20 ${
+                isMobile ? 'left-6' : 'left-1/2 transform -translate-x-1/2'
+              }`}>
+                <motion.div
+                  className={`rounded-full border-4 border-[#8B5CF6] bg-[#1A1A1A] flex items-center justify-center shadow-lg relative overflow-hidden ${
+                    isMobile ? 'w-12 h-12 text-xl' : 'w-16 h-16 text-2xl'
+                  }`}
+                  style={{
+                    scale: milestone3Scale,
+                    boxShadow: useTransform(milestone3Glow, [0, 1], [
+                      '0 0 0px rgba(139, 92, 246, 0)',
+                      '0 0 20px rgba(139, 92, 246, 0.6), 0 0 40px rgba(139, 92, 246, 0.3)'
+                    ])
+                  }}
+                >
+                  {/* Animated background fill */}
+                  <motion.div
+                    className="absolute inset-0 rounded-full"
+                    style={{
+                      background: useTransform(milestone3Fill, [0, 1], [
+                        'transparent',
+                        'linear-gradient(135deg, #8B5CF6, #A78BFA)'
+                      ]),
+                      opacity: useTransform(milestone3Fill, [0, 0.3, 1], [0, 0, 0.9])
+                    }}
+                  />
+                  
+                  {/* Pulsing ring effect */}
+                  <motion.div
+                    className="absolute inset-0 rounded-full border-2 border-[#8B5CF6]"
+                    style={{
+                      scale: useTransform(milestone3Fill, [0, 1], [1, 1.2]),
+                      opacity: useTransform(milestone3Fill, [0, 0.5, 1], [0, 0.6, 0])
+                    }}
+                  />
+                  
+                  {/* Icon with smooth color transition */}
+                  <motion.div 
+                    className="relative z-10"
+                    style={{
+                      filter: useTransform(milestone3Fill, [0, 1], [
+                        'brightness(1)',
+                        'brightness(1.2) drop-shadow(0 0 8px rgba(255, 255, 255, 0.3))'
+                      ])
+                    }}
+                  >
+                    {phases[2]?.icon}
+                  </motion.div>
+                </motion.div>
+              </div>
+
+              {/* Card 3 */}
+              <motion.div
+                className={`${isMobile ? 'w-full ml-20' : 'w-5/12 ml-auto pl-8'}`}
+                style={{
+                  opacity: card3Visible,
+                  y: useTransform(card3Visible, [0, 1], [30, 0]),
+                  scale: useTransform(card3Visible, [0, 1], [0.95, 1]),
+                  rotateY: useTransform(card3Visible, [0, 1], [15, 0])
+                }}
+              >
+                <div className={`bg-gradient-to-br from-[#1A1A1A]/80 to-[#0F0F0F]/80 backdrop-blur-xl rounded-3xl border border-[#2A2A2A]/50 shadow-2xl ${
+                  isMobile ? 'p-6' : 'p-8'
+                }`}>
+                  <div className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold mb-6 text-[#8B5CF6] border-[#8B5CF6] bg-[#8B5CF6]/10">
+                    Future Vision
+                  </div>
+                  <h3 className={`text-2xl font-bold text-[#F5F5F5] mb-4 ${
+                    isRTL(phases[2]?.title || '') ? 'text-right' : 'text-left'
+                  }`}>
+                    {phases[2]?.title}
+                  </h3>
+                  <p className={`text-[#A1A1A1] mb-6 leading-relaxed ${
+                    isRTL(phases[2]?.description || '') ? 'text-right' : 'text-left'
+                  }`}>
+                    {phases[2]?.description}
+                  </p>
+                  <div className="space-y-3">
+                    <h4 className={`text-lg font-semibold text-[#F5F5F5] ${
+                      isRTL('Key Features') ? 'text-right' : 'text-left'
+                    }`}>
+                      Key Features
+                    </h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {phases[2]?.features?.map((feature, featureIndex) => (
+                        <div key={featureIndex} className="flex items-start space-x-3 rtl:space-x-reverse">
+                          <div className="w-2 h-2 rounded-full flex-shrink-0 mt-2 bg-[#8B5CF6]" />
+                          <span className={`text-sm text-[#A1A1A1] ${
+                            isRTL(feature) ? 'text-right' : 'text-left'
+                          }`}>
+                            {feature?.trim()}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
           </div>
         </div>
 

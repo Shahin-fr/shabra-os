@@ -7,6 +7,10 @@
 
 const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcryptjs');
+const { 
+  DEFAULT_ADMIN_EMAIL, 
+  DEFAULT_ADMIN_PASSWORD
+} = require('../src/lib/config/constants');
 
 // Set environment variables for local development
 process.env.DATABASE_URL = 'file:./dev.db';
@@ -41,12 +45,12 @@ async function testLocalAuth() {
 
     // Test password verification for admin user
     const adminUser = await prisma.user.findUnique({
-      where: { email: 'admin@shabra.com' },
+      where: { email: DEFAULT_ADMIN_EMAIL },
       select: { password: true, email: true }
     });
 
     if (adminUser) {
-      const isValid = await bcrypt.compare('admin123', adminUser.password);
+      const isValid = await bcrypt.compare(DEFAULT_ADMIN_PASSWORD, adminUser.password);
       console.log(`✅ Password verification for admin: ${isValid ? 'SUCCESS' : 'FAILED'}`);
     } else {
       console.log('❌ Admin user not found');
@@ -62,9 +66,9 @@ async function testLocalAuth() {
     console.log('\n📋 You can now test login at:');
     console.log('   http://localhost:3001/login');
     console.log('\n🔑 Test credentials:');
-    console.log('   Admin: admin@shabra.com / admin123');
-    console.log('   Manager: manager@shabra.com / manager123');
-    console.log('   User: user@shabra.com / user123');
+    console.log(`   Admin: ${DEFAULT_ADMIN_EMAIL} / ${DEFAULT_ADMIN_PASSWORD}`);
+    console.log('   Manager: manager@shabra.com / manager-password-123');
+    console.log('   User: user@shabra.com / user-password-123');
 
   } catch (error) {
     console.error('❌ Authentication test failed:', error.message);

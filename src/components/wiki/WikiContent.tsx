@@ -6,6 +6,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
 import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import ClientOnly from '@/components/ui/ClientOnly';
 import { formatJalaliDate } from '@/lib/date-utils';
 import { logger } from '@/lib/logger';
@@ -137,17 +138,16 @@ export function WikiContent({ documentId }: WikiContentProps) {
     return (
       <div className='flex-1 p-8'>
         <div className='max-w-5xl mx-auto'>
-          <div className='flex items-center justify-between mb-8 p-6 bg-white rounded-xl border border-gray-200/50 shadow-sm'>
-            <div>
-              <h1 className='text-4xl font-bold mb-3 text-gray-800'>
+          <Card className='mb-8'>
+            <CardHeader>
+              <CardTitle className='text-4xl font-bold text-gray-800'>
                 {document.title}
-              </h1>
+              </CardTitle>
               <p className='text-lg text-gray-600'>
                 پوشه‌ای برای سازماندهی محتوا
               </p>
-            </div>
-            {/* Action buttons removed - content managed via markdown files */}
-          </div>
+            </CardHeader>
+          </Card>
 
           <div className='bg-gradient-to-br from-gray-50 to-gray-100/50 rounded-xl p-12 text-center border border-gray-200/50'>
             <FileText className='h-20 w-20 mx-auto mb-6 text-pink-300' />
@@ -165,11 +165,11 @@ export function WikiContent({ documentId }: WikiContentProps) {
     <div className='flex-1 p-8'>
       <div className='max-w-5xl mx-auto'>
         {/* Document Header */}
-        <div className='flex items-start justify-between mb-8 p-6 bg-white rounded-xl border border-gray-200/50 shadow-sm'>
-          <div className='flex-1'>
-            <h1 className='text-4xl font-bold mb-4 text-gray-800'>
+        <Card className='mb-8'>
+          <CardHeader>
+            <CardTitle className='text-4xl font-bold text-gray-800'>
               {document.title}
-            </h1>
+            </CardTitle>
 
             <div className='flex items-center gap-6 text-sm text-gray-600 mb-4'>
               <div className='flex items-center gap-2'>
@@ -211,14 +211,12 @@ export function WikiContent({ documentId }: WikiContentProps) {
                 ))}
               </div>
             )}
-          </div>
-
-          {/* Action buttons removed - content managed via markdown files */}
-        </div>
+          </CardHeader>
+        </Card>
 
         {/* Document Content */}
-        <div className='bg-white rounded-xl border border-gray-200/50 shadow-sm overflow-hidden'>
-          <div className='p-8 prose prose-lg max-w-none prose-headings:text-gray-800 prose-p:text-gray-700 prose-strong:text-gray-800 prose-code:text-gray-800 prose-pre:bg-gray-50 prose-pre:text-gray-800'>
+        <Card className='overflow-hidden'>
+          <CardContent className='p-8 prose prose-lg max-w-none prose-headings:text-gray-800 prose-p:text-gray-700 prose-strong:text-gray-800 prose-code:text-gray-800 prose-pre:bg-gray-50 prose-pre:text-gray-800'>
             {document.htmlContent ? (
               <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(document.htmlContent) }} />
             ) : (
@@ -226,8 +224,8 @@ export function WikiContent({ documentId }: WikiContentProps) {
                 {document.content}
               </ReactMarkdown>
             )}
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

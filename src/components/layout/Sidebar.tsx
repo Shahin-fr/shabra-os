@@ -23,6 +23,7 @@ import {
   Plus,
   FileText,
   ClipboardList,
+  BarChart3,
 } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
@@ -106,67 +107,51 @@ export function Sidebar() {
       icon: Instagram,
       priority: 'high',
     },
-    {
-      href: '/calendar',
-      label: 'تقویم',
-      icon: CalendarIcon,
-      priority: 'medium',
-    },
     { href: '/team', label: 'تیم', icon: Users, priority: 'high' },
-    { href: `/profile/${user?.id}`, label: 'پروفایل', icon: User, priority: 'high' },
-    { href: '/announcements', label: 'اعلان‌ها', icon: Megaphone, priority: 'high' },
-    {
-      href: '/attendance',
-      label: 'حضور و غیاب',
-      icon: Clock,
-      priority: 'high',
-    },
-    {
-      href: '/analytics',
-      label: 'تحلیل و گزارش‌ها',
-      icon: TrendingUp,
-      priority: 'medium',
-    },
     { href: '/wiki', label: 'ویکی', icon: BookOpen, priority: 'medium' },
-    { href: '/docs', label: 'مستندات', icon: DocsIcon, priority: 'medium' },
     { href: '/admin/announcements', label: 'مدیریت اعلان‌ها', icon: Megaphone, priority: 'high' },
     { href: '/admin/attendance', label: 'مدیریت حضور و غیاب', icon: Clock, priority: 'high' },
     { href: '/admin/holidays', label: 'مدیریت تعطیلات', icon: Calendar, priority: 'high' },
     { href: '/action-center', label: 'مرکز اقدامات', icon: Inbox, priority: 'high' },
-    { href: '/team-calendar', label: 'تقویم تیم', icon: CalendarIcon, priority: 'high' },
+    { href: '/team-calendar', label: 'تقویم تیم', icon: BarChart3, priority: 'high' },
     { href: '/admin/checklist-templates', label: 'قالب‌های چک‌لیست', icon: ClipboardList, priority: 'high' },
+    { href: '/settings', label: 'تنظیمات', icon: Settings, priority: 'low' },
+  ];
+
+  // Manager navigation items
+  const managerNavigationItems: NavigationItemType[] = [
+    { href: '/', label: 'داشبورد', icon: LayoutDashboard, priority: 'high' },
+    { href: '/tasks', label: 'تسک‌ها', icon: CheckSquare, priority: 'high' },
+    { href: '/projects', label: 'پروژه‌ها', icon: FolderOpen, priority: 'high' },
+    { href: '/inbox', label: 'صندوق ورودی', icon: Inbox, priority: 'high' },
+    { href: '/team', label: 'مدیریت تیم', icon: Users, priority: 'high' },
+    { href: '/action-center', label: 'مرکز اقدامات', icon: Inbox, priority: 'high' },
+    { href: '/team-calendar', label: 'تقویم تیم', icon: BarChart3, priority: 'high' },
     { href: '/settings', label: 'تنظیمات', icon: Settings, priority: 'low' },
   ];
 
   // Employee navigation items
   const employeeNavigationItems: NavigationItemType[] = [
-    { href: '/', label: 'داشبورد من', icon: LayoutDashboard, priority: 'high' },
-    {
-      href: '/tasks',
-      label: 'تسک‌های من',
-      icon: CheckSquare,
-      priority: 'high',
-    },
-    {
-      href: '/dashboard/instapulse',
-      label: 'اینستاپالس',
-      icon: Instagram,
-      priority: 'high',
-    },
-    {
-      href: '/attendance',
-      label: 'حضور و غیاب من',
-      icon: Clock,
-      priority: 'high',
-    },
+    { href: '/', label: 'خانه', icon: LayoutDashboard, priority: 'high' },
+    { href: '/tasks', label: 'تسک‌ها', icon: CheckSquare, priority: 'high' },
+    { href: '/calendar', label: 'تقویم', icon: Calendar, priority: 'high' },
+    { href: '/inbox', label: 'صندوق ورودی', icon: Inbox, priority: 'high' },
+    { href: '/projects', label: 'پروژه‌ها', icon: FolderOpen, priority: 'medium' },
     { href: '/new-request', label: 'درخواست جدید', icon: Plus, priority: 'high' },
     { href: '/requests', label: 'درخواست‌های من', icon: FileText, priority: 'high' },
+    { href: '/attendance', label: 'حضور و غیاب', icon: Clock, priority: 'high' },
+    { href: '/wiki', label: 'شبرالوگ', icon: BookOpen, priority: 'medium' },
+    { href: '/docs', label: 'مستندات من', icon: FileText, priority: 'medium' },
     { href: `/profile/${user?.id}`, label: 'پروفایل من', icon: User, priority: 'medium' },
+    { href: '/settings', label: 'تنظیمات', icon: Settings, priority: 'low' },
   ];
 
   // Get navigation items based on user role
-  const navigationItems =
-    userRole === 'ADMIN' ? adminNavigationItems : employeeNavigationItems;
+  const navigationItems = (() => {
+    if (userRole === 'ADMIN') return adminNavigationItems;
+    if (userRole === 'MANAGER') return managerNavigationItems;
+    return employeeNavigationItems;
+  })();
 
   // Instant navigation handler - no debouncing or delays
   const handleItemClick = useCallback(
@@ -188,47 +173,70 @@ export function Sidebar() {
       <>
         {/* Backdrop */}
         <OptimizedMotion
-          className='fixed inset-0 bg-black/50 z-40 lg:hidden'
+          className='fixed inset-0 bg-black/50 z-50 lg:hidden'
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
+          transition={{ 
+            duration: 0.6,
+            ease: [0.25, 0.46, 0.45, 0.94]
+          }}
           onClick={closeSidebar}
         />
 
         {/* Sidebar */}
         <OptimizedMotion
-          className='fixed right-0 top-0 h-full w-80 max-w-[85vw] z-50 lg:hidden'
-          initial={{ x: '100%' }}
-          animate={{ x: 0 }}
-          exit={{ x: '100%' }}
+          className='fixed right-0 top-0 h-full w-80 max-w-[85vw] z-[60] lg:hidden'
+          initial={{ x: '100%', opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          exit={{ x: '100%', opacity: 0 }}
           transition={{
             type: 'spring',
-            damping: 25,
-            stiffness: 300,
-            duration: 0.3,
+            damping: 15,
+            stiffness: 200,
+            mass: 1.2,
+            duration: 0.8,
           }}
         >
           <div className='h-full bg-gradient-to-b from-slate-50/95 via-pink-50/95 to-purple-50/95 backdrop-blur-xl border-l border-white/20 shadow-2xl'>
             {/* Close Button for Mobile */}
-            <div className='flex justify-end p-4'>
-              <Button
-                variant='ghost'
-                size='sm'
-                onClick={closeSidebar}
-                className='p-2 hover:bg-[#ff0a54]/10 hover:text-[#ff0a54] transition-all duration-200 rounded-lg'
-                style={{
-                  background: 'rgba(255, 255, 255, 0.1)',
-                  backdropFilter: 'blur(20px)',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
-                }}
-              >
-                <X className='h-5 w-5' />
-              </Button>
-            </div>
+            <OptimizedMotion
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ 
+                duration: 0.5,
+                delay: 0.2,
+                ease: [0.25, 0.46, 0.45, 0.94]
+              }}
+            >
+              <div className='flex justify-end p-4'>
+                <Button
+                  variant='ghost'
+                  size='sm'
+                  onClick={closeSidebar}
+                  className='p-2 hover:bg-[#ff0a54]/10 hover:text-[#ff0a54] transition-all duration-200 rounded-lg hover:scale-110 active:scale-95'
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    backdropFilter: 'blur(20px)',
+                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                  }}
+                >
+                  <X className='h-5 w-5' />
+                </Button>
+              </div>
+            </OptimizedMotion>
 
             {/* Floating Logo - Simplified */}
-            <div className='flex justify-center pt-4 pb-8'>
+            <OptimizedMotion
+              initial={{ opacity: 0, y: -20, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ 
+                duration: 0.6,
+                delay: 0.4,
+                ease: [0.25, 0.46, 0.45, 0.94]
+              }}
+            >
+              <div className='flex justify-center pt-4 pb-8'>
               <Link href='/' className='block'>
                 <div
                   className='w-24 h-24 rounded-full overflow-hidden border-2 border-white/30 hover:border-[#ff0a54]/50 transition-all duration-200'
@@ -253,9 +261,19 @@ export function Sidebar() {
                 </div>
               </Link>
             </div>
+            </OptimizedMotion>
 
             {/* Navigation - Enhanced glass effect */}
-            <div className='flex-1 flex items-center justify-center px-4 relative'>
+            <OptimizedMotion
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ 
+                duration: 0.6,
+                delay: 0.6,
+                ease: [0.25, 0.46, 0.45, 0.94]
+              }}
+            >
+              <div className='flex-1 flex items-center justify-center px-4 relative'>
               <div
                 className='rounded-2xl p-4 w-full max-w-56'
                 style={{
@@ -272,11 +290,20 @@ export function Sidebar() {
                     return (
                       <OptimizedMotion
                         key={item.href}
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
+                        initial={{ opacity: 0, x: 30, scale: 0.95 }}
+                        animate={{ opacity: 1, x: 0, scale: 1 }}
                         transition={{
-                          duration: 0.3,
-                          delay: index * 0.05,
+                          duration: 0.6,
+                          delay: 0.8 + (index * 0.12),
+                          ease: [0.25, 0.46, 0.45, 0.94]
+                        }}
+                        whileHover={{ 
+                          scale: 1.02,
+                          transition: { duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }
+                        }}
+                        whileTap={{ 
+                          scale: 0.98,
+                          transition: { duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }
                         }}
                       >
                         <NavigationItem
@@ -292,6 +319,7 @@ export function Sidebar() {
                 </nav>
               </div>
             </div>
+            </OptimizedMotion>
           </div>
         </OptimizedMotion>
       </>
@@ -308,6 +336,25 @@ export function Sidebar() {
         {/* Navigation - Icon-only with hover text */}
         <div className='flex-1 flex items-center justify-center px-2'>
           <nav className='flex flex-col gap-3 w-full'>
+            {/* + New Quick Action Button for Managers */}
+            {userRole === 'MANAGER' && (
+              <div className='relative group mb-2'>
+                <Button
+                  className='w-12 h-12 rounded-xl bg-[#ff0a54] hover:bg-[#ff0a54]/90 text-white shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 active:scale-95'
+                  title='اقدامات جدید'
+                >
+                  <Plus className='h-6 w-6' />
+                </Button>
+                
+                {/* Hover Text - Appears from left */}
+                <div className='absolute left-full ml-3 top-1/2 transform -translate-y-1/2 pointer-events-none'>
+                  <div className='bg-white/90 backdrop-blur-sm text-gray-900 px-3 py-2 rounded-lg shadow-lg border border-white/20 whitespace-nowrap transition-all duration-200 ease-out opacity-0 translate-x-[-10px] scale-95 group-hover:opacity-100 group-hover:translate-x-0 group-hover:scale-100'>
+                    اقدامات جدید
+                  </div>
+                </div>
+              </div>
+            )}
+            
             {navigationItems.map(item => {
               const isActive = pathname === item.href;
 

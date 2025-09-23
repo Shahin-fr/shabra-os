@@ -1,7 +1,10 @@
 /**
  * Comprehensive Input Validation and Sanitization
  * Prevents SQL injection, XSS, and other injection attacks
+ * Enhanced with DOMPurify for robust HTML sanitization
  */
+
+import DOMPurify from 'isomorphic-dompurify';
 
 export interface ValidationRule {
   required?: boolean;
@@ -184,22 +187,39 @@ export class InputValidator {
   }
 
   /**
-   * Sanitize string input
+   * Sanitize string input using DOMPurify for robust HTML sanitization
    */
   private sanitizeString(input: string): string {
     if (typeof input !== 'string') return input;
 
-    return (
-      input
-        // Remove null bytes
-        .replace(/\0/g, '')
-        // Remove control characters except newlines and tabs
-        // eslint-disable-next-line no-control-regex
-        .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
-        // Normalize whitespace
-        .replace(/\s+/g, ' ')
-        .trim()
-    );
+    // First, perform basic sanitization
+    let sanitized = input
+      // Remove null bytes
+      .replace(/\0/g, '')
+      // Remove control characters except newlines and tabs
+      // eslint-disable-next-line no-control-regex
+      .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
+      // Normalize whitespace
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    // Use DOMPurify for comprehensive HTML sanitization
+    // This removes all potentially dangerous HTML/JavaScript content
+    sanitized = DOMPurify.sanitize(sanitized, {
+      // Allow only safe HTML tags and attributes
+      ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'p', 'br', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
+      ALLOWED_ATTR: ['class', 'id'],
+      // Remove all script tags and event handlers
+      FORBID_TAGS: ['script', 'object', 'embed', 'iframe', 'form', 'input', 'button'],
+      FORBID_ATTR: ['onload', 'onerror', 'onclick', 'onmouseover', 'onfocus', 'onblur', 'onchange', 'onsubmit'],
+      // Additional security options
+      KEEP_CONTENT: true,
+      RETURN_DOM: false,
+      RETURN_DOM_FRAGMENT: false,
+      RETURN_DOM_IMPORT: false,
+    });
+
+    return sanitized;
   }
 }
 
@@ -310,10 +330,12 @@ export const ValidationSchemas = {
 export class ValidationUtils {
   /**
    * Check if string contains potentially dangerous content
+   * Enhanced with DOMPurify for more comprehensive detection
    */
   static containsDangerousContent(input: string): boolean {
     if (typeof input !== 'string') return false;
 
+    // First check with regex patterns for quick detection
     const dangerousPatterns = [
       /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
       /javascript:/gi,
@@ -325,7 +347,20 @@ export class ValidationUtils {
       /<embed\b[^<]*(?:(?!<\/embed>)<[^<]*)*<\/embed>/gi,
     ];
 
-    return dangerousPatterns.some(pattern => pattern.test(input));
+    const hasDangerousPatterns = dangerousPatterns.some(pattern => pattern.test(input));
+    
+    // If regex patterns detect dangerous content, return true
+    if (hasDangerousPatterns) return true;
+
+    // Use DOMPurify to check if content would be sanitized
+    // If the sanitized version is different from the original, it contained dangerous content
+    const sanitized = DOMPurify.sanitize(input, {
+      ALLOWED_TAGS: [],
+      ALLOWED_ATTR: [],
+      KEEP_CONTENT: true,
+    });
+
+    return sanitized !== input;
   }
 
   /**
@@ -343,6 +378,37 @@ export class ValidationUtils {
         .replace(/sp_/gi, '');
     }
     return value;
+  }
+
+  /**
+   * Comprehensive HTML sanitization using DOMPurify
+   * Use this for user-generated content that may contain HTML
+   */
+  static sanitizeHtml(input: string, options?: {
+    allowTags?: string[];
+    allowAttributes?: string[];
+    stripHtml?: boolean;
+  }): string {
+    if (typeof input !== 'string') return input;
+
+    const config = {
+      ALLOWED_TAGS: options?.allowTags || ['b', 'i', 'em', 'strong', 'p', 'br', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
+      ALLOWED_ATTR: options?.allowAttributes || ['class', 'id'],
+      FORBID_TAGS: ['script', 'object', 'embed', 'iframe', 'form', 'input', 'button', 'link', 'meta', 'style'],
+      FORBID_ATTR: ['onload', 'onerror', 'onclick', 'onmouseover', 'onfocus', 'onblur', 'onchange', 'onsubmit', 'onkeydown', 'onkeyup'],
+      KEEP_CONTENT: true,
+      RETURN_DOM: false,
+      RETURN_DOM_FRAGMENT: false,
+      RETURN_DOM_IMPORT: false,
+    };
+
+    // If stripHtml is true, remove all HTML tags
+    if (options?.stripHtml) {
+      config.ALLOWED_TAGS = [];
+      config.ALLOWED_ATTR = [];
+    }
+
+    return DOMPurify.sanitize(input, config);
   }
 
   /**

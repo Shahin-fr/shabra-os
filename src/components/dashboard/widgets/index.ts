@@ -18,3 +18,7 @@ export { PersonalNotificationsWidget } from './PersonalNotificationsWidget';
 // New Minimalist Widgets
 export { ProjectStatusDonutChart } from './ProjectStatusDonutChart';
 export { InteractiveCalendarWidget } from './InteractiveCalendarWidget';
+
+// PDD-Compliant Widgets
+export { MyActiveProjectsWidget } from './MyActiveProjectsWidget';
+export { AnnouncementsWidget } from './AnnouncementsWidget';

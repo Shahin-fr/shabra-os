@@ -2,6 +2,8 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { vi } from 'vitest';
+import { Input } from '@/components/ui/Input';
+import { Button } from '@/components/ui/Button';
 
 // Create a mock component since RealTimeCollaboration doesn't exist
 const RealTimeCollaboration = () => {
@@ -59,7 +61,7 @@ const RealTimeCollaboration = () => {
       {onlineUsers.map(user => (
         <div key={`email-${user.id}`}>{user.email}</div>
       ))}
-      <input 
+      <Input 
         type="text"
         placeholder="پیام خود را بنویسید..." 
         onKeyDown={(e) => {
@@ -73,7 +75,7 @@ const RealTimeCollaboration = () => {
           }
         }}
       />
-      <button type="button" onClick={() => {
+      <Button type="button" onClick={() => {
         const input = document.querySelector('input[placeholder="پیام خود را بنویسید..."]') as HTMLInputElement;
         if (input?.value) {
           sendUpdate({
@@ -83,9 +85,9 @@ const RealTimeCollaboration = () => {
           });
           input.value = '';
         }
-      }}>ارسال</button>
-      <button type="button" onClick={reconnect}>تلاش مجدد</button>
-      <button type="button" onClick={disconnect}>قطع اتصال</button>
+      }}>ارسال</Button>
+      <Button type="button" onClick={reconnect}>تلاش مجدد</Button>
+      <Button type="button" onClick={disconnect}>قطع اتصال</Button>
     </div>
   );
 };

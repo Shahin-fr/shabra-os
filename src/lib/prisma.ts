@@ -64,8 +64,8 @@ if (process.env.NODE_ENV !== 'production') {
 // Export for backward compatibility
 export { prisma as prismaLocal };
 
-// Graceful shutdown handler
-if (typeof process !== 'undefined') {
+// Graceful shutdown handler - only in Node.js runtime, not Edge Runtime
+if (typeof process !== 'undefined' && process.on && typeof process.on === 'function') {
   process.on('beforeExit', async () => {
     await prisma.$disconnect();
   });

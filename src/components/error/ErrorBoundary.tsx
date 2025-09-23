@@ -11,6 +11,8 @@ import { ErrorHandler, ErrorNotification } from '@/lib/error-handler';
 import { logger } from '@/lib/logger';
 import { useErrorStore } from '@/stores';
 import { ErrorCategory, ErrorPriority } from '@/types/error';
+import { Button } from '@/components/ui/Button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 interface Props {
   children: ReactNode;
@@ -232,108 +234,112 @@ export class ErrorBoundary extends Component<Props, State> {
       // Default error UI
       return (
         <div className='flex items-center justify-center bg-gray-50'>
-          <div className='max-w-md w-full bg-white rounded-lg shadow-lg p-6'>
-            <div className='flex items-center justify-center w-12 h-12 mx-auto bg-red-100 rounded-full'>
-              <svg
-                className='w-6 h-6 text-red-600'
-                fill='none'
-                stroke='currentColor'
-                viewBox='0 0 24 24'
-              >
-                <path
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  strokeWidth={2}
-                  d='M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z'
-                />
-              </svg>
-            </div>
-
-            <div className='mt-4 text-center'>
-              <h3 className='text-lg font-medium text-gray-900'>
+          <Card className='max-w-md w-full'>
+            <CardHeader className='text-center'>
+              <div className='flex items-center justify-center w-12 h-12 mx-auto bg-red-100 rounded-full'>
+                <svg
+                  className='w-6 h-6 text-red-600'
+                  fill='none'
+                  stroke='currentColor'
+                  viewBox='0 0 24 24'
+                >
+                  <path
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    strokeWidth={2}
+                    d='M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z'
+                  />
+                </svg>
+              </div>
+              <CardTitle className='text-lg font-medium text-gray-900'>
                 {this.getNotificationTitle(
                   this.state.category || 'UNKNOWN_ERROR'
                 )}
-              </h3>
+              </CardTitle>
               <p className='mt-2 text-sm text-gray-500'>
                 {this.state.userMessage}
               </p>
-            </div>
+            </CardHeader>
 
-            {this.state.suggestions.length > 0 && (
-              <div className='mt-4'>
-                <h4 className='text-sm font-medium text-gray-700 mb-2'>
-                  Suggestions:
-                </h4>
-                <ul className='text-sm text-gray-600 space-y-1'>
-                  {this.state.suggestions.map((suggestion, index) => (
-                    <li key={index} className='flex items-start'>
-                      <span className='text-blue-500 mr-2'>•</span>
-                      {suggestion}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            <div className='mt-6 flex space-x-3'>
-              {this.state.retryable && (
-                <button
-                  onClick={this.handleRetry}
-                  className='flex-1 bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500'
-                >
-                  Try Again
-                </button>
+            <CardContent>
+              {this.state.suggestions.length > 0 && (
+                <div className='mt-4'>
+                  <h4 className='text-sm font-medium text-gray-700 mb-2'>
+                    Suggestions:
+                  </h4>
+                  <ul className='text-sm text-gray-600 space-y-1'>
+                    {this.state.suggestions.map((suggestion, index) => (
+                      <li key={index} className='flex items-start'>
+                        <span className='text-blue-500 mr-2'>•</span>
+                        {suggestion}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               )}
 
-              <button
-                onClick={this.handleReportError}
-                className='flex-1 bg-gray-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500'
-              >
-                Report Error
-              </button>
-            </div>
+              <div className='mt-6 flex space-x-3'>
+                {this.state.retryable && (
+                  <Button
+                    onClick={this.handleRetry}
+                    variant="default"
+                    className='flex-1'
+                  >
+                    Try Again
+                  </Button>
+                )}
 
-            {this.state.priority === 'CRITICAL' && (
-              <div className='mt-4'>
-                <button
-                  onClick={this.handleContactSupport}
-                  className='w-full bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500'
+                <Button
+                  onClick={this.handleReportError}
+                  variant="secondary"
+                  className='flex-1'
                 >
-                  Contact Support
-                </button>
+                  Report Error
+                </Button>
               </div>
-            )}
 
-            {process.env.NODE_ENV === 'development' && this.state.error && (
-              <details className='mt-4'>
-                <summary className='text-sm text-gray-500 cursor-pointer hover:text-gray-700'>
-                  Technical Details (Development)
-                </summary>
-                <div className='mt-2 p-3 bg-gray-100 rounded text-xs font-mono text-gray-800 overflow-auto max-h-40'>
-                  <div>
-                    <strong>Error:</strong> {this.state.error.message}
-                  </div>
-                  <div>
-                    <strong>Stack:</strong>
-                  </div>
-                  <pre className='whitespace-pre-wrap'>
-                    {this.state.error.stack}
-                  </pre>
-                  {this.state.errorInfo && (
-                    <>
-                      <div>
-                        <strong>Component Stack:</strong>
-                      </div>
-                      <pre className='whitespace-pre-wrap'>
-                        {this.state.errorInfo.componentStack}
-                      </pre>
-                    </>
-                  )}
+              {this.state.priority === 'CRITICAL' && (
+                <div className='mt-4'>
+                  <Button
+                    onClick={this.handleContactSupport}
+                    variant="destructive"
+                    className='w-full'
+                  >
+                    Contact Support
+                  </Button>
                 </div>
-              </details>
-            )}
-          </div>
+              )}
+
+              {process.env.NODE_ENV === 'development' && this.state.error && (
+                <details className='mt-4'>
+                  <summary className='text-sm text-gray-500 cursor-pointer hover:text-gray-700'>
+                    Technical Details (Development)
+                  </summary>
+                  <div className='mt-2 p-3 bg-gray-100 rounded text-xs font-mono text-gray-800 overflow-auto max-h-40'>
+                    <div>
+                      <strong>Error:</strong> {this.state.error.message}
+                    </div>
+                    <div>
+                      <strong>Stack:</strong>
+                    </div>
+                    <pre className='whitespace-pre-wrap'>
+                      {this.state.error.stack}
+                    </pre>
+                    {this.state.errorInfo && (
+                      <>
+                        <div>
+                          <strong>Component Stack:</strong>
+                        </div>
+                        <pre className='whitespace-pre-wrap'>
+                          {this.state.errorInfo.componentStack}
+                        </pre>
+                      </>
+                    )}
+                  </div>
+                </details>
+              )}
+            </CardContent>
+          </Card>
         </div>
       );
     }

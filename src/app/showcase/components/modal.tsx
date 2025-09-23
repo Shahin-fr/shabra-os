@@ -3,6 +3,7 @@
 import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
+import { Button } from '@/components/ui/Button';
 
 interface ModalProps {
   isOpen: boolean;
@@ -86,13 +87,15 @@ export default function Modal({ isOpen, onClose, title, icon, children }: ModalP
                   <div className="text-3xl">{icon}</div>
                   <h2 className="text-xl font-bold text-[#F5F5F5]">{title}</h2>
                 </div>
-                <button
+                <Button
                   onClick={onClose}
-                  className="p-2 rounded-lg hover:bg-[#2A2A2A] transition-colors duration-200 text-[#A1A1A1] hover:text-[#F5F5F5]"
+                  variant="ghost"
+                  size="icon"
+                  className="text-[#A1A1A1] hover:text-[#F5F5F5]"
                   aria-label="Close modal"
                 >
                   <X className="w-5 h-5" />
-                </button>
+                </Button>
               </div>
             </div>
             

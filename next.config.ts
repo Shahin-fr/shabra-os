@@ -169,14 +169,14 @@ const nextConfig: NextConfig = {
   output: 'standalone',
   distDir: '.next',
 
-  // TypeScript configuration - Temporarily ignore build errors for deployment
+  // TypeScript configuration - Enforce type checking for production security
   typescript: {
-    ignoreBuildErrors: true, // ⚠️ Temporarily ignore TypeScript errors for deployment
+    ignoreBuildErrors: false, // ✅ Enforce TypeScript type checking in production
   },
 
-  // ESLint configuration - Temporarily ignore ESLint errors for deployment
+  // ESLint configuration - Enforce code quality checks for production security
   eslint: {
-    ignoreDuringBuilds: true, // ⚠️ Temporarily ignore ESLint errors for deployment
+    ignoreDuringBuilds: false, // ✅ Enforce ESLint code quality checks in production
     dirs: ['src', 'pages', 'components', 'lib', 'app'], // Specify directories to lint
   },
 

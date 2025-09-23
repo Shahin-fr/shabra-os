@@ -10,6 +10,8 @@ import {
   Instagram,
   ArrowLeft
 } from 'lucide-react';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
 
 const footerLinks = {
   product: [
@@ -158,14 +160,14 @@ export function FooterSection() {
               </p>
             </div>
             <div className="flex gap-4">
-              <input
+              <Input
                 type="email"
                 placeholder="ایمیل خود را وارد کنید"
-                className="flex-1 bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-blue-500"
+                className="flex-1 bg-gray-800 border-gray-700 text-white placeholder-gray-400 focus:border-blue-500"
               />
-              <button className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300">
+              <Button variant="default" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:shadow-lg">
                 عضویت
-              </button>
+              </Button>
             </div>
           </div>
         </motion.div>

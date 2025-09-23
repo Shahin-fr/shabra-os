@@ -7,6 +7,14 @@
 
 const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcryptjs');
+const { 
+  DEFAULT_ADMIN_EMAIL, 
+  DEFAULT_ADMIN_PASSWORD,
+  DEFAULT_MANAGER_EMAIL,
+  DEFAULT_MANAGER_PASSWORD,
+  DEFAULT_USER_EMAIL,
+  DEFAULT_USER_PASSWORD
+} = require('../src/lib/config/constants');
 const fs = require('fs');
 const path = require('path');
 
@@ -36,24 +44,24 @@ async function forceAuthFix() {
       
       const users = [
         {
-          email: 'admin@shabra.com',
-          password: await bcrypt.hash('admin123', 12),
+          email: DEFAULT_ADMIN_EMAIL,
+          password: await bcrypt.hash(DEFAULT_ADMIN_PASSWORD, 12),
           firstName: 'Admin',
           lastName: 'User',
           roles: 'ADMIN',
           isActive: true,
         },
         {
-          email: 'manager@shabra.com',
-          password: await bcrypt.hash('manager123', 12),
+          email: DEFAULT_MANAGER_EMAIL,
+          password: await bcrypt.hash(DEFAULT_MANAGER_PASSWORD, 12),
           firstName: 'Manager',
           lastName: 'User',
           roles: 'MANAGER',
           isActive: true,
         },
         {
-          email: 'user@shabra.com',
-          password: await bcrypt.hash('user123', 12),
+          email: DEFAULT_USER_EMAIL,
+          password: await bcrypt.hash(DEFAULT_USER_PASSWORD, 12),
           firstName: 'Regular',
           lastName: 'User',
           roles: 'EMPLOYEE',
@@ -70,9 +78,9 @@ async function forceAuthFix() {
       
       // Update passwords to ensure they're correct
       const users = [
-        { email: 'admin@shabra.com', password: 'admin123' },
-        { email: 'manager@shabra.com', password: 'manager123' },
-        { email: 'user@shabra.com', password: 'user123' },
+        { email: DEFAULT_ADMIN_EMAIL, password: DEFAULT_ADMIN_PASSWORD },
+        { email: DEFAULT_MANAGER_EMAIL, password: DEFAULT_MANAGER_PASSWORD },
+        { email: DEFAULT_USER_EMAIL, password: DEFAULT_USER_PASSWORD },
       ];
 
       for (const userData of users) {
@@ -88,12 +96,12 @@ async function forceAuthFix() {
     // Test authentication
     console.log('\n🧪 Testing authentication...');
     const adminUser = await prisma.user.findUnique({
-      where: { email: 'admin@shabra.com' },
+      where: { email: DEFAULT_ADMIN_EMAIL },
       select: { password: true, email: true, firstName: true, lastName: true, roles: true }
     });
 
     if (adminUser) {
-      const isValid = await bcrypt.compare('admin123', adminUser.password);
+      const isValid = await bcrypt.compare(DEFAULT_ADMIN_PASSWORD, adminUser.password);
       console.log(`✅ Password verification: ${isValid ? 'SUCCESS' : 'FAILED'}`);
       
       if (isValid) {
@@ -176,16 +184,16 @@ ALLOWED_ORIGINS="http://localhost:3000,http://localhost:3001"
 # DEVELOPMENT SEEDING
 # ========================================
 # Default admin user credentials (development only)
-DEV_ADMIN_EMAIL="admin@shabra.com"
-DEV_ADMIN_PASSWORD="admin123"
+DEV_ADMIN_EMAIL="${DEFAULT_ADMIN_EMAIL}"
+DEV_ADMIN_PASSWORD="${DEFAULT_ADMIN_PASSWORD}"
 
 # Default regular user credentials (development only)
-DEV_USER_EMAIL="user@shabra.com"
-DEV_USER_PASSWORD="user123"
+DEV_USER_EMAIL="${DEFAULT_USER_EMAIL}"
+DEV_USER_PASSWORD="${DEFAULT_USER_PASSWORD}"
 
 # Default manager user credentials (development only)
-DEV_MANAGER_EMAIL="manager@shabra.com"
-DEV_MANAGER_PASSWORD="manager123"
+DEV_MANAGER_EMAIL="${DEFAULT_MANAGER_EMAIL}"
+DEV_MANAGER_PASSWORD="${DEFAULT_MANAGER_PASSWORD}"
 
 # ========================================
 # PERFORMANCE & MONITORING
@@ -205,9 +213,9 @@ PERFORMANCE_ENDPOINT="/api/performance"
     console.log('2. Clear your browser cache (Ctrl + Shift + R)');
     console.log('3. Try logging in again');
     console.log('\n🔑 Login credentials:');
-    console.log('   Admin: admin@shabra.com / admin123');
-    console.log('   Manager: manager@shabra.com / manager123');
-    console.log('   User: user@shabra.com / user123');
+    console.log(`   Admin: ${DEFAULT_ADMIN_EMAIL} / ${DEFAULT_ADMIN_PASSWORD}`);
+    console.log(`   Manager: ${DEFAULT_MANAGER_EMAIL} / ${DEFAULT_MANAGER_PASSWORD}`);
+    console.log(`   User: ${DEFAULT_USER_EMAIL} / ${DEFAULT_USER_PASSWORD}`);
 
   } catch (error) {
     console.error('❌ Force fix failed:', error.message);

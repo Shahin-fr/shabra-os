@@ -6,6 +6,14 @@ import { withAuthorization, createAuthorizationErrorResponse } from '@/lib/auth/
 import { prisma } from '@/lib/prisma';
 import { logger } from '@/lib/logger';
 import { withCriticalRateLimit } from '@/lib/middleware/rate-limit-middleware';
+import { 
+  DEFAULT_ADMIN_EMAIL, 
+  DEFAULT_ADMIN_PASSWORD,
+  DEFAULT_MANAGER_EMAIL,
+  DEFAULT_MANAGER_PASSWORD,
+  DEFAULT_USER_EMAIL,
+  DEFAULT_USER_PASSWORD
+} from '@/lib/config/constants';
 
 export async function POST(request: NextRequest) {
   // Apply critical rate limiting
@@ -51,24 +59,24 @@ export async function POST(request: NextRequest) {
 
     const users = [
       {
-        email: 'admin@shabra.com',
+        email: DEFAULT_ADMIN_EMAIL,
         firstName: 'Admin',
         lastName: 'User',
-        password: 'admin-password-123',
+        password: DEFAULT_ADMIN_PASSWORD,
         roles: 'ADMIN',
       },
       {
-        email: 'user@shabra.com',
+        email: DEFAULT_USER_EMAIL,
         firstName: 'Regular',
         lastName: 'User',
-        password: 'user-password-123',
+        password: DEFAULT_USER_PASSWORD,
         roles: 'EMPLOYEE',
       },
       {
-        email: 'manager@shabra.com',
+        email: DEFAULT_MANAGER_EMAIL,
         firstName: 'Manager',
         lastName: 'User',
-        password: 'manager-password-123',
+        password: DEFAULT_MANAGER_PASSWORD,
         roles: 'MANAGER',
       },
     ];
@@ -127,9 +135,9 @@ export async function POST(request: NextRequest) {
       results,
       totalUsers,
       credentials: {
-        admin: 'admin@shabra.com / [PASSWORD_HIDDEN]',
-        user: 'user@shabra.com / [PASSWORD_HIDDEN]',
-        manager: 'manager@shabra.com / [PASSWORD_HIDDEN]',
+        admin: `${DEFAULT_ADMIN_EMAIL} / [PASSWORD_HIDDEN]`,
+        user: `${DEFAULT_USER_EMAIL} / [PASSWORD_HIDDEN]`,
+        manager: `${DEFAULT_MANAGER_EMAIL} / [PASSWORD_HIDDEN]`,
       },
     });
   } catch (error) {
@@ -179,24 +187,24 @@ export async function GET() {
 
     const users = [
       {
-        email: 'admin@shabra.com',
+        email: DEFAULT_ADMIN_EMAIL,
         firstName: 'Admin',
         lastName: 'User',
-        password: 'admin-password-123',
+        password: DEFAULT_ADMIN_PASSWORD,
         roles: 'ADMIN',
       },
       {
-        email: 'user@shabra.com',
+        email: DEFAULT_USER_EMAIL,
         firstName: 'Regular',
         lastName: 'User',
-        password: 'user-password-123',
+        password: DEFAULT_USER_PASSWORD,
         roles: 'EMPLOYEE',
       },
       {
-        email: 'manager@shabra.com',
+        email: DEFAULT_MANAGER_EMAIL,
         firstName: 'Manager',
         lastName: 'User',
-        password: 'manager-password-123',
+        password: DEFAULT_MANAGER_PASSWORD,
         roles: 'MANAGER',
       },
     ];
@@ -264,9 +272,9 @@ export async function GET() {
       userCount: finalUserCount,
       users: createdUsers,
       credentials: {
-        admin: 'admin@shabra.com / [PASSWORD_HIDDEN]',
-        user: 'user@shabra.com / [PASSWORD_HIDDEN]',
-        manager: 'manager@shabra.com / [PASSWORD_HIDDEN]',
+        admin: `${DEFAULT_ADMIN_EMAIL} / [PASSWORD_HIDDEN]`,
+        user: `${DEFAULT_USER_EMAIL} / [PASSWORD_HIDDEN]`,
+        manager: `${DEFAULT_MANAGER_EMAIL} / [PASSWORD_HIDDEN]`,
       },
     });
   } catch (error) {

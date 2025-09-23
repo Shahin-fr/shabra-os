@@ -7,6 +7,10 @@
 
 const fs = require('fs');
 const path = require('path');
+const { 
+  DEFAULT_ADMIN_EMAIL, 
+  DEFAULT_ADMIN_PASSWORD
+} = require('../src/lib/config/constants');
 
 function clearAuthCache() {
   console.log('🧹 Clearing authentication cache...');
@@ -51,7 +55,7 @@ function clearAuthCache() {
   console.log('2. Clear your browser cache (Ctrl + Shift + R)');
   console.log('3. Try logging in again');
   console.log('\n🔑 Test credentials:');
-  console.log('   Admin: admin@shabra.com / admin123');
+    console.log(`   Admin: ${DEFAULT_ADMIN_EMAIL} / ${DEFAULT_ADMIN_PASSWORD}`);
   console.log('   Manager: manager@shabra.com / manager123');
   console.log('   User: user@shabra.com / user123');
 }

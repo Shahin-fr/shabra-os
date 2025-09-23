@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { TestimonialCard } from '../ui/TestimonialCard';
+import { Card, CardContent } from '@/components/ui/card';
 import { Quote } from 'lucide-react';
 
 const testimonials = [
@@ -123,22 +124,24 @@ export function TestimonialsSection() {
         viewport={{ once: true }}
         className="text-center mt-16"
       >
-        <div className="bg-white rounded-2xl p-8 shadow-lg max-w-4xl mx-auto">
-          <Quote className="w-12 h-12 text-blue-600 mx-auto mb-6" />
-          <blockquote className="text-xl text-gray-700 italic mb-6">
-            "شبرا OS نه تنها یک نرم‌افزار، بلکه یک شریک استراتژیک برای رشد کسب‌وکار ما بوده است. 
-            توصیه می‌کنم هر کسب‌وکاری که به دنبال تحول دیجیتال است، از این سیستم استفاده کند."
-          </blockquote>
-          <div className="flex items-center justify-center gap-4">
-            <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
-              ش
+        <Card className="max-w-4xl mx-auto">
+          <CardContent className="p-8">
+            <Quote className="w-12 h-12 text-blue-600 mx-auto mb-6" />
+            <blockquote className="text-xl text-gray-700 italic mb-6">
+              "شبرا OS نه تنها یک نرم‌افزار، بلکه یک شریک استراتژیک برای رشد کسب‌وکار ما بوده است. 
+              توصیه می‌کنم هر کسب‌وکاری که به دنبال تحول دیجیتال است، از این سیستم استفاده کند."
+            </blockquote>
+            <div className="flex items-center justify-center gap-4">
+              <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                ش
+              </div>
+              <div className="text-right">
+                <div className="font-semibold text-gray-900">شهریار احمدی</div>
+                <div className="text-gray-600">مدیرعامل گروه صنعتی پارس</div>
+              </div>
             </div>
-            <div className="text-right">
-              <div className="font-semibold text-gray-900">شهریار احمدی</div>
-              <div className="text-gray-600">مدیرعامل گروه صنعتی پارس</div>
-            </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </motion.div>
     </div>
   );

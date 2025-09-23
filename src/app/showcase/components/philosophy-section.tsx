@@ -3,6 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
+import { useIsMobile } from '../../../hooks/useMediaQuery';
 
 /**
  * PhilosophySection Component - Core Principles
@@ -11,6 +12,7 @@ import { useInView } from 'react-intersection-observer';
  * Integration, Simplicity, and Efficiency.
  */
 export default function PhilosophySection() {
+  const isMobile = useIsMobile();
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1
@@ -114,9 +116,9 @@ export default function PhilosophySection() {
           </motion.p>
         </motion.div>
 
-        {/* Principles Grid */}
+        {/* Principles Grid - Mobile optimized */}
         <motion.div 
-          className="grid grid-cols-1 md:grid-cols-3 gap-8"
+          className={`grid ${isMobile ? 'grid-cols-1 gap-6' : 'grid-cols-1 md:grid-cols-3 gap-8'}`}
           variants={containerVariants}
         >
           {principles.map((principle, index) => (
@@ -131,7 +133,7 @@ export default function PhilosophySection() {
               }}
             >
               <div className={`
-                relative p-8 rounded-2xl border-2 ${principle.borderColor} ${principle.bgColor}
+                relative ${isMobile ? 'p-6' : 'p-8'} rounded-2xl border-2 ${principle.borderColor} ${principle.bgColor}
                 backdrop-blur-sm bg-gradient-to-br from-white/5 to-white/10
                 hover:shadow-2xl hover:shadow-[#E000A0]/10 transition-all duration-500
                 h-full flex flex-col items-center text-center
@@ -146,8 +148,8 @@ export default function PhilosophySection() {
                 {/* Icon */}
                 <motion.div
                   className={`
-                    w-20 h-20 rounded-full bg-gradient-to-br ${principle.color} 
-                    flex items-center justify-center text-3xl mb-6
+                    ${isMobile ? 'w-16 h-16 text-2xl mb-4' : 'w-20 h-20 text-3xl mb-6'} rounded-full bg-gradient-to-br ${principle.color} 
+                    flex items-center justify-center
                     shadow-lg group-hover:shadow-xl transition-shadow duration-300
                   `}
                   variants={iconVariants}
@@ -162,7 +164,7 @@ export default function PhilosophySection() {
 
                 {/* Title */}
                 <motion.h3 
-                  className="text-xl font-bold text-[#F5F5F5] mb-4 group-hover:text-white transition-colors duration-300"
+                  className={`${isMobile ? 'text-lg' : 'text-xl'} font-bold text-[#F5F5F5] ${isMobile ? 'mb-3' : 'mb-4'} group-hover:text-white transition-colors duration-300`}
                   variants={itemVariants}
                 >
                   {principle.title}
@@ -170,7 +172,7 @@ export default function PhilosophySection() {
 
                 {/* Description */}
                 <motion.p 
-                  className="text-[#A1A1A1] leading-relaxed group-hover:text-[#E5E5E5] transition-colors duration-300"
+                  className={`${isMobile ? 'text-sm' : 'text-base'} text-[#A1A1A1] leading-relaxed group-hover:text-[#E5E5E5] transition-colors duration-300`}
                   variants={itemVariants}
                 >
                   {principle.description}

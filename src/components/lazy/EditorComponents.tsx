@@ -5,7 +5,7 @@ import { ComponentType } from 'react';
 
 // Lazy load heavy editor components
 export const StoryManagement = dynamic(
-  () => import('@/components/storyboard/StoryManagement').then(mod => ({ default: mod.StoryManagement })),
+  () => import('@/components/storyboard/StoryManagement').then(mod => mod.StoryManagement),
   {
     loading: () => (
       <div className="flex items-center justify-center h-96 bg-gray-50 dark:bg-gray-800 rounded-lg">
@@ -20,7 +20,7 @@ export const StoryManagement = dynamic(
 ) as ComponentType<any>;
 
 export const RealTimeCollaboration = dynamic(
-  () => import('@/components/storyboard/RealTimeCollaboration').then(mod => ({ default: mod.RealTimeCollaboration })),
+  () => import('@/components/storyboard/RealTimeCollaboration').then(mod => mod.RealTimeCollaboration),
   {
     loading: () => (
       <div className="flex items-center justify-center h-12">
@@ -32,7 +32,7 @@ export const RealTimeCollaboration = dynamic(
 ) as ComponentType<any>;
 
 export const InteractiveCalendarWidget = dynamic(
-  () => import('@/components/dashboard/widgets/InteractiveCalendarWidget').then(mod => ({ default: mod.InteractiveCalendarWidget })),
+  () => import('@/components/dashboard/widgets/InteractiveCalendarWidget').then(mod => mod.InteractiveCalendarWidget),
   {
     loading: () => (
       <div className="flex items-center justify-center h-64 bg-gray-50 dark:bg-gray-800 rounded-lg">

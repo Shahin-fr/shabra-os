@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import { ArrowLeft, Play, CheckCircle } from 'lucide-react';
 import { AnimatedCounter } from '../ui/AnimatedCounter';
 
@@ -138,40 +139,42 @@ export function HeroSection() {
           className="relative"
         >
           {/* Main Dashboard Mockup */}
-          <div className="relative bg-white rounded-2xl shadow-2xl p-6 border border-gray-200">
-            {/* Mockup Header */}
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg"></div>
-                <span className="font-semibold text-gray-800">شبرا OS</span>
+          <Card className="relative shadow-2xl">
+            <CardContent className="p-6">
+              {/* Mockup Header */}
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg"></div>
+                  <span className="font-semibold text-gray-800">شبرا OS</span>
+                </div>
+                <div className="flex gap-2">
+                  <div className="w-3 h-3 bg-red-400 rounded-full"></div>
+                  <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
+                  <div className="w-3 h-3 bg-green-400 rounded-full"></div>
+                </div>
               </div>
-              <div className="flex gap-2">
-                <div className="w-3 h-3 bg-red-400 rounded-full"></div>
-                <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
-                <div className="w-3 h-3 bg-green-400 rounded-full"></div>
-              </div>
-            </div>
 
-            {/* Mockup Content */}
-            <div className="space-y-4">
-              <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-              <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-              <div className="grid grid-cols-2 gap-4 mt-6">
-                <div className="h-20 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <span className="text-blue-600 font-semibold">پروژه‌ها</span>
-                </div>
-                <div className="h-20 bg-purple-100 rounded-lg flex items-center justify-center">
-                  <span className="text-purple-600 font-semibold">تسک‌ها</span>
-                </div>
-                <div className="h-20 bg-green-100 rounded-lg flex items-center justify-center">
-                  <span className="text-green-600 font-semibold">گزارش‌ها</span>
-                </div>
-                <div className="h-20 bg-orange-100 rounded-lg flex items-center justify-center">
-                  <span className="text-orange-600 font-semibold">تیم</span>
+              {/* Mockup Content */}
+              <div className="space-y-4">
+                <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                <div className="grid grid-cols-2 gap-4 mt-6">
+                  <div className="h-20 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <span className="text-blue-600 font-semibold">پروژه‌ها</span>
+                  </div>
+                  <div className="h-20 bg-purple-100 rounded-lg flex items-center justify-center">
+                    <span className="text-purple-600 font-semibold">تسک‌ها</span>
+                  </div>
+                  <div className="h-20 bg-green-100 rounded-lg flex items-center justify-center">
+                    <span className="text-green-600 font-semibold">گزارش‌ها</span>
+                  </div>
+                  <div className="h-20 bg-orange-100 rounded-lg flex items-center justify-center">
+                    <span className="text-orange-600 font-semibold">تیم</span>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
 
           {/* Floating Elements */}
           <motion.div

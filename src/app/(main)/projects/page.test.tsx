@@ -178,20 +178,24 @@ const MockProjectsPageContent = () => {
         className='flex justify-center'
       >
         <div className='flex items-center gap-2'>
-          <button
+          <Button
             onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
             disabled={currentPage === 1}
-            className='px-3 py-2 rounded-md bg-white/10 hover:bg-white/20 disabled:opacity-50 disabled:cursor-not-allowed'
+            variant="outline"
+            size="sm"
+            className='bg-white/10 hover:bg-white/20'
           >
             قبلی
-          </button>
+          </Button>
           <span className='px-3 py-2'>{currentPage}</span>
-          <button
+          <Button
             onClick={() => setCurrentPage(currentPage + 1)}
-            className='px-3 py-2 rounded-md bg-white/10 hover:bg-white/20'
+            variant="outline"
+            size="sm"
+            className='bg-white/10 hover:bg-white/20'
           >
             بعدی
-          </button>
+          </Button>
         </div>
       </OptimizedMotion>
     </OptimizedMotion>
@@ -211,6 +215,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { Button } from '@/components/ui/Button';
 
 describe('Projects Page', () => {
   const mockSession = {
