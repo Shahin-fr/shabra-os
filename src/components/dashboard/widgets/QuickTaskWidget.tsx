@@ -51,7 +51,7 @@ export function QuickTaskWidget({ className, variant = 'desktop', priority = 'me
     });
   };
 
-  const getPriorityColor = (priority: string) => {
+  // const getPriorityColor = (priority: string) => {
     switch (priority) {
       case 'HIGH':
         return 'text-red-600 bg-red-100';
@@ -77,7 +77,7 @@ export function QuickTaskWidget({ className, variant = 'desktop', priority = 'me
     }
   };
 
-  const isMobile = variant === 'mobile';
+  // const isMobile = variant === 'mobile';
 
   return (
     <EnhancedWidgetCard

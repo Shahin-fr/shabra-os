@@ -13,7 +13,7 @@ import {
   HTTP_STATUS_CODES,
 } from '@/lib/api/response-utils';
 import { logger } from '@/lib/logger';
-import { ValidationError } from '@/lib/middleware/validation-middleware';
+import { ValidationError as MiddlewareValidationError } from '@/lib/middleware/validation-middleware';
 
 /**
  * Custom error types for better error handling
@@ -113,7 +113,7 @@ export function handleApiError(error: unknown, context?: {
   );
 
   // Handle ValidationError (from validation middleware)
-  if (error instanceof ValidationError) {
+  if (error instanceof MiddlewareValidationError) {
     const errorResponse = createValidationErrorResponse(
       error.message,
       error.errors[0]?.path?.join('.') || 'unknown'

@@ -2,17 +2,17 @@
 
 import { OptimizedMotion } from '@/components/ui/OptimizedMotion';
 import {
-  ClipboardList,
+  // ClipboardList,
   CheckCircle,
   Clock,
   User,
   Settings,
   Shield,
   Calendar,
-  AlertCircle,
+  // AlertCircle,
   X,
-  Play,
-  Pause,
+  // Play,
+  // Pause,
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';

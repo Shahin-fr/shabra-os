@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Plus, Users, FileText, Calendar, Megaphone, Settings } from 'lucide-react';
+import { Plus, Users, FileText, Megaphone } from 'lucide-react';
 import { EnhancedWidgetCard } from '@/components/ui/EnhancedWidgetCard';
 import { Button } from '@/components/ui/Button';
 import { cn } from '@/lib/utils';

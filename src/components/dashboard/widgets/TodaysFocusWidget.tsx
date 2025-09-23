@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { CheckCircle, Circle, Clock, Calendar, Play, Pause, MoreHorizontal, Eye, Edit3 } from 'lucide-react';
+import { CheckCircle, Circle, Clock, Calendar, Play, Pause, Eye, Edit3 } from 'lucide-react';
 import { WidgetCard } from './WidgetCard';
 import { Button } from '@/components/ui/Button';
 import { cn } from '@/lib/utils';
@@ -166,7 +166,7 @@ export function TodaysFocusWidget({ className, variant = 'desktop' }: TodaysFocu
     });
   };
 
-  const isMobile = variant === 'mobile';
+  // const isMobile = variant === 'mobile';
   const safeTasks = Array.isArray(tasks) ? tasks : [];
   const completedTasks = safeTasks.filter(task => task.status === 'Done').length;
   const totalTasks = safeTasks.length;

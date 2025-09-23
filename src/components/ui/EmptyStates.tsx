@@ -8,7 +8,7 @@ import {
   Users, 
   Calendar, 
   Target,
-  Plus,
+  // Plus,
   Search,
   RefreshCw
 } from 'lucide-react';

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Clock, LogIn, LogOut, CheckCircle, AlertCircle, Timer, Sun } from 'lucide-react';
+import { LogIn, LogOut, CheckCircle, AlertCircle } from 'lucide-react';
 import { WidgetCard } from './WidgetCard';
 import { Button } from '@/components/ui/Button';
 import { cn } from '@/lib/utils';
@@ -41,7 +41,7 @@ export const SmartStatusCard = React.memo(function SmartStatusCard({ className, 
       const response = await fetch('/api/attendance');
       
       if (!response.ok) {
-        const errorText = await response.text();
+        // const errorText = await response.text();
         throw new Error('Failed to fetch attendance data');
       }
       
@@ -89,7 +89,7 @@ export const SmartStatusCard = React.memo(function SmartStatusCard({ className, 
       });
       
       if (!response.ok) {
-        const errorText = await response.text();
+        // const errorText = await response.text();
         throw new Error('Failed to clock in');
       }
       
@@ -108,7 +108,7 @@ export const SmartStatusCard = React.memo(function SmartStatusCard({ className, 
       });
       
       if (!response.ok) {
-        const errorText = await response.text();
+        // const errorText = await response.text();
         throw new Error('Failed to clock out');
       }
       

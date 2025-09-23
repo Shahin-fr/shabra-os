@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { Users, Clock, UserCheck, UserX, Calendar, ChevronDown, ChevronUp } from 'lucide-react';
+import { Users, UserCheck, UserX, Calendar, ChevronDown, ChevronUp } from 'lucide-react';
 import { WidgetCard } from './WidgetCard';
 import { Button } from '@/components/ui/Button';
 import { cn } from '@/lib/utils';

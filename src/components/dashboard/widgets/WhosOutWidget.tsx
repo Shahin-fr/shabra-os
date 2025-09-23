@@ -27,7 +27,7 @@ export function WhosOutWidget({ className, variant = 'desktop' }: WhosOutWidgetP
       const response = await fetch('/api/team-status/whos-out');
       
       if (!response.ok) {
-        const errorText = await response.text();
+        // const errorText = await response.text();
         throw new Error('Failed to fetch who is out');
       }
       

@@ -98,13 +98,13 @@ export function FooterSection() {
               viewport={{ once: true }}
               className="flex gap-4"
             >
-              <a href="#" className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-blue-600 transition-colors duration-300">
+              <a href="https://linkedin.com/company/shabra" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-blue-600 transition-colors duration-300">
                 <Linkedin className="w-5 h-5" />
               </a>
-              <a href="#" className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-blue-400 transition-colors duration-300">
+              <a href="https://twitter.com/shabra" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-blue-400 transition-colors duration-300">
                 <Twitter className="w-5 h-5" />
               </a>
-              <a href="#" className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-pink-600 transition-colors duration-300">
+              <a href="https://instagram.com/shabra" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-pink-600 transition-colors duration-300">
                 <Instagram className="w-5 h-5" />
               </a>
             </motion.div>
@@ -184,13 +184,13 @@ export function FooterSection() {
             © 2024 شبرا OS. تمام حقوق محفوظ است.
           </p>
           <div className="flex gap-6 text-sm text-gray-400">
-            <a href="#" className="hover:text-white transition-colors duration-300">
+            <a href="/privacy" className="hover:text-white transition-colors duration-300">
               حریم خصوصی
             </a>
-            <a href="#" className="hover:text-white transition-colors duration-300">
+            <a href="/terms" className="hover:text-white transition-colors duration-300">
               شرایط استفاده
             </a>
-            <a href="#" className="hover:text-white transition-colors duration-300">
+            <a href="/cookies" className="hover:text-white transition-colors duration-300">
               کوکی‌ها
             </a>
           </div>

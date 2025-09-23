@@ -11,8 +11,8 @@ import {
   FileText,
   Send,
   Loader2,
-  AlertCircle,
-  CheckCircle,
+  // AlertCircle,
+  // CheckCircle,
 } from 'lucide-react';
 import { toast } from 'sonner';
 

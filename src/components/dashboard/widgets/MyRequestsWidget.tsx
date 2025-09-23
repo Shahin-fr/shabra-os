@@ -27,7 +27,7 @@ export function MyRequestsWidget({ className, variant = 'desktop' }: MyRequestsW
       const response = await fetch('/api/requests');
       
       if (!response.ok) {
-        const errorText = await response.text();
+        // const errorText = await response.text();
         throw new Error('Failed to fetch requests');
       }
       

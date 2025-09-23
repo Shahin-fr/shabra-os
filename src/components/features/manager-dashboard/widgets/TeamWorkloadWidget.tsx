@@ -17,7 +17,7 @@ const TeamWorkloadWidget = () => {
     }
   };
 
-  const getWorkloadLabel = (taskCount: number) => {
+  // const getWorkloadLabel = (taskCount: number) => {
     if (taskCount >= 7) {
       return 'بار کاری بالا';
     } else if (taskCount >= 4) {

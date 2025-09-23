@@ -248,26 +248,30 @@ export class ActionCenterService {
     let description = '';
 
     switch (request.type) {
-      case 'LEAVE':
+      case 'LEAVE': {
         const leaveDetails = request.details as any;
         title = `درخواست مرخصی - ${request.user.firstName} ${request.user.lastName}`;
         description = `درخواست مرخصی از ${leaveDetails.startDate} تا ${leaveDetails.endDate} - ${request.reason}`;
         break;
-      case 'OVERTIME':
+      }
+      case 'OVERTIME': {
         const overtimeDetails = request.details as any;
         title = `درخواست اضافه کار - ${request.user.firstName} ${request.user.lastName}`;
         description = `اضافه کار در تاریخ ${overtimeDetails.date} از ${overtimeDetails.startTime} تا ${overtimeDetails.endTime} - ${request.reason}`;
         break;
-      case 'EXPENSE_CLAIM':
+      }
+      case 'EXPENSE_CLAIM': {
         const expenseDetails = request.details as any;
         title = `درخواست هزینه - ${request.user.firstName} ${request.user.lastName}`;
         description = `درخواست بازپرداخت ${expenseDetails.amount} ${expenseDetails.currency} - ${request.reason}`;
         break;
-      case 'GENERAL':
+      }
+      case 'GENERAL': {
         const generalDetails = request.details as any;
         title = `درخواست عمومی - ${request.user.firstName} ${request.user.lastName}`;
         description = `${generalDetails.subject || 'درخواست عمومی'} - ${request.reason}`;
         break;
+      }
       default:
         title = `درخواست - ${request.user.firstName} ${request.user.lastName}`;
         description = request.reason;

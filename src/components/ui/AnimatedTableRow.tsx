@@ -14,9 +14,9 @@ export const AnimatedTableRow = forwardRef<HTMLTableRowElement, AnimatedTableRow
   ({ children, index = 0, delay = 0, ...props }, ref) => {
     // Filter out conflicting HTML events that conflict with Framer Motion
     const { 
-      onDrag, onDragStart, onDragEnd,
-      onAnimationStart, onAnimationEnd, onAnimationIteration,
-      onTransitionStart, onTransitionEnd,
+      // onDrag, // onDragStart, // onDragEnd,
+      // onAnimationStart, // onAnimationEnd, // onAnimationIteration,
+      // onTransitionStart, // onTransitionEnd,
       ...motionProps 
     } = props;
     
