@@ -11,10 +11,8 @@ import {
   AlertTriangle,
   User,
   FileText,
-  Calendar,
   ChevronDown,
   AlertCircle,
-  CheckCircle2,
   PartyPopper,
   CalendarDays,
   Receipt,
@@ -151,7 +149,6 @@ export function ActionableInbox() {
     data,
     isLoading,
     isError,
-    error,
     refetch,
   } = useQuery({
     queryKey: ['actionableInbox'],
@@ -289,7 +286,7 @@ export function ActionableInbox() {
                     <div className='flex items-center justify-between'>
                       <div className='flex items-center gap-3 flex-1'>
                         <div className='w-6 h-6 bg-[#ff0a54]/20 rounded-full flex items-center justify-center group-hover:bg-[#ff0a54]/30 transition-colors'>
-                          {getTypeIcon(item.type)}
+                          {getTypeIcon(item.type as ActionableInboxItem['type'])}
                         </div>
                         <div className='flex-1 min-w-0'>
                           <h4 className='font-semibold text-foreground group-hover:text-[#ff0a54] transition-colors text-sm'>

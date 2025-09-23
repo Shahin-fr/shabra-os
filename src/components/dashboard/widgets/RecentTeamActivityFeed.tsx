@@ -16,11 +16,11 @@ import {
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { DashboardService, ActivityItem } from '@/services/dashboard.service';
+import { DashboardService } from '@/services/dashboard.service';
 
 // Icon mapping for different activity types
 const getIconComponent = (iconName: string) => {

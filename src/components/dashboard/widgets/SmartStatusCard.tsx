@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { LogIn, LogOut, CheckCircle, AlertCircle } from 'lucide-react';
 import { WidgetCard } from './WidgetCard';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { OptimizedMotion } from '@/components/ui/OptimizedMotion';
 
@@ -68,7 +68,7 @@ export const SmartStatusCard = React.memo(function SmartStatusCard({ className, 
       return attendanceData;
     },
     staleTime: 1000 * 60 * 5, // 5 minutes - attendance changes frequently
-    cacheTime: 1000 * 60 * 10, // 10 minutes
+    gcTime: 1000 * 60 * 10, // 10 minutes
     refetchInterval: 30000, // Refetch every 30 seconds
   });
 
@@ -137,12 +137,12 @@ export const SmartStatusCard = React.memo(function SmartStatusCard({ className, 
     }
   };
 
-  const getGreeting = () => {
-    const hour = new Date().getHours();
-    if (hour < 12) return 'صبح بخیر';
-    if (hour < 17) return 'ظهر بخیر';
-    return 'عصر بخیر';
-  };
+  // const getGreeting = () => {
+  //   const hour = new Date().getHours();
+  //   if (hour < 12) return 'صبح بخیر';
+  //   if (hour < 17) return 'ظهر بخیر';
+  //   return 'عصر بخیر';
+  // };
 
   const getStatusInfo = () => {
     if (!attendance) return null;
@@ -180,7 +180,11 @@ export const SmartStatusCard = React.memo(function SmartStatusCard({ className, 
           className
         )}
         loading={true}
-      />
+      >
+        <div className="flex items-center justify-center h-32">
+          <div className="text-sm text-gray-500">در حال بارگذاری...</div>
+        </div>
+      </WidgetCard>
     );
   }
 

@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   DndContext,
   DragEndEvent,
@@ -11,7 +11,6 @@ import {
   useSensor,
   useSensors,
   closestCenter,
-  DragOverEvent,
 } from '@dnd-kit/core';
 import {
   arrayMove,
@@ -306,7 +305,7 @@ const KanbanBoard: React.FC = () => {
         if (targetColumn) {
           targetColumn.tasks.push({
             ...activeTask,
-            columnId: overId,
+            columnId: String(overId),
           });
         }
 
@@ -326,8 +325,8 @@ const KanbanBoard: React.FC = () => {
         const newColumns = prevColumns.map(col => {
           if (col.id === activeTask.columnId) {
             const taskIds = col.tasks.map(task => task.id);
-            const oldIndex = taskIds.indexOf(activeId);
-            const newIndex = taskIds.indexOf(overId);
+            const oldIndex = taskIds.indexOf(String(activeId));
+            const newIndex = taskIds.indexOf(String(overId));
             const newTaskIds = arrayMove(taskIds, oldIndex, newIndex);
             
             return {
@@ -400,9 +399,9 @@ const KanbanBoard: React.FC = () => {
 
 // Main Page Component
 export default function BoardPage() {
-  const params = useParams();
+  // const params = useParams();
   const router = useRouter();
-  const projectId = params.projectId as string;
+  // const projectId = params.projectId as string;
 
   // Mock project data
   const projectName = 'پروژه شبرا - سیستم مدیریت پروژه';

@@ -3,16 +3,16 @@
 import { useQuery } from '@tanstack/react-query';
 import { Users, UserCheck, UserX, Calendar, ChevronDown, ChevronUp } from 'lucide-react';
 import { WidgetCard } from './WidgetCard';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
 
-interface TeamPresenceStats {
-  clockedIn: number;
-  onLeave: number;
-  absent: number;
-  total: number;
-}
+// interface TeamPresenceStats {
+//   clockedIn: number;
+//   onLeave: number;
+//   absent: number;
+//   total: number;
+// }
 
 interface TeamPresenceWidgetProps {
   className?: string;
@@ -48,31 +48,31 @@ export function TeamPresenceWidget({ className, variant = 'desktop' }: TeamPrese
     return presenceStats.total > 0 ? Math.round((presenceStats.clockedIn / presenceStats.total) * 100) : 0;
   };
 
-  const getPresenceColor = (type: string) => {
-    switch (type) {
-      case 'clockedIn':
-        return 'text-green-600 bg-green-100';
-      case 'onLeave':
-        return 'text-blue-600 bg-blue-100';
-      case 'absent':
-        return 'text-red-600 bg-red-100';
-      default:
-        return 'text-gray-600 bg-gray-100';
-    }
-  };
+  // const getPresenceColor = (type: string) => {
+  //   switch (type) {
+  //     case 'clockedIn':
+  //       return 'text-green-600 bg-green-100';
+  //     case 'onLeave':
+  //       return 'text-blue-600 bg-blue-100';
+  //     case 'absent':
+  //       return 'text-red-600 bg-red-100';
+  //     default:
+  //       return 'text-gray-600 bg-gray-100';
+  //   }
+  // };
 
-  const getPresenceIcon = (type: string) => {
-    switch (type) {
-      case 'clockedIn':
-        return <UserCheck className="h-5 w-5" />;
-      case 'onLeave':
-        return <Calendar className="h-5 w-5" />;
-      case 'absent':
-        return <UserX className="h-5 w-5" />;
-      default:
-        return <Users className="h-5 w-5" />;
-    }
-  };
+  // const getPresenceIcon = (type: string) => {
+  //   switch (type) {
+  //     case 'clockedIn':
+  //       return <UserCheck className="h-5 w-5" />;
+  //     case 'onLeave':
+  //       return <Calendar className="h-5 w-5" />;
+  //     case 'absent':
+  //       return <UserX className="h-5 w-5" />;
+  //     default:
+  //       return <Users className="h-5 w-5" />;
+  //   }
+  // };
 
   const getPresenceText = (type: string) => {
     switch (type) {

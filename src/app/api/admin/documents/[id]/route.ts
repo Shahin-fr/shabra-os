@@ -5,7 +5,7 @@ import { deleteFromCloudinary } from '@/lib/cloudinary';
 
 // DELETE /api/admin/documents/[id] - Delete a document
 export async function DELETE(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
@@ -16,7 +16,7 @@ export async function DELETE(
     }
 
     // Check if user has required roles
-    if (!['ADMIN', 'MANAGER'].includes(session.user.roles)) {
+    if (!['ADMIN', 'MANAGER'].some(role => (session.user.roles as string[]).includes(role))) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
@@ -41,7 +41,7 @@ export async function DELETE(
     }
 
     // Check permissions: Admin can delete any document, Manager can delete documents for their subordinates
-    if (session.user.roles === 'MANAGER' && document.user.managerId !== session.user.id) {
+    if ((session.user.roles as string[]).includes('MANAGER') && document.user.managerId !== session.user.id) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 

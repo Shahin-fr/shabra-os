@@ -10,11 +10,9 @@ import {
   Trash2,
   Eye,
   Users,
-  Clock,
   AlertCircle,
   Loader2,
   RefreshCw,
-  Filter,
   Search,
 } from 'lucide-react';
 import { toast } from 'sonner';
@@ -36,7 +34,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { ChecklistTemplateForm } from './ChecklistTemplateForm';
@@ -83,11 +80,11 @@ const TEMPLATE_TYPE_COLORS = {
   OFFBOARDING: 'bg-red-100 text-red-800',
 };
 
-const ASSIGNEE_ROLE_LABELS = {
-  EMPLOYEE: 'کارمند',
-  MANAGER: 'مدیر',
-  ADMIN: 'مدیر سیستم',
-};
+// const ASSIGNEE_ROLE_LABELS = {
+//   EMPLOYEE: 'کارمند',
+//   MANAGER: 'مدیر',
+//   ADMIN: 'مدیر سیستم',
+// };
 
 export function ChecklistTemplatesDashboard() {
   const [searchTerm, setSearchTerm] = useState('');

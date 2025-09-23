@@ -20,7 +20,7 @@ const updateTemplateSchema = z.object({
 
 // GET /api/admin/checklist-templates/[id] - Get a specific template
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
@@ -116,7 +116,7 @@ export async function PUT(
     }
 
     // Update template with tasks in a transaction
-    const updatedTemplate = await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx) => {
       // Update the template
       const template = await tx.checklistTemplate.update({
         where: { id: templateId },
@@ -193,7 +193,7 @@ export async function PUT(
 
 // DELETE /api/admin/checklist-templates/[id] - Delete a template
 export async function DELETE(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {

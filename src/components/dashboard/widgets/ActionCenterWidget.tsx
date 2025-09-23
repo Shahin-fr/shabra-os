@@ -5,7 +5,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { AlertCircle, CheckCircle, XCircle, Clock, User, FileText, ChevronRight } from 'lucide-react';
 import { toast } from 'sonner';
 import { EnhancedWidgetCard } from '@/components/ui/EnhancedWidgetCard';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 
@@ -53,7 +53,7 @@ export const ActionCenterWidget = React.memo(function ActionCenterWidget({ class
       return data;
     },
     staleTime: 1000 * 60 * 2, // 2 minutes - action center changes frequently
-    cacheTime: 1000 * 60 * 5, // 5 minutes
+    gcTime: 1000 * 60 * 5, // 5 minutes
     refetchInterval: 30000, // Refetch every 30 seconds
   });
 

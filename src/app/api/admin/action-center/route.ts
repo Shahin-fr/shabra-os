@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/auth';
 import { prisma } from '@/lib/prisma';
-import { z } from 'zod';
+// import { z } from 'zod';
 
-const requestActionSchema = z.object({
-  action: z.enum(['APPROVE', 'REJECT']),
-  rejectionReason: z.string().optional(),
-});
+// const requestActionSchema = z.object({
+//   action: z.enum(['APPROVE', 'REJECT']),
+//   rejectionReason: z.string().optional(),
+// });
 
 // GET /api/admin/action-center - Get all pending requests from subordinates
 export async function GET(request: NextRequest) {

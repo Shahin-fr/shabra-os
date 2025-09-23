@@ -3,7 +3,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { Users, Calendar, Clock, User } from 'lucide-react';
 import { WidgetCard } from './WidgetCard';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 interface EmployeeOnLeave {

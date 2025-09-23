@@ -30,77 +30,9 @@ export const KeyPerformanceIndicators = dynamic(
   }
 ) as ComponentType<any>;
 
-export const InteractiveCalendarWidget = dynamic(
-  () => import('@/components/dashboard/widgets/InteractiveCalendarWidget').then(mod => mod.InteractiveCalendarWidget),
-  {
-    loading: () => (
-      <div className="flex items-center justify-center h-64 bg-gray-50 dark:bg-gray-800 rounded-lg">
-        <div className="text-sm text-gray-500">Loading calendar...</div>
-      </div>
-    ),
-    ssr: false,
-  }
-) as ComponentType<any>;
+// InteractiveCalendarWidget and RecentTeamActivityFeed are exported from other files to avoid conflicts
 
-export const RecentTeamActivityFeed = dynamic(
-  () => import('@/components/dashboard/widgets/RecentTeamActivityFeed').then(mod => mod.RecentTeamActivityFeed),
-  {
-    loading: () => (
-      <div className="flex items-center justify-center h-64 bg-gray-50 dark:bg-gray-800 rounded-lg">
-        <div className="text-sm text-gray-500">Loading team activity...</div>
-      </div>
-    ),
-    ssr: false,
-  }
-) as ComponentType<any>;
-
-export const ProjectStatusDonutChart = dynamic(
-  () => import('@/components/dashboard/widgets/ProjectStatusDonutChart').then(mod => mod.ProjectStatusDonutChart),
-  {
-    loading: () => (
-      <div className="flex items-center justify-center h-64 bg-gray-50 dark:bg-gray-800 rounded-lg">
-        <div className="text-sm text-gray-500">Loading project status...</div>
-      </div>
-    ),
-    ssr: false,
-  }
-) as ComponentType<any>;
-
-export const TaskBottlenecks = dynamic(
-  () => import('@/components/dashboard/widgets/TaskBottlenecks').then(mod => mod.TaskBottlenecks),
-  {
-    loading: () => (
-      <div className="flex items-center justify-center h-64 bg-gray-50 dark:bg-gray-800 rounded-lg">
-        <div className="text-sm text-gray-500">Loading task bottlenecks...</div>
-      </div>
-    ),
-    ssr: false,
-  }
-) as ComponentType<any>;
-
-export const WeeklyPerformanceChart = dynamic(
-  () => import('@/components/dashboard/widgets/WeeklyPerformanceChart').then(mod => mod.WeeklyPerformanceChart),
-  {
-    loading: () => (
-      <div className="flex items-center justify-center h-64 bg-gray-50 dark:bg-gray-800 rounded-lg">
-        <div className="text-sm text-gray-500">Loading performance chart...</div>
-      </div>
-    ),
-    ssr: false,
-  }
-) as ComponentType<any>;
-
-export const QuarterlyGoals = dynamic(
-  () => import('@/components/dashboard/widgets/QuarterlyGoals').then(mod => mod.QuarterlyGoals),
-  {
-    loading: () => (
-      <div className="flex items-center justify-center h-64 bg-gray-50 dark:bg-gray-800 rounded-lg">
-        <div className="text-sm text-gray-500">Loading quarterly goals...</div>
-      </div>
-    ),
-    ssr: false,
-  }
-) as ComponentType<any>;
+// These components are exported from other files to avoid conflicts
 
 // High-priority lazy-loaded components for performance optimization
 

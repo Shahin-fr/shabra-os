@@ -48,7 +48,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 interface Holiday {
   id: string;
   name: string;
-  date: string;
+  date?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -191,9 +191,10 @@ export function HolidayManagement() {
 
   const handleEditHoliday = (holiday: Holiday) => {
     setSelectedHoliday(holiday);
+    const dateString = holiday.date ? new Date(holiday.date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0];
     setFormData({
       name: holiday.name,
-      date: holiday.date ? new Date(holiday.date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+      date: dateString as string,
     });
     setIsEditDialogOpen(true);
   };
@@ -229,7 +230,7 @@ export function HolidayManagement() {
   };
 
   const getUpcomingHolidays = () => {
-    return holidays?.filter(holiday => isUpcoming(holiday.date)) || [];
+    return holidays?.filter(holiday => holiday.date && isUpcoming(holiday.date)) || [];
   };
 
   return (
@@ -458,17 +459,17 @@ export function HolidayManagement() {
                   {holidays?.map((holiday) => (
                     <TableRow key={holiday.id}>
                       <TableCell className="font-medium">{holiday.name}</TableCell>
-                      <TableCell>{formatDate(holiday.date)}</TableCell>
+                      <TableCell>{holiday.date ? formatDate(holiday.date) : 'تاریخ نامشخص'}</TableCell>
                       <TableCell>
                         <Badge
-                          variant={isUpcoming(holiday.date) ? "default" : "secondary"}
+                          variant={holiday.date && isUpcoming(holiday.date) ? "default" : "secondary"}
                           className={
-                            isUpcoming(holiday.date)
+                            holiday.date && isUpcoming(holiday.date)
                               ? "bg-green-100 text-green-800"
                               : "bg-gray-100 text-gray-600"
                           }
                         >
-                          {isUpcoming(holiday.date) ? "آینده" : "گذشته"}
+                          {holiday.date && isUpcoming(holiday.date) ? "آینده" : "گذشته"}
                         </Badge>
                       </TableCell>
                       <TableCell>

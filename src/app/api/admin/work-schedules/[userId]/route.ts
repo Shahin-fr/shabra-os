@@ -15,7 +15,7 @@ const workScheduleSchema = z.object({
 
 // GET /api/admin/work-schedules/[userId] - Get work schedule for a user
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: { userId: string } }
 ) {
   try {
@@ -26,7 +26,7 @@ export async function GET(
     }
 
     // Check if user is admin or manager
-    if (!['ADMIN', 'MANAGER'].includes(session.user.roles)) {
+    if (!['ADMIN', 'MANAGER'].some(role => (session.user.roles as string[]).includes(role))) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
@@ -93,7 +93,7 @@ export async function PUT(
     }
 
     // Check if user is admin or manager
-    if (!['ADMIN', 'MANAGER'].includes(session.user.roles)) {
+    if (!['ADMIN', 'MANAGER'].some(role => (session.user.roles as string[]).includes(role))) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 

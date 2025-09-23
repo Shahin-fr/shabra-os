@@ -3,7 +3,7 @@ import { auth } from '@/auth';
 import { prisma } from '@/lib/prisma';
 import { createSuccessResponse, createAuthErrorResponse, HTTP_STATUS_CODES } from '@/lib/api/response-utils';
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     // Get the authenticated user from the session
     const session = await auth();
@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
       { 
         success: false,
         error: 'خطا در دریافت لیست کاربران قابل انتساب',
-        details: process.env.NODE_ENV === 'development' ? error.message : undefined
+        details: process.env.NODE_ENV === 'development' ? (error as Error).message : undefined
       },
       { status: 500 }
     );

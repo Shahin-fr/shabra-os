@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Check if user is admin or manager
-    if (!['ADMIN', 'MANAGER'].includes(session.user.roles)) {
+    if (!['ADMIN', 'MANAGER'].some(role => (session.user.roles as string[]).includes(role))) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
@@ -73,7 +73,7 @@ export async function GET(request: NextRequest) {
 
     // Get team members (subordinates for managers, all for admins)
     let teamMembersQuery: any = { isActive: true };
-    if (session.user.roles === 'MANAGER') {
+    if ((session.user.roles as string[]).includes('MANAGER')) {
       teamMembersQuery.managerId = session.user.id;
     }
 
@@ -204,7 +204,7 @@ export async function GET(request: NextRequest) {
 
         // Check if member has this day as weekly day off
         const workSchedule = processedWorkSchedules.find(ws => ws.userId === member.id);
-        const isWeeklyDayOff = workSchedule?.weeklyDaysOff.includes(persianDayName) || false;
+        const isWeeklyDayOff = workSchedule?.weeklyDaysOff.includes(persianDayName || '') || false;
 
         if (isOnLeave) {
           onLeave++;
@@ -218,7 +218,7 @@ export async function GET(request: NextRequest) {
       const isAtRisk = availableHeadcount < (totalTeamMembers * 0.5); // Less than 50% available
 
       capacityForecast.push({
-        date: dateStr,
+        date: dateStr || '',
         totalTeamMembers,
         onLeave,
         availableHeadcount,
@@ -233,7 +233,7 @@ export async function GET(request: NextRequest) {
       holidays: holidays.map(holiday => ({
         id: holiday.id,
         name: holiday.name,
-        date: holiday.date.toISOString().split('T')[0],
+        date: holiday.date?.toISOString().split('T')[0] || '',
       })),
       workSchedules: processedWorkSchedules,
       teamMembers: teamMembers.map(member => ({

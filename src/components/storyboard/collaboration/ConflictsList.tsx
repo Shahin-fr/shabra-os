@@ -3,7 +3,7 @@
 import { memo } from 'react';
 
 import { ConflictsListProps } from '@/types/collaboration';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/button';
 
 export const ConflictsList = memo<ConflictsListProps>(
   ({ conflicts, onResolve, className = '' }) => {

@@ -1,9 +1,9 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Megaphone, Calendar, User, AlertCircle, Eye, Clock, ChevronDown, ChevronUp } from 'lucide-react';
+import { Megaphone, User, AlertCircle, Eye, Clock, ChevronUp } from 'lucide-react';
 import { WidgetCard } from './WidgetCard';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
 import { OptimizedMotion } from '@/components/ui/OptimizedMotion';
@@ -152,8 +152,11 @@ export function AnnouncementsWidget({ className, variant = 'desktop' }: Announce
           className
         )}
         loading={true}
-        variant={variant}
-      />
+      >
+        <div className="flex items-center justify-center h-32">
+          <div className="text-sm text-gray-500">در حال بارگذاری...</div>
+        </div>
+      </WidgetCard>
     );
   }
 
@@ -165,7 +168,6 @@ export function AnnouncementsWidget({ className, variant = 'desktop' }: Announce
           'bg-gradient-to-br from-red-50 to-pink-50',
           className
         )}
-        variant={variant}
       >
         <div className="text-center py-4">
           <AlertCircle className="h-8 w-8 text-red-500 mx-auto mb-2" />
@@ -182,7 +184,6 @@ export function AnnouncementsWidget({ className, variant = 'desktop' }: Announce
         'bg-gradient-to-br from-orange-50 to-red-50',
         className
       )}
-      variant={variant}
     >
       <div className="space-y-4">
         {/* Header with unread count */}

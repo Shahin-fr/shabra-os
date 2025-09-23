@@ -193,7 +193,7 @@ export async function POST(request: NextRequest) {
             case 'ADMIN':
               // Find an admin user
               const adminUser = await tx.user.findFirst({
-                where: { roles: { has: 'ADMIN' } },
+                where: { roles: { contains: 'ADMIN' } },
                 select: { id: true },
               });
               assigneeId = adminUser?.id || session.user.id;
@@ -211,17 +211,17 @@ export async function POST(request: NextRequest) {
             data: {
               title: templateTask.title,
               description: templateTask.description || '',
-              assigneeId,
-              createdById: session.user.id,
+              assignedTo: assigneeId,
+              createdBy: session.user.id,
               dueDate,
-              priority: templateTask.isRequired ? 'HIGH' : 'MEDIUM',
+              // priority: templateTask.isRequired ? 'HIGH' : 'MEDIUM', // Field doesn't exist in Task model
               status: 'Todo',
-              // Link to the employee checklist
-              metadata: {
-                employeeChecklistId: employeeChecklist.id,
-                templateTaskId: templateTask.id,
-                isChecklistTask: true,
-              },
+              // Link to the employee checklist - metadata field doesn't exist in Task model
+              // metadata: {
+              //   employeeChecklistId: employeeChecklist.id,
+              //   templateTaskId: templateTask.id,
+              //   isChecklistTask: true,
+              // },
             },
           });
         })

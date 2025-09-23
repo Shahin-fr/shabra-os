@@ -277,9 +277,14 @@ async function main() {
   const tasks = [];
   
   for (let i = 0; i < 35; i++) {
-    const taskTitle = taskTitles[i % taskTitles.length];
+    const taskTitle = taskTitles[i % taskTitles.length] || `وظیفه ${i + 1}`;
     const assignee = employees[Math.floor(Math.random() * employees.length)];
     const project = projects[Math.floor(Math.random() * projects.length)];
+    
+    if (!assignee || !project) {
+      console.warn('Skipping task creation - missing assignee or project');
+      continue;
+    }
     
     // Create tasks with different statuses and due dates
     let status, dueDate;
@@ -383,7 +388,7 @@ async function main() {
         leaveType: ['ANNUAL', 'SICK', 'EMERGENCY'][Math.floor(Math.random() * 3)] as any,
         startDate: startDate,
         endDate: endDate,
-        reason: requestReasons[Math.floor(Math.random() * requestReasons.length)],
+        reason: requestReasons[Math.floor(Math.random() * requestReasons.length)] || 'درخواست عمومی',
         status: 'APPROVED',
         reviewedBy: Math.random() < 0.5 ? manager1.id : manager2.id,
         reviewedAt: new Date(),
@@ -405,7 +410,7 @@ async function main() {
         leaveType: ['ANNUAL', 'SICK', 'EMERGENCY'][Math.floor(Math.random() * 3)] as any,
         startDate: startDate,
         endDate: endDate,
-        reason: requestReasons[Math.floor(Math.random() * requestReasons.length)],
+        reason: requestReasons[Math.floor(Math.random() * requestReasons.length)] || 'درخواست عمومی',
         status: 'PENDING',
       },
     });
@@ -423,6 +428,11 @@ async function main() {
     const type = requestTypes[Math.floor(Math.random() * requestTypes.length)];
     const status = requestStatuses[Math.floor(Math.random() * requestStatuses.length)];
     
+    if (!employee) {
+      console.warn('Skipping request creation - no employee available');
+      continue;
+    }
+    
     let reviewedBy = null;
     let reviewedAt = null;
     
@@ -435,7 +445,7 @@ async function main() {
       data: {
         userId: employee.id,
         type: type as any,
-        reason: requestReasons[Math.floor(Math.random() * requestReasons.length)],
+        reason: requestReasons[Math.floor(Math.random() * requestReasons.length)] || 'درخواست عمومی',
         status: status as any,
         reviewedBy: reviewedBy,
         reviewedAt: reviewedAt,
@@ -454,8 +464,8 @@ async function main() {
   for (let i = 0; i < announcementTitles.length; i++) {
     await prisma.announcement.create({
       data: {
-        title: announcementTitles[i],
-        content: announcementContents[i],
+        title: announcementTitles[i] || `اعلان ${i + 1}`,
+        content: announcementContents[i] || `محتوای اعلان ${i + 1}`,
         category: ['GENERAL', 'TECHNICAL', 'EVENT', 'IMPORTANT'][Math.floor(Math.random() * 4)] as any,
         isPinned: i < 2, // First 2 announcements are pinned
         authorId: Math.random() < 0.5 ? manager1.id : manager2.id,
@@ -481,7 +491,7 @@ async function main() {
         type: eventTypes[Math.floor(Math.random() * eventTypes.length)],
         startDate: startDate,
         endDate: endDate,
-        projectId: projects[Math.floor(Math.random() * projects.length)].id,
+        projectId: projects[Math.floor(Math.random() * projects.length)]?.id || projects[0]?.id,
       },
     });
   }
@@ -607,47 +617,47 @@ async function main() {
     {
       title: 'تکمیل گزارش ماهانه',
       description: 'تهیه و ارسال گزارش عملکرد ماهانه',
-      status: 'InProgress',
+      status: 'InProgress' as any,
       dueDate: new Date(), // Due today
       createdBy: manager1.id,
       assignedTo: primaryEmployee.id,
-      projectId: projects[0].id,
+      projectId: projects[0]?.id,
     },
     {
       title: 'بررسی درخواست‌های مشتریان',
       description: 'پاسخ به درخواست‌های دریافتی از مشتریان',
-      status: 'Todo',
+      status: 'Todo' as any,
       dueDate: new Date(), // Due today
       createdBy: manager1.id,
       assignedTo: primaryEmployee.id,
-      projectId: projects[1].id,
+      projectId: projects[1]?.id,
     },
     {
       title: 'آپدیت مستندات پروژه',
       description: 'به‌روزرسانی مستندات فنی پروژه',
-      status: 'Todo',
+      status: 'Todo' as any,
       dueDate: new Date(), // Due today
       createdBy: manager1.id,
       assignedTo: primaryEmployee.id,
-      projectId: projects[2].id,
+      projectId: projects[2]?.id,
     },
     {
       title: 'تست عملکرد سیستم',
       description: 'اجرای تست‌های عملکردی سیستم جدید',
-      status: 'Done',
+      status: 'Done' as any,
       dueDate: new Date(Date.now() - 24 * 60 * 60 * 1000), // Yesterday
       createdBy: manager1.id,
       assignedTo: primaryEmployee.id,
-      projectId: projects[0].id,
+      projectId: projects[0]?.id,
     },
     {
       title: 'آماده‌سازی ارائه هفتگی',
       description: 'تهیه اسلایدهای ارائه هفتگی تیم',
-      status: 'Todo',
+      status: 'Todo' as any,
       dueDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000), // Day after tomorrow
       createdBy: manager1.id,
       assignedTo: primaryEmployee.id,
-      projectId: projects[1].id,
+      projectId: projects[1]?.id,
     },
   ];
 

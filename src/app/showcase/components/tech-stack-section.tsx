@@ -129,11 +129,7 @@ export default function TechStackSection() {
     visible: { 
       opacity: 1, 
       y: 0,
-      scale: 1,
-      transition: {
-        duration: 0.6,
-        ease: "easeOut"
-      }
+      scale: 1
     }
   };
 
@@ -148,28 +144,24 @@ export default function TechStackSection() {
       opacity: 1, 
       scale: 1,
       y: 0,
-      rotateY: 0,
-      transition: {
-        duration: 0.5,
-        ease: "easeOut"
-      }
+      rotateY: 0
     }
   };
 
   // Consistent sizing for clean grid layout
-  const getSizeClasses = (size: string) => {
+  const getSizeClasses = (_size: string) => {
     const baseClasses = "flex flex-col items-center justify-center transition-all duration-300";
     
     // All icons now have consistent sizing for clean grid appearance
     return `${baseClasses} ${isMobile ? 'w-16 h-16' : 'w-20 h-20'}`;
   };
 
-  const getIconSize = (size: string) => {
+  const getIconSize = (_size: string) => {
     // Consistent icon sizes for clean grid
     return isMobile ? 28 : 36;
   };
 
-  const getTextSize = (size: string) => {
+  const getTextSize = (_size: string) => {
     // Consistent text sizing
     return isMobile ? 'text-xs' : 'text-sm';
   };
@@ -189,6 +181,7 @@ export default function TechStackSection() {
         <motion.div 
           className="text-center mb-20"
           variants={titleVariants}
+          transition={{ duration: 0.6, ease: "easeOut" }}
         >
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#F5F5F5] mb-6">
             تکنولوژی‌های استفاده شده
@@ -205,11 +198,12 @@ export default function TechStackSection() {
         >
           {/* Perfectly organized responsive grid: 2x3 on mobile, 2x6 on desktop */}
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-6 sm:gap-8 lg:gap-12 max-w-5xl">
-            {techStack.map((tech, index) => (
+            {techStack.map((tech, _index) => (
               <motion.div
                 key={tech.name}
                 className="group cursor-pointer flex flex-col items-center justify-center"
                 variants={techItemVariants}
+                transition={{ duration: 0.5, ease: "easeOut" }}
                 whileHover={{ 
                   scale: 1.1,
                   y: -8,

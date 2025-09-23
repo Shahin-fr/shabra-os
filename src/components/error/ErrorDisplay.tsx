@@ -6,7 +6,7 @@
 import React, { useState } from 'react';
 
 import { ErrorCategory, ErrorPriority } from '../../types/error';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/button';
 
 interface ErrorDisplayProps {
   error: Error;

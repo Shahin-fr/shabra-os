@@ -20,7 +20,7 @@ export function PDDManagerDashboard() {
           <div className="max-w-7xl mx-auto space-y-6">
             <TeamPresenceWidget variant="mobile" />
             <ActionCenterWidget variant="mobile" priority="high" />
-            <TasksAtRiskWidget variant="mobile" priority="high" />
+            <TasksAtRiskWidget variant="mobile" />
             <TodaysTeamActivityWidget variant="mobile" />
           </div>
         </div>
@@ -32,7 +32,7 @@ export function PDDManagerDashboard() {
               {/* Left Column - Navigation Sidebar (handled by global navigation) */}
               <div className="col-span-12 lg:col-span-3 space-y-6">
                 {/* Team Presence Widget - TOP PRIORITY in sidebar */}
-                <TeamPresenceWidget variant="desktop" priority="high" />
+                <TeamPresenceWidget variant="desktop" />
               </div>
 
               {/* Center Column - Main Content (Command Center) */}
@@ -44,7 +44,7 @@ export function PDDManagerDashboard() {
                 <TodaysTeamActivityWidget variant="desktop" />
                 
                 {/* تسک های فوری Widget */}
-                <TasksAtRiskWidget variant="desktop" priority="high" />
+                <TasksAtRiskWidget variant="desktop" />
               </div>
 
               {/* Right Column - Information Sidebar */}

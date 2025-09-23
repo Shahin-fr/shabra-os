@@ -6,7 +6,6 @@ import { OptimizedMotion } from '@/components/ui/OptimizedMotion';
 import {
   Plus,
   Trash2,
-  GripVertical,
   AlertCircle,
   Loader2,
   Save,

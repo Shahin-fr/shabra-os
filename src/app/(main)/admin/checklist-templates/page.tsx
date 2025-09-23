@@ -2,7 +2,7 @@
 
 import { useSession } from 'next-auth/react';
 import { OptimizedMotion } from '@/components/ui/OptimizedMotion';
-import { ClipboardList, Shield, Plus } from 'lucide-react';
+import { ClipboardList, Shield } from 'lucide-react';
 
 import { ChecklistTemplatesDashboard } from '@/components/admin/checklist-templates/ChecklistTemplatesDashboard';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';

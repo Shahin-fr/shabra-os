@@ -13,6 +13,7 @@ import {
   FileText,
   Target,
   Activity,
+  RefreshCw,
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 

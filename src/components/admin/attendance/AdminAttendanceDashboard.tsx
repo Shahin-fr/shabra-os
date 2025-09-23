@@ -16,7 +16,7 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -145,7 +145,8 @@ export function AdminAttendanceDashboard() {
           <p className='text-gray-600 text-center mb-4'>
             متأسفانه خطایی در بارگذاری آمار حضور رخ داده است.
           </p>
-          <Button onClick={handleRefresh} variant='outline' icon={<RefreshCw className='h-4 w-4' />}>
+          <Button onClick={handleRefresh} variant='outline'>
+            <RefreshCw className='h-4 w-4 mr-2' />
             تلاش مجدد
           </Button>
         </CardContent>
@@ -267,8 +268,8 @@ export function AdminAttendanceDashboard() {
                 variant='outline'
                 size='sm'
                 className='w-full'
-                icon={<Filter className='h-4 w-4' />}
               >
+                <Filter className='h-4 w-4 mr-2' />
                 فیلترها
               </Button>
               <Button
@@ -276,8 +277,8 @@ export function AdminAttendanceDashboard() {
                 variant='outline'
                 size='sm'
                 className='w-full'
-                icon={<Download className='h-4 w-4' />}
               >
+                <Download className='h-4 w-4 mr-2' />
                 صادرات
               </Button>
             </CardContent>

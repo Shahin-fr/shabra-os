@@ -3,7 +3,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { FolderOpen, Calendar, Users, CheckCircle } from 'lucide-react';
 import { WidgetCard } from './WidgetCard';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 interface Project {

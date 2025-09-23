@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
-import { Activity, User, CheckCircle, Plus, MessageSquare, Calendar } from 'lucide-react';
+import { Activity, CheckCircle, Plus, MessageSquare, Calendar } from 'lucide-react';
 import { EnhancedWidgetCard } from '@/components/ui/EnhancedWidgetCard';
 import { cn } from '@/lib/utils';
 

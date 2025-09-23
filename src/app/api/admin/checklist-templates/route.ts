@@ -17,20 +17,20 @@ const createTemplateSchema = z.object({
   })).min(1, 'At least one task is required'),
 });
 
-const updateTemplateSchema = z.object({
-  name: z.string().min(1).optional(),
-  description: z.string().optional(),
-  isActive: z.boolean().optional(),
-  tasks: z.array(z.object({
-    id: z.string().optional(), // For existing tasks
-    title: z.string().min(1),
-    description: z.string().optional(),
-    defaultAssigneeRole: z.enum(['EMPLOYEE', 'MANAGER', 'ADMIN']),
-    order: z.number().int().min(0),
-    isRequired: z.boolean().default(true),
-    estimatedDays: z.number().int().min(1).optional(),
-  })).optional(),
-});
+// const updateTemplateSchema = z.object({
+//   name: z.string().min(1).optional(),
+//   description: z.string().optional(),
+//   isActive: z.boolean().optional(),
+//   tasks: z.array(z.object({
+//     id: z.string().optional(), // For existing tasks
+//     title: z.string().min(1),
+//     description: z.string().optional(),
+//     defaultAssigneeRole: z.enum(['EMPLOYEE', 'MANAGER', 'ADMIN']),
+//     order: z.number().int().min(0),
+//     isRequired: z.boolean().default(true),
+//     estimatedDays: z.number().int().min(1).optional(),
+//   })).optional(),
+// });
 
 // GET /api/admin/checklist-templates - Get all templates
 export async function GET(request: NextRequest) {
@@ -107,7 +107,7 @@ export async function GET(request: NextRequest) {
       { 
         success: false,
         error: 'Internal server error',
-        details: process.env.NODE_ENV === 'development' ? error.message : undefined
+        details: process.env.NODE_ENV === 'development' ? (error as Error).message : undefined
       },
       { status: 500 }
     );

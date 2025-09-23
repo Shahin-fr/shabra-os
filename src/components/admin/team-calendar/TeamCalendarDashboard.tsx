@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Calendar, CalendarProps, momentLocalizer, View } from 'react-big-calendar';
+import { Calendar, momentLocalizer, View } from 'react-big-calendar';
 import moment from 'moment';
 import { OptimizedMotion } from '@/components/ui/OptimizedMotion';
 import {
@@ -15,9 +15,9 @@ import {
   Loader2,
   AlertCircle,
 } from 'lucide-react';
-import { toast } from 'sonner';
+// import { toast } from 'sonner';
 
-import { Badge } from '@/components/ui/badge';
+// import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -419,7 +419,7 @@ export function TeamCalendarDashboard() {
                     showMore: (total) => `+${total} بیشتر`,
                   }}
                   components={{
-                    toolbar: (props) => (
+                    toolbar: (_props) => (
                       <div className="flex items-center justify-between mb-4 p-2 bg-gray-50 rounded-lg">
                         <div className="flex items-center gap-2">
                           <Button

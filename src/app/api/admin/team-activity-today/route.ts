@@ -73,10 +73,12 @@ export async function GET(request: NextRequest) {
 
     // Group tasks by user
     const tasksByUser = completedTasksToday.reduce((acc, task) => {
-      if (!acc[task.assignedTo]) {
-        acc[task.assignedTo] = [];
+      if (task.assignedTo) {
+        if (!acc[task.assignedTo]) {
+          acc[task.assignedTo] = [];
+        }
+        acc[task.assignedTo]!.push(task);
       }
-      acc[task.assignedTo].push(task);
       return acc;
     }, {} as Record<string, typeof completedTasksToday>);
 

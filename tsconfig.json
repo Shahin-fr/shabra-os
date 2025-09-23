@@ -67,8 +67,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/**/*",
-    "scripts/**/*"
+    "src/**/*"
   ],
 
   "exclude": [

@@ -2,10 +2,10 @@
 
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Plus, Clock, Flag, User } from 'lucide-react';
+import { useQueryClient, useMutation } from '@tanstack/react-query';
+import { Plus } from 'lucide-react';
 import { EnhancedWidgetCard } from '@/components/ui/EnhancedWidgetCard';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 
@@ -15,7 +15,7 @@ interface QuickTaskWidgetProps {
   priority?: 'high' | 'medium' | 'low';
 }
 
-export function QuickTaskWidget({ className, variant = 'desktop', priority = 'medium' }: QuickTaskWidgetProps) {
+export function QuickTaskWidget({ priority = 'medium' }: QuickTaskWidgetProps) {
   const [isCreating, setIsCreating] = useState(false);
   const [taskTitle, setTaskTitle] = useState('');
   const [taskPriority, setTaskPriority] = useState<'LOW' | 'MEDIUM' | 'HIGH'>('MEDIUM');
@@ -37,8 +37,6 @@ export function QuickTaskWidget({ className, variant = 'desktop', priority = 'me
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
-      setTaskTitle('');
-      setIsCreating(false);
     },
   });
 
@@ -52,25 +50,25 @@ export function QuickTaskWidget({ className, variant = 'desktop', priority = 'me
   };
 
   // const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case 'HIGH':
-        return 'text-red-600 bg-red-100';
-      case 'MEDIUM':
-        return 'text-yellow-600 bg-yellow-100';
-      case 'LOW':
-        return 'text-green-600 bg-green-100';
-      default:
-        return 'text-gray-600 bg-gray-100';
-    }
-  };
+  //   switch (priority) {
+  //     case 'HIGH':
+  //       return 'text-red-600 bg-red-100';
+  //     case 'MEDIUM':
+  //       return 'text-yellow-600 bg-yellow-100';
+  //     case 'LOW':
+  //       return 'text-green-600 bg-green-100';
+  //     default:
+  //       return 'text-gray-600 bg-gray-100';
+  //   }
+  // };
 
   const getPriorityIcon = (priority: string) => {
     switch (priority) {
-      case 'HIGH':
+      case 'high':
         return '🔴';
-      case 'MEDIUM':
+      case 'medium':
         return '🟡';
-      case 'LOW':
+      case 'low':
         return '🟢';
       default:
         return '⚪';
@@ -84,7 +82,6 @@ export function QuickTaskWidget({ className, variant = 'desktop', priority = 'me
       title="کار سریع"
       variant="employee"
       priority={priority}
-      className={className}
     >
       {!isCreating ? (
         <motion.div

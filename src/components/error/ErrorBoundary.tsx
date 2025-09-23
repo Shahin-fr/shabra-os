@@ -11,7 +11,7 @@ import { ErrorHandler, ErrorNotification } from '@/lib/error-handler';
 import { logger } from '@/lib/logger';
 import { useErrorStore } from '@/stores';
 import { ErrorCategory, ErrorPriority } from '@/types/error';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 interface Props {

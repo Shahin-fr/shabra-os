@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import { Plus, Users, FileText, Megaphone } from 'lucide-react';
 import { EnhancedWidgetCard } from '@/components/ui/EnhancedWidgetCard';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 interface QuickAction {
@@ -76,7 +76,6 @@ export function QuickActionsWidget({ className, variant = 'desktop', priority = 
     visible: {
       y: 0,
       opacity: 1,
-      transition: { duration: 0.3, ease: 'easeOut' },
     },
   };
 
@@ -97,7 +96,7 @@ export function QuickActionsWidget({ className, variant = 'desktop', priority = 
         animate="visible"
       >
         {visibleActions.map((action) => (
-          <motion.div key={action.id} variants={itemVariants}>
+          <motion.div key={action.id} variants={itemVariants} transition={{ duration: 0.3, ease: "easeOut" }}>
             <Button
               asChild
               className={cn(
@@ -131,6 +130,7 @@ export function QuickActionsWidget({ className, variant = 'desktop', priority = 
         <motion.div
           className="mt-4"
           variants={itemVariants}
+          transition={{ duration: 0.3, ease: "easeOut" }}
         >
           <Button
             variant="outline"

@@ -46,10 +46,7 @@ export async function POST(request: NextRequest) {
     
     // Fail-fast mechanism for missing N8N_SECRET_TOKEN
     if (!process.env.N8N_SECRET_TOKEN) {
-      logger.error('N8N_SECRET_TOKEN environment variable is not configured', {
-        context: 'instapulse-save-result-api',
-        operation: 'POST',
-      });
+      logger.error('N8N_SECRET_TOKEN environment variable is not configured');
       const errorResponse = createAuthErrorResponse(
         'Server configuration error: N8N_SECRET_TOKEN not configured'
       );

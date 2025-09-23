@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma';
 
 export async function GET(request: NextRequest) {
   try {
-    const { context, response } = await withAuth(request, {
+    const { response } = await withAuth(request, {
       requiredRoles: ['ADMIN', 'MANAGER', 'EMPLOYEE'],
     });
 

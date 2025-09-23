@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/auth';
-import { prisma } from '@/lib/prisma';
+// import { prisma } from '@/lib/prisma';
 
 // POST /api/announcements/[id]/read - Mark announcement as read
 export async function POST(
-  request: NextRequest,
-  { params }: { params: { id: string } }
+  _request: NextRequest,
+  _params: { params: { id: string } }
 ) {
   try {
     const session = await auth();
@@ -18,7 +18,7 @@ export async function POST(
       );
     }
 
-    const announcementId = params.id;
+    // const announcementId = params.id;
 
     // For now, we'll just return success since we don't have a read status table
     // In a real implementation, you would create a table to track read status

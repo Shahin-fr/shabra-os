@@ -38,11 +38,7 @@ export default function PhilosophySection() {
     visible: { 
       opacity: 1, 
       y: 0,
-      scale: 1,
-      transition: {
-        duration: 0.6,
-        ease: [0.25, 0.1, 0.25, 1]
-      }
+      scale: 1
     }
   };
 
@@ -53,11 +49,7 @@ export default function PhilosophySection() {
     },
     visible: { 
       scale: 1,
-      rotate: 0,
-      transition: {
-        duration: 0.8,
-        ease: "backOut"
-      }
+      rotate: 0
     }
   };
 
@@ -98,9 +90,10 @@ export default function PhilosophySection() {
         animate={inView ? "visible" : "hidden"}
       >
         {/* Section Header */}
-        <motion.div 
+        <motion.div
           className="text-center mb-16"
           variants={itemVariants}
+          transition={{ duration: 0.6, ease: "easeOut" }}
         >
           <motion.h2 
             className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#F5F5F5] mb-6"
@@ -153,6 +146,7 @@ export default function PhilosophySection() {
                     shadow-lg group-hover:shadow-xl transition-shadow duration-300
                   `}
                   variants={iconVariants}
+                  transition={{ duration: 0.8, ease: "backOut" }}
                   whileHover={{
                     scale: 1.1,
                     rotate: [0, -5, 5, 0],

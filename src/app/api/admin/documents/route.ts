@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/auth';
 import { prisma } from '@/lib/prisma';
-import { uploadToCloudinary, getFileTypeFromCloudinary, getDocumentCategory } from '@/lib/cloudinary';
-import { z } from 'zod';
+import { uploadToCloudinary, getFileTypeFromCloudinary } from '@/lib/cloudinary';
+// import { z } from 'zod';
 
 
 // POST /api/admin/documents - Upload a new document
@@ -199,10 +199,10 @@ export async function GET(request: NextRequest) {
     }
 
     // Check permissions: User can view their own documents, Admin/Manager can view their subordinates
-    const canView = 
-      session.user.id === userId || 
-      session.user.roles === 'ADMIN' || 
-      (session.user.roles === 'MANAGER' && targetUser.managerId === session.user.id);
+    const canView =
+      session.user.id === userId ||
+      (session.user.roles as string[]).includes('ADMIN') ||
+      ((session.user.roles as string[]).includes('MANAGER') && targetUser.managerId === session.user.id);
 
     if (!canView) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });

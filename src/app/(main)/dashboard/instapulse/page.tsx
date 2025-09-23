@@ -5,7 +5,7 @@ import { OptimizedMotion } from '@/components/ui/OptimizedMotion';
 import { Plus } from 'lucide-react';
 import { DateRange } from 'react-day-picker';
 
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/button';
 import { AnimatedBackground } from '@/components/ui/animated-background';
 import {
   Dialog,
@@ -112,8 +112,8 @@ export default function InstaPulsePage() {
                           variant='default'
                           size='lg'
                           className='w-full sm:w-auto'
-                          icon={<Plus className='w-5 h-5' />}
                         >
+                          <Plus className='w-5 h-5 mr-2' />
                           مدیریت پیج ها
                         </Button>
                       </OptimizedMotion>

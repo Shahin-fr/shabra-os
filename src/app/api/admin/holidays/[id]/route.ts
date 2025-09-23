@@ -10,7 +10,7 @@ const holidayUpdateSchema = z.object({
 
 // GET /api/admin/holidays/[id] - Get a specific holiday
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
@@ -21,7 +21,7 @@ export async function GET(
     }
 
     // Check if user is admin or manager
-    if (!['ADMIN', 'MANAGER'].includes(session.user.roles)) {
+    if (!['ADMIN', 'MANAGER'].some(role => (session.user.roles as string[]).includes(role))) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
@@ -59,7 +59,7 @@ export async function PUT(
     }
 
     // Check if user is admin or manager
-    if (!['ADMIN', 'MANAGER'].includes(session.user.roles)) {
+    if (!['ADMIN', 'MANAGER'].some(role => (session.user.roles as string[]).includes(role))) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
@@ -122,7 +122,7 @@ export async function PUT(
 
 // DELETE /api/admin/holidays/[id] - Delete a holiday
 export async function DELETE(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
@@ -133,7 +133,7 @@ export async function DELETE(
     }
 
     // Check if user is admin or manager
-    if (!['ADMIN', 'MANAGER'].includes(session.user.roles)) {
+    if (!['ADMIN', 'MANAGER'].some(role => (session.user.roles as string[]).includes(role))) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 

@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Check if user is admin or manager
-    if (!['ADMIN', 'MANAGER'].includes(session.user.roles)) {
+    if (!['ADMIN', 'MANAGER'].some(role => (session.user.roles as string[]).includes(role))) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
@@ -69,7 +69,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if user is admin or manager
-    if (!['ADMIN', 'MANAGER'].includes(session.user.roles)) {
+    if (!['ADMIN', 'MANAGER'].some(role => (session.user.roles as string[]).includes(role))) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
