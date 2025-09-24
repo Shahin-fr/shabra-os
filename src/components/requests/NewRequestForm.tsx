@@ -29,7 +29,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+// import { Alert, AlertDescription } from '@/components/ui/alert'; // Removed unused imports
 
 interface RequestFormData {
   type: 'LEAVE' | 'OVERTIME' | 'EXPENSE_CLAIM' | 'GENERAL';
@@ -508,8 +508,12 @@ export function NewRequestForm() {
                 type="submit"
                 disabled={isSubmitting || createRequestMutation.isPending}
                 variant="default"
-                icon={isSubmitting || createRequestMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
               >
+                {isSubmitting || createRequestMutation.isPending ? (
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                ) : (
+                  <Send className="h-4 w-4 mr-2" />
+                )}
                 ارسال درخواست
               </Button>
             </div>

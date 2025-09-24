@@ -14,9 +14,9 @@ import {
   Clock,
   User,
   Palette,
-  Calendar as CalendarIcon,
-  TrendingUp,
-  FileText as DocsIcon,
+  // Calendar as CalendarIcon, // Removed unused import
+  // TrendingUp, // Removed unused import
+  // FileText as DocsIcon, // Removed unused import
   Instagram,
   Megaphone,
   Inbox,

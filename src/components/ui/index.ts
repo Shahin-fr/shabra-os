@@ -18,4 +18,4 @@ export { Switch } from './switch';
 export { Table, TableHeader, TableBody, TableFooter, TableHead, TableRow, TableCell, TableCaption } from './table';
 export { Tabs, TabsList, TabsTrigger, TabsContent } from './tabs';
 export { Textarea } from './textarea';
-export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from './tooltip';
+export { Tooltip, TooltipTrigger, TooltipContentWrapper } from './tooltip';

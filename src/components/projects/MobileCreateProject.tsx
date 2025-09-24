@@ -21,7 +21,7 @@ interface MobileCreateProjectProps {
 }
 
 export function MobileCreateProject({
-  className,
+  className: _className,
 }: MobileCreateProjectProps) {
   const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);

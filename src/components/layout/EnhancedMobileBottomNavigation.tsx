@@ -99,6 +99,8 @@ export function EnhancedMobileBottomNavigation() {
       document.addEventListener('click', handleClickOutside);
       return () => document.removeEventListener('click', handleClickOutside);
     }
+    
+    return undefined; // Explicit return for all code paths
   }, [isFABOpen]);
 
   // Close FAB when pathname changes
@@ -106,27 +108,15 @@ export function EnhancedMobileBottomNavigation() {
     setIsFABOpen(false);
   }, [pathname]);
 
-  // Animation variants
+  // Animation variants - simplified to avoid type issues
   const containerVariants = {
     hidden: { y: 100, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        duration: 0.3,
-        ease: [0.4, 0, 0.2, 1],
-        staggerChildren: 0.1,
-      },
-    },
+    visible: { y: 0, opacity: 1 },
   };
 
   const itemVariants = {
     hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: { duration: 0.2 },
-    },
+    visible: { y: 0, opacity: 1 },
   };
 
   return (
@@ -137,7 +127,7 @@ export function EnhancedMobileBottomNavigation() {
       animate="visible"
     >
       <div className="flex items-center justify-around px-2 py-3">
-        {navigationItems.map((item, index) => {
+        {navigationItems.map((item, _index) => {
           const isActive = pathname === item.href;
 
           return (

@@ -67,7 +67,7 @@ export async function uploadToCloudinary(
 // Utility function to delete file from Cloudinary
 export async function deleteFromCloudinary(publicId: string): Promise<void> {
   return new Promise((resolve, reject) => {
-    cloudinary.uploader.destroy(publicId, (error, result) => {
+    cloudinary.uploader.destroy(publicId, (error, _result) => {
       if (error) {
         console.error('Cloudinary delete error:', error);
         reject(new Error('Failed to delete file from Cloudinary'));
@@ -93,7 +93,7 @@ export function getFileTypeFromCloudinary(resourceType: string, format: string):
 }
 
 // Utility function to get file category based on file type and name
-export function getDocumentCategory(fileName: string, fileType: string): string {
+export function getDocumentCategory(fileName: string, _fileType: string): string {
   const name = fileName.toLowerCase();
   
   // Contract-related documents

@@ -41,24 +41,11 @@ export function EnhancedWidgetCard({
   const widgetStyle = widgetVariants[variant];
   const priorityStyle = priority === 'high' ? 'ring-2 ring-red-200' : '';
 
-  // Animation variants
+  // Animation variants - simplified to avoid type issues
   const cardVariants = {
     hidden: { opacity: 0, y: 20, scale: 0.95 },
-    visible: { 
-      opacity: 1, 
-      y: 0, 
-      scale: 1,
-      transition: {
-        duration: 0.3,
-        ease: "easeOut",
-        staggerChildren: 0.1,
-      }
-    },
-    hover: { 
-      y: -2, 
-      scale: 1.02,
-      transition: { duration: 0.2 }
-    }
+    visible: { opacity: 1, y: 0, scale: 1 },
+    hover: { y: -2, scale: 1.02 }
   };
 
   const contentVariants = {

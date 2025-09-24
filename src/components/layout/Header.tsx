@@ -17,7 +17,7 @@ import {
 import { useAuth } from '@/hooks/useAuth';
 import { useMobile } from '@/hooks/useResponsive';
 import { useToggleMobileSidebar } from '@/stores/uiStore';
-import { usePathname } from 'next/navigation';
+// import { usePathname } from 'next/navigation'; // Removed unused import
 
 // Simple status message component - memoized to prevent unnecessary re-renders
 const StatusMessage = memo(
@@ -43,7 +43,7 @@ export function Header() {
   const [isMessageVisible, setIsMessageVisible] = useState(false);
   const toggleMobileSidebar = useToggleMobileSidebar();
   const isMobile = useMobile();
-  const pathname = usePathname();
+  // const pathname = usePathname(); // Removed unused variable
 
   // Get user role for display
   const getUserRole = () => {
@@ -54,33 +54,7 @@ export function Header() {
     return 'کاربر';
   };
 
-  // Get page title based on current path
-  const getPageTitle = () => {
-    switch (pathname) {
-      case '/':
-        return 'خانه';
-      case '/tasks':
-        return 'کارها';
-      case '/calendar':
-        return 'تقویم';
-      case '/inbox':
-        return 'صندوق ورودی';
-      case '/projects':
-        return 'پروژه‌ها';
-      case '/requests':
-        return 'درخواست‌های من';
-      case '/attendance':
-        return 'حضور و غیاب';
-      case '/wiki':
-        return 'شبرالوگ';
-      case '/docs':
-        return 'مستندات من';
-      case '/settings':
-        return 'تنظیمات';
-      default:
-        return 'شبرا سیستم';
-    }
-  };
+  // Get page title based on current path - removed unused function
 
   // Listen for custom status events
   useEffect(() => {

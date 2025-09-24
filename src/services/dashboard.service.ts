@@ -114,10 +114,7 @@ export class DashboardService {
         },
       };
     } catch (error) {
-      logger.error('Error fetching today\'s snapshot data', {
-        error: error instanceof Error ? error.message : 'Unknown error',
-        operation: 'DashboardService.getTodaysSnapshot',
-      });
+      logger.error(`Error fetching today's snapshot data: ${error instanceof Error ? error.message : 'Unknown error'}`, error as Error);
       throw error;
     }
   }
@@ -146,7 +143,7 @@ export class DashboardService {
       ].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
       // Transform to activity items
-      const activityItems: ActivityItem[] = allActivities.slice(0, 10).map((activity, index) => {
+      const activityItems: ActivityItem[] = allActivities.slice(0, 10).map((activity, _index) => {
         const timeAgo = this.getTimeAgo(new Date(activity.createdAt));
         
         return {
@@ -171,10 +168,7 @@ export class DashboardService {
         data: activityItems,
       };
     } catch (error) {
-      logger.error('Error fetching recent team activity data', {
-        error: error instanceof Error ? error.message : 'Unknown error',
-        operation: 'DashboardService.getRecentTeamActivity',
-      });
+      logger.error(`Error fetching recent team activity data: ${error instanceof Error ? error.message : 'Unknown error'}`, error as Error);
       throw error;
     }
   }

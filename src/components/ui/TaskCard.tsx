@@ -174,7 +174,7 @@ const TaskCard = React.forwardRef<HTMLDivElement, TaskCardProps>(
     if (onClick) {
       return (
         <button
-          ref={ref}
+          ref={ref as React.Ref<HTMLButtonElement>}
           onClick={onClick}
           className={`
             w-full p-4 rounded-xl border-2 ${config.border} ${config.background} 

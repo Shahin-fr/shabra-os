@@ -3,6 +3,9 @@ import { auth } from '@/auth';
 import { prisma } from '@/lib/prisma';
 import { withAuthorization } from '@/lib/auth/authorization';
 
+// Force Node.js runtime to avoid Edge Runtime issues
+export const runtime = 'nodejs';
+
 // GET /api/profiles - Get all profiles (for admins/managers)
 export async function GET(request: NextRequest) {
   try {

@@ -3,6 +3,9 @@ import { auth } from '@/auth';
 import { prisma } from '@/lib/prisma';
 import { createSuccessResponse, createAuthErrorResponse, HTTP_STATUS_CODES } from '@/lib/api/response-utils';
 
+// Force Node.js runtime to avoid Edge Runtime issues
+export const runtime = 'nodejs';
+
 export async function GET(_request: NextRequest) {
   try {
     // Get the authenticated user from the session

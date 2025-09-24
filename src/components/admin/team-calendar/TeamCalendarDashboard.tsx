@@ -416,10 +416,10 @@ export function TeamCalendarDashboard() {
                     time: 'زمان',
                     event: 'رویداد',
                     noEventsInRange: 'هیچ رویدادی در این بازه زمانی وجود ندارد',
-                    showMore: (total) => `+${total} بیشتر`,
+                    showMore: (total: number) => `+${total} بیشتر`,
                   }}
                   components={{
-                    toolbar: (_props) => (
+                    toolbar: (_props: any) => (
                       <div className="flex items-center justify-between mb-4 p-2 bg-gray-50 rounded-lg">
                         <div className="flex items-center gap-2">
                           <Button

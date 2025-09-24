@@ -38,10 +38,7 @@ export class ProjectIdResolver {
           });
           return firstProject.id;
         } else {
-          logger.error('No projects found for legacy project ID mapping', {
-            legacyProjectId: projectId,
-            operation: 'ProjectIdResolver.resolve'
-          });
+          logger.error(`No projects found for legacy project ID mapping: ${projectId}`);
           return null;
         }
       }
@@ -62,11 +59,7 @@ export class ProjectIdResolver {
 
       return projectId;
     } catch (error) {
-      logger.error('Error resolving project ID', {
-        projectId,
-        error: error as Error,
-        operation: 'ProjectIdResolver.resolve'
-      });
+      logger.error(`Error resolving project ID: ${projectId}`, error as Error);
       return null;
     }
   }
@@ -84,10 +77,7 @@ export class ProjectIdResolver {
       
       return firstProject?.id || null;
     } catch (error) {
-      logger.error('Error getting first available project ID', {
-        error: error as Error,
-        operation: 'ProjectIdResolver.getFirstAvailableProjectId'
-      });
+      logger.error('Error getting first available project ID', error as Error);
       return null;
     }
   }
@@ -106,11 +96,7 @@ export class ProjectIdResolver {
       
       return !!project;
     } catch (error) {
-      logger.error('Error validating project ID', {
-        projectId,
-        error: error as Error,
-        operation: 'ProjectIdResolver.isValidProjectId'
-      });
+      logger.error(`Error validating project ID: ${projectId}`, error as Error);
       return false;
     }
   }

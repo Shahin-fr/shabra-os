@@ -7,7 +7,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useMobile } from '@/hooks/useResponsive';
 import { cn } from '@/lib/utils';
 
-import { FloatingActionButton } from './FloatingActionButton';
+// import { FloatingActionButton } from './FloatingActionButton'; // Removed unused import
 import { Header } from './Header';
 import { EnhancedMobileBottomNavigation } from './EnhancedMobileBottomNavigation';
 import { Sidebar } from './Sidebar';
@@ -17,7 +17,7 @@ interface DashboardLayoutProps {
 }
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
-  const { user } = useAuth();
+  const { user: _user } = useAuth();
   const isMobile = useMobile();
 
   return (

@@ -104,14 +104,7 @@ export class ActionCenterService {
       if (!response.ok) {
         const errorText = await response.text();
         const errorMessage = `Failed to fetch actionable requests: ${response.status} ${errorText}`;
-        logger.error('API request failed', {
-          status: response.status,
-          statusText: response.statusText,
-          errorText,
-          adminUrl,
-          userUrl,
-          operation: 'ActionCenterService.getActionableRequests',
-        });
+        logger.error(`API request failed: ${response.status} ${response.statusText} - ${errorText}`);
         throw new Error(errorMessage);
       }
 
@@ -151,14 +144,8 @@ export class ActionCenterService {
       return transformedData;
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      const errorStack = error instanceof Error ? error.stack : undefined;
       
-      logger.error('Error fetching actionable requests', {
-        error: errorMessage,
-        errorStack,
-        filters,
-        operation: 'ActionCenterService.getActionableRequests',
-      });
+      logger.error(`Error fetching actionable requests: ${errorMessage}`, error as Error);
       throw error;
     }
   }
@@ -202,12 +189,7 @@ export class ActionCenterService {
         operation: 'ActionCenterService.processRequest',
       });
     } catch (error) {
-      logger.error('Error processing request', {
-        error: error instanceof Error ? error.message : 'Unknown error',
-        requestId,
-        action,
-        operation: 'ActionCenterService.processRequest',
-      });
+      logger.error(`Error processing request ${requestId}: ${error instanceof Error ? error.message : 'Unknown error'}`, error as Error);
       throw error;
     }
   }

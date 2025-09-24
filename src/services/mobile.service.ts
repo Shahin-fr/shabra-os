@@ -77,10 +77,7 @@ export class MobileService {
         recentActivity,
       };
     } catch (error) {
-      logger.error('Error fetching mobile dashboard data', {
-        error: error instanceof Error ? error.message : 'Unknown error',
-        operation: 'MobileService.getMobileDashboardData',
-      });
+      logger.error(`Error fetching mobile dashboard data: ${error instanceof Error ? error.message : 'Unknown error'}`, error as Error);
       throw error;
     }
   }
@@ -198,7 +195,7 @@ export class MobileService {
     return stats;
   }
 
-  private static generateQuickActions(requestsData: any, tasksData: any): MobileQuickAction[] {
+  private static generateQuickActions(_requestsData: any, tasksData: any): MobileQuickAction[] {
     const actions: MobileQuickAction[] = [];
 
     // Clock in/out (always available for employees)
@@ -264,7 +261,7 @@ export class MobileService {
     const activities: MobileActivity[] = [];
 
     // Add task activities
-    tasksData.tasks.slice(0, 2).forEach((task: any, index: number) => {
+    tasksData.tasks.slice(0, 2).forEach((task: any, _index: number) => {
       const timeAgo = this.getTimeAgo(new Date(task.createdAt));
       activities.push({
         id: `task-${task.id}`,

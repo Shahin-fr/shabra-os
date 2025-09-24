@@ -20,9 +20,9 @@ import {
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+// import { Alert, AlertDescription } from '@/components/ui/alert'; // Removed unused imports
 import {
   Dialog,
   DialogContent,
@@ -150,7 +150,7 @@ export function ProfileChecklists({ userId }: ProfileChecklistsProps) {
   // Fetch available templates for assignment
   const {
     data: templatesData,
-    isLoading: templatesLoading,
+    isLoading: _templatesLoading,
   } = useQuery({
     queryKey: ['checklist-templates-for-assignment'],
     queryFn: async (): Promise<ChecklistTemplatesResponse> => {
