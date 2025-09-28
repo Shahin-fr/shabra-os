@@ -47,25 +47,61 @@ export const useWikiStore = create<WikiStore>((set) => ({
 
 // API functions
 const fetchWikiItems = async (): Promise<WikiItem[]> => {
-  const response = await fetch('/api/wiki');
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error?.message || 'Failed to fetch wiki items');
+  try {
+    console.log('[WIKI STORE] Fetching wiki items from /api/wiki...');
+    const response = await fetch('/api/wiki');
+    
+    console.log('[WIKI STORE] API Response:', {
+      status: response.status,
+      statusText: response.statusText,
+      ok: response.ok,
+      headers: Object.fromEntries(response.headers.entries()),
+    });
+    
+    if (!response.ok) {
+      const error = await response.json();
+      console.error('[WIKI STORE] API Error Response:', error);
+      throw new Error(error.error?.message || `Failed to fetch wiki items (${response.status})`);
+    }
+    const result = await response.json();
+    
+    console.log('[WIKI STORE] API Success Response:', {
+      success: result.success,
+      dataType: Array.isArray(result.data) ? 'array' : typeof result.data,
+      dataLength: Array.isArray(result.data) ? result.data.length : 'N/A',
+    });
+    
+    // Validate response structure
+    if (!result.success || !Array.isArray(result.data)) {
+      throw new Error('Invalid response format from server');
+    }
+    
+    return result.data;
+  } catch (error) {
+    console.error('[WIKI STORE] Error fetching wiki items:', error);
+    throw error;
   }
-  const result = await response.json();
-  // The API returns { success: true, data: items }
-  return result.data;
 };
 
 const fetchWikiItem = async (id: string): Promise<WikiItem> => {
-  const response = await fetch(`/api/wiki/${id}`);
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error?.message || 'Failed to fetch wiki item');
+  try {
+    const response = await fetch(`/api/wiki/${id}`);
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error?.message || `Failed to fetch wiki item (${response.status})`);
+    }
+    const result = await response.json();
+    
+    // Validate response structure
+    if (!result.success || !result.data) {
+      throw new Error('Invalid response format from server');
+    }
+    
+    return result.data;
+  } catch (error) {
+    console.error('[WIKI STORE] Error fetching wiki item:', error);
+    throw error;
   }
-  const result = await response.json();
-  // The API returns { success: true, data: document }
-  return result.data;
 };
 
 const createWikiItem = async (data: {
@@ -74,21 +110,31 @@ const createWikiItem = async (data: {
   type: 'FOLDER' | 'DOCUMENT';
   parentId?: string | null;
 }): Promise<WikiItem> => {
-  const response = await fetch('/api/wiki', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data),
-  });
+  try {
+    const response = await fetch('/api/wiki', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
 
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error?.message || 'Failed to create wiki item');
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error?.message || `Failed to create wiki item (${response.status})`);
+    }
+    const result = await response.json();
+    
+    // Validate response structure
+    if (!result.success || !result.data) {
+      throw new Error('Invalid response format from server');
+    }
+    
+    return result.data;
+  } catch (error) {
+    console.error('[WIKI STORE] Error creating wiki item:', error);
+    throw error;
   }
-  const result = await response.json();
-  // The API returns { success: true, data: document }
-  return result.data;
 };
 
 const updateWikiItem = async (id: string, data: {
@@ -97,61 +143,91 @@ const updateWikiItem = async (id: string, data: {
   type: 'FOLDER' | 'DOCUMENT';
   parentId?: string | null;
 }): Promise<WikiItem> => {
-  const response = await fetch(`/api/wiki/${id}`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data),
-  });
+  try {
+    const response = await fetch(`/api/wiki/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
 
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error?.message || 'Failed to update wiki item');
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error?.message || `Failed to update wiki item (${response.status})`);
+    }
+    const result = await response.json();
+    
+    // Validate response structure
+    if (!result.success || !result.data) {
+      throw new Error('Invalid response format from server');
+    }
+    
+    return result.data;
+  } catch (error) {
+    console.error('[WIKI STORE] Error updating wiki item:', error);
+    throw error;
   }
-  const result = await response.json();
-  // The API returns { success: true, data: document }
-  return result.data;
 };
 
 const deleteWikiItem = async (id: string): Promise<void> => {
-  const response = await fetch(`/api/wiki/${id}`, {
-    method: 'DELETE',
-  });
+  try {
+    const response = await fetch(`/api/wiki/${id}`, {
+      method: 'DELETE',
+    });
 
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error?.message || 'Failed to delete wiki item');
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error?.message || `Failed to delete wiki item (${response.status})`);
+    }
+  } catch (error) {
+    console.error('[WIKI STORE] Error deleting wiki item:', error);
+    throw error;
   }
 };
 
 const uploadWikiFile = async (formData: FormData): Promise<WikiItem> => {
-  const response = await fetch('/api/wiki/upload', {
-    method: 'POST',
-    body: formData,
-  });
+  try {
+    const response = await fetch('/api/wiki/upload', {
+      method: 'POST',
+      body: formData,
+    });
 
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || 'Failed to upload file');
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error?.message || `Failed to upload file (${response.status})`);
+    }
+    const result = await response.json();
+    
+    // Validate response structure
+    if (!result.success || !result.data) {
+      throw new Error('Invalid response format from server');
+    }
+    
+    return result.data;
+  } catch (error) {
+    console.error('[WIKI STORE] Error uploading wiki file:', error);
+    throw error;
   }
-  const result = await response.json();
-  // The API returns { success: true, data: document }
-  return result.data;
 };
 
 const reorderWikiItems = async (items: { id: string; order: number }[]): Promise<void> => {
-  const response = await fetch('/api/wiki/reorder', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ items }),
-  });
+  try {
+    const response = await fetch('/api/wiki/reorder', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ items }),
+    });
 
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error?.message || 'Failed to reorder items');
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error?.message || `Failed to reorder items (${response.status})`);
+    }
+  } catch (error) {
+    console.error('[WIKI STORE] Error reordering wiki items:', error);
+    throw error;
   }
 };
 
@@ -185,8 +261,8 @@ export const useCreateWikiItem = () => {
     mutationFn: createWikiItem,
     onSuccess: (data) => {
       console.log('[WIKI STORE] Create success, invalidating queries:', data);
+      // Invalidate and refetch to ensure immediate update
       queryClient.invalidateQueries({ queryKey: ['wiki-items'] });
-      // Also refetch to ensure immediate update
       queryClient.refetchQueries({ queryKey: ['wiki-items'] });
     },
     onError: (error) => {
@@ -201,11 +277,14 @@ export const useUpdateWikiItem = () => {
   
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: any }) => updateWikiItem(id, data),
-    onSuccess: (_, { id }) => {
+    onSuccess: (data, { id }) => {
+      // Invalidate and refetch to ensure immediate update
       queryClient.invalidateQueries({ queryKey: ['wiki-items'] });
       queryClient.invalidateQueries({ queryKey: ['wiki-item', id] });
+      queryClient.refetchQueries({ queryKey: ['wiki-items'] });
     },
     onError: (error) => {
+      console.error('[WIKI STORE] Update error:', error);
       logger.error('Failed to update wiki item:', error);
     },
   });
@@ -217,9 +296,12 @@ export const useDeleteWikiItem = () => {
   return useMutation({
     mutationFn: deleteWikiItem,
     onSuccess: () => {
+      // Invalidate and refetch to ensure immediate update
       queryClient.invalidateQueries({ queryKey: ['wiki-items'] });
+      queryClient.refetchQueries({ queryKey: ['wiki-items'] });
     },
     onError: (error) => {
+      console.error('[WIKI STORE] Delete error:', error);
       logger.error('Failed to delete wiki item:', error);
     },
   });
@@ -231,9 +313,12 @@ export const useUploadWikiFile = () => {
   return useMutation({
     mutationFn: uploadWikiFile,
     onSuccess: () => {
+      // Invalidate and refetch to ensure immediate update
       queryClient.invalidateQueries({ queryKey: ['wiki-items'] });
+      queryClient.refetchQueries({ queryKey: ['wiki-items'] });
     },
     onError: (error) => {
+      console.error('[WIKI STORE] Upload error:', error);
       logger.error('Failed to upload wiki file:', error);
     },
   });
@@ -245,7 +330,9 @@ export const useReorderWikiItems = () => {
   return useMutation({
     mutationFn: reorderWikiItems,
     onSuccess: () => {
+      // Invalidate and refetch to ensure immediate update
       queryClient.invalidateQueries({ queryKey: ['wiki-items'] });
+      queryClient.refetchQueries({ queryKey: ['wiki-items'] });
     },
     onError: (error) => {
       console.error('[WIKI STORE] Reorder error:', error);

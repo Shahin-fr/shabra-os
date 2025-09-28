@@ -43,6 +43,7 @@ export function WikiContent({ documentId, onRefresh }: WikiContentProps) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   
+  
   const { addToast } = useToast();
   const { data: document, isLoading, error } = useWikiItem(documentId);
   const deleteMutation = useDeleteWikiItem();
@@ -86,8 +87,8 @@ export function WikiContent({ documentId, onRefresh }: WikiContentProps) {
     });
   };
 
-  const canEdit = document && currentUserId && document.authorId === currentUserId;
-  const isSystemDocument = document && document.id && document.id.startsWith('doc-');
+  const canEdit = document && currentUserId && document?.authorId === currentUserId;
+  const isSystemDocument = document?.id?.startsWith('doc-') || false;
 
   if (!documentId) {
     return (
@@ -143,11 +144,17 @@ export function WikiContent({ documentId, onRefresh }: WikiContentProps) {
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
-              خطا در بارگذاری مستند. لطفاً دوباره تلاش کنید.
+              {error.message || 'خطا در بارگذاری مستند. لطفاً دوباره تلاش کنید.'}
             </AlertDescription>
           </Alert>
           <Button 
-            onClick={() => window.location.reload()} 
+            onClick={() => {
+              if (onRefresh) {
+                onRefresh();
+              } else {
+                window.location.reload();
+              }
+            }} 
             variant="outline" 
             className="mt-4"
           >
@@ -174,14 +181,14 @@ export function WikiContent({ documentId, onRefresh }: WikiContentProps) {
     );
   }
 
-  if (document.type === 'FOLDER') {
+  if (document?.type === 'FOLDER') {
     return (
       <div className='flex-1 p-8'>
         <div className='max-w-5xl mx-auto'>
           <Card className='mb-8'>
             <CardHeader>
               <CardTitle className='text-4xl font-bold text-gray-800'>
-                {document.title}
+                {document?.title}
               </CardTitle>
               <p className='text-lg text-gray-600'>
                 پوشه‌ای برای سازماندهی محتوا
@@ -207,9 +214,9 @@ export function WikiContent({ documentId, onRefresh }: WikiContentProps) {
         {/* Document Header */}
         <Card className='mb-8'>
           <CardHeader>
-            <div className='flex items-start justify-between gap-4'>
+            <div className='flex items-start rtl:items-start justify-between gap-4'>
               <CardTitle className='text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 break-words'>
-                {document.title}
+                {document?.title}
               </CardTitle>
               {canEdit && !isSystemDocument && (
                 <DropdownMenu>
@@ -220,14 +227,14 @@ export function WikiContent({ documentId, onRefresh }: WikiContentProps) {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align='end'>
                     <DropdownMenuItem onClick={() => setShowEditDialog(true)}>
-                      <Edit className='h-4 w-4 mr-2' />
+                      <Edit className='h-4 w-4 me-2' />
                       ویرایش
                     </DropdownMenuItem>
                     <DropdownMenuItem 
                       onClick={() => setShowDeleteDialog(true)}
                       className='text-red-600 focus:text-red-600'
                     >
-                      <Trash2 className='h-4 w-4 mr-2' />
+                      <Trash2 className='h-4 w-4 me-2' />
                       حذف
                     </DropdownMenuItem>
                   </DropdownMenuContent>
@@ -239,16 +246,16 @@ export function WikiContent({ documentId, onRefresh }: WikiContentProps) {
               <div className='flex items-center gap-2'>
                 <span className='text-gray-500'>نویسنده:</span>
                 <span className='font-semibold text-gray-800'>
-                  {typeof document.author === 'string'
-                    ? document.author
-                    : `${document.author?.firstName || ''} ${document.author?.lastName || ''}`.trim()}
+                  {typeof document?.author === 'string'
+                    ? document?.author
+                    : `${document?.author?.firstName || ''} ${document?.author?.lastName || ''}`.trim()}
                 </span>
               </div>
               <div className='flex items-center gap-2'>
                 <span className='text-gray-500'>تاریخ ایجاد:</span>
                 <span className='font-medium'>
                   <ClientOnly fallback='...'>
-                    {formatJalaliDate(new Date(document.createdAt), 'yyyy/M/d')}
+                    {formatJalaliDate(new Date(document?.createdAt), 'yyyy/M/d')}
                   </ClientOnly>
                 </span>
               </div>
@@ -256,15 +263,15 @@ export function WikiContent({ documentId, onRefresh }: WikiContentProps) {
                 <span className='text-gray-500'>آخرین ویرایش:</span>
                 <span className='font-medium'>
                   <ClientOnly fallback='...'>
-                    {formatJalaliDate(new Date(document.updatedAt), 'yyyy/M/d')}
+                    {formatJalaliDate(new Date(document?.updatedAt), 'yyyy/M/d')}
                   </ClientOnly>
                 </span>
               </div>
             </div>
 
-            {document.tags.length > 0 && (
+            {document?.tags?.length > 0 && (
               <div className='flex flex-wrap gap-2'>
-                {document.tags.map(tag => (
+                {document?.tags?.map(tag => (
                   <Badge
                     key={tag}
                     variant='secondary'
@@ -282,20 +289,20 @@ export function WikiContent({ documentId, onRefresh }: WikiContentProps) {
         <Card className='overflow-hidden'>
           <CardContent className='p-8'>
             {/* PDF Viewer */}
-            {document.fileType === 'pdf' && document.fileUrl ? (
+            {document?.fileType === 'pdf' && document?.fileUrl ? (
               <PDFViewer
-                fileUrl={document.fileUrl}
-                fileName={document.originalName || document.title}
-                fileSize={document.fileSize}
+                fileUrl={document?.fileUrl}
+                fileName={document?.originalName || document?.title}
+                fileSize={document?.fileSize}
               />
             ) : (
               /* Markdown/Text Content */
               <div className='prose prose-lg max-w-none prose-headings:text-gray-800 prose-p:text-gray-700 prose-strong:text-gray-800 prose-code:text-gray-800 prose-pre:bg-gray-50 prose-pre:text-gray-800'>
-                {document.htmlContent ? (
-                  <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(document.htmlContent) }} />
+                {document?.htmlContent ? (
+                  <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(document?.htmlContent) }} />
                 ) : (
                   <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                    {document.content}
+                    {document?.content}
                   </ReactMarkdown>
                 )}
               </div>
@@ -312,12 +319,12 @@ export function WikiContent({ documentId, onRefresh }: WikiContentProps) {
               <h2 className='text-2xl font-bold mb-4'>ویرایش {(document?.type as string) === 'FOLDER' ? 'پوشه' : 'مستند'}</h2>
               <EditWikiItem
                 document={{
-                  id: document.id,
-                  title: document.title,
-                  content: document.content,
-                  type: document.type || 'DOCUMENT',
+                  id: document?.id,
+                  title: document?.title,
+                  content: document?.content,
+                  type: document?.type || 'DOCUMENT',
                   parentId: null, // We'll need to get this from the document
-                  authorId: document.authorId || '',
+                  authorId: document?.authorId || '',
                 }}
                 onClose={() => setShowEditDialog(false)}
                 onSuccess={() => {

@@ -135,7 +135,7 @@ export function ProjectStatusDonutChart() {
                       </span>
                     </div>
                   </div>
-                  <div className='text-right'>
+                  <div className='text-end'>
                     <div className='text-sm font-bold text-gray-900'>
                       {item.count}
                     </div>

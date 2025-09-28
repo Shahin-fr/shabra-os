@@ -243,7 +243,7 @@ export function ChecklistTemplateForm({ template, onSuccess, onCancel }: Checkli
                   setFormData({ ...formData, type: value })
                 }
               >
-                <SelectTrigger>
+                <SelectTrigger className="w-full justify-end text-right">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -269,7 +269,7 @@ export function ChecklistTemplateForm({ template, onSuccess, onCancel }: Checkli
             />
           </div>
 
-          <div className="flex items-center space-x-2 space-x-reverse">
+          <div className="flex items-center space-x-2 rtl:space-x-reverse space-x-reverse">
             <Switch
               id="isActive"
               checked={formData.isActive}
@@ -286,7 +286,7 @@ export function ChecklistTemplateForm({ template, onSuccess, onCancel }: Checkli
           <div className="flex items-center justify-between">
             <CardTitle>وظایف قالب</CardTitle>
             <Button type="button" onClick={addTask} size="sm">
-              <Plus className="h-4 w-4 mr-2" />
+              <Plus className="h-4 w-4 me-2" />
               افزودن وظیفه
             </Button>
           </div>
@@ -307,9 +307,9 @@ export function ChecklistTemplateForm({ template, onSuccess, onCancel }: Checkli
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
               >
-                <Card className="border-l-4 border-l-blue-500">
+                <Card className="border-s-4 border-s-blue-500">
                   <CardContent className="p-4">
-                    <div className="flex items-start gap-3">
+                    <div className="flex items-start rtl:items-start gap-3">
                       <div className="flex flex-col gap-1">
                         <Button
                           type="button"
@@ -356,7 +356,7 @@ export function ChecklistTemplateForm({ template, onSuccess, onCancel }: Checkli
                                 updateTask(index, 'defaultAssigneeRole', value)
                               }
                             >
-                              <SelectTrigger>
+                              <SelectTrigger className="w-full justify-end text-right">
                                 <SelectValue />
                               </SelectTrigger>
                               <SelectContent>
@@ -404,7 +404,7 @@ export function ChecklistTemplateForm({ template, onSuccess, onCancel }: Checkli
                             )}
                           </div>
 
-                          <div className="flex items-center space-x-2 space-x-reverse">
+                          <div className="flex items-center space-x-2 rtl:space-x-reverse space-x-reverse">
                             <Switch
                               id={`required_${index}`}
                               checked={task.isRequired}
@@ -435,16 +435,16 @@ export function ChecklistTemplateForm({ template, onSuccess, onCancel }: Checkli
       </Card>
 
       {/* Actions */}
-      <div className="flex justify-end gap-3">
+      <div className="flex justify-end rtl:justify-start gap-3">
         <Button type="button" variant="outline" onClick={onCancel}>
-          <X className="h-4 w-4 mr-2" />
+          <X className="h-4 w-4 me-2" />
           انصراف
         </Button>
         <Button type="submit" disabled={saveMutation.isPending}>
           {saveMutation.isPending ? (
-            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            <Loader2 className="h-4 w-4 me-2 animate-spin" />
           ) : (
-            <Save className="h-4 w-4 mr-2" />
+            <Save className="h-4 w-4 me-2" />
           )}
           {template ? 'به‌روزرسانی' : 'ایجاد'} قالب
         </Button>

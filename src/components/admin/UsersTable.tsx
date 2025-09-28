@@ -153,7 +153,7 @@ export function UsersTable({ className }: UsersTableProps) {
             متأسفانه خطایی در بارگذاری لیست کاربران رخ داده است.
           </p>
           <Button onClick={handleRefresh} variant='outline'>
-            <RefreshCw className='h-4 w-4 mr-2' />
+            <RefreshCw className='h-4 w-4 me-2' />
             تلاش مجدد
           </Button>
         </CardContent>
@@ -238,7 +238,7 @@ export function UsersTable({ className }: UsersTableProps) {
                 variant='outline'
                 size='sm'
               >
-                <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+                <RefreshCw className={`h-4 w-4 me-2 ${refreshing ? 'animate-spin' : ''}`} />
                 بروزرسانی
               </Button>
             </div>

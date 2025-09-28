@@ -168,7 +168,7 @@ export function TodaysSnapshot() {
                         </div>
                       </div>
                     </div>
-                    <div className='text-right'>
+                    <div className='text-end'>
                       <div className='text-sm font-medium text-[#ff0a54] bg-[#ff0a54]/10 px-3 py-1 rounded-full'>
                         {item.trend}
                       </div>

@@ -32,9 +32,9 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           'relative flex-1 transition-all duration-300 ease-in-out',
           'p-4 sm:p-6 mt-16 z-5',
           // Desktop sidebar spacing - fixed width for icon-only sidebar
-          !isMobile ? 'lg:mr-20' : '',
+          !isMobile ? 'lg:me-20' : '',
           // Mobile full width with no right margin and bottom padding for navigation
-          isMobile && 'w-full mr-0 pb-20'
+          isMobile && 'w-full me-0 pb-20'
         )}
       >
         <div className='relative z-5 max-w-7xl mx-auto'>{children}</div>

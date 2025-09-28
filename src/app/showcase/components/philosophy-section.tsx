@@ -174,7 +174,7 @@ export default function PhilosophySection() {
 
                 {/* Decorative Elements */}
                 <motion.div
-                  className="absolute top-4 right-4 w-2 h-2 rounded-full bg-gradient-to-r from-[#E000A0] to-[#B8008A] opacity-60"
+                  className="absolute top-4 end-4 w-2 h-2 rounded-full bg-gradient-to-r from-[#E000A0] to-[#B8008A] opacity-60"
                   animate={{
                     scale: [1, 1.2, 1],
                     opacity: [0.6, 1, 0.6]

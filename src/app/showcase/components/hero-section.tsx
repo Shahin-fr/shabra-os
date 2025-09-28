@@ -107,7 +107,7 @@ export default function HeroSection() {
         <div className="absolute inset-0 overflow-hidden">
           {/* Floating geometric shapes */}
           <motion.div
-            className="absolute top-20 left-10 w-32 h-32 border border-[#E000A0]/20 rounded-full"
+            className="absolute top-20 start-10 w-32 h-32 border border-[#E000A0]/20 rounded-full"
             animate={{
               y: [0, -20, 0],
               rotate: [0, 180, 360],
@@ -120,7 +120,7 @@ export default function HeroSection() {
             }}
           />
           <motion.div
-            className="absolute top-40 right-20 w-24 h-24 border border-[#E000A0]/15 rounded-lg"
+            className="absolute top-40 end-20 w-24 h-24 border border-[#E000A0]/15 rounded-lg"
             animate={{
               y: [0, 30, 0],
               rotate: [0, -90, 0],
@@ -134,7 +134,7 @@ export default function HeroSection() {
             }}
           />
           <motion.div
-            className="absolute bottom-40 left-1/4 w-16 h-16 border border-[#E000A0]/10 rounded-full"
+            className="absolute bottom-40 start-1/4 w-16 h-16 border border-[#E000A0]/10 rounded-full"
             animate={{
               y: [0, -15, 0],
               x: [0, 10, 0],
@@ -225,7 +225,7 @@ export default function HeroSection() {
 
               {/* Animated dashboard elements */}
               <motion.div
-                className="absolute top-6 left-6 w-32 h-20 bg-gradient-to-r from-[#E000A0]/20 to-[#E000A0]/10 rounded-lg border border-[#E000A0]/30"
+                className="absolute top-6 start-6 w-32 h-20 bg-gradient-to-r from-[#E000A0]/20 to-[#E000A0]/10 rounded-lg border border-[#E000A0]/30"
                 animate={{
                   scale: [1, 1.02, 1],
                   opacity: [0.8, 1, 0.8]
@@ -237,7 +237,7 @@ export default function HeroSection() {
                 }}
               />
               <motion.div
-                className="absolute top-6 right-6 w-24 h-16 bg-gradient-to-r from-[#E000A0]/15 to-[#E000A0]/5 rounded-lg border border-[#E000A0]/20"
+                className="absolute top-6 end-6 w-24 h-16 bg-gradient-to-r from-[#E000A0]/15 to-[#E000A0]/5 rounded-lg border border-[#E000A0]/20"
                 animate={{
                   scale: [1, 1.03, 1],
                   opacity: [0.7, 1, 0.7]
@@ -250,7 +250,7 @@ export default function HeroSection() {
                 }}
               />
               <motion.div
-                className="absolute bottom-6 left-6 w-40 h-24 bg-gradient-to-r from-[#E000A0]/10 to-[#E000A0]/5 rounded-lg border border-[#E000A0]/15"
+                className="absolute bottom-6 start-6 w-40 h-24 bg-gradient-to-r from-[#E000A0]/10 to-[#E000A0]/5 rounded-lg border border-[#E000A0]/15"
                 animate={{
                   scale: [1, 1.01, 1],
                   opacity: [0.6, 1, 0.6]

@@ -26,7 +26,7 @@ const StatusMessage = memo(
 
     return (
       <div
-        className='ml-5 text-sm text-green-500 font-medium transition-opacity duration-300 bg-green-50 px-3 py-1 rounded-lg border border-green-200'
+        className='ms-5 text-sm text-green-500 font-medium transition-opacity duration-300 bg-green-50 px-3 py-1 rounded-lg border border-green-200'
         style={{ opacity: isVisible ? 1 : 0 }}
       >
         {message}
@@ -86,7 +86,7 @@ export function Header() {
   };
 
   return (
-    <header className='fixed top-0 left-0 right-0 z-50 bg-transparent'>
+    <header className='fixed top-0 start-0 end-0 z-50 bg-transparent'>
       <div className='flex items-center justify-between h-16 px-4 sm:px-6'>
         {/* Mobile Layout - PDD Compliant */}
         {isMobile ? (
@@ -112,7 +112,7 @@ export function Header() {
             >
               <Bell className='h-5 w-5' />
               {/* Notification Badge */}
-              <div className='absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse' />
+              <div className='absolute -top-1 -end-1 w-3 h-3 bg-red-500 rounded-full animate-pulse' />
             </Button>
           </>
         ) : (
@@ -147,7 +147,7 @@ export function Header() {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent
-                    className='w-56 ml-4 mt-2'
+                    className='w-56 ms-4 mt-2'
                     align='end'
                     style={{
                       background: 'rgba(255, 255, 255, 0.95)',
@@ -179,11 +179,11 @@ export function Header() {
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem className='cursor-pointer'>
-                      <User className='mr-2 h-4 w-4' />
+                      <User className='me-2 h-4 w-4' />
                       <span>پروفایل</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem className='cursor-pointer'>
-                      <Settings className='mr-2 h-4 w-4' />
+                      <Settings className='me-2 h-4 w-4' />
                       <span>تنظیمات</span>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
@@ -191,7 +191,7 @@ export function Header() {
                       className='cursor-pointer text-red-600 focus:text-red-600'
                       onClick={handleSignOut}
                     >
-                      <LogOut className='mr-2 h-4 w-4' />
+                      <LogOut className='me-2 h-4 w-4' />
                       <span>خروج</span>
                     </DropdownMenuItem>
                   </DropdownMenuContent>

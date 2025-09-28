@@ -66,7 +66,7 @@ export const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
       {/* Error Header */}
       <div className={`px-4 py-3 border-b ${priorityConfig.borderColor}`}>
         <div className='flex items-center justify-between'>
-          <div className='flex items-center space-x-3'>
+          <div className='flex items-center space-x-3 rtl:space-x-reverse'>
             <div
               className={`w-8 h-8 rounded-full flex items-center justify-center ${priorityConfig.bgColor}`}
             >
@@ -83,7 +83,7 @@ export const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
               </p>
             </div>
           </div>
-          <div className='flex items-center space-x-2'>
+          <div className='flex items-center space-x-2 rtl:space-x-reverse'>
             {onRetry && (
               <Button
                 onClick={handleRetry}
@@ -121,7 +121,7 @@ export const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
         <div className='border-t pt-3'>
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className='text-xs text-gray-500 hover:text-gray-700 flex items-center space-x-1 transition-colors'
+            className='text-xs text-gray-500 hover:text-gray-700 flex items-center space-x-1 rtl:space-x-reverse transition-colors'
           >
             <span>{isExpanded ? 'Hide' : 'Show'} technical details</span>
             <svg
@@ -143,17 +143,17 @@ export const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
             <div className='mt-3 space-y-2'>
               <div className='text-xs'>
                 <span className='font-medium text-gray-700'>Error Type:</span>
-                <span className='ml-2 text-gray-600'>{detectedCategory}</span>
+                <span className='ms-2 text-gray-600'>{detectedCategory}</span>
               </div>
               <div className='text-xs'>
                 <span className='font-medium text-gray-700'>Priority:</span>
-                <span className={`ml-2 ${priorityConfig.textColor}`}>
+                <span className={`ms-2 ${priorityConfig.textColor}`}>
                   {detectedPriority}
                 </span>
               </div>
               <div className='text-xs'>
                 <span className='font-medium text-gray-700'>Message:</span>
-                <span className='ml-2 text-gray-600 font-mono'>
+                <span className='ms-2 text-gray-600 font-mono'>
                   {error.message}
                 </span>
               </div>

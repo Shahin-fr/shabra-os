@@ -95,7 +95,7 @@ export function MyActiveProjectsWidget({ className, variant = 'desktop' }: MyAct
             className="p-4 rounded-xl bg-white/60 border border-white/40 hover:bg-white/80 transition-all duration-200"
           >
             {/* Project Header */}
-            <div className="flex items-start justify-between mb-3">
+            <div className="flex items-start rtl:items-start justify-between mb-3">
               <div className="flex-1 min-w-0">
                 <h4 className={cn(
                   'font-vazirmatn font-semibold text-gray-900 leading-tight mb-1',
@@ -112,7 +112,7 @@ export function MyActiveProjectsWidget({ className, variant = 'desktop' }: MyAct
                   </p>
                 )}
               </div>
-              <div className="flex-shrink-0 ml-2">
+              <div className="flex-shrink-0 ms-2">
                 <span className={cn(
                   'inline-flex items-center px-2 py-1 rounded-full text-xs font-vazirmatn font-medium',
                   getStatusColor(project.status)

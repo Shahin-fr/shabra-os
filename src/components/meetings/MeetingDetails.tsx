@@ -294,7 +294,7 @@ export function MeetingDetails({ meeting, onClose }: MeetingDetailsProps) {
   return (
     <div className="space-y-6">
       {/* Meeting Header */}
-      <div className="flex items-start justify-between">
+      <div className="flex items-start rtl:items-start justify-between">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">{meeting.title}</h2>
           <div className="flex items-center gap-4 mt-2">
@@ -401,7 +401,7 @@ export function MeetingDetails({ meeting, onClose }: MeetingDetailsProps) {
               {/* Talking points list */}
               <div className="space-y-3">
                 {meeting.talkingPoints.map((point) => (
-                  <div key={point.id} className="flex items-start gap-3 p-3 border rounded-lg">
+                  <div key={point.id} className="flex items-start rtl:items-start gap-3 p-3 border rounded-lg">
                     <Checkbox
                       checked={point.isCompleted}
                       onCheckedChange={() => handleToggleTalkingPoint(point.id, point.isCompleted)}
@@ -437,7 +437,7 @@ export function MeetingDetails({ meeting, onClose }: MeetingDetailsProps) {
                   size="sm"
                   onClick={() => setIsEditingNotes(!isEditingNotes)}
                 >
-                  <Edit className="h-4 w-4 ml-1" />
+                  <Edit className="h-4 w-4 ms-1" />
                   {isEditingNotes ? 'لغو' : 'ویرایش'}
                 </Button>
               </div>
@@ -496,7 +496,7 @@ export function MeetingDetails({ meeting, onClose }: MeetingDetailsProps) {
                 />
                 <div className="flex gap-2">
                   <Select value={selectedAssignee} onValueChange={setSelectedAssignee}>
-                    <SelectTrigger className="flex-1">
+                    <SelectTrigger className="flex-1 w-full justify-end text-right">
                       <SelectValue placeholder="انتخاب مسئول..." />
                     </SelectTrigger>
                     <SelectContent>
@@ -519,7 +519,7 @@ export function MeetingDetails({ meeting, onClose }: MeetingDetailsProps) {
               {/* Action items list */}
               <div className="space-y-3">
                 {meeting.actionItems.map((item) => (
-                  <div key={item.id} className="flex items-start gap-3 p-3 border rounded-lg">
+                  <div key={item.id} className="flex items-start rtl:items-start gap-3 p-3 border rounded-lg">
                     <Checkbox
                       checked={item.isCompleted}
                       onCheckedChange={() => handleToggleActionItem(item.id, item.isCompleted)}
@@ -536,7 +536,7 @@ export function MeetingDetails({ meeting, onClose }: MeetingDetailsProps) {
                           {item.relatedTaskId ? (
                             <Link href={`/tasks/${item.relatedTaskId}`}>
                               <Button variant="outline" size="sm">
-                                <ExternalLink className="h-3 w-3 ml-1" />
+                                <ExternalLink className="h-3 w-3 ms-1" />
                                 مشاهده تسک
                               </Button>
                             </Link>
@@ -546,7 +546,7 @@ export function MeetingDetails({ meeting, onClose }: MeetingDetailsProps) {
                               size="sm"
                               onClick={() => handleCreateTask(item.id)}
                             >
-                              <Plus className="h-3 w-3 ml-1" />
+                              <Plus className="h-3 w-3 ms-1" />
                               ایجاد تسک
                             </Button>
                           )}

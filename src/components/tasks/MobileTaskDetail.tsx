@@ -169,7 +169,7 @@ export function MobileTaskDetail({
           onClick={onClose}
           className='h-8 w-8 p-0'
         >
-          <ArrowRight className='h-5 w-5' />
+          <ArrowRight className="rtl:rotate-180 h-5 w-5" />
         </Button>
         <h1 className='text-lg font-semibold text-gray-900'>جزئیات وظیفه</h1>
         <Button
@@ -187,18 +187,18 @@ export function MobileTaskDetail({
         {/* Task Header */}
         <Card>
           <CardHeader>
-            <div className='flex items-start justify-between'>
+            <div className='flex items-start rtl:items-start justify-between'>
               <div className='flex-1 min-w-0'>
                 <CardTitle className='text-xl font-bold text-gray-900 mb-2'>
                   {task.title}
                 </CardTitle>
-                <div className='flex items-center space-x-3 space-x-reverse mb-3'>
+                <div className='flex items-center space-x-3 rtl:space-x-reverse space-x-reverse mb-3'>
                   <Badge className={statusInfo.color}>
-                    <StatusIcon className='h-3 w-3 mr-1' />
+                    <StatusIcon className='h-3 w-3 me-1' />
                     {statusInfo.label}
                   </Badge>
                   <Badge className={priorityInfo.color}>
-                    <PriorityIcon className='h-3 w-3 mr-1' />
+                    <PriorityIcon className='h-3 w-3 me-1' />
                     {priorityInfo.label}
                   </Badge>
                 </div>
@@ -222,9 +222,9 @@ export function MobileTaskDetail({
             <div className='grid grid-cols-1 gap-4'>
               {task.assignee && (
                 <div className='flex items-center'>
-                  <User className='h-4 w-4 text-gray-400 mr-3' />
+                  <User className='h-4 w-4 text-gray-400 me-3' />
                   <div className='flex items-center'>
-                    <Avatar className='h-6 w-6 mr-2'>
+                    <Avatar className='h-6 w-6 me-2'>
                       <AvatarImage src={task.assignee.avatar} />
                       <AvatarFallback className='text-xs'>
                         {task.assignee.name.charAt(0)}
@@ -239,7 +239,7 @@ export function MobileTaskDetail({
 
               {task.dueDate && (
                 <div className='flex items-center'>
-                  <Calendar className='h-4 w-4 text-gray-400 mr-3' />
+                  <Calendar className='h-4 w-4 text-gray-400 me-3' />
                   <div>
                     <span className='text-sm text-gray-600'>تاریخ سررسید:</span>
                     <p className='text-sm font-medium text-gray-900'>
@@ -250,7 +250,7 @@ export function MobileTaskDetail({
               )}
 
               <div className='flex items-center'>
-                <Clock className='h-4 w-4 text-gray-400 mr-3' />
+                <Clock className='h-4 w-4 text-gray-400 me-3' />
                 <div>
                   <span className='text-sm text-gray-600'>ایجاد شده:</span>
                   <p className='text-sm font-medium text-gray-900'>
@@ -260,7 +260,7 @@ export function MobileTaskDetail({
               </div>
 
               <div className='flex items-center'>
-                <Clock className='h-4 w-4 text-gray-400 mr-3' />
+                <Clock className='h-4 w-4 text-gray-400 me-3' />
                 <div>
                   <span className='text-sm text-gray-600'>
                     آخرین بروزرسانی:
@@ -279,7 +279,7 @@ export function MobileTaskDetail({
           <Card>
             <CardHeader>
               <CardTitle className='text-lg flex items-center'>
-                <Tag className='h-5 w-5 mr-2' />
+                <Tag className='h-5 w-5 me-2' />
                 برچسب‌ها
               </CardTitle>
             </CardHeader>
@@ -300,7 +300,7 @@ export function MobileTaskDetail({
           <Card>
             <CardHeader>
               <CardTitle className='text-lg flex items-center'>
-                <Paperclip className='h-5 w-5 mr-2' />
+                <Paperclip className='h-5 w-5 me-2' />
                 فایل‌های پیوست
               </CardTitle>
             </CardHeader>
@@ -312,7 +312,7 @@ export function MobileTaskDetail({
                     className='flex items-center justify-between p-3 border border-gray-200 rounded-lg'
                   >
                     <div className='flex items-center'>
-                      <Paperclip className='h-4 w-4 text-gray-400 mr-3' />
+                      <Paperclip className='h-4 w-4 text-gray-400 me-3' />
                       <div>
                         <p className='text-sm font-medium text-gray-900'>
                           {attachment.name}
@@ -341,7 +341,7 @@ export function MobileTaskDetail({
           <Card>
             <CardHeader>
               <CardTitle className='text-lg flex items-center'>
-                <MessageSquare className='h-5 w-5 mr-2' />
+                <MessageSquare className='h-5 w-5 me-2' />
                 نظرات ({task.comments.length})
               </CardTitle>
             </CardHeader>
@@ -350,7 +350,7 @@ export function MobileTaskDetail({
                 {task.comments.map(comment => (
                   <div
                     key={comment.id}
-                    className='flex space-x-3 space-x-reverse'
+                    className='flex space-x-3 rtl:space-x-reverse space-x-reverse'
                   >
                     <Avatar className='h-8 w-8'>
                       <AvatarImage src={comment.author.avatar} />
@@ -359,7 +359,7 @@ export function MobileTaskDetail({
                       </AvatarFallback>
                     </Avatar>
                     <div className='flex-1'>
-                      <div className='flex items-center space-x-2 space-x-reverse mb-1'>
+                      <div className='flex items-center space-x-2 rtl:space-x-reverse space-x-reverse mb-1'>
                         <span className='text-sm font-medium text-gray-900'>
                           {comment.author.name}
                         </span>
@@ -382,7 +382,7 @@ export function MobileTaskDetail({
             onClick={handleStatusChange}
             className='w-full h-12 bg-blue-600 hover:bg-blue-700'
           >
-            <StatusIcon className='h-4 w-4 mr-2' />
+            <StatusIcon className='h-4 w-4 me-2' />
             {statusInfo.nextAction}
           </Button>
 
@@ -392,7 +392,7 @@ export function MobileTaskDetail({
               onClick={() => onEdit(task)}
               className='h-12'
             >
-              <Edit3 className='h-4 w-4 mr-2' />
+              <Edit3 className='h-4 w-4 me-2' />
               ویرایش
             </Button>
             <Button
@@ -400,7 +400,7 @@ export function MobileTaskDetail({
               onClick={() => setShowDeleteConfirm(true)}
               className='h-12 text-red-600 border-red-200 hover:bg-red-50'
             >
-              <Trash2 className='h-4 w-4 mr-2' />
+              <Trash2 className='h-4 w-4 me-2' />
               حذف
             </Button>
           </div>
@@ -429,7 +429,7 @@ export function MobileTaskDetail({
                 آیا مطمئن هستید که می‌خواهید این وظیفه را حذف کنید؟ این عمل قابل
                 بازگشت نیست.
               </p>
-              <div className='flex space-x-3 space-x-reverse'>
+              <div className='flex space-x-3 rtl:space-x-reverse space-x-reverse'>
                 <Button
                   variant='outline'
                   onClick={() => setShowDeleteConfirm(false)}

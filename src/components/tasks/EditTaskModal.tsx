@@ -291,7 +291,7 @@ export function EditTaskModal({
                     }
                     disabled={usersLoading}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="w-full justify-end text-right">
                       <SelectValue
                         placeholder={
                           usersLoading ? 'در حال بارگذاری...' : 'انتخاب مسئول'
@@ -317,7 +317,7 @@ export function EditTaskModal({
                     }
                     disabled={projectsLoading}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="w-full justify-end text-right">
                       <SelectValue
                         placeholder={
                           projectsLoading
@@ -343,9 +343,9 @@ export function EditTaskModal({
                   <PopoverTrigger asChild>
                     <Button
                       variant='outline'
-                      className='w-full justify-start text-left font-normal border-pink-200 hover:border-pink-300 hover:bg-pink-50'
+                      className='w-full justify-start rtl:justify-start text-start font-normal border-pink-200 hover:border-pink-300 hover:bg-pink-50'
                     >
-                      <CalendarIcon className='mr-2 h-4 w-4 text-pink-600' />
+                      <CalendarIcon className='me-2 h-4 w-4 text-pink-600' />
                       {formData.dueDate
                         ? formatJalaliDate(formData.dueDate, 'yyyy/M/d')
                         : 'انتخاب تاریخ'}
@@ -396,7 +396,7 @@ export function EditTaskModal({
                   >
                     {updateTaskMutation.isPending ? (
                       <>
-                        <Loader2 className='h-4 w-4 ml-2 animate-spin' />
+                        <Loader2 className='h-4 w-4 ms-2 animate-spin' />
                         در حال بروزرسانی...
                       </>
                     ) : (

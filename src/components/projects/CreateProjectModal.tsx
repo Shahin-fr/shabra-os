@@ -160,7 +160,7 @@ export function CreateProjectModal({
                     handleInputChange('status', value as 'ACTIVE' | 'PAUSED' | 'COMPLETED')
                   }
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="w-full justify-end text-right">
                     <SelectValue placeholder='انتخاب وضعیت' />
                   </SelectTrigger>
                   <SelectContent>
@@ -193,7 +193,7 @@ export function CreateProjectModal({
                 </div>
               </div>
 
-              <div className='flex justify-end gap-3 pt-4'>
+              <div className='flex justify-end rtl:justify-start gap-3 pt-4'>
                 <Button
                   type='button'
                   variant='outline'
@@ -209,7 +209,7 @@ export function CreateProjectModal({
                 >
                   {createProjectMutation.isPending ? (
                     <>
-                      <Loader2 className='h-4 w-4 ml-2 animate-spin' />
+                      <Loader2 className='h-4 w-4 ms-2 animate-spin' />
                       در حال ایجاد...
                     </>
                   ) : (

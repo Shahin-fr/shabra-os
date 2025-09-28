@@ -48,7 +48,7 @@ const QuickLinksWidget = () => {
               key={action.id}
               variant={action.variant}
               onClick={action.onClick}
-              className="w-full flex items-center justify-center space-x-2 space-x-reverse"
+              className="w-full flex items-center justify-center space-x-2 rtl:space-x-reverse space-x-reverse"
             >
               <span className="text-lg">{action.icon}</span>
               <span>{action.label}</span>

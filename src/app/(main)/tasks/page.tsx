@@ -229,13 +229,13 @@ export default function TasksPage() {
           </div>
 
           {/* Actions */}
-          <div className='flex justify-end'>
+          <div className='flex justify-end rtl:justify-start'>
             {isManager && (
               <Button
                 onClick={() => setIsCreateModalOpen(true)}
                 className='bg-[#ff0a54] hover:bg-[#ff0a54]/90'
               >
-                <Plus className='h-4 w-4 ml-2' />
+                <Plus className='h-4 w-4 ms-2' />
                 تسک جدید
               </Button>
             )}
@@ -265,7 +265,7 @@ export default function TasksPage() {
                   onClick={() => setIsCreateModalOpen(true)}
                   className='bg-[#ff0a54] hover:bg-[#ff0a54]/90'
                 >
-                  <Plus className='h-4 w-4 ml-2' />
+                  <Plus className='h-4 w-4 ms-2' />
                   ایجاد تسک جدید
                 </Button>
               )}

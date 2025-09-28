@@ -304,7 +304,7 @@ export function CreateUserForm({ className }: CreateUserFormProps) {
             </div>
 
             {/* Submit Button */}
-            <div className='flex justify-end gap-4 pt-4 border-t border-gray-200'>
+            <div className='flex justify-end rtl:justify-start gap-4 pt-4 border-t border-gray-200'>
               <Button
                 type='button'
                 variant='outline'

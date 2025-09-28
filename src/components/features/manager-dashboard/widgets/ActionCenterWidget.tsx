@@ -49,7 +49,7 @@ const ActionCenterWidget = () => {
             </div>
 
             {/* Request Details */}
-            <div className="flex-1 mx-3 text-right">
+            <div className="flex-1 mx-3 text-end">
               <div className="font-semibold text-gray-900 dark:text-white">
                 {request.user.name}
               </div>
@@ -59,7 +59,7 @@ const ActionCenterWidget = () => {
             </div>
 
             {/* Time & Action Indicator */}
-            <div className="flex items-center space-x-2 space-x-reverse">
+            <div className="flex items-center space-x-2 rtl:space-x-reverse space-x-reverse">
               <span className="text-xs text-gray-400 dark:text-gray-500">
                 {request.time}
               </span>

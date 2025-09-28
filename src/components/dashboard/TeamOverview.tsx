@@ -43,7 +43,7 @@ export function TeamOverview() {
         <div className='space-y-3'>
           {/* Overlapping Avatars */}
           <div className='flex items-center justify-center'>
-            <div className='flex -space-x-3'>
+            <div className='flex -space-x-3 rtl:space-x-reverse'>
               {mockTeamMembers.slice(0, 5).map(member => (
                 <div key={member.id} className='relative group'>
                   <Avatar className='w-10 h-10 border-2 border-white/20 hover:scale-110 transition-transform duration-200 cursor-pointer'>
@@ -53,13 +53,13 @@ export function TeamOverview() {
                     </AvatarFallback>
                   </Avatar>
                   <div
-                    className={`absolute -bottom-1 -right-1 w-3 h-3 ${getStatusColor(member.status)} rounded-full border-2 border-white/20`}
+                    className={`absolute -bottom-1 -end-1 w-3 h-3 ${getStatusColor(member.status)} rounded-full border-2 border-white/20`}
                   ></div>
 
                   {/* Tooltip */}
-                  <div className='absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-10'>
+                  <div className='absolute bottom-full start-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-10'>
                     {member.name}
-                    <div className='absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900'></div>
+                    <div className='absolute top-full start-1/2 transform -translate-x-1/2 w-0 h-0 border-s-4 border-e-4 border-t-4 border-transparent border-t-gray-900'></div>
                   </div>
                 </div>
               ))}
@@ -70,9 +70,9 @@ export function TeamOverview() {
                   </div>
 
                   {/* Tooltip */}
-                  <div className='absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-10'>
+                  <div className='absolute bottom-full start-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-10'>
                     {mockTeamMembers.length - 5} عضو دیگر
-                    <div className='absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900'></div>
+                    <div className='absolute top-full start-1/2 transform -translate-x-1/2 w-0 h-0 border-s-4 border-e-4 border-t-4 border-transparent border-t-gray-900'></div>
                   </div>
                 </div>
               )}

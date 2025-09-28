@@ -241,7 +241,7 @@ export function NewRequestForm() {
                 value={formData.details.leaveType || ''}
                 onValueChange={(value) => handleDetailChange('leaveType', value)}
               >
-                <SelectTrigger>
+                <SelectTrigger className="w-full justify-end text-right">
                   <SelectValue placeholder="انتخاب نوع مرخصی" />
                 </SelectTrigger>
                 <SelectContent>
@@ -343,7 +343,7 @@ export function NewRequestForm() {
                   value={formData.details.currency || 'IRR'}
                   onValueChange={(value) => handleDetailChange('currency', value)}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="w-full justify-end text-right">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -361,7 +361,7 @@ export function NewRequestForm() {
                 value={formData.details.category || ''}
                 onValueChange={(value) => handleDetailChange('category', value)}
               >
-                <SelectTrigger>
+                <SelectTrigger className="w-full justify-end text-right">
                   <SelectValue placeholder="انتخاب دسته‌بندی" />
                 </SelectTrigger>
                 <SelectContent>
@@ -416,7 +416,7 @@ export function NewRequestForm() {
                 value={formData.details.priority || 'MEDIUM'}
                 onValueChange={(value) => handleDetailChange('priority', value)}
               >
-                <SelectTrigger>
+                <SelectTrigger className="w-full justify-end text-right">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -473,7 +473,7 @@ export function NewRequestForm() {
                       type="button"
                       onClick={() => handleTypeChange(type.value)}
                       variant={formData.type === type.value ? 'default' : 'outline'}
-                      className="p-4 h-auto text-right justify-start"
+                      className="p-4 h-auto text-end justify-start rtl:justify-start"
                     >
                       <IconComponent className="h-5 w-5 text-gray-600" />
                       <div>
@@ -503,16 +503,16 @@ export function NewRequestForm() {
             </div>
 
             {/* Submit Button */}
-            <div className="flex justify-end">
+            <div className="flex justify-end rtl:justify-start">
               <Button
                 type="submit"
                 disabled={isSubmitting || createRequestMutation.isPending}
                 variant="default"
               >
                 {isSubmitting || createRequestMutation.isPending ? (
-                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                  <Loader2 className="h-4 w-4 animate-spin me-2" />
                 ) : (
-                  <Send className="h-4 w-4 mr-2" />
+                  <Send className="h-4 w-4 me-2" />
                 )}
                 ارسال درخواست
               </Button>

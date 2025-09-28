@@ -65,7 +65,7 @@ export function MobileInfiniteScroll({
               className='flex items-center justify-center py-4'
             >
               <Loader2 className='h-6 w-6 animate-spin text-pink-500' />
-              <span className='text-sm text-gray-500 mr-2'>
+              <span className='text-sm text-gray-500 me-2'>
                 در حال بارگذاری...
               </span>
             </OptimizedMotion>

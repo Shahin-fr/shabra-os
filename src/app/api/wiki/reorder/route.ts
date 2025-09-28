@@ -24,12 +24,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { items } = body;
 
-    // CRITICAL: Log the incoming data to see what we're receiving
-    console.log('[WIKI REORDER DEBUG] Incoming data:', {
-      items,
-      userId: authResult.context.userId,
-    });
-
+    // Validate input
     if (!Array.isArray(items) || items.length === 0) {
       const errorResponse = createValidationErrorResponse('Items array is required and must not be empty');
       return NextResponse.json(errorResponse, {
@@ -39,13 +34,20 @@ export async function POST(request: NextRequest) {
 
     // Validate that all items have required fields
     for (const item of items) {
-      if (!item.id || typeof item.order !== 'number') {
-        const errorResponse = createValidationErrorResponse('Each item must have id and order fields');
+      if (!item.id || typeof item.order !== 'number' || item.order < 0) {
+        const errorResponse = createValidationErrorResponse('Each item must have a valid id and non-negative order');
         return NextResponse.json(errorResponse, {
           status: getHttpStatusForErrorCode(errorResponse.error.code),
         });
       }
     }
+
+    logger.info('Wiki reorder request received', {
+      itemCount: items.length,
+      userId: authResult.context.userId,
+      operation: 'POST /api/wiki/reorder',
+      source: 'api/wiki/reorder/route.ts',
+    });
 
     // Check if user has permission to reorder these items
     const itemIds = items.map(item => item.id);
@@ -57,11 +59,17 @@ export async function POST(request: NextRequest) {
         id: true,
         authorId: true,
         parentId: true,
+        title: true,
       },
     });
 
     if (existingItems.length !== items.length) {
-      const errorResponse = createValidationErrorResponse('Some items not found');
+      const foundIds = existingItems.map(item => item.id);
+      const missingIds = itemIds.filter(id => !foundIds.includes(id));
+      
+      const errorResponse = createValidationErrorResponse(
+        `Some items not found: ${missingIds.join(', ')}`
+      );
       return NextResponse.json(errorResponse, {
         status: getHttpStatusForErrorCode(errorResponse.error.code),
       });
@@ -74,7 +82,10 @@ export async function POST(request: NextRequest) {
     );
 
     if (unauthorizedItems.length > 0) {
-      const errorResponse = createUnauthorizedErrorResponse('You can only reorder your own items');
+      const unauthorizedTitles = unauthorizedItems.map(item => item.title);
+      const errorResponse = createUnauthorizedErrorResponse(
+        `You can only reorder your own items. Unauthorized items: ${unauthorizedTitles.join(', ')}`
+      );
       return NextResponse.json(errorResponse, {
         status: getHttpStatusForErrorCode(errorResponse.error.code),
       });
@@ -106,20 +117,8 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    // CRITICAL: Log the full error object to see what's actually happening
-    console.error('[CRITICAL WIKI REORDER ERROR]', {
-      error: error,
-      message: error instanceof Error ? error.message : 'Unknown error',
-      stack: error instanceof Error ? error.stack : undefined,
-      name: error instanceof Error ? error.name : 'Unknown',
-      operation: 'POST /api/wiki/reorder',
-      source: 'api/wiki/reorder/route.ts',
-    });
-    
     logger.error('Error reordering wiki items', {
       error: error as Error,
-      message: error instanceof Error ? error.message : 'Unknown error',
-      stack: error instanceof Error ? error.stack : undefined,
       operation: 'POST /api/wiki/reorder',
       source: 'api/wiki/reorder/route.ts',
     });

@@ -138,7 +138,7 @@ export default function ReelsFiltersComponent({
       </div>
 
       {/* Action Buttons */}
-      <div className='flex items-end gap-2'>
+      <div className='flex items-end rtl:items-start gap-2'>
         {hasActiveFilters && (
           <Button
             variant='outline'
@@ -146,7 +146,7 @@ export default function ReelsFiltersComponent({
             onClick={handleReset}
             className='h-10'
           >
-            <X className='h-4 w-4 mr-2' />
+            <X className='h-4 w-4 me-2' />
             حذف فیلترها
           </Button>
         )}

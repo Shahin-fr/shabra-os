@@ -192,7 +192,7 @@ export function ProjectHealthWidget({ className, variant = 'desktop', priority =
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
-            <div className="flex items-start justify-between gap-3">
+            <div className="flex items-start rtl:items-start justify-between gap-3">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-2">
                   <h4 className={cn(

@@ -209,23 +209,27 @@ export function QuickActionsWidget({ className, variant = 'desktop', priority = 
             <Button
               onClick={() => setSelectedModal(action.id)}
               className={cn(
-                'w-full justify-start gap-3 h-auto p-4 text-right font-vazirmatn transition-all duration-200 hover:scale-105',
+                'w-full flex items-center h-auto p-4 font-vazirmatn transition-all duration-200 hover:scale-105',
+                {
+                  // This is the fix for DESKTOP view
+                  'justify-between': !isMobile,
+                  // This reverts the MOBILE view to its original state
+                  'justify-start gap-3': isMobile,
+                },
                 action.color,
                 'text-white hover:text-white'
               )}
             >
-              <div className="flex items-center gap-3 w-full">
-                <action.icon className="h-5 w-5 flex-shrink-0" />
-                <div className="flex-1 text-right">
-                  <div className="font-medium text-sm">
-                    {action.label}
-                  </div>
-                  {!isMobile && (
-                    <div className="text-xs opacity-90 mt-1">
-                      {action.description}
-                    </div>
-                  )}
+              <action.icon className="h-5 w-5 flex-shrink-0" />
+              <div className="flex-1 text-end">
+                <div className="font-medium text-sm">
+                  {action.label}
                 </div>
+                {!isMobile && (
+                  <div className="text-xs opacity-90 mt-1">
+                    {action.description}
+                  </div>
+                )}
               </div>
             </Button>
           </motion.div>

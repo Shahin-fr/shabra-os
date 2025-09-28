@@ -39,7 +39,7 @@ export function Pagination({
           disabled={!hasPreviousPage || isLoading}
           className='flex items-center gap-2'
         >
-          <ChevronRight className='h-4 w-4' />
+          <ChevronRight className="rtl:rotate-180 h-4 w-4" />
           قبلی
         </Button>
       </div>
@@ -59,7 +59,7 @@ export function Pagination({
           className='flex items-center gap-2'
         >
           بعدی
-          <ChevronLeft className='h-4 w-4' />
+          <ChevronLeft className="rtl:rotate-180 h-4 w-4" />
         </Button>
       </div>
     </div>

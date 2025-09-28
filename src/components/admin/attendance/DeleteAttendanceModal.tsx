@@ -75,7 +75,7 @@ export function DeleteAttendanceModal({
         <div className='space-y-6'>
           {/* Warning Message */}
           <div className='p-4 bg-red-50 border border-red-200 rounded-lg'>
-            <div className='flex items-start gap-3'>
+            <div className='flex items-start rtl:items-start gap-3'>
               <AlertTriangle className='h-5 w-5 text-red-600 mt-0.5' />
               <div>
                 <h3 className='font-semibold text-red-900 mb-1'>
@@ -149,7 +149,7 @@ export function DeleteAttendanceModal({
           </Card>
 
           {/* Action Buttons */}
-          <div className='flex justify-end gap-3 pt-4'>
+          <div className='flex justify-end rtl:justify-start gap-3 pt-4'>
             <Button
               type='button'
               variant='outline'

@@ -32,7 +32,7 @@ export function LoadingState({
           </p>
           {onRetry && (
             <Button onClick={onRetry} variant='outline'>
-              <RefreshCw className='h-4 w-4 mr-2' />
+              <RefreshCw className='h-4 w-4 me-2' />
               تلاش مجدد
             </Button>
           )}

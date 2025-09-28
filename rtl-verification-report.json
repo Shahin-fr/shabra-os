@@ -1,0 +1,2140 @@
+{
+  "totalFiles": 306,
+  "filesWithIssues": 145,
+  "totalIssues": 306,
+  "issuesByType": {
+    "Found flex-row without RTL variant: flex-row": 37,
+    "Found flex-col without RTL variant: flex-col": 118,
+    "Found items-start without RTL variant: items-start": 96,
+    "Found justify-start without RTL variant: justify-start": 53,
+    "Found self-start without RTL variant: self-start": 2
+  },
+  "issuesByFile": {
+    "src/app/(main)/admin/announcements/page.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-row without RTL variant: flex-row",
+        "line": 265,
+        "file": "src/app/(main)/admin/announcements/page.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 265,
+        "file": "src/app/(main)/admin/announcements/page.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 452,
+        "file": "src/app/(main)/admin/announcements/page.tsx"
+      }
+    ],
+    "src/app/(main)/admin/users/page.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-row without RTL variant: flex-row",
+        "line": 101,
+        "file": "src/app/(main)/admin/users/page.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-row without RTL variant: flex-row",
+        "line": 101,
+        "file": "src/app/(main)/admin/users/page.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-row without RTL variant: flex-row",
+        "line": 101,
+        "file": "src/app/(main)/admin/users/page.tsx"
+      }
+    ],
+    "src/app/(main)/announcements/page.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-row without RTL variant: flex-row",
+        "line": 162,
+        "file": "src/app/(main)/announcements/page.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 162,
+        "file": "src/app/(main)/announcements/page.tsx"
+      }
+    ],
+    "src/app/(main)/content-calendar/page.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 649,
+        "file": "src/app/(main)/content-calendar/page.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 649,
+        "file": "src/app/(main)/content-calendar/page.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 796,
+        "file": "src/app/(main)/content-calendar/page.tsx"
+      }
+    ],
+    "src/app/(main)/dashboard/instapulse/page.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-row without RTL variant: flex-row",
+        "line": 64,
+        "file": "src/app/(main)/dashboard/instapulse/page.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-row without RTL variant: flex-row",
+        "line": 64,
+        "file": "src/app/(main)/dashboard/instapulse/page.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 64,
+        "file": "src/app/(main)/dashboard/instapulse/page.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 64,
+        "file": "src/app/(main)/dashboard/instapulse/page.tsx"
+      }
+    ],
+    "src/app/(main)/meetings/page.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 515,
+        "file": "src/app/(main)/meetings/page.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 515,
+        "file": "src/app/(main)/meetings/page.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 515,
+        "file": "src/app/(main)/meetings/page.tsx"
+      }
+    ],
+    "src/app/(main)/projects/page.test.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 135,
+        "file": "src/app/(main)/projects/page.test.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 136,
+        "file": "src/app/(main)/projects/page.test.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 136,
+        "file": "src/app/(main)/projects/page.test.tsx"
+      }
+    ],
+    "src/app/(main)/projects/page.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 224,
+        "file": "src/app/(main)/projects/page.tsx"
+      }
+    ],
+    "src/app/(main)/storyboard/page.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 106,
+        "file": "src/app/(main)/storyboard/page.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 114,
+        "file": "src/app/(main)/storyboard/page.tsx"
+      }
+    ],
+    "src/app/(main)/tasks/page.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 232,
+        "file": "src/app/(main)/tasks/page.tsx"
+      }
+    ],
+    "src/app/(main)/team/page.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-row without RTL variant: flex-row",
+        "line": 195,
+        "file": "src/app/(main)/team/page.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 195,
+        "file": "src/app/(main)/team/page.tsx"
+      }
+    ],
+    "src/app/(main)/wiki/loading.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 23,
+        "file": "src/app/(main)/wiki/loading.tsx"
+      }
+    ],
+    "src/app/(main)/wiki/page.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-row without RTL variant: flex-row",
+        "line": 19,
+        "file": "src/app/(main)/wiki/page.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 19,
+        "file": "src/app/(main)/wiki/page.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 19,
+        "file": "src/app/(main)/wiki/page.tsx"
+      }
+    ],
+    "src/app/admin/storyboard/page.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-row without RTL variant: flex-row",
+        "line": 63,
+        "file": "src/app/admin/storyboard/page.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-row without RTL variant: flex-row",
+        "line": 63,
+        "file": "src/app/admin/storyboard/page.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-row without RTL variant: flex-row",
+        "line": 63,
+        "file": "src/app/admin/storyboard/page.tsx"
+      }
+    ],
+    "src/app/docs/not-found.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-row without RTL variant: flex-row",
+        "line": 21,
+        "file": "src/app/docs/not-found.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 21,
+        "file": "src/app/docs/not-found.tsx"
+      }
+    ],
+    "src/app/pitch/demo/page.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-row without RTL variant: flex-row",
+        "line": 76,
+        "file": "src/app/pitch/demo/page.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 76,
+        "file": "src/app/pitch/demo/page.tsx"
+      }
+    ],
+    "src/app/showcase/components/philosophy-section.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 132,
+        "file": "src/app/showcase/components/philosophy-section.tsx"
+      }
+    ],
+    "src/app/showcase/components/roadmap-section.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 134,
+        "file": "src/app/showcase/components/roadmap-section.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 134,
+        "file": "src/app/showcase/components/roadmap-section.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 134,
+        "file": "src/app/showcase/components/roadmap-section.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 220,
+        "file": "src/app/showcase/components/roadmap-section.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 220,
+        "file": "src/app/showcase/components/roadmap-section.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 220,
+        "file": "src/app/showcase/components/roadmap-section.tsx"
+      }
+    ],
+    "src/app/showcase/components/tech-stack-section.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 153,
+        "file": "src/app/showcase/components/tech-stack-section.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 153,
+        "file": "src/app/showcase/components/tech-stack-section.tsx"
+      }
+    ],
+    "src/components/admin/action-center/ActionCenterDashboard.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 241,
+        "file": "src/components/admin/action-center/ActionCenterDashboard.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 592,
+        "file": "src/components/admin/action-center/ActionCenterDashboard.tsx"
+      }
+    ],
+    "src/components/admin/attendance/AdminAttendanceDashboard.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-row without RTL variant: flex-row",
+        "line": 202,
+        "file": "src/components/admin/attendance/AdminAttendanceDashboard.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-row without RTL variant: flex-row",
+        "line": 202,
+        "file": "src/components/admin/attendance/AdminAttendanceDashboard.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-row without RTL variant: flex-row",
+        "line": 202,
+        "file": "src/components/admin/attendance/AdminAttendanceDashboard.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-row without RTL variant: flex-row",
+        "line": 202,
+        "file": "src/components/admin/attendance/AdminAttendanceDashboard.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 140,
+        "file": "src/components/admin/attendance/AdminAttendanceDashboard.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 370,
+        "file": "src/components/admin/attendance/AdminAttendanceDashboard.tsx"
+      }
+    ],
+    "src/components/admin/attendance/AttendanceLogTable.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 190,
+        "file": "src/components/admin/attendance/AttendanceLogTable.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 190,
+        "file": "src/components/admin/attendance/AttendanceLogTable.tsx"
+      }
+    ],
+    "src/components/admin/attendance/DeleteAttendanceModal.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 152,
+        "file": "src/components/admin/attendance/DeleteAttendanceModal.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 78,
+        "file": "src/components/admin/attendance/DeleteAttendanceModal.tsx"
+      }
+    ],
+    "src/components/admin/attendance/EditAttendanceModal.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 247,
+        "file": "src/components/admin/attendance/EditAttendanceModal.tsx"
+      }
+    ],
+    "src/components/admin/checklist-templates/ChecklistTemplateDetails.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 280,
+        "file": "src/components/admin/checklist-templates/ChecklistTemplateDetails.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 98,
+        "file": "src/components/admin/checklist-templates/ChecklistTemplateDetails.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 98,
+        "file": "src/components/admin/checklist-templates/ChecklistTemplateDetails.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 98,
+        "file": "src/components/admin/checklist-templates/ChecklistTemplateDetails.tsx"
+      }
+    ],
+    "src/components/admin/checklist-templates/ChecklistTemplateForm.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 313,
+        "file": "src/components/admin/checklist-templates/ChecklistTemplateForm.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 438,
+        "file": "src/components/admin/checklist-templates/ChecklistTemplateForm.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 312,
+        "file": "src/components/admin/checklist-templates/ChecklistTemplateForm.tsx"
+      }
+    ],
+    "src/components/admin/checklist-templates/ChecklistTemplatesDashboard.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-row without RTL variant: flex-row",
+        "line": 230,
+        "file": "src/components/admin/checklist-templates/ChecklistTemplatesDashboard.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-row without RTL variant: flex-row",
+        "line": 230,
+        "file": "src/components/admin/checklist-templates/ChecklistTemplatesDashboard.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 205,
+        "file": "src/components/admin/checklist-templates/ChecklistTemplatesDashboard.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 205,
+        "file": "src/components/admin/checklist-templates/ChecklistTemplatesDashboard.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 205,
+        "file": "src/components/admin/checklist-templates/ChecklistTemplatesDashboard.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 205,
+        "file": "src/components/admin/checklist-templates/ChecklistTemplatesDashboard.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 230,
+        "file": "src/components/admin/checklist-templates/ChecklistTemplatesDashboard.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 230,
+        "file": "src/components/admin/checklist-templates/ChecklistTemplatesDashboard.tsx"
+      }
+    ],
+    "src/components/admin/CreateUserForm.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 307,
+        "file": "src/components/admin/CreateUserForm.tsx"
+      }
+    ],
+    "src/components/admin/holidays/HolidayManagement.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 294,
+        "file": "src/components/admin/holidays/HolidayManagement.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 294,
+        "file": "src/components/admin/holidays/HolidayManagement.tsx"
+      }
+    ],
+    "src/components/admin/leave/AdminLeaveManagement.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-row without RTL variant: flex-row",
+        "line": 247,
+        "file": "src/components/admin/leave/AdminLeaveManagement.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-row without RTL variant: flex-row",
+        "line": 247,
+        "file": "src/components/admin/leave/AdminLeaveManagement.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-row without RTL variant: flex-row",
+        "line": 247,
+        "file": "src/components/admin/leave/AdminLeaveManagement.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-row without RTL variant: flex-row",
+        "line": 247,
+        "file": "src/components/admin/leave/AdminLeaveManagement.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-row without RTL variant: flex-row",
+        "line": 247,
+        "file": "src/components/admin/leave/AdminLeaveManagement.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 220,
+        "file": "src/components/admin/leave/AdminLeaveManagement.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 220,
+        "file": "src/components/admin/leave/AdminLeaveManagement.tsx"
+      }
+    ],
+    "src/components/admin/leave/ApproveLeaveModal.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 236,
+        "file": "src/components/admin/leave/ApproveLeaveModal.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 142,
+        "file": "src/components/admin/leave/ApproveLeaveModal.tsx"
+      }
+    ],
+    "src/components/admin/leave/RejectLeaveModal.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 279,
+        "file": "src/components/admin/leave/RejectLeaveModal.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 171,
+        "file": "src/components/admin/leave/RejectLeaveModal.tsx"
+      }
+    ],
+    "src/components/admin/team-calendar/CapacityForecastWidget.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 201,
+        "file": "src/components/admin/team-calendar/CapacityForecastWidget.tsx"
+      }
+    ],
+    "src/components/admin/team-calendar/TeamCalendarDashboard.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 261,
+        "file": "src/components/admin/team-calendar/TeamCalendarDashboard.tsx"
+      }
+    ],
+    "src/components/admin/UsersTable.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 147,
+        "file": "src/components/admin/UsersTable.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 147,
+        "file": "src/components/admin/UsersTable.tsx"
+      }
+    ],
+    "src/components/announcements/AnnouncementCard.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 108,
+        "file": "src/components/announcements/AnnouncementCard.tsx"
+      }
+    ],
+    "src/components/announcements/CreateAnnouncementModal.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 188,
+        "file": "src/components/announcements/CreateAnnouncementModal.tsx"
+      }
+    ],
+    "src/components/attendance/DesktopAttendanceView.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 517,
+        "file": "src/components/attendance/DesktopAttendanceView.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 517,
+        "file": "src/components/attendance/DesktopAttendanceView.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 517,
+        "file": "src/components/attendance/DesktopAttendanceView.tsx"
+      }
+    ],
+    "src/components/calendar/MobileContentCalendar.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 473,
+        "file": "src/components/calendar/MobileContentCalendar.tsx"
+      }
+    ],
+    "src/components/dashboard/AnnouncementsWidget.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 163,
+        "file": "src/components/dashboard/AnnouncementsWidget.tsx"
+      }
+    ],
+    "src/components/dashboard/MainActionButtons.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 48,
+        "file": "src/components/dashboard/MainActionButtons.tsx"
+      }
+    ],
+    "src/components/dashboard/mobile/MobileNotificationsWidget.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 99,
+        "file": "src/components/dashboard/mobile/MobileNotificationsWidget.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 99,
+        "file": "src/components/dashboard/mobile/MobileNotificationsWidget.tsx"
+      }
+    ],
+    "src/components/dashboard/mobile/MobileTasksWidget.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 98,
+        "file": "src/components/dashboard/mobile/MobileTasksWidget.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 98,
+        "file": "src/components/dashboard/mobile/MobileTasksWidget.tsx"
+      }
+    ],
+    "src/components/dashboard/MobileDashboard.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 285,
+        "file": "src/components/dashboard/MobileDashboard.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 285,
+        "file": "src/components/dashboard/MobileDashboard.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 285,
+        "file": "src/components/dashboard/MobileDashboard.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 285,
+        "file": "src/components/dashboard/MobileDashboard.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 285,
+        "file": "src/components/dashboard/MobileDashboard.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 285,
+        "file": "src/components/dashboard/MobileDashboard.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 419,
+        "file": "src/components/dashboard/MobileDashboard.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 419,
+        "file": "src/components/dashboard/MobileDashboard.tsx"
+      }
+    ],
+    "src/components/dashboard/QuickActionCard.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 39,
+        "file": "src/components/dashboard/QuickActionCard.tsx"
+      }
+    ],
+    "src/components/dashboard/QuickActions.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 71,
+        "file": "src/components/dashboard/QuickActions.tsx"
+      }
+    ],
+    "src/components/dashboard/RecentActivity.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 22,
+        "file": "src/components/dashboard/RecentActivity.tsx"
+      }
+    ],
+    "src/components/dashboard/widgets/ActionCenterWidget.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 234,
+        "file": "src/components/dashboard/widgets/ActionCenterWidget.tsx"
+      }
+    ],
+    "src/components/dashboard/widgets/AnnouncementsWidget.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 247,
+        "file": "src/components/dashboard/widgets/AnnouncementsWidget.tsx"
+      }
+    ],
+    "src/components/dashboard/widgets/InteractiveCalendarWidget.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 117,
+        "file": "src/components/dashboard/widgets/InteractiveCalendarWidget.tsx"
+      }
+    ],
+    "src/components/dashboard/widgets/KeyPerformanceIndicators.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 168,
+        "file": "src/components/dashboard/widgets/KeyPerformanceIndicators.tsx"
+      }
+    ],
+    "src/components/dashboard/widgets/MotivationWidget.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 123,
+        "file": "src/components/dashboard/widgets/MotivationWidget.tsx"
+      }
+    ],
+    "src/components/dashboard/widgets/MyActiveProjectsWidget.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 98,
+        "file": "src/components/dashboard/widgets/MyActiveProjectsWidget.tsx"
+      }
+    ],
+    "src/components/dashboard/widgets/MyRequestsWidget.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 137,
+        "file": "src/components/dashboard/widgets/MyRequestsWidget.tsx"
+      }
+    ],
+    "src/components/dashboard/widgets/MyTasksWidget.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 245,
+        "file": "src/components/dashboard/widgets/MyTasksWidget.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 245,
+        "file": "src/components/dashboard/widgets/MyTasksWidget.tsx"
+      }
+    ],
+    "src/components/dashboard/widgets/PersonalInsightsWidget.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 130,
+        "file": "src/components/dashboard/widgets/PersonalInsightsWidget.tsx"
+      }
+    ],
+    "src/components/dashboard/widgets/PersonalNotificationsWidget.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 235,
+        "file": "src/components/dashboard/widgets/PersonalNotificationsWidget.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 235,
+        "file": "src/components/dashboard/widgets/PersonalNotificationsWidget.tsx"
+      }
+    ],
+    "src/components/dashboard/widgets/ProjectHealthOverview.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 176,
+        "file": "src/components/dashboard/widgets/ProjectHealthOverview.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 176,
+        "file": "src/components/dashboard/widgets/ProjectHealthOverview.tsx"
+      }
+    ],
+    "src/components/dashboard/widgets/ProjectHealthWidget.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 195,
+        "file": "src/components/dashboard/widgets/ProjectHealthWidget.tsx"
+      }
+    ],
+    "src/components/dashboard/widgets/ProjectStatusDonutChart.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 58,
+        "file": "src/components/dashboard/widgets/ProjectStatusDonutChart.tsx"
+      }
+    ],
+    "src/components/dashboard/widgets/QuarterlyGoals.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 170,
+        "file": "src/components/dashboard/widgets/QuarterlyGoals.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 170,
+        "file": "src/components/dashboard/widgets/QuarterlyGoals.tsx"
+      }
+    ],
+    "src/components/dashboard/widgets/QuickActionsWidget.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 212,
+        "file": "src/components/dashboard/widgets/QuickActionsWidget.tsx"
+      }
+    ],
+    "src/components/dashboard/widgets/RecentActivityWidget.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 124,
+        "file": "src/components/dashboard/widgets/RecentActivityWidget.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 124,
+        "file": "src/components/dashboard/widgets/RecentActivityWidget.tsx"
+      }
+    ],
+    "src/components/dashboard/widgets/RecentTeamActivityFeed.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 128,
+        "file": "src/components/dashboard/widgets/RecentTeamActivityFeed.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 128,
+        "file": "src/components/dashboard/widgets/RecentTeamActivityFeed.tsx"
+      }
+    ],
+    "src/components/dashboard/widgets/SmartStatusCard.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 258,
+        "file": "src/components/dashboard/widgets/SmartStatusCard.tsx"
+      }
+    ],
+    "src/components/dashboard/widgets/TaskBottlenecks.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 165,
+        "file": "src/components/dashboard/widgets/TaskBottlenecks.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 165,
+        "file": "src/components/dashboard/widgets/TaskBottlenecks.tsx"
+      }
+    ],
+    "src/components/dashboard/widgets/TasksAtRiskWidget.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 162,
+        "file": "src/components/dashboard/widgets/TasksAtRiskWidget.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 162,
+        "file": "src/components/dashboard/widgets/TasksAtRiskWidget.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 162,
+        "file": "src/components/dashboard/widgets/TasksAtRiskWidget.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 162,
+        "file": "src/components/dashboard/widgets/TasksAtRiskWidget.tsx"
+      }
+    ],
+    "src/components/dashboard/widgets/TeamActivityWidget.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 91,
+        "file": "src/components/dashboard/widgets/TeamActivityWidget.tsx"
+      }
+    ],
+    "src/components/dashboard/widgets/TodaysFocusWidget.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 248,
+        "file": "src/components/dashboard/widgets/TodaysFocusWidget.tsx"
+      }
+    ],
+    "src/components/dashboard/widgets/TodaysSnapshot.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 50,
+        "file": "src/components/dashboard/widgets/TodaysSnapshot.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 50,
+        "file": "src/components/dashboard/widgets/TodaysSnapshot.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 50,
+        "file": "src/components/dashboard/widgets/TodaysSnapshot.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 50,
+        "file": "src/components/dashboard/widgets/TodaysSnapshot.tsx"
+      }
+    ],
+    "src/components/dashboard/widgets/WhosOutWidget.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 140,
+        "file": "src/components/dashboard/widgets/WhosOutWidget.tsx"
+      }
+    ],
+    "src/components/data/MobileDataCard.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 68,
+        "file": "src/components/data/MobileDataCard.tsx"
+      }
+    ],
+    "src/components/error/ErrorBoundary.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 272,
+        "file": "src/components/error/ErrorBoundary.tsx"
+      }
+    ],
+    "src/components/features/manager-dashboard/layout/ManagerDashboardLayout.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-row without RTL variant: flex-row",
+        "line": 12,
+        "file": "src/components/features/manager-dashboard/layout/ManagerDashboardLayout.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 12,
+        "file": "src/components/features/manager-dashboard/layout/ManagerDashboardLayout.tsx"
+      }
+    ],
+    "src/components/features/manager-dashboard/widgets/TasksAtRiskWidget.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 49,
+        "file": "src/components/features/manager-dashboard/widgets/TasksAtRiskWidget.tsx"
+      }
+    ],
+    "src/components/hr/EmptyState.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 24,
+        "file": "src/components/hr/EmptyState.tsx"
+      }
+    ],
+    "src/components/hr/LoadingState.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 25,
+        "file": "src/components/hr/LoadingState.tsx"
+      }
+    ],
+    "src/components/instapulse/reel-card-skeleton.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 23,
+        "file": "src/components/instapulse/reel-card-skeleton.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 23,
+        "file": "src/components/instapulse/reel-card-skeleton.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 20,
+        "file": "src/components/instapulse/reel-card-skeleton.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 20,
+        "file": "src/components/instapulse/reel-card-skeleton.tsx"
+      }
+    ],
+    "src/components/instapulse/reel-card.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 196,
+        "file": "src/components/instapulse/reel-card.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 196,
+        "file": "src/components/instapulse/reel-card.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 186,
+        "file": "src/components/instapulse/reel-card.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 186,
+        "file": "src/components/instapulse/reel-card.tsx"
+      }
+    ],
+    "src/components/instapulse/reels-filters.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 141,
+        "file": "src/components/instapulse/reels-filters.tsx"
+      }
+    ],
+    "src/components/instapulse/reels-grid.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 57,
+        "file": "src/components/instapulse/reels-grid.tsx"
+      }
+    ],
+    "src/components/landing/layout/LandingHeader.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 134,
+        "file": "src/components/landing/layout/LandingHeader.tsx"
+      }
+    ],
+    "src/components/landing/sections/CTASection.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-row without RTL variant: flex-row",
+        "line": 56,
+        "file": "src/components/landing/sections/CTASection.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 56,
+        "file": "src/components/landing/sections/CTASection.tsx"
+      }
+    ],
+    "src/components/landing/sections/FooterSection.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-row without RTL variant: flex-row",
+        "line": 181,
+        "file": "src/components/landing/sections/FooterSection.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 181,
+        "file": "src/components/landing/sections/FooterSection.tsx"
+      }
+    ],
+    "src/components/landing/sections/HeroSection.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-row without RTL variant: flex-row",
+        "line": 92,
+        "file": "src/components/landing/sections/HeroSection.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 92,
+        "file": "src/components/landing/sections/HeroSection.tsx"
+      }
+    ],
+    "src/components/landing/sections/HowItWorksSection.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-row without RTL variant: flex-row",
+        "line": 81,
+        "file": "src/components/landing/sections/HowItWorksSection.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-row without RTL variant: flex-row",
+        "line": 81,
+        "file": "src/components/landing/sections/HowItWorksSection.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 81,
+        "file": "src/components/landing/sections/HowItWorksSection.tsx"
+      }
+    ],
+    "src/components/landing/sections/PricingSection.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-row without RTL variant: flex-row",
+        "line": 126,
+        "file": "src/components/landing/sections/PricingSection.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 126,
+        "file": "src/components/landing/sections/PricingSection.tsx"
+      }
+    ],
+    "src/components/landing/ui/TestimonialCard.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 29,
+        "file": "src/components/landing/ui/TestimonialCard.tsx"
+      }
+    ],
+    "src/components/layout/DashboardLayout.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 24,
+        "file": "src/components/layout/DashboardLayout.tsx"
+      }
+    ],
+    "src/components/layout/EnhancedMobileBottomNavigation.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 138,
+        "file": "src/components/layout/EnhancedMobileBottomNavigation.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 138,
+        "file": "src/components/layout/EnhancedMobileBottomNavigation.tsx"
+      }
+    ],
+    "src/components/layout/FloatingActionButton.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 89,
+        "file": "src/components/layout/FloatingActionButton.tsx"
+      }
+    ],
+    "src/components/layout/MainLayout.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 16,
+        "file": "src/components/layout/MainLayout.tsx"
+      }
+    ],
+    "src/components/layout/NewMainLayout.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 98,
+        "file": "src/components/layout/NewMainLayout.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 98,
+        "file": "src/components/layout/NewMainLayout.tsx"
+      }
+    ],
+    "src/components/layout/Sidebar.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 295,
+        "file": "src/components/layout/Sidebar.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 295,
+        "file": "src/components/layout/Sidebar.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 295,
+        "file": "src/components/layout/Sidebar.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 221,
+        "file": "src/components/layout/Sidebar.tsx"
+      }
+    ],
+    "src/components/leave/MyLeaveRequestsTable.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 160,
+        "file": "src/components/leave/MyLeaveRequestsTable.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 160,
+        "file": "src/components/leave/MyLeaveRequestsTable.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 437,
+        "file": "src/components/leave/MyLeaveRequestsTable.tsx"
+      }
+    ],
+    "src/components/leave/NewLeaveRequestForm.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 165,
+        "file": "src/components/leave/NewLeaveRequestForm.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 293,
+        "file": "src/components/leave/NewLeaveRequestForm.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 277,
+        "file": "src/components/leave/NewLeaveRequestForm.tsx"
+      }
+    ],
+    "src/components/meetings/CreateMeetingForm.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 299,
+        "file": "src/components/meetings/CreateMeetingForm.tsx"
+      }
+    ],
+    "src/components/meetings/CreateMeetingModal.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 288,
+        "file": "src/components/meetings/CreateMeetingModal.tsx"
+      }
+    ],
+    "src/components/meetings/EnhancedMeetingWorkspace.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 432,
+        "file": "src/components/meetings/EnhancedMeetingWorkspace.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 432,
+        "file": "src/components/meetings/EnhancedMeetingWorkspace.tsx"
+      }
+    ],
+    "src/components/meetings/MeetingDetails.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 297,
+        "file": "src/components/meetings/MeetingDetails.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 297,
+        "file": "src/components/meetings/MeetingDetails.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 297,
+        "file": "src/components/meetings/MeetingDetails.tsx"
+      }
+    ],
+    "src/components/meetings/MeetingWorkspace.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 297,
+        "file": "src/components/meetings/MeetingWorkspace.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 297,
+        "file": "src/components/meetings/MeetingWorkspace.tsx"
+      }
+    ],
+    "src/components/MobileDashboard.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 133,
+        "file": "src/components/MobileDashboard.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 133,
+        "file": "src/components/MobileDashboard.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 133,
+        "file": "src/components/MobileDashboard.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 85,
+        "file": "src/components/MobileDashboard.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 85,
+        "file": "src/components/MobileDashboard.tsx"
+      }
+    ],
+    "src/components/profile/ChecklistDetails.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 346,
+        "file": "src/components/profile/ChecklistDetails.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 148,
+        "file": "src/components/profile/ChecklistDetails.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 148,
+        "file": "src/components/profile/ChecklistDetails.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 148,
+        "file": "src/components/profile/ChecklistDetails.tsx"
+      }
+    ],
+    "src/components/profile/ProfileChecklists.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 249,
+        "file": "src/components/profile/ProfileChecklists.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 249,
+        "file": "src/components/profile/ProfileChecklists.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 314,
+        "file": "src/components/profile/ProfileChecklists.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 376,
+        "file": "src/components/profile/ProfileChecklists.tsx"
+      }
+    ],
+    "src/components/profile/ProfileDocuments.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 262,
+        "file": "src/components/profile/ProfileDocuments.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 262,
+        "file": "src/components/profile/ProfileDocuments.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 355,
+        "file": "src/components/profile/ProfileDocuments.tsx"
+      }
+    ],
+    "src/components/profile/ProfileTasksProjects.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 134,
+        "file": "src/components/profile/ProfileTasksProjects.tsx"
+      }
+    ],
+    "src/components/projects/CreateProjectModal.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 196,
+        "file": "src/components/projects/CreateProjectModal.tsx"
+      }
+    ],
+    "src/components/projects/mobile/MobileProjectsList.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 145,
+        "file": "src/components/projects/mobile/MobileProjectsList.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 145,
+        "file": "src/components/projects/mobile/MobileProjectsList.tsx"
+      }
+    ],
+    "src/components/requests/NewRequestForm.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 476,
+        "file": "src/components/requests/NewRequestForm.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 476,
+        "file": "src/components/requests/NewRequestForm.tsx"
+      }
+    ],
+    "src/components/requests/UserRequestsList.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 140,
+        "file": "src/components/requests/UserRequestsList.tsx"
+      }
+    ],
+    "src/components/storyboard/CompleteEditStoryModal.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 147,
+        "file": "src/components/storyboard/CompleteEditStoryModal.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 295,
+        "file": "src/components/storyboard/CompleteEditStoryModal.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 204,
+        "file": "src/components/storyboard/CompleteEditStoryModal.tsx"
+      }
+    ],
+    "src/components/storyboard/CreateStoryDialog.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 289,
+        "file": "src/components/storyboard/CreateStoryDialog.tsx"
+      }
+    ],
+    "src/components/storyboard/IdeaBank.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 126,
+        "file": "src/components/storyboard/IdeaBank.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 126,
+        "file": "src/components/storyboard/IdeaBank.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 126,
+        "file": "src/components/storyboard/IdeaBank.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 126,
+        "file": "src/components/storyboard/IdeaBank.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 271,
+        "file": "src/components/storyboard/IdeaBank.tsx"
+      }
+    ],
+    "src/components/storyboard/StoryCard.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 132,
+        "file": "src/components/storyboard/StoryCard.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 79,
+        "file": "src/components/storyboard/StoryCard.tsx"
+      }
+    ],
+    "src/components/storyboard/StorySlot.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 138,
+        "file": "src/components/storyboard/StorySlot.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 138,
+        "file": "src/components/storyboard/StorySlot.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 138,
+        "file": "src/components/storyboard/StorySlot.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 138,
+        "file": "src/components/storyboard/StorySlot.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 138,
+        "file": "src/components/storyboard/StorySlot.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 143,
+        "file": "src/components/storyboard/StorySlot.tsx"
+      }
+    ],
+    "src/components/storyboard/StoryTypePalette.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 116,
+        "file": "src/components/storyboard/StoryTypePalette.tsx"
+      }
+    ],
+    "src/components/tasks/CreateTaskModal.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 296,
+        "file": "src/components/tasks/CreateTaskModal.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 296,
+        "file": "src/components/tasks/CreateTaskModal.tsx"
+      }
+    ],
+    "src/components/tasks/EditTaskModal.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 346,
+        "file": "src/components/tasks/EditTaskModal.tsx"
+      }
+    ],
+    "src/components/tasks/mobile/MobileTaskCard.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 80,
+        "file": "src/components/tasks/mobile/MobileTaskCard.tsx"
+      }
+    ],
+    "src/components/tasks/MobileTaskDetail.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 190,
+        "file": "src/components/tasks/MobileTaskDetail.tsx"
+      }
+    ],
+    "src/components/tasks/MobileTaskList.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 308,
+        "file": "src/components/tasks/MobileTaskList.tsx"
+      }
+    ],
+    "src/components/tasks/TaskCard.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 155,
+        "file": "src/components/tasks/TaskCard.tsx"
+      }
+    ],
+    "src/components/tasks/TaskDetailView.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 273,
+        "file": "src/components/tasks/TaskDetailView.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 91,
+        "file": "src/components/tasks/TaskDetailView.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 91,
+        "file": "src/components/tasks/TaskDetailView.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 91,
+        "file": "src/components/tasks/TaskDetailView.tsx"
+      }
+    ],
+    "src/components/ui/alert-dialog.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-row without RTL variant: flex-row",
+        "line": 68,
+        "file": "src/components/ui/alert-dialog.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 54,
+        "file": "src/components/ui/alert-dialog.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 54,
+        "file": "src/components/ui/alert-dialog.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 68,
+        "file": "src/components/ui/alert-dialog.tsx"
+      }
+    ],
+    "src/components/ui/calendar.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-row without RTL variant: flex-row",
+        "line": 46,
+        "file": "src/components/ui/calendar.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 46,
+        "file": "src/components/ui/calendar.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 46,
+        "file": "src/components/ui/calendar.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 46,
+        "file": "src/components/ui/calendar.tsx"
+      }
+    ],
+    "src/components/ui/card.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 10,
+        "file": "src/components/ui/card.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 23,
+        "file": "src/components/ui/card.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found self-start without RTL variant: self-start",
+        "line": 56,
+        "file": "src/components/ui/card.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found self-start without RTL variant: self-start",
+        "line": 56,
+        "file": "src/components/ui/card.tsx"
+      }
+    ],
+    "src/components/ui/date-range-picker.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-row without RTL variant: flex-row",
+        "line": 108,
+        "file": "src/components/ui/date-range-picker.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 108,
+        "file": "src/components/ui/date-range-picker.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 108,
+        "file": "src/components/ui/date-range-picker.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 56,
+        "file": "src/components/ui/date-range-picker.tsx"
+      }
+    ],
+    "src/components/ui/dialog.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-row without RTL variant: flex-row",
+        "line": 87,
+        "file": "src/components/ui/dialog.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 73,
+        "file": "src/components/ui/dialog.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 73,
+        "file": "src/components/ui/dialog.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 87,
+        "file": "src/components/ui/dialog.tsx"
+      }
+    ],
+    "src/components/ui/EmptyStates.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 56,
+        "file": "src/components/ui/EmptyStates.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 56,
+        "file": "src/components/ui/EmptyStates.tsx"
+      }
+    ],
+    "src/components/ui/ErrorBoundary.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 185,
+        "file": "src/components/ui/ErrorBoundary.tsx"
+      }
+    ],
+    "src/components/ui/icon-picker.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 274,
+        "file": "src/components/ui/icon-picker.tsx"
+      }
+    ],
+    "src/components/ui/IconPicker.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 262,
+        "file": "src/components/ui/IconPicker.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 210,
+        "file": "src/components/ui/IconPicker.tsx"
+      }
+    ],
+    "src/components/ui/jalali-datetime-picker.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 142,
+        "file": "src/components/ui/jalali-datetime-picker.tsx"
+      }
+    ],
+    "src/components/ui/LoadingStates.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 170,
+        "file": "src/components/ui/LoadingStates.tsx"
+      }
+    ],
+    "src/components/ui/MobileFormModal.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 65,
+        "file": "src/components/ui/MobileFormModal.tsx"
+      }
+    ],
+    "src/components/ui/pull-to-refresh.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 57,
+        "file": "src/components/ui/pull-to-refresh.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 57,
+        "file": "src/components/ui/pull-to-refresh.tsx"
+      }
+    ],
+    "src/components/ui/sheet.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 61,
+        "file": "src/components/ui/sheet.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 61,
+        "file": "src/components/ui/sheet.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 61,
+        "file": "src/components/ui/sheet.tsx"
+      }
+    ],
+    "src/components/ui/skeleton-loaders.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 43,
+        "file": "src/components/ui/skeleton-loaders.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 43,
+        "file": "src/components/ui/skeleton-loaders.tsx"
+      }
+    ],
+    "src/components/ui/TaskCard.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 89,
+        "file": "src/components/ui/TaskCard.tsx"
+      }
+    ],
+    "src/components/ui/toast.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 85,
+        "file": "src/components/ui/toast.tsx"
+      }
+    ],
+    "src/components/wiki/CreateWikiItem.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 195,
+        "file": "src/components/wiki/CreateWikiItem.tsx"
+      }
+    ],
+    "src/components/wiki/EditWikiItem.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 162,
+        "file": "src/components/wiki/EditWikiItem.tsx"
+      }
+    ],
+    "src/components/wiki/PDFViewer.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 89,
+        "file": "src/components/wiki/PDFViewer.tsx"
+      }
+    ],
+    "src/components/wiki/WikiContent.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-row without RTL variant: flex-row",
+        "line": 244,
+        "file": "src/components/wiki/WikiContent.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found flex-col without RTL variant: flex-col",
+        "line": 244,
+        "file": "src/components/wiki/WikiContent.tsx"
+      },
+      {
+        "type": "RTL Issue",
+        "message": "Found items-start without RTL variant: items-start",
+        "line": 216,
+        "file": "src/components/wiki/WikiContent.tsx"
+      }
+    ],
+    "src/components/wiki/WikiFileUpload.tsx": [
+      {
+        "type": "RTL Issue",
+        "message": "Found justify-start without RTL variant: justify-start",
+        "line": 257,
+        "file": "src/components/wiki/WikiFileUpload.tsx"
+      }
+    ]
+  }
+}

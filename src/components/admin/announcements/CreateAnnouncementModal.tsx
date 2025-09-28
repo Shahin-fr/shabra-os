@@ -160,7 +160,7 @@ export function CreateAnnouncementModal({
               onValueChange={(value) => setValue('category', value as any)}
               disabled={isSubmitting}
             >
-              <SelectTrigger>
+              <SelectTrigger className="w-full justify-end text-right">
                 <SelectValue placeholder="دسته‌بندی را انتخاب کنید" />
               </SelectTrigger>
               <SelectContent>
@@ -194,7 +194,7 @@ export function CreateAnnouncementModal({
           </div>
 
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 rtl:space-x-reverse">
               <Switch
                 id="isPinned"
                 checked={isPinned}
@@ -233,7 +233,7 @@ export function CreateAnnouncementModal({
               onClick={handleClose}
               disabled={isSubmitting}
             >
-              <X className="h-4 w-4 ml-2" />
+              <X className="h-4 w-4 ms-2" />
               لغو
             </Button>
           </div>

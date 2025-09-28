@@ -286,7 +286,7 @@ export function CreateStoryDialog({
 
             {/* Action Buttons */}
             <OptimizedMotion
-              className='flex items-center justify-end gap-3 pt-4'
+              className='flex items-center justify-end rtl:justify-start gap-3 pt-4'
               variants={{
                 hidden: { opacity: 0, y: 15 },
                 visible: { opacity: 1, y: 0 },

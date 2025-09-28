@@ -106,7 +106,7 @@ export function QuickTaskWidget({ priority = 'medium' }: QuickTaskWidgetProps) {
             onClick={() => setIsCreating(true)}
             className="w-full font-vazirmatn bg-blue-500 hover:bg-blue-600 text-white"
           >
-            <Plus className="h-4 w-4 ml-2" />
+            <Plus className="h-4 w-4 ms-2" />
             شروع کار جدید
           </Button>
         </motion.div>
@@ -172,7 +172,7 @@ export function QuickTaskWidget({ priority = 'medium' }: QuickTaskWidgetProps) {
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
               ) : (
                 <>
-                  <Plus className="h-4 w-4 ml-2" />
+                  <Plus className="h-4 w-4 ms-2" />
                   ایجاد کار
                 </>
               )}

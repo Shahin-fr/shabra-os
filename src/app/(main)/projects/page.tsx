@@ -221,7 +221,7 @@ const ProjectsPageContent = () => {
               title={canManageProjects ? 'دابل کلیک برای ویرایش' : ''}
             >
               <CardHeader className='pb-3'>
-                <div className='flex items-start justify-between'>
+                <div className='flex items-start rtl:items-start justify-between'>
                   <div className='flex-1'>
                     <CardTitle className='text-lg font-bold text-foreground mb-2 line-clamp-2'>
                       {project.name}

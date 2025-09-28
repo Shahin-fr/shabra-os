@@ -105,7 +105,7 @@ export function AnnouncementCard({ announcement, className }: AnnouncementCardPr
       className
     )}>
       <CardHeader className="pb-3">
-        <div className="flex items-start justify-between">
+        <div className="flex items-start rtl:items-start justify-between">
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-2">
               {announcement.isPinned && (
@@ -152,12 +152,12 @@ export function AnnouncementCard({ announcement, className }: AnnouncementCardPr
             >
               {isExpanded ? (
                 <>
-                  <ChevronUp className="h-4 w-4 ml-1" />
+                  <ChevronUp className="rtl:rotate-180 h-4 w-4 ms-1" />
                   نمایش کمتر
                 </>
               ) : (
                 <>
-                  <ChevronDown className="h-4 w-4 ml-1" />
+                  <ChevronDown className="rtl:rotate-180 h-4 w-4 ms-1" />
                   نمایش بیشتر
                 </>
               )}
@@ -188,7 +188,7 @@ export function AnnouncementCard({ announcement, className }: AnnouncementCardPr
               </div>
             </div>
 
-            <div className="text-right">
+            <div className="text-end">
               <div className="flex items-center gap-1 text-sm text-gray-600">
                 <Calendar className="h-4 w-4" />
                 <span>{formatRelativeTime(announcement.createdAt)}</span>

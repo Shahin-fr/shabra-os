@@ -139,7 +139,7 @@ export function ApproveLeaveModal({
         <div className='space-y-6'>
           {/* Confirmation Message */}
           <div className='p-4 bg-green-50 border border-green-200 rounded-lg'>
-            <div className='flex items-start gap-3'>
+            <div className='flex items-start rtl:items-start gap-3'>
               <CheckCircle className='h-5 w-5 text-green-600 mt-0.5' />
               <div>
                 <h3 className='font-semibold text-green-900 mb-1'>
@@ -233,7 +233,7 @@ export function ApproveLeaveModal({
           </Card>
 
           {/* Action Buttons */}
-          <div className='flex justify-end gap-3 pt-4'>
+          <div className='flex justify-end rtl:justify-start gap-3 pt-4'>
             <Button
               type='button'
               variant='outline'

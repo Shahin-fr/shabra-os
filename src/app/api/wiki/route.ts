@@ -50,18 +50,20 @@ function getAllDocs() {
 
 // GET /api/wiki - Get all wiki items with nested structure
 export async function GET(request: NextRequest) {
+  console.log('[WIKI API] Starting GET /api/wiki request');
+  
   try {
+    
     // Add authorization check
     const { withAuth } = await import('@/lib/middleware/auth-middleware');
 
     // Check authentication
-    console.log('[WIKI API DEBUG] Starting authentication check...');
+    console.log('[WIKI API] Checking authentication...');
     const authResult = await withAuth(request);
-    console.log('[WIKI API DEBUG] Auth result:', {
+    console.log('[WIKI API] Authentication result:', {
       hasResponse: !!authResult.response,
       hasContext: !!authResult.context,
       userId: authResult.context?.userId,
-      roles: authResult.context?.roles,
     });
     
     // If authentication fails, we'll still return public documents
@@ -72,10 +74,12 @@ export async function GET(request: NextRequest) {
 
     // Get all documents and folders from database
     // Return public documents OR documents created by the current user (if authenticated)
-    console.log('[WIKI API DEBUG] Querying database for documents...');
     let dbItems: any[] = [];
     
     try {
+      console.log('[WIKI API] Querying database for documents...');
+      console.log('[WIKI API] User ID:', userId || 'anonymous');
+      
       const whereClause = userId 
         ? {
             OR: [
@@ -85,6 +89,8 @@ export async function GET(request: NextRequest) {
           }
         : { isPublic: true }; // Only public documents if not authenticated
 
+      console.log('[WIKI API] Where clause:', whereClause);
+
       dbItems = await prisma.document.findMany({
         where: whereClause,
         orderBy: [
@@ -92,46 +98,65 @@ export async function GET(request: NextRequest) {
           { order: 'asc' }, // Then by custom order
           { title: 'asc' }, // Finally by title
         ],
+        select: {
+          id: true,
+          title: true,
+          content: true,
+          type: true,
+          parentId: true,
+          authorId: true,
+          isPublic: true,
+          createdAt: true,
+          updatedAt: true,
+          order: true,
+          fileUrl: true,
+          filePublicId: true,
+          fileType: true,
+          originalName: true,
+          fileSize: true,
+        },
       });
-      console.log('[WIKI API DEBUG] Database query successful, found', dbItems.length, 'items');
+      
+      console.log('[WIKI API] Database query successful, found', dbItems.length, 'items');
+      
+      logger.info('Wiki items fetched successfully', {
+        itemCount: dbItems.length,
+        userId: userId || 'anonymous',
+        operation: 'GET /api/wiki',
+        source: 'api/wiki/route.ts',
+      });
     } catch (dbError) {
-      console.error('[WIKI API DEBUG] Database query failed:', dbError);
-      console.log('[WIKI API DEBUG] Continuing with empty database results...');
-      // Continue with empty database results if database is not available
-      dbItems = [];
+      console.error('[WIKI API] Database query failed:', dbError);
+      
+      logger.error('Database query failed for wiki items', {
+        error: dbError as Error,
+        userId: userId || 'anonymous',
+        operation: 'GET /api/wiki',
+        source: 'api/wiki/route.ts',
+      });
+      
+      // Return error response with proper status code
+      const errorResponse = createServerErrorResponse('Failed to fetch wiki items from database');
+      return NextResponse.json(errorResponse, {
+        status: HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
+      });
     }
 
     // Get all markdown documents from content/docs
     let markdownDocs: any[] = [];
     try {
-      logger.warn('=== WIKI API DEBUG ===');
-      logger.warn('Attempting to load markdown docs...');
       markdownDocs = getAllDocs();
-      logger.warn('Markdown docs loaded successfully:', {
+      logger.info('Markdown docs loaded successfully', {
         count: markdownDocs.length,
+        operation: 'GET /api/wiki',
+        source: 'api/wiki/route.ts',
       });
-      if (markdownDocs.length > 0) {
-        logger.warn(
-          'First few docs:',
-          markdownDocs
-            .slice(0, 3)
-            .map(doc => ({ title: doc.title, slug: doc.slug }))
-        );
-      } else {
-        logger.warn('No markdown docs found!');
-      }
-      logger.warn('=== END WIKI API DEBUG ===');
     } catch (error) {
-      logger.error(
-        'Error loading markdown docs:',
-        error instanceof Error ? error : new Error(String(error))
-      );
-      if (error instanceof Error) {
-        logger.error(
-          'Error stack:',
-          new Error(error.stack || 'No stack trace available')
-        );
-      }
+      logger.error('Error loading markdown docs', {
+        error: error as Error,
+        operation: 'GET /api/wiki',
+        source: 'api/wiki/route.ts',
+      });
       markdownDocs = [];
     }
 
@@ -193,19 +218,57 @@ export async function GET(request: NextRequest) {
 
     const tree = buildTree(allItems);
 
-    console.log('[WIKI API DEBUG] Building response with', tree.length, 'root items');
+    logger.info('Wiki tree built successfully', {
+      rootItemCount: tree.length,
+      totalDbItems: dbItems.length,
+      totalMarkdownDocs: markdownDocs.length,
+      operation: 'GET /api/wiki',
+      source: 'api/wiki/route.ts',
+    });
+
     const successResponse = createSuccessResponse(tree);
     return NextResponse.json(successResponse, {
       status: HTTP_STATUS_CODES.OK,
     });
   } catch (error) {
-    logger.error('Error fetching wiki items', error as Error, {
+    console.error('[WIKI API] Main catch block - Error fetching wiki items:', error);
+    console.error('[WIKI API] Error details:', {
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
+      name: error instanceof Error ? error.name : 'Unknown',
+    });
+    
+    logger.error('Error fetching wiki items', {
+      error: error as Error,
       operation: 'GET /api/wiki',
       source: 'api/wiki/route.ts',
     });
-    const errorResponse = createServerErrorResponse('Internal server error');
+    
+    // Ensure we always return a proper JSON error response
+    const errorResponse = createServerErrorResponse(
+      error instanceof Error ? error.message : 'Internal server error'
+    );
+    
+    console.log('[WIKI API] Returning error response:', JSON.stringify(errorResponse, null, 2));
+    
+    // Double-check that the error response has the correct structure
+    if (!errorResponse || typeof errorResponse !== 'object' || !errorResponse.error) {
+      console.error('[WIKI API] ERROR: Invalid error response structure!', errorResponse);
+      // Fallback to a basic error response
+      const fallbackResponse = {
+        success: false,
+        error: {
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Internal server error'
+        }
+      };
+      return NextResponse.json(fallbackResponse, {
+        status: HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
+      });
+    }
+    
     return NextResponse.json(errorResponse, {
-      status: getHttpStatusForErrorCode(errorResponse.error.code),
+      status: HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
     });
   }
 }
@@ -219,48 +282,15 @@ export async function POST(request: NextRequest) {
     // Check authentication - any authenticated user can create wiki items
     const authResult = await withAuth(request);
 
-    // Debug authentication
-    console.log('Auth result:', {
-      hasResponse: !!authResult.response,
-      userId: authResult.context.userId,
-      roles: authResult.context.roles,
-      userEmail: authResult.context.userEmail
-    });
-
     if (authResult.response) {
-      console.log('Auth failed, returning response:', authResult.response);
       return authResult.response;
     }
 
     const body = await request.json();
     const { title, content, type, parentId } = body;
 
-    // CRITICAL: Log the incoming data to see what we're receiving
-    console.log('[WIKI CREATE DEBUG] Incoming data:', {
-      body,
-      title,
-      content,
-      type,
-      parentId,
-      userId: authResult.context.userId,
-      userRoles: authResult.context.roles,
-    });
-
-    logger.info('Wiki item creation request received', {
-      body,
-      userId: authResult.context.userId,
-      userRoles: authResult.context.roles,
-      operation: 'POST /api/wiki',
-      source: 'api/wiki/route.ts',
-    });
-
+    // Validate required fields
     if (!title || !type) {
-      logger.warn('Wiki item creation failed: missing required fields', {
-        body,
-        userId: authResult.context.userId,
-        operation: 'POST /api/wiki',
-        source: 'api/wiki/route.ts',
-      });
       const errorResponse = createValidationErrorResponse(
         'Title and type are required'
       );
@@ -269,47 +299,103 @@ export async function POST(request: NextRequest) {
       });
     }
 
+    // Validate type
+    if (!['FOLDER', 'DOCUMENT'].includes(type)) {
+      const errorResponse = createValidationErrorResponse(
+        'Type must be either FOLDER or DOCUMENT'
+      );
+      return NextResponse.json(errorResponse, {
+        status: getHttpStatusForErrorCode(errorResponse.error.code),
+      });
+    }
+
+    // Validate title length
+    if (title.trim().length < 1 || title.trim().length > 255) {
+      const errorResponse = createValidationErrorResponse(
+        'Title must be between 1 and 255 characters'
+      );
+      return NextResponse.json(errorResponse, {
+        status: getHttpStatusForErrorCode(errorResponse.error.code),
+      });
+    }
+
+    logger.info('Wiki item creation request received', {
+      title: title.trim(),
+      type,
+      parentId,
+      userId: authResult.context.userId,
+      operation: 'POST /api/wiki',
+      source: 'api/wiki/route.ts',
+    });
+
     // Validate parent if provided
     if (parentId) {
-      const parent = await prisma.document.findUnique({
-        where: { id: parentId },
-      });
+      try {
+        const parent = await prisma.document.findUnique({
+          where: { id: parentId },
+          select: { id: true, type: true, authorId: true },
+        });
 
-      if (!parent || parent.type !== 'FOLDER') {
-        const errorResponse = createValidationErrorResponse(
-          'Parent must be a valid folder'
-        );
+        if (!parent) {
+          const errorResponse = createValidationErrorResponse(
+            'Parent folder not found'
+          );
+          return NextResponse.json(errorResponse, {
+            status: getHttpStatusForErrorCode(errorResponse.error.code),
+          });
+        }
+
+        if (parent.type !== 'FOLDER') {
+          const errorResponse = createValidationErrorResponse(
+            'Parent must be a folder'
+          );
+          return NextResponse.json(errorResponse, {
+            status: getHttpStatusForErrorCode(errorResponse.error.code),
+          });
+        }
+
+        // Check if user has access to the parent folder
+        if (parent.authorId !== authResult.context.userId && !authResult.context.roles?.includes('ADMIN')) {
+          const errorResponse = createUnauthorizedErrorResponse(
+            'You do not have permission to create items in this folder'
+          );
+          return NextResponse.json(errorResponse, {
+            status: getHttpStatusForErrorCode(errorResponse.error.code),
+          });
+        }
+      } catch (dbError) {
+        logger.error('Error validating parent folder', {
+          error: dbError as Error,
+          parentId,
+          userId: authResult.context.userId,
+          operation: 'POST /api/wiki',
+          source: 'api/wiki/route.ts',
+        });
+        
+        const errorResponse = createServerErrorResponse('Failed to validate parent folder');
         return NextResponse.json(errorResponse, {
           status: getHttpStatusForErrorCode(errorResponse.error.code),
         });
       }
     }
 
-    // Create the document/folder in a transaction
-    console.log('Creating document with data:', {
-      title,
-      content: type === 'DOCUMENT' ? content : null,
-      type,
-      parentId,
-      authorId: authResult.context.userId,
-      isPublic: false
-    });
-
-    const newItem = await prisma.$transaction(async (tx) => {
-      return await tx.document.create({
-        data: {
-          title,
-          content: type === 'DOCUMENT' ? content : null,
-          type,
-          parentId,
-          authorId: authResult.context.userId,
-          isPublic: false, // Default to private
-        },
-      });
+    // Create the document/folder
+    const newItem = await prisma.document.create({
+      data: {
+        title: title.trim(),
+        content: type === 'DOCUMENT' ? content : null,
+        type,
+        parentId,
+        authorId: authResult.context.userId,
+        isPublic: false, // Default to private
+      },
     });
 
     logger.info('Wiki item created successfully', {
       itemId: newItem.id,
+      title: newItem.title,
+      type: newItem.type,
+      parentId: newItem.parentId,
       userId: authResult.context.userId,
       operation: 'POST /api/wiki',
       source: 'api/wiki/route.ts',
@@ -320,20 +406,8 @@ export async function POST(request: NextRequest) {
       status: HTTP_STATUS_CODES.CREATED,
     });
   } catch (error) {
-    // CRITICAL: Log the full error object to see what's actually happening
-    console.error('[CRITICAL WIKI CREATE ERROR]', {
-      error: error,
-      message: error instanceof Error ? error.message : 'Unknown error',
-      stack: error instanceof Error ? error.stack : undefined,
-      name: error instanceof Error ? error.name : 'Unknown',
-      operation: 'POST /api/wiki',
-      source: 'api/wiki/route.ts',
-    });
-    
     logger.error('Error creating wiki item', {
       error: error as Error,
-      message: error instanceof Error ? error.message : 'Unknown error',
-      stack: error instanceof Error ? error.stack : undefined,
       operation: 'POST /api/wiki',
       source: 'api/wiki/route.ts',
     });

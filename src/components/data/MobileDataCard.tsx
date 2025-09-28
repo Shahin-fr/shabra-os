@@ -65,7 +65,7 @@ export function MobileDataCard({
       >
         <CardContent className='p-4'>
           {/* Header */}
-          <div className='flex items-start justify-between mb-3'>
+          <div className='flex items-start rtl:items-start justify-between mb-3'>
             <div className='flex-1 min-w-0'>
               <h3 className='text-base font-semibold text-gray-900 truncate'>
                 {title}
@@ -76,13 +76,13 @@ export function MobileDataCard({
                 </div>
               )}
             </div>
-            <div className='flex items-center gap-2 ml-2'>
+            <div className='flex items-center gap-2 ms-2'>
               {status && (
                 <Badge variant={status.variant} className='text-xs'>
                   {status.label}
                 </Badge>
               )}
-              {onPress && <ChevronRight className='h-4 w-4 text-gray-400' />}
+              {onPress && <ChevronRight className="rtl:rotate-180 h-4 w-4 text-gray-400" />}
             </div>
           </div>
 
@@ -99,7 +99,7 @@ export function MobileDataCard({
               {metadata.map((item, index) => (
                 <div key={index} className='text-xs'>
                   <span className='text-gray-500'>{item.label}:</span>
-                  <span className='text-gray-900 font-medium mr-1'>
+                  <span className='text-gray-900 font-medium me-1'>
                     {item.value}
                   </span>
                 </div>

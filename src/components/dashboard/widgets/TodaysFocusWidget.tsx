@@ -245,7 +245,7 @@ export function TodaysFocusWidget({ className }: TodaysFocusWidgetProps) {
           >
             <div className="space-y-3">
               {/* Task Header */}
-              <div className="flex items-start justify-between">
+              <div className="flex items-start rtl:items-start justify-between">
                 <div className="flex-1">
                   <h3 className="font-semibold text-gray-900 font-vazirmatn mb-1">
                     {task.title}
@@ -343,7 +343,7 @@ export function TodaysFocusWidget({ className }: TodaysFocusWidgetProps) {
                       disabled={updateTaskMutation.isPending}
                       className="bg-blue-500 hover:bg-blue-600 text-white text-xs px-3 py-1 h-7"
                     >
-                      <Play className="h-3 w-3 ml-1" />
+                      <Play className="h-3 w-3 ms-1" />
                       شروع
                     </Button>
                   )}
@@ -356,7 +356,7 @@ export function TodaysFocusWidget({ className }: TodaysFocusWidgetProps) {
                         disabled={updateTaskMutation.isPending}
                         className="bg-green-500 hover:bg-green-600 text-white text-xs px-3 py-1 h-7"
                       >
-                        <CheckCircle className="h-3 w-3 ml-1" />
+                        <CheckCircle className="h-3 w-3 ms-1" />
                         تکمیل
                       </Button>
                       <Button
@@ -366,7 +366,7 @@ export function TodaysFocusWidget({ className }: TodaysFocusWidgetProps) {
                         variant="outline"
                         className="text-xs px-3 py-1 h-7"
                       >
-                        <Pause className="h-3 w-3 ml-1" />
+                        <Pause className="h-3 w-3 ms-1" />
                         متوقف
                       </Button>
                     </>
@@ -380,7 +380,7 @@ export function TodaysFocusWidget({ className }: TodaysFocusWidgetProps) {
                       variant="outline"
                       className="text-xs px-3 py-1 h-7"
                     >
-                      <Edit3 className="h-3 w-3 ml-1" />
+                      <Edit3 className="h-3 w-3 ms-1" />
                       بازگشت
                     </Button>
                   )}

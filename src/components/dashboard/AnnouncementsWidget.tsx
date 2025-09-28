@@ -123,7 +123,7 @@ export function AnnouncementsWidget({ className }: AnnouncementsWidgetProps) {
           <AlertCircle className="h-8 w-8 mx-auto mb-2 text-red-400" />
           <p className="text-sm text-red-600 mb-3">خطا در بارگذاری اعلان‌ها</p>
           <Button onClick={() => refetch()} variant="outline" size="sm">
-            <RefreshCw className="h-4 w-4 ml-2" />
+            <RefreshCw className="h-4 w-4 ms-2" />
             تلاش مجدد
           </Button>
         </CardContent>
@@ -144,7 +144,7 @@ export function AnnouncementsWidget({ className }: AnnouncementsWidgetProps) {
           <Link href="/announcements">
             <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-800">
               مشاهده همه
-              <ArrowRight className="h-4 w-4 mr-2" />
+              <ArrowRight className="rtl:rotate-180 h-4 w-4 me-2" />
             </Button>
           </Link>
         </div>
@@ -160,7 +160,7 @@ export function AnnouncementsWidget({ className }: AnnouncementsWidgetProps) {
                 transition={{ duration: 0.3, delay: index * 0.1 }}
               >
                 <div className="p-4 border rounded-lg hover:bg-gray-50 transition-colors">
-                  <div className="flex items-start justify-between mb-2">
+                  <div className="flex items-start rtl:items-start justify-between mb-2">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
                         {announcement.isPinned && (

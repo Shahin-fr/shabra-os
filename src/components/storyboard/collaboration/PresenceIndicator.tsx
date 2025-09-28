@@ -22,11 +22,11 @@ export const PresenceIndicator = memo<PresenceIndicatorProps>(
           onClick={onToggle}
           className="relative"
         >
-          <Users className="w-4 h-4 mr-2" />
+          <Users className="w-4 h-4 me-2" />
           <span className="hidden sm:inline">همکاری</span>
 
           {/* Online indicator */}
-          <div className="absolute -top-1 -right-1">
+          <div className="absolute -top-1 -end-1">
             <Circle
               className={cn(
                 'w-3 h-3',
@@ -37,7 +37,7 @@ export const PresenceIndicator = memo<PresenceIndicatorProps>(
 
           {/* User count badge */}
           {onlineUsers.length > 0 && (
-            <Badge variant="secondary" className="ml-2">
+            <Badge variant="secondary" className="ms-2">
               {onlineUsers.length}
             </Badge>
           )}
@@ -51,7 +51,7 @@ export const PresenceIndicator = memo<PresenceIndicatorProps>(
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -10, scale: 0.95 }}
               transition={{ duration: 0.2 }}
-              className="absolute top-full right-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-50"
+              className="absolute top-full end-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-50"
             >
               {/* This will be rendered by the parent component */}
             </OptimizedMotion>

@@ -110,7 +110,7 @@ export function QuickActions() {
                       >
                         <action.icon className={`h-6 w-6 ${action.iconColor}`} />
                       </div>
-                      <div className='flex-1 text-right'>
+                      <div className='flex-1 text-end'>
                         <h4 className='font-semibold text-sm text-foreground group-hover:text-[#ff0a54] transition-colors mb-1'>
                           {action.title}
                         </h4>
@@ -139,7 +139,7 @@ export function QuickActions() {
               variant='outline'
               className='w-full bg-gradient-to-r from-[#ff0a54]/10 to-purple-500/10 border-[#ff0a54]/20 hover:border-[#ff0a54]/30 text-[#ff0a54] hover:text-[#ff0a54] text-sm'
             >
-              <FileText className='h-4 w-4 mr-2' />
+              <FileText className='h-4 w-4 me-2' />
               مشاهده همه گزینه‌ها
             </Button>
           </OptimizedMotion>

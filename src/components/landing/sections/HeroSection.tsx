@@ -96,14 +96,14 @@ export function HeroSection() {
               className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
             >
               درخواست دمو رایگان
-              <ArrowLeft className="mr-2 w-5 h-5" />
+              <ArrowLeft className="rtl:rotate-180 me-2 w-5 h-5" />
             </Button>
             <Button 
               variant="outline" 
               size="lg"
               className="border-2 border-gray-300 hover:border-blue-500 text-gray-700 hover:text-blue-600 px-8 py-4 text-lg font-semibold rounded-xl transition-all duration-300"
             >
-              <Play className="ml-2 w-5 h-5" />
+              <Play className="ms-2 w-5 h-5" />
               تماشای ویدیو
             </Button>
           </motion.div>
@@ -180,7 +180,7 @@ export function HeroSection() {
           <motion.div
             animate={{ y: [0, -10, 0] }}
             transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute -top-4 -right-4 bg-white rounded-xl shadow-lg p-4 border border-gray-200"
+            className="absolute -top-4 -end-4 bg-white rounded-xl shadow-lg p-4 border border-gray-200"
           >
             <div className="text-center">
               <div className="text-2xl font-bold text-green-600">+25%</div>
@@ -191,7 +191,7 @@ export function HeroSection() {
           <motion.div
             animate={{ y: [0, 10, 0] }}
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-            className="absolute -bottom-4 -left-4 bg-white rounded-xl shadow-lg p-4 border border-gray-200"
+            className="absolute -bottom-4 -start-4 bg-white rounded-xl shadow-lg p-4 border border-gray-200"
           >
             <div className="text-center">
               <div className="text-2xl font-bold text-blue-600">-40%</div>

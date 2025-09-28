@@ -250,7 +250,7 @@ export function ProfileDocuments({ userId }: ProfileDocumentsProps) {
       <Card>
         <CardContent className="flex items-center justify-center py-12">
           <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
-          <span className="mr-3 text-gray-600">در حال بارگذاری اسناد...</span>
+          <span className="me-3 text-gray-600">در حال بارگذاری اسناد...</span>
         </CardContent>
       </Card>
     );
@@ -291,7 +291,7 @@ export function ProfileDocuments({ userId }: ProfileDocumentsProps) {
         <Dialog open={isUploadDialogOpen} onOpenChange={setIsUploadDialogOpen}>
           <DialogTrigger asChild>
             <Button type="button">
-              <Plus className="h-4 w-4 mr-2" />
+              <Plus className="h-4 w-4 me-2" />
               آپلود سند جدید
             </Button>
           </DialogTrigger>
@@ -331,7 +331,7 @@ export function ProfileDocuments({ userId }: ProfileDocumentsProps) {
               <div>
                 <Label htmlFor="category">دسته‌بندی</Label>
                 <Select value={documentCategory} onValueChange={setDocumentCategory}>
-                  <SelectTrigger className="mt-1">
+                  <SelectTrigger className="mt-1 w-full justify-end text-right">
                     <SelectValue placeholder="دسته‌بندی را انتخاب کنید" />
                   </SelectTrigger>
                   <SelectContent>
@@ -352,7 +352,7 @@ export function ProfileDocuments({ userId }: ProfileDocumentsProps) {
                   <Progress value={uploadProgress} className="w-full" />
                 </div>
               )}
-              <div className="flex justify-end space-x-2 space-x-reverse">
+              <div className="flex justify-end rtl:justify-start space-x-2 rtl:space-x-reverse space-x-reverse">
                 <Button
                   type="button"
                   variant="outline"
@@ -366,9 +366,9 @@ export function ProfileDocuments({ userId }: ProfileDocumentsProps) {
                   disabled={!selectedFile || !documentName || !documentCategory || uploadMutation.isPending}
                 >
                   {uploadMutation.isPending ? (
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    <Loader2 className="h-4 w-4 me-2 animate-spin" />
                   ) : (
-                    <Upload className="h-4 w-4 mr-2" />
+                    <Upload className="h-4 w-4 me-2" />
                   )}
                   آپلود
                 </Button>
@@ -390,7 +390,7 @@ export function ProfileDocuments({ userId }: ProfileDocumentsProps) {
               هنوز هیچ سندی برای این کاربر آپلود نشده است.
             </p>
             <Button onClick={() => setIsUploadDialogOpen(true)}>
-              <Plus className="h-4 w-4 mr-2" />
+              <Plus className="h-4 w-4 me-2" />
               آپلود اولین سند
             </Button>
           </CardContent>
@@ -445,7 +445,7 @@ export function ProfileDocuments({ userId }: ProfileDocumentsProps) {
                               size="sm"
                               onClick={() => handleDownload(document.url, document.name)}
                             >
-                              <Download className="h-4 w-4 mr-2" />
+                              <Download className="h-4 w-4 me-2" />
                               دانلود
                             </Button>
                             <Button
@@ -454,7 +454,7 @@ export function ProfileDocuments({ userId }: ProfileDocumentsProps) {
                               onClick={() => handleDelete(document.id, document.name)}
                               className="text-red-600 hover:text-red-700 hover:bg-red-50"
                             >
-                              <Trash2 className="h-4 w-4 mr-2" />
+                              <Trash2 className="h-4 w-4 me-2" />
                               حذف
                             </Button>
                           </div>

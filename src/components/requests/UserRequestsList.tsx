@@ -146,7 +146,7 @@ export function UserRequestsList() {
             متأسفانه خطایی در بارگذاری درخواست‌ها رخ داده است.
           </p>
           <Button onClick={() => refetch()} variant='outline'>
-            <RefreshCw className='h-4 w-4 mr-2' />
+            <RefreshCw className='h-4 w-4 me-2' />
             تلاش مجدد
           </Button>
         </CardContent>
@@ -177,7 +177,7 @@ export function UserRequestsList() {
                   value={filters.type}
                   onValueChange={(value) => handleFilterChange('type', value)}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="w-full justify-end text-right">
                     <SelectValue placeholder="انتخاب نوع" />
                   </SelectTrigger>
                   <SelectContent>
@@ -196,7 +196,7 @@ export function UserRequestsList() {
                   value={filters.status}
                   onValueChange={(value) => handleFilterChange('status', value)}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="w-full justify-end text-right">
                     <SelectValue placeholder="انتخاب وضعیت" />
                   </SelectTrigger>
                   <SelectContent>
@@ -230,9 +230,9 @@ export function UserRequestsList() {
                 disabled={isLoading}
               >
                 {isLoading ? (
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  <Loader2 className="h-4 w-4 me-2 animate-spin" />
                 ) : (
-                  <RefreshCw className="h-4 w-4 mr-2" />
+                  <RefreshCw className="h-4 w-4 me-2" />
                 )}
                 بروزرسانی
               </Button>
@@ -242,7 +242,7 @@ export function UserRequestsList() {
             {isLoading ? (
               <div className="flex items-center justify-center py-8">
                 <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
-                <span className="mr-2 text-gray-600">در حال بارگذاری...</span>
+                <span className="me-2 text-gray-600">در حال بارگذاری...</span>
               </div>
             ) : requests?.length === 0 ? (
               <div className="text-center py-8">

@@ -58,7 +58,7 @@ export function CTASection() {
               size="lg" 
               className="bg-white text-blue-600 hover:bg-blue-50 px-8 py-4 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
             >
-              <Phone className="ml-2 w-5 h-5" />
+              <Phone className="ms-2 w-5 h-5" />
               تماس تلفنی
             </Button>
             <Button 
@@ -66,7 +66,7 @@ export function CTASection() {
               size="lg"
               className="border-2 border-white text-white hover:bg-white hover:text-blue-600 px-8 py-4 text-lg font-semibold rounded-xl transition-all duration-300"
             >
-              <MessageCircle className="ml-2 w-5 h-5" />
+              <MessageCircle className="ms-2 w-5 h-5" />
               چت آنلاین
             </Button>
           </div>

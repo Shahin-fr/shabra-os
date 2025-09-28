@@ -131,7 +131,7 @@ export function ProfileTasksProjects({ profileData }: ProfileTasksProjectsProps)
                     key={project.id}
                     className="p-4 border rounded-lg hover:shadow-md transition-shadow"
                   >
-                    <div className="flex items-start justify-between mb-2">
+                    <div className="flex items-start rtl:items-start justify-between mb-2">
                       <h3 className="font-medium text-lg">{project.name}</h3>
                       <Badge variant={getStatusBadgeVariant(project.status)}>
                         {getStatusLabel(project.status)}
@@ -198,7 +198,7 @@ export function ProfileTasksProjects({ profileData }: ProfileTasksProjectsProps)
                 </div>
                 
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger className="w-32">
+                  <SelectTrigger className="w-32 w-full justify-end text-right">
                     <SelectValue placeholder="وضعیت" />
                   </SelectTrigger>
                   <SelectContent>
@@ -210,7 +210,7 @@ export function ProfileTasksProjects({ profileData }: ProfileTasksProjectsProps)
                 </Select>
 
                 <Select value={projectFilter} onValueChange={setProjectFilter}>
-                  <SelectTrigger className="w-40">
+                  <SelectTrigger className="w-40 w-full justify-end text-right">
                     <SelectValue placeholder="پروژه" />
                   </SelectTrigger>
                   <SelectContent>

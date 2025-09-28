@@ -118,7 +118,7 @@ export function QuarterlyGoals() {
               <Target className='h-5 w-5 text-[#ff0a54]' />
             </div>
             اهداف سه‌ماهه (OKRs)
-            <Badge variant='outline' className='ml-auto'>
+            <Badge variant='outline' className='ms-auto'>
               {onTrackGoals}/{totalGoals} طبق برنامه
             </Badge>
           </CardTitle>
@@ -140,7 +140,7 @@ export function QuarterlyGoals() {
                   پیشرفت کلی اهداف
                 </p>
               </div>
-              <div className='text-right'>
+              <div className='text-end'>
                 <div className='text-lg font-semibold text-foreground'>
                   {onTrackGoals}/{totalGoals}
                 </div>
@@ -167,8 +167,8 @@ export function QuarterlyGoals() {
                 transition={{ duration: 0.4, delay: 1.2 + index * 0.1 }}
                 className='group p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 transition-all duration-300'
               >
-                <div className='flex items-start justify-between mb-4'>
-                  <div className='flex items-start gap-3'>
+                <div className='flex items-start rtl:items-start justify-between mb-4'>
+                  <div className='flex items-start rtl:items-start gap-3'>
                     <div
                       className={`w-10 h-10 ${goal.bgColor} rounded-full flex items-center justify-center group-hover:scale-110 transition-transform`}
                     >
@@ -187,7 +187,7 @@ export function QuarterlyGoals() {
                     </div>
                   </div>
 
-                  <div className='text-right'>
+                  <div className='text-end'>
                     <div className='text-lg font-bold text-foreground'>
                       {goal.progress}%
                     </div>
@@ -261,7 +261,7 @@ export function QuarterlyGoals() {
               variant='outline'
               className='w-full bg-white/5 hover:bg-white/10 border-white/20 hover:border-white/30'
             >
-              <Target className='h-4 w-4 mr-2' />
+              <Target className='h-4 w-4 me-2' />
               مدیریت اهداف سه‌ماهه
             </Button>
           </OptimizedMotion>

@@ -43,7 +43,7 @@ export const MobileSelect = forwardRef<HTMLButtonElement, MobileSelectProps>(
             )}
           >
             <SelectValue placeholder={placeholder} />
-            <ChevronDown className='h-4 w-4 opacity-50' />
+            <ChevronDown className="rtl:rotate-180 h-4 w-4 opacity-50" />
           </SelectTrigger>
           <SelectContent className='rounded-xl border-2 border-gray-200 shadow-xl'>
             {children}

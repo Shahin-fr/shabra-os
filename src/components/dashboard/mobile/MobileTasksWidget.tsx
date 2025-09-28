@@ -95,7 +95,7 @@ export function MobileTasksWidget() {
                 transition={{ duration: 0.3, delay: index * 0.1 }}
                 className='p-4 bg-blue-50/50 rounded-xl border border-blue-200/50'
               >
-                <div className='flex items-start justify-between mb-2'>
+                <div className='flex items-start rtl:items-start justify-between mb-2'>
                   <h4 className='font-semibold text-gray-900 text-sm'>
                     {task.title}
                   </h4>
@@ -152,7 +152,7 @@ export function MobileTasksWidget() {
                 }}
                 className='p-4 bg-gray-50/50 rounded-xl border border-gray-200/50'
               >
-                <div className='flex items-start justify-between mb-2'>
+                <div className='flex items-start rtl:items-start justify-between mb-2'>
                   <h4 className='font-semibold text-gray-900 text-sm'>
                     {task.title}
                   </h4>

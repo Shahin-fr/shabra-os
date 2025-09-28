@@ -21,14 +21,14 @@ export default function DocsNotFound() {
       <div className='flex flex-col sm:flex-row gap-4 justify-center'>
         <Button asChild>
           <Link href='/docs' className='inline-flex items-center gap-2'>
-            <ArrowRight className='h-4 w-4 rotate-180' />
+            <ArrowRight className="rtl:rotate-180 h-4 w-4 rotate-180" />
             بازگشت به پایگاه دانش
           </Link>
         </Button>
 
         <Button variant='outline' asChild>
           <Link href='/' className='inline-flex items-center gap-2'>
-            <ArrowRight className='h-4 w-4 rotate-180' />
+            <ArrowRight className="rtl:rotate-180 h-4 w-4 rotate-180" />
             بازگشت به داشبورد
           </Link>
         </Button>

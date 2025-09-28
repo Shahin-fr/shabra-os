@@ -140,7 +140,7 @@ export function StorySlot({
             // Story content - Refined layout
             <div className='flex flex-col h-full'>
               {/* Top row - Status badge in corner and Order number */}
-              <div className='flex items-start justify-between mb-3'>
+              <div className='flex items-start rtl:items-start justify-between mb-3'>
                 {status && (
                   <OptimizedMotion
                     initial={{ opacity: 0, scale: 0.8 }}
@@ -236,7 +236,7 @@ export function StorySlot({
             // Empty slot - Refined layout
             <div className='flex flex-col items-center justify-center h-full text-gray-600'>
               {/* Order number */}
-              <div className='absolute top-3 right-3'>
+              <div className='absolute top-3 end-3'>
                 <OptimizedMotion
                   {...listeners}
                   className='w-8 h-8 bg-[#ff0a54]/30 rounded-full flex items-center justify-center text-sm font-medium text-[#ff0a54] cursor-grab active:cursor-grabbing'

@@ -167,7 +167,7 @@ export function SkeletonChart({
         </div>
 
         {/* Chart Area */}
-        <div className="h-48 flex items-end justify-center gap-2">
+        <div className="h-48 flex items-end rtl:items-start justify-center gap-2">
           {Array.from({ length: 7 }).map((_, i) => (
             <Skeleton
               key={i}

@@ -39,7 +39,7 @@ export const CollaborationPanel = memo<CollaborationPanelProps>(
     const isConnected = connectionStatus === 'connected';
 
     return (
-      <div className={cn('absolute top-full right-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-50', className)}>
+      <div className={cn('absolute top-full end-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-50', className)}>
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-sm flex items-center gap-2">

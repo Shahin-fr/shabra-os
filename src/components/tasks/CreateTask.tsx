@@ -249,7 +249,7 @@ export default function CreateTask({
         <form onSubmit={handleSubmit}>
           <div className='grid gap-4 py-4'>
             <div className='grid grid-cols-4 items-center gap-4'>
-              <Label htmlFor='title' className='text-right'>
+              <Label htmlFor='title' className='text-end'>
                 عنوان
               </Label>
               <Input
@@ -268,7 +268,7 @@ export default function CreateTask({
               />
             </div>
             <div className='grid grid-cols-4 items-center gap-4'>
-              <Label htmlFor='description' className='text-right'>
+              <Label htmlFor='description' className='text-end'>
                 توضیحات
               </Label>
               <Textarea
@@ -287,7 +287,7 @@ export default function CreateTask({
               />
             </div>
             <div className='grid grid-cols-4 items-center gap-4'>
-              <Label htmlFor='assignee' className='text-right'>
+              <Label htmlFor='assignee' className='text-end'>
                 مسئول
               </Label>
               <Select

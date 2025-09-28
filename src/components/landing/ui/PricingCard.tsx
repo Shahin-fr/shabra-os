@@ -42,7 +42,7 @@ export function PricingCard({
     >
       {/* Popular Badge */}
       {popular && (
-        <div className={`absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r ${colorClasses[color]} text-white px-6 py-2 rounded-full text-sm font-semibold`}>
+        <div className={`absolute -top-4 start-1/2 transform -translate-x-1/2 bg-gradient-to-r ${colorClasses[color]} text-white px-6 py-2 rounded-full text-sm font-semibold`}>
           محبوب‌ترین
         </div>
       )}
@@ -56,7 +56,7 @@ export function PricingCard({
         <div className="mb-6">
           <div className="flex items-baseline justify-center">
             <span className="text-4xl font-bold text-gray-900">{price}</span>
-            <span className="text-gray-600 mr-2">تومان</span>
+            <span className="text-gray-600 me-2">تومان</span>
           </div>
           <div className="text-gray-600">{period}</div>
         </div>

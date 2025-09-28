@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma';
 
 export async function GET(request: NextRequest) {
   try {
-    const { context, response } = await withAuth(request, {
+    const { response } = await withAuth(request, {
       requiredRoles: ['ADMIN', 'MANAGER'],
     });
 
@@ -86,7 +86,7 @@ export async function GET(request: NextRequest) {
 
     // Build team activity data - only include users who completed tasks today
     const teamActivity = allUsers
-      .filter(user => tasksByUser[user.id] && tasksByUser[user.id].length > 0)
+      .filter(user => tasksByUser[user.id] && (tasksByUser[user.id]?.length ?? 0) > 0)
       .map((user) => {
         const userTasks = tasksByUser[user.id] || [];
         const latestTask = userTasks[0] || null;

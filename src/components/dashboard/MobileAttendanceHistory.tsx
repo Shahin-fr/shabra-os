@@ -200,7 +200,7 @@ export function MobileAttendanceHistory({
                 </div>
               </div>
               <Button variant='outline' size='sm'>
-                <Download className='h-4 w-4 ml-2' />
+                <Download className='h-4 w-4 ms-2' />
                 گزارش
               </Button>
             </div>

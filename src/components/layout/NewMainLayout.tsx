@@ -90,8 +90,8 @@ const NewMainLayout: React.FC<NewMainLayoutProps> = ({
       <header className="hidden lg:block bg-transparent">
         <div className="flex items-center justify-between px-6 py-4">
           {/* Left side - User Profile */}
-          <div className="flex items-center space-x-4 space-x-reverse">
-            <div className="flex items-center space-x-3 space-x-reverse">
+          <div className="flex items-center space-x-4 rtl:space-x-reverse space-x-reverse">
+            <div className="flex items-center space-x-3 rtl:space-x-reverse space-x-reverse">
               <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-pink-600 rounded-full flex items-center justify-center shadow-md">
                 <User className="w-5 h-5 text-white" />
               </div>
@@ -107,16 +107,16 @@ const NewMainLayout: React.FC<NewMainLayoutProps> = ({
           </div>
 
           {/* Right side - Actions */}
-          <div className="flex items-center space-x-4 space-x-reverse">
+          <div className="flex items-center space-x-4 rtl:space-x-reverse space-x-reverse">
             <button className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
               <Search className="w-5 h-5" />
             </button>
             <button className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors relative">
               <Bell className="w-5 h-5" />
-              <span className="absolute -top-1 -right-1 w-3 h-3 bg-pink-500 rounded-full"></span>
+              <span className="absolute -top-1 -end-1 w-3 h-3 bg-pink-500 rounded-full"></span>
             </button>
             <button className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
-              <Menu className="w-5 h-5" />
+              <Menu className="rtl:rotate-180 w-5 h-5" />
             </button>
           </div>
         </div>
@@ -145,9 +145,9 @@ const NewMainLayout: React.FC<NewMainLayoutProps> = ({
                     key={item.id}
                     href={item.href}
                     className={cn(
-                      'flex items-center space-x-3 space-x-reverse px-4 py-3 rounded-lg transition-all duration-200 group',
+                      'flex items-center space-x-3 rtl:space-x-reverse space-x-reverse px-4 py-3 rounded-lg transition-all duration-200 group',
                       item.isActive
-                        ? 'bg-pink-50 text-pink-700 border-r-2 border-pink-500'
+                        ? 'bg-pink-50 text-pink-700 border-e-2 border-pink-500'
                         : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                     )}
                   >
@@ -172,7 +172,7 @@ const NewMainLayout: React.FC<NewMainLayoutProps> = ({
 
             {/* Sidebar Footer */}
             <div className="mt-8 pt-6 border-t border-gray-200">
-              <div className="flex items-center space-x-3 space-x-reverse">
+              <div className="flex items-center space-x-3 rtl:space-x-reverse space-x-reverse">
                 <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
                   <Settings className="w-4 h-4 text-white" />
                 </div>
@@ -190,11 +190,11 @@ const NewMainLayout: React.FC<NewMainLayoutProps> = ({
         </aside>
 
         {/* Main Content Area */}
-        <main className="flex-1 lg:mr-0">
+        <main className="flex-1 lg:me-0">
           {/* Mobile Header - Mobile Only */}
           <header className="lg:hidden bg-transparent safe-area-top">
             <div className="flex items-center justify-between px-4 py-3">
-              <div className="flex items-center space-x-3 space-x-reverse">
+              <div className="flex items-center space-x-3 rtl:space-x-reverse space-x-reverse">
                 <div className="w-8 h-8 bg-gradient-to-br from-pink-500 to-pink-600 rounded-full flex items-center justify-center">
                   <User className="w-4 h-4 text-white" />
                 </div>
@@ -208,7 +208,7 @@ const NewMainLayout: React.FC<NewMainLayoutProps> = ({
                 </div>
               </div>
               <button className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg">
-                <Menu className="w-5 h-5" />
+                <Menu className="rtl:rotate-180 w-5 h-5" />
               </button>
             </div>
           </header>
@@ -219,7 +219,7 @@ const NewMainLayout: React.FC<NewMainLayoutProps> = ({
           </div>
 
           {/* Mobile Bottom Navigation Placeholder - Mobile Only */}
-          <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg safe-area-bottom">
+          <div className="lg:hidden fixed bottom-0 start-0 end-0 bg-white border-t border-gray-200 shadow-lg safe-area-bottom">
             <div className="flex items-center justify-around py-2">
               {navItems.slice(0, 4).map((item) => {
                 const Icon = item.icon;

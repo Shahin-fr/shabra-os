@@ -70,13 +70,13 @@ export function StoryCard({
       onClick={handleSelect}
     >
       {dragHandle && (
-        <div className='absolute left-2 top-1/2 -translate-y-1/2 z-10'>
+        <div className='absolute start-2 top-1/2 -translate-y-1/2 z-10'>
           {dragHandle}
         </div>
       )}
 
       <CardHeader className='pb-3'>
-        <div className='flex items-start justify-between gap-2'>
+        <div className='flex items-start rtl:items-start justify-between gap-2'>
           <CardTitle className='text-lg font-semibold text-gray-900 line-clamp-2 leading-tight'>
             {story.title}
           </CardTitle>
@@ -129,14 +129,14 @@ export function StoryCard({
         </div>
 
         {/* Action Buttons */}
-        <div className='flex items-center justify-end gap-2 mt-4 pt-3 border-t border-gray-100'>
+        <div className='flex items-center justify-end rtl:justify-start gap-2 mt-4 pt-3 border-t border-gray-100'>
           <Button
             variant='ghost'
             size='sm'
             onClick={handleSelect}
             className='h-8 px-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100'
           >
-            <Eye className='w-4 h-4 mr-1' />
+            <Eye className='w-4 h-4 me-1' />
             مشاهده
           </Button>
 
@@ -146,7 +146,7 @@ export function StoryCard({
             onClick={handleEdit}
             className='h-8 px-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50'
           >
-            <Edit className='w-4 h-4 mr-1' />
+            <Edit className='w-4 h-4 me-1' />
             ویرایش
           </Button>
 
@@ -156,7 +156,7 @@ export function StoryCard({
             onClick={handleDelete}
             className='h-8 px-2 text-red-600 hover:text-red-700 hover:bg-red-50'
           >
-            <Trash2 className='w-4 h-4 mr-1' />
+            <Trash2 className='w-4 h-4 me-1' />
             حذف
           </Button>
         </div>

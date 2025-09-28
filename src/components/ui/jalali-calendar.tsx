@@ -132,7 +132,7 @@ function JalaliCalendar({
           onClick={handlePreviousMonth}
           className='h-8 w-8'
         >
-          <ChevronRightIcon className='h-4 w-4' />
+          <ChevronRight className="rtl:rotate-180"Icon className='h-4 w-4' />
         </Button>
 
         <div className='text-lg font-semibold text-foreground'>
@@ -145,7 +145,7 @@ function JalaliCalendar({
           onClick={handleNextMonth}
           className='h-8 w-8'
         >
-          <ChevronLeftIcon className='h-4 w-4' />
+          <ChevronLeft className="rtl:rotate-180"Icon className='h-4 w-4' />
         </Button>
       </div>
 

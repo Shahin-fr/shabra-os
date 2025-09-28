@@ -130,7 +130,7 @@ export function MobileCreateProject({
         onClick={() => setIsOpen(true)}
         className='bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 shadow-lg h-12 px-6'
       >
-        <Plus className='h-5 w-5 ml-2' />
+        <Plus className='h-5 w-5 ms-2' />
         پروژه جدید
       </Button>
 

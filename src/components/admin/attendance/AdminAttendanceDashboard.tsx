@@ -146,7 +146,7 @@ export function AdminAttendanceDashboard() {
             متأسفانه خطایی در بارگذاری آمار حضور رخ داده است.
           </p>
           <Button onClick={handleRefresh} variant='outline'>
-            <RefreshCw className='h-4 w-4 mr-2' />
+            <RefreshCw className='h-4 w-4 me-2' />
             تلاش مجدد
           </Button>
         </CardContent>
@@ -269,7 +269,7 @@ export function AdminAttendanceDashboard() {
                 size='sm'
                 className='w-full'
               >
-                <Filter className='h-4 w-4 mr-2' />
+                <Filter className='h-4 w-4 me-2' />
                 فیلترها
               </Button>
               <Button
@@ -278,7 +278,7 @@ export function AdminAttendanceDashboard() {
                 size='sm'
                 className='w-full'
               >
-                <Download className='h-4 w-4 mr-2' />
+                <Download className='h-4 w-4 me-2' />
                 صادرات
               </Button>
             </CardContent>
@@ -310,7 +310,7 @@ export function AdminAttendanceDashboard() {
                     value={filters.employeeId}
                     onValueChange={(value) => handleFilterChange('employeeId', value)}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="w-full justify-end text-right">
                       <SelectValue placeholder='انتخاب کارمند' />
                     </SelectTrigger>
                     <SelectContent>
@@ -353,7 +353,7 @@ export function AdminAttendanceDashboard() {
                     value={filters.status}
                     onValueChange={(value) => handleFilterChange('status', value)}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="w-full justify-end text-right">
                       <SelectValue placeholder='انتخاب وضعیت' />
                     </SelectTrigger>
                     <SelectContent>
@@ -367,7 +367,7 @@ export function AdminAttendanceDashboard() {
               </div>
 
               {/* Filter Actions */}
-              <div className='flex justify-end gap-3 mt-6'>
+              <div className='flex justify-end rtl:justify-start gap-3 mt-6'>
                 <Button
                   onClick={handleClearFilters}
                   variant='outline'

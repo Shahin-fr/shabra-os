@@ -52,7 +52,7 @@ export function PullToRefresh({
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className='absolute top-0 left-0 right-0 z-10 flex justify-center pt-2'
+            className='absolute top-0 start-0 end-0 z-10 flex justify-center pt-2'
           >
             <div className='flex flex-col items-center space-y-1'>
               <OptimizedMotion
@@ -159,7 +159,7 @@ export function EnhancedPullToRefresh({
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className='absolute top-0 left-0 right-0 z-10 flex justify-center pt-2'
+            className='absolute top-0 start-0 end-0 z-10 flex justify-center pt-2'
           >
             <div className='flex flex-col items-center space-y-1'>
               <OptimizedMotion

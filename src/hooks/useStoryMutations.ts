@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { format } from 'date-fns';
+import { format } from 'date-fns-jalali';
 
 // import { logger } from '@/lib/logger';
 import { storiesKeys } from '@/lib/queries';

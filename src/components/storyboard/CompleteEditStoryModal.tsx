@@ -194,14 +194,14 @@ export function CompleteEditStoryModal({
                   onClick={handleOpenIdeaBankInternal}
                   className='w-full bg-gradient-to-r from-[#ff0a54] to-[#ff0a54]/80 hover:from-[#ff0a54]/90 hover:to-[#ff0a54]/70 text-white'
                 >
-                  <Lightbulb className='h-4 w-4 ml-2' />
+                  <Lightbulb className='h-4 w-4 ms-2' />
                   مشاهده ایده‌های مرتبط 💡
                 </Button>
 
                 {selectedIdea && (
                   <Card className='border-[#ff0a54]/20 bg-[#ff0a54]/5'>
                     <CardContent className='p-4'>
-                      <div className='flex items-start gap-3'>
+                      <div className='flex items-start rtl:items-start gap-3'>
                         <div className='w-10 h-10 rounded-full bg-gradient-to-br from-[#ff0a54]/20 to-[#ff0a54]/40 flex items-center justify-center flex-shrink-0'>
                           <DynamicLucideIcon
                             iconName={selectedIdea.icon}
@@ -288,11 +288,11 @@ export function CompleteEditStoryModal({
                   onClick={handleDelete}
                   className='text-red-600 border-red-200 hover:bg-red-50'
                 >
-                  <Trash2 className='h-4 w-4 ml-2' />
+                  <Trash2 className='h-4 w-4 ms-2' />
                   حذف استوری
                 </Button>
               )}
-              <div className='flex gap-3 flex-1 justify-end'>
+              <div className='flex gap-3 flex-1 justify-end rtl:justify-start'>
                 <Button
                   variant='outline'
                   onClick={handleClose}
@@ -305,7 +305,7 @@ export function CompleteEditStoryModal({
                   disabled={isLoading || !formData.title.trim()}
                   className='bg-[#ff0a54] hover:bg-[#ff0a54]/90 text-white'
                 >
-                  <Save className='h-4 w-4 ml-2' />
+                  <Save className='h-4 w-4 ms-2' />
                   {isLoading ? 'در حال ذخیره...' : 'ذخیره استوری'}
                 </Button>
               </div>

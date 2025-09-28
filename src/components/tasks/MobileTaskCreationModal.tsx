@@ -164,7 +164,7 @@ export function MobileTaskCreationModal({
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-            className={`fixed bottom-0 left-0 right-0 z-50 bg-white rounded-t-3xl shadow-2xl max-h-[90vh] overflow-hidden ${_className || ''}`}
+            className={`fixed bottom-0 start-0 end-0 z-50 bg-white rounded-t-3xl shadow-2xl max-h-[90vh] overflow-hidden ${_className || ''}`}
           >
             {/* Header */}
             <div className='flex items-center justify-between p-4 border-b border-gray-200'>
@@ -242,7 +242,7 @@ export function MobileTaskCreationModal({
                         {priorityOptions.map(option => (
                           <SelectItem key={option.value} value={option.value}>
                             <div className='flex items-center'>
-                              <Flag className='h-4 w-4 mr-2' />
+                              <Flag className='h-4 w-4 me-2' />
                               {option.label}
                             </div>
                           </SelectItem>
@@ -270,7 +270,7 @@ export function MobileTaskCreationModal({
                         {users.map(user => (
                           <SelectItem key={user.id} value={user.id}>
                             <div className='flex items-center'>
-                              <User className='h-4 w-4 mr-2' />
+                              <User className='h-4 w-4 me-2' />
                               {user.name}
                             </div>
                           </SelectItem>
@@ -297,9 +297,9 @@ export function MobileTaskCreationModal({
                         handleInputChange('dueDate', e.target.value)
                       }
                       min={getMinDate()}
-                      className='h-12 pl-10'
+                      className='h-12 ps-10'
                     />
-                    <Calendar className='absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400' />
+                    <Calendar className='absolute start-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400' />
                   </div>
                 </div>
 
@@ -316,7 +316,7 @@ export function MobileTaskCreationModal({
                         <Badge
                           key={tag}
                           variant='secondary'
-                          className='flex items-center gap-1 pr-2'
+                          className='flex items-center gap-1 pe-2'
                         >
                           <Tag className='h-3 w-3' />
                           {tag}
@@ -383,7 +383,7 @@ export function MobileTaskCreationModal({
                 </div>
 
                 {/* Action Buttons */}
-                <div className='flex space-x-3 space-x-reverse pt-4 border-t border-gray-200'>
+                <div className='flex space-x-3 rtl:space-x-reverse space-x-reverse pt-4 border-t border-gray-200'>
                   <Button
                     type='button'
                     variant='outline'
@@ -400,12 +400,12 @@ export function MobileTaskCreationModal({
                   >
                     {isSubmitting ? (
                       <div className='flex items-center'>
-                        <Clock className='h-4 w-4 mr-2 animate-spin' />
+                        <Clock className='h-4 w-4 me-2 animate-spin' />
                         در حال ایجاد...
                       </div>
                     ) : (
                       <div className='flex items-center'>
-                        <Save className='h-4 w-4 mr-2' />
+                        <Save className='h-4 w-4 me-2' />
                         ایجاد وظیفه
                       </div>
                     )}

@@ -200,7 +200,7 @@ export function CacheStatusIndicator({
               disabled={isLoading}
               className='text-xs'
             >
-              <Trash2 className='h-3 w-3 mr-1' />
+              <Trash2 className='h-3 w-3 me-1' />
               Clear All
             </Button>
 
@@ -211,7 +211,7 @@ export function CacheStatusIndicator({
               disabled={isLoading}
               className='text-xs'
             >
-              <RefreshCw className='h-3 w-3 mr-1' />
+              <RefreshCw className='h-3 w-3 me-1' />
               Clear Calendar
             </Button>
 
@@ -222,7 +222,7 @@ export function CacheStatusIndicator({
               disabled={isLoading}
               className='text-xs'
             >
-              <RefreshCw className='h-3 w-3 mr-1' />
+              <RefreshCw className='h-3 w-3 me-1' />
               Clear Projects
             </Button>
 
@@ -233,7 +233,7 @@ export function CacheStatusIndicator({
               disabled={isLoading}
               className='text-xs'
             >
-              <RefreshCw className='h-3 w-3 mr-1' />
+              <RefreshCw className='h-3 w-3 me-1' />
               Clear Stories
             </Button>
           </div>
@@ -246,7 +246,7 @@ export function CacheStatusIndicator({
               disabled={isLoading}
               className='text-xs'
             >
-              <RefreshCw className='h-3 w-3 mr-1' />
+              <RefreshCw className='h-3 w-3 me-1' />
               Force Refresh Calendar
             </Button>
 
@@ -257,7 +257,7 @@ export function CacheStatusIndicator({
               disabled={isLoading}
               className='text-xs'
             >
-              <RefreshCw className='h-3 w-3 mr-1' />
+              <RefreshCw className='h-3 w-3 me-1' />
               Update Stats
             </Button>
           </div>

@@ -108,21 +108,21 @@ export function StateManagementMonitor() {
         variant='outline'
         size='sm'
         onClick={toggleVisibility}
-        className='fixed bottom-4 right-4 z-50'
+        className='fixed bottom-4 end-4 z-50'
       >
-        <BarChart3 className='h-4 w-4 mr-2' />
+        <BarChart3 className='h-4 w-4 me-2' />
         State Monitor
       </Button>
     );
   }
 
   return (
-    <div className='fixed bottom-4 right-4 z-50 w-96 max-h-[80vh] overflow-y-auto'>
+    <div className='fixed bottom-4 end-4 z-50 w-96 max-h-[80vh] overflow-y-auto'>
       <Card className='shadow-2xl border-2'>
         <CardHeader className='pb-3'>
           <div className='flex items-center justify-between'>
             <CardTitle className='text-lg flex items-center'>
-              <BarChart3 className='h-5 w-5 mr-2' />
+              <BarChart3 className='h-5 w-5 me-2' />
               State Management Monitor
             </CardTitle>
             <Button
@@ -149,9 +149,9 @@ export function StateManagementMonitor() {
                 className='text-xs'
               >
                 {isHealthy ? (
-                  <CheckCircle className='h-3 w-3 mr-1' />
+                  <CheckCircle className='h-3 w-3 me-1' />
                 ) : (
-                  <AlertTriangle className='h-3 w-3 mr-1' />
+                  <AlertTriangle className='h-3 w-3 me-1' />
                 )}
                 {isHealthy ? 'Healthy' : 'Needs Attention'}
               </Badge>
@@ -194,19 +194,19 @@ export function StateManagementMonitor() {
 
           {/* Cache Statistics */}
           <div className='grid grid-cols-2 gap-3 text-sm'>
-            <div className='flex items-center space-x-2'>
+            <div className='flex items-center space-x-2 rtl:space-x-reverse'>
               <Database className='h-4 w-4 text-blue-500' />
               <span>Entries: {cacheStats.totalEntries}</span>
             </div>
-            <div className='flex items-center space-x-2'>
+            <div className='flex items-center space-x-2 rtl:space-x-reverse'>
               <Clock className='h-4 w-4 text-green-500' />
               <span>Hits: {cacheStats.hitCount}</span>
             </div>
-            <div className='flex items-center space-x-2'>
+            <div className='flex items-center space-x-2 rtl:space-x-reverse'>
               <TrendingDown className='h-4 w-4 text-red-500' />
               <span>Misses: {cacheStats.missCount}</span>
             </div>
-            <div className='flex items-center space-x-2'>
+            <div className='flex items-center space-x-2 rtl:space-x-reverse'>
               <Zap className='h-4 w-4 text-yellow-500' />
               <span>
                 Avg Size:{' '}
@@ -225,7 +225,7 @@ export function StateManagementMonitor() {
           {/* Cache Strategy */}
           <div className='space-y-2'>
             <h4 className='font-semibold text-sm'>Cache Strategy</h4>
-            <div className='flex space-x-1'>
+            <div className='flex space-x-1 rtl:space-x-reverse'>
               {(['minimal', 'balanced', 'aggressive'] as const).map(
                 strategy => (
                   <Button
@@ -266,14 +266,14 @@ export function StateManagementMonitor() {
           )}
 
           {/* Cache Actions */}
-          <div className='flex space-x-2'>
+          <div className='flex space-x-2 rtl:space-x-reverse'>
             <Button
               variant='outline'
               size='sm'
               onClick={handleCacheCleanup}
               className='flex-1'
             >
-              <RefreshCw className='h-4 w-4 mr-1' />
+              <RefreshCw className='h-4 w-4 me-1' />
               Cleanup
             </Button>
             <Button
@@ -282,7 +282,7 @@ export function StateManagementMonitor() {
               onClick={handleCacheClear}
               className='flex-1'
             >
-              <Trash2 className='h-4 w-4 mr-1' />
+              <Trash2 className='h-4 w-4 me-1' />
               Clear All
             </Button>
           </div>

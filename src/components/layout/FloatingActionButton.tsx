@@ -77,7 +77,7 @@ export function FloatingActionButton({ className }: FloatingActionButtonProps) {
   };
 
   return (
-    <div className={cn('fixed bottom-20 right-4 z-40', className)}>
+    <div className={cn('fixed bottom-20 end-4 z-40', className)}>
       {/* Action Items */}
       <AnimatePresence>
         {isOpen && (
@@ -86,7 +86,7 @@ export function FloatingActionButton({ className }: FloatingActionButtonProps) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 20 }}
             transition={{ duration: 0.2, staggerChildren: 0.05 }}
-            className='flex flex-col-reverse gap-3 mb-4'
+            className='flex flex-col gap-3 mb-4'
           >
             {fabActions.map((action, index) => {
               const Icon = action.icon;

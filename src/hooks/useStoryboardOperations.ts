@@ -1,4 +1,4 @@
-import { format } from 'date-fns';
+import { format } from 'date-fns-jalali';
 import { useCallback } from 'react';
 
 import { Story } from '@/types/story';

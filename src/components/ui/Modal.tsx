@@ -61,7 +61,7 @@ const Modal: React.FC<ModalProps> = ({
                     ease: "easeOut"
                   }}
                   className={`
-                    fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2
+                    fixed top-1/2 start-1/2 transform -translate-x-1/2 -translate-y-1/2
                     w-full max-w-2xl mx-4 max-h-[90vh] overflow-hidden
                     bg-white/10 backdrop-blur-md border border-white/20
                     rounded-2xl shadow-2xl z-50
@@ -73,7 +73,7 @@ const Modal: React.FC<ModalProps> = ({
                 >
                   {/* Header */}
                   <div className="flex items-center justify-between p-6 border-b border-white/10">
-                    <Dialog.Title className="text-xl font-semibold text-gray-800 text-right">
+                    <Dialog.Title className="text-xl font-semibold text-gray-800 text-end">
                       {title}
                     </Dialog.Title>
                     <Dialog.Close asChild>

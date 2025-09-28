@@ -121,7 +121,7 @@ export function EnhancedMobileBottomNavigation() {
 
   return (
     <motion.div
-      className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-lg border-t border-gray-200/50 pb-safe rounded-t-3xl"
+      className="fixed bottom-0 start-0 end-0 z-50 bg-white/95 backdrop-blur-lg border-t border-gray-200/50 pb-safe rounded-t-3xl"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -164,7 +164,7 @@ export function EnhancedMobileBottomNavigation() {
                   {/* Badge */}
                   {item.badge && item.badge > 0 && (
                     <motion.div
-                      className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium"
+                      className="absolute -top-1 -end-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium"
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       transition={{ delay: 0.1 }}
@@ -187,7 +187,7 @@ export function EnhancedMobileBottomNavigation() {
                 {/* Active indicator */}
                 {isActive && (
                   <motion.div
-                    className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-white rounded-full"
+                    className="absolute -top-1 start-1/2 transform -translate-x-1/2 w-1 h-1 bg-white rounded-full"
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ delay: 0.1 }}
@@ -245,7 +245,7 @@ export function EnhancedMobileBottomNavigation() {
       <AnimatePresence>
         {isFABOpen && (
           <motion.div
-            className="fixed bottom-20 left-4 z-50 flex flex-col gap-2"
+            className="fixed bottom-20 start-4 z-50 flex flex-col gap-2"
             initial={{ opacity: 0, scale: 0.8, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 20 }}
@@ -269,7 +269,7 @@ export function EnhancedMobileBottomNavigation() {
                     <div className={`w-8 h-8 rounded-lg ${action.color} flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-200`}>
                       <Icon className="w-4 h-4 text-white" />
                     </div>
-                    <div className="flex-1 text-right">
+                    <div className="flex-1 text-end">
                       <div className="text-xs font-medium text-gray-700 group-hover:text-gray-900">
                         {action.label}
                       </div>

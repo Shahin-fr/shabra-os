@@ -120,7 +120,7 @@ export function MotivationWidget({ className, variant = 'desktop', priority = 'm
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
-            <div className="flex items-start gap-3">
+            <div className="flex items-start rtl:items-start gap-3">
               {/* Icon */}
               <div className={cn(
                 'p-2 rounded-lg flex-shrink-0',

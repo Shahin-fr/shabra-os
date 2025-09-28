@@ -123,7 +123,7 @@ export function InteractiveCalendarWidget() {
               onClick={() => navigateMonth('prev')}
               className='p-2'
             >
-              <ChevronRight className='h-4 w-4' />
+              <ChevronRight className="rtl:rotate-180 h-4 w-4" />
             </Button>
             <h3 className='text-lg font-semibold text-gray-900'>
               {monthNames[currentMonth]} {currentYear}
@@ -134,7 +134,7 @@ export function InteractiveCalendarWidget() {
               onClick={() => navigateMonth('next')}
               className='p-2'
             >
-              <ChevronLeft className='h-4 w-4' />
+              <ChevronLeft className="rtl:rotate-180 h-4 w-4" />
             </Button>
           </div>
 
@@ -187,7 +187,7 @@ export function InteractiveCalendarWidget() {
                     {eventType && (
                       <div
                         className={`
-                        absolute -top-1 -right-1 w-2 h-2 rounded-full
+                        absolute -top-1 -end-1 w-2 h-2 rounded-full
                         ${getEventColor(eventType)}
                       `}
                       />

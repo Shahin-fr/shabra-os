@@ -244,7 +244,7 @@ export function StoryTypeManager() {
     <div className='space-y-6'>
       {/* Header */}
       <div className='flex items-center justify-between'>
-        <div className='text-right'>
+        <div className='text-end'>
           <h2 className='text-2xl font-bold text-gray-900'>
             مدیریت انواع استوری
           </h2>
@@ -253,7 +253,7 @@ export function StoryTypeManager() {
         <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
           <DialogTrigger asChild>
             <Button className='bg-[#ff0a54] hover:bg-[#ff0a54]/90 text-white'>
-              <Plus className='h-4 w-4 ml-2' />
+              <Plus className='h-4 w-4 ms-2' />
               افزودن نوع جدید
             </Button>
           </DialogTrigger>
@@ -363,7 +363,7 @@ export function StoryTypeManager() {
                       onClick={() => handleEdit(storyType)}
                       className='flex-1'
                     >
-                      <Edit className='h-3 w-3 ml-1' />
+                      <Edit className='h-3 w-3 ms-1' />
                       ویرایش
                     </Button>
                     <Button

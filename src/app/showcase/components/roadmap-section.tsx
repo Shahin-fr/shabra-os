@@ -108,7 +108,7 @@ export default function RoadmapSection() {
         <div className="relative min-h-[800px]">
           {/* Central Track Line - Simple and clean with rounded ends */}
           <div className={`absolute w-1 h-full bg-[#2A2A2A] rounded-full ${
-            isMobile ? 'left-8' : 'left-1/2 transform -translate-x-1/2'
+            isMobile ? 'start-8' : 'start-1/2 transform -translate-x-1/2'
           }`} 
           style={{
             borderRadius: '0.5rem'
@@ -117,7 +117,7 @@ export default function RoadmapSection() {
           {/* Progress Bar - Perfectly aligned with rounded ends */}
           <motion.div
             className={`absolute w-1 h-full rounded-full ${
-              isMobile ? 'left-8' : 'left-1/2'
+              isMobile ? 'start-8' : 'start-1/2'
             }`}
             style={{
               scaleY: scrollYProgress,
@@ -131,9 +131,9 @@ export default function RoadmapSection() {
           {/* Milestone Circles with Perfect Synchronization */}
           <div className="space-y-32">
             {/* Milestone 1 - Positioned at ~20% */}
-            <div className={`relative flex items-center ${isMobile ? 'justify-start' : 'justify-center'}`}>
+            <div className={`relative flex items-center ${isMobile ? 'justify-start rtl:justify-start' : 'justify-center'}`}>
               <div className={`absolute z-20 ${
-                isMobile ? 'left-6' : 'left-1/2 transform -translate-x-1/2'
+                isMobile ? 'start-6' : 'start-1/2 transform -translate-x-1/2'
               }`}>
                 <motion.div
                   className={`rounded-full border-4 border-[#E000A0] bg-[#1A1A1A] flex items-center justify-center shadow-lg relative overflow-hidden ${
@@ -185,7 +185,7 @@ export default function RoadmapSection() {
 
               {/* Card 1 */}
               <motion.div
-                className={`${isMobile ? 'w-full ml-20' : 'w-5/12 ml-auto pl-8'}`}
+                className={`${isMobile ? 'w-full ms-20' : 'w-5/12 ms-auto ps-8'}`}
                 style={{
                   opacity: card1Visible,
                   y: useTransform(card1Visible, [0, 1], [30, 0]),
@@ -200,27 +200,27 @@ export default function RoadmapSection() {
                     Current Phase
                   </div>
                   <h3 className={`text-2xl font-bold text-[#F5F5F5] mb-4 ${
-                    isRTL(phases[0]?.title || '') ? 'text-right' : 'text-left'
+                    isRTL(phases[0]?.title || '') ? 'text-end' : 'text-start'
                   }`}>
                     {phases[0]?.title}
                   </h3>
                   <p className={`text-[#A1A1A1] mb-6 leading-relaxed ${
-                    isRTL(phases[0]?.description || '') ? 'text-right' : 'text-left'
+                    isRTL(phases[0]?.description || '') ? 'text-end' : 'text-start'
                   }`}>
                     {phases[0]?.description}
                   </p>
                   <div className="space-y-3">
                     <h4 className={`text-lg font-semibold text-[#F5F5F5] ${
-                      isRTL('Key Features') ? 'text-right' : 'text-left'
+                      isRTL('Key Features') ? 'text-end' : 'text-start'
                     }`}>
                       Key Features
                     </h4>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       {phases[0]?.features?.map((feature, featureIndex) => (
-                        <div key={featureIndex} className="flex items-start space-x-3 rtl:space-x-reverse">
+                        <div key={featureIndex} className="flex items-start rtl:items-start space-x-3 rtl:space-x-reverse">
                           <div className="w-2 h-2 rounded-full flex-shrink-0 mt-2 bg-[#E000A0]" />
                           <span className={`text-sm text-[#A1A1A1] ${
-                            isRTL(feature) ? 'text-right' : 'text-left'
+                            isRTL(feature) ? 'text-end' : 'text-start'
                           }`}>
                             {feature?.trim()}
                           </span>
@@ -233,9 +233,9 @@ export default function RoadmapSection() {
             </div>
 
             {/* Milestone 2 - Positioned at ~50% */}
-            <div className={`relative flex items-center ${isMobile ? 'justify-start' : 'justify-center'}`}>
+            <div className={`relative flex items-center ${isMobile ? 'justify-start rtl:justify-start' : 'justify-center'}`}>
               <div className={`absolute z-20 ${
-                isMobile ? 'left-6' : 'left-1/2 transform -translate-x-1/2'
+                isMobile ? 'start-6' : 'start-1/2 transform -translate-x-1/2'
               }`}>
                 <motion.div
                   className={`rounded-full border-4 border-[#3B82F6] bg-[#1A1A1A] flex items-center justify-center shadow-lg relative overflow-hidden ${
@@ -287,7 +287,7 @@ export default function RoadmapSection() {
 
               {/* Card 2 */}
               <motion.div
-                className={`${isMobile ? 'w-full ml-20' : 'w-5/12 mr-auto pr-8'}`}
+                className={`${isMobile ? 'w-full ms-20' : 'w-5/12 me-auto pe-8'}`}
                 style={{
                   opacity: card2Visible,
                   y: useTransform(card2Visible, [0, 1], [30, 0]),
@@ -302,27 +302,27 @@ export default function RoadmapSection() {
                     Upcoming
                   </div>
                   <h3 className={`text-2xl font-bold text-[#F5F5F5] mb-4 ${
-                    isRTL(phases[1]?.title || '') ? 'text-right' : 'text-left'
+                    isRTL(phases[1]?.title || '') ? 'text-end' : 'text-start'
                   }`}>
                     {phases[1]?.title}
                   </h3>
                   <p className={`text-[#A1A1A1] mb-6 leading-relaxed ${
-                    isRTL(phases[1]?.description || '') ? 'text-right' : 'text-left'
+                    isRTL(phases[1]?.description || '') ? 'text-end' : 'text-start'
                   }`}>
                     {phases[1]?.description}
                   </p>
                   <div className="space-y-3">
                     <h4 className={`text-lg font-semibold text-[#F5F5F5] ${
-                      isRTL('Key Features') ? 'text-right' : 'text-left'
+                      isRTL('Key Features') ? 'text-end' : 'text-start'
                     }`}>
                       Key Features
                     </h4>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       {phases[1]?.features?.map((feature, featureIndex) => (
-                        <div key={featureIndex} className="flex items-start space-x-3 rtl:space-x-reverse">
+                        <div key={featureIndex} className="flex items-start rtl:items-start space-x-3 rtl:space-x-reverse">
                           <div className="w-2 h-2 rounded-full flex-shrink-0 mt-2 bg-[#3B82F6]" />
                           <span className={`text-sm text-[#A1A1A1] ${
-                            isRTL(feature) ? 'text-right' : 'text-left'
+                            isRTL(feature) ? 'text-end' : 'text-start'
                           }`}>
                             {feature?.trim()}
                           </span>
@@ -335,9 +335,9 @@ export default function RoadmapSection() {
             </div>
 
             {/* Milestone 3 - Positioned at ~80% */}
-            <div className={`relative flex items-center ${isMobile ? 'justify-start' : 'justify-center'}`}>
+            <div className={`relative flex items-center ${isMobile ? 'justify-start rtl:justify-start' : 'justify-center'}`}>
               <div className={`absolute z-20 ${
-                isMobile ? 'left-6' : 'left-1/2 transform -translate-x-1/2'
+                isMobile ? 'start-6' : 'start-1/2 transform -translate-x-1/2'
               }`}>
                 <motion.div
                   className={`rounded-full border-4 border-[#8B5CF6] bg-[#1A1A1A] flex items-center justify-center shadow-lg relative overflow-hidden ${
@@ -389,7 +389,7 @@ export default function RoadmapSection() {
 
               {/* Card 3 */}
               <motion.div
-                className={`${isMobile ? 'w-full ml-20' : 'w-5/12 ml-auto pl-8'}`}
+                className={`${isMobile ? 'w-full ms-20' : 'w-5/12 ms-auto ps-8'}`}
                 style={{
                   opacity: card3Visible,
                   y: useTransform(card3Visible, [0, 1], [30, 0]),
@@ -404,27 +404,27 @@ export default function RoadmapSection() {
                     Future Vision
                   </div>
                   <h3 className={`text-2xl font-bold text-[#F5F5F5] mb-4 ${
-                    isRTL(phases[2]?.title || '') ? 'text-right' : 'text-left'
+                    isRTL(phases[2]?.title || '') ? 'text-end' : 'text-start'
                   }`}>
                     {phases[2]?.title}
                   </h3>
                   <p className={`text-[#A1A1A1] mb-6 leading-relaxed ${
-                    isRTL(phases[2]?.description || '') ? 'text-right' : 'text-left'
+                    isRTL(phases[2]?.description || '') ? 'text-end' : 'text-start'
                   }`}>
                     {phases[2]?.description}
                   </p>
                   <div className="space-y-3">
                     <h4 className={`text-lg font-semibold text-[#F5F5F5] ${
-                      isRTL('Key Features') ? 'text-right' : 'text-left'
+                      isRTL('Key Features') ? 'text-end' : 'text-start'
                     }`}>
                       Key Features
                     </h4>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       {phases[2]?.features?.map((feature, featureIndex) => (
-                        <div key={featureIndex} className="flex items-start space-x-3 rtl:space-x-reverse">
+                        <div key={featureIndex} className="flex items-start rtl:items-start space-x-3 rtl:space-x-reverse">
                           <div className="w-2 h-2 rounded-full flex-shrink-0 mt-2 bg-[#8B5CF6]" />
                           <span className={`text-sm text-[#A1A1A1] ${
-                            isRTL(feature) ? 'text-right' : 'text-left'
+                            isRTL(feature) ? 'text-end' : 'text-start'
                           }`}>
                             {feature?.trim()}
                           </span>

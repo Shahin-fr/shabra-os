@@ -211,7 +211,7 @@ export function ChecklistTemplatesDashboard() {
             {error instanceof Error ? error.message : 'متأسفانه خطایی در بارگذاری قالب‌های چک‌لیست رخ داده است.'}
           </p>
           <Button onClick={() => refetch()} variant="outline">
-            <RefreshCw className="h-4 w-4 mr-2" />
+            <RefreshCw className="h-4 w-4 me-2" />
             تلاش مجدد
           </Button>
         </CardContent>
@@ -227,23 +227,23 @@ export function ChecklistTemplatesDashboard() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
       >
-        <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+        <div className="flex flex-col sm:flex-row gap-4 items-start rtl:items-start sm:items-center justify-between">
           <div className="flex flex-col sm:flex-row gap-4 flex-1">
             {/* Search */}
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <Search className="absolute end-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <Input
                 placeholder="جستجو در قالب‌ها..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pr-10"
+                className="pe-10"
               />
             </div>
 
             {/* Filters */}
             <div className="flex gap-2">
               <Select value={typeFilter} onValueChange={setTypeFilter}>
-                <SelectTrigger className="w-40">
+                <SelectTrigger className="w-40 w-full justify-end text-right">
                   <SelectValue placeholder="نوع قالب" />
                 </SelectTrigger>
                 <SelectContent>
@@ -254,7 +254,7 @@ export function ChecklistTemplatesDashboard() {
               </Select>
 
               <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-32">
+                <SelectTrigger className="w-32 w-full justify-end text-right">
                   <SelectValue placeholder="وضعیت" />
                 </SelectTrigger>
                 <SelectContent>
@@ -267,7 +267,7 @@ export function ChecklistTemplatesDashboard() {
           </div>
 
           <Button onClick={handleCreateTemplate}>
-            <Plus className="h-4 w-4 mr-2" />
+            <Plus className="h-4 w-4 me-2" />
             ایجاد قالب جدید
           </Button>
         </div>
@@ -278,7 +278,7 @@ export function ChecklistTemplatesDashboard() {
         <Card>
           <CardContent className="flex items-center justify-center py-12">
             <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
-            <span className="mr-3 text-gray-600">در حال بارگذاری قالب‌ها...</span>
+            <span className="me-3 text-gray-600">در حال بارگذاری قالب‌ها...</span>
           </CardContent>
         </Card>
       ) : isSuccess && filteredTemplates.length === 0 ? (
@@ -295,7 +295,7 @@ export function ChecklistTemplatesDashboard() {
               }
             </p>
             <Button onClick={handleCreateTemplate}>
-              <Plus className="h-4 w-4 mr-2" />
+              <Plus className="h-4 w-4 me-2" />
               ایجاد اولین قالب
             </Button>
           </CardContent>
@@ -311,7 +311,7 @@ export function ChecklistTemplatesDashboard() {
             >
               <Card className="hover:shadow-lg transition-shadow">
                 <CardHeader>
-                  <div className="flex items-start justify-between">
+                  <div className="flex items-start rtl:items-start justify-between">
                     <div className="flex-1">
                       <CardTitle className="text-lg mb-2">{template.name}</CardTitle>
                       <Badge className={TEMPLATE_TYPE_COLORS[template.type]}>

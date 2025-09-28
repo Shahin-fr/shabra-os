@@ -121,7 +121,7 @@ export function RecentActivityWidget({ className, variant = 'desktop', priority 
         {visibleActivities.map((activity, index) => (
           <motion.div
             key={activity.id}
-            className="flex items-start gap-3 p-3 rounded-xl bg-white/60 border border-white/40 hover:bg-white/80 transition-all duration-200"
+            className="flex items-start rtl:items-start gap-3 p-3 rounded-xl bg-white/60 border border-white/40 hover:bg-white/80 transition-all duration-200"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: index * 0.1, duration: 0.3 }}
@@ -137,7 +137,7 @@ export function RecentActivityWidget({ className, variant = 'desktop', priority 
 
             {/* Content */}
             <div className="flex-1 min-w-0">
-              <div className="flex items-start justify-between gap-2">
+              <div className="flex items-start rtl:items-start justify-between gap-2">
                 <div className="flex-1 min-w-0">
                   <p className={cn(
                     'text-gray-900 font-vazirmatn leading-tight',

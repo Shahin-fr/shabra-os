@@ -514,16 +514,16 @@ export function DesktopAttendanceView({ className }: DesktopAttendanceViewProps)
                 <CardTitle className='text-base'>دسترسی سریع</CardTitle>
               </CardHeader>
               <CardContent className='space-y-2'>
-                <Button variant='outline' className='w-full justify-start'>
-                  <Calendar className='h-4 w-4 mr-2' />
+                <Button variant='outline' className='w-full justify-start rtl:justify-start'>
+                  <Calendar className='h-4 w-4 me-2' />
                   مشاهده تقویم
                 </Button>
-                <Button variant='outline' className='w-full justify-start'>
-                  <TrendingUp className='h-4 w-4 mr-2' />
+                <Button variant='outline' className='w-full justify-start rtl:justify-start'>
+                  <TrendingUp className='h-4 w-4 me-2' />
                   گزارش‌های تفصیلی
                 </Button>
-                <Button variant='outline' className='w-full justify-start'>
-                  <Clock className='h-4 w-4 mr-2' />
+                <Button variant='outline' className='w-full justify-start rtl:justify-start'>
+                  <Clock className='h-4 w-4 me-2' />
                   تنظیمات حضور
                 </Button>
               </CardContent>

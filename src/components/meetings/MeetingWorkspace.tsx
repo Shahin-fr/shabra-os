@@ -294,7 +294,7 @@ export function MeetingWorkspace({ meeting }: MeetingWorkspaceProps) {
           {/* Talking points list */}
           <div className="space-y-3 max-h-96 overflow-y-auto">
             {meeting.talkingPoints.map((point) => (
-              <div key={point.id} className="flex items-start gap-3 p-3 border rounded-lg hover:bg-gray-50 transition-colors">
+              <div key={point.id} className="flex items-start rtl:items-start gap-3 p-3 border rounded-lg hover:bg-gray-50 transition-colors">
                 <button
                   onClick={() => handleToggleTalkingPoint(point.id, point.isCompleted)}
                   className="mt-1"
@@ -338,7 +338,7 @@ export function MeetingWorkspace({ meeting }: MeetingWorkspaceProps) {
               size="sm"
               onClick={() => setIsEditingNotes(!isEditingNotes)}
             >
-              <Edit className="h-4 w-4 ml-1" />
+              <Edit className="h-4 w-4 ms-1" />
               {isEditingNotes ? 'لغو' : 'ویرایش'}
             </Button>
           </div>
@@ -385,7 +385,7 @@ export function MeetingWorkspace({ meeting }: MeetingWorkspaceProps) {
                     className="mt-3"
                     onClick={() => setIsEditingNotes(true)}
                   >
-                    <Plus className="h-4 w-4 ml-1" />
+                    <Plus className="h-4 w-4 ms-1" />
                     اضافه کردن یادداشت
                   </Button>
                 </div>
@@ -418,7 +418,7 @@ export function MeetingWorkspace({ meeting }: MeetingWorkspaceProps) {
             />
             <div className="flex gap-2">
               <Select value={selectedAssignee} onValueChange={setSelectedAssignee}>
-                <SelectTrigger className="flex-1">
+                <SelectTrigger className="flex-1 w-full justify-end text-right">
                   <SelectValue placeholder="انتخاب مسئول..." />
                 </SelectTrigger>
                 <SelectContent>
@@ -442,7 +442,7 @@ export function MeetingWorkspace({ meeting }: MeetingWorkspaceProps) {
           {/* Action items list */}
           <div className="space-y-3 max-h-96 overflow-y-auto">
             {meeting.actionItems.map((item) => (
-              <div key={item.id} className="flex items-start gap-3 p-3 border rounded-lg hover:bg-gray-50 transition-colors">
+              <div key={item.id} className="flex items-start rtl:items-start gap-3 p-3 border rounded-lg hover:bg-gray-50 transition-colors">
                 <button
                   onClick={() => handleToggleActionItem(item.id, item.isCompleted)}
                   className="mt-1"
@@ -473,7 +473,7 @@ export function MeetingWorkspace({ meeting }: MeetingWorkspaceProps) {
                       {item.relatedTaskId ? (
                         <Link href={`/tasks/${item.relatedTaskId}`}>
                           <Button variant="outline" size="sm">
-                            <ExternalLink className="h-3 w-3 ml-1" />
+                            <ExternalLink className="h-3 w-3 ms-1" />
                             تسک
                           </Button>
                         </Link>
@@ -483,7 +483,7 @@ export function MeetingWorkspace({ meeting }: MeetingWorkspaceProps) {
                           size="sm"
                           onClick={() => handleCreateTask(item.id)}
                         >
-                          <Plus className="h-3 w-3 ml-1" />
+                          <Plus className="h-3 w-3 ms-1" />
                           تسک
                         </Button>
                       )}

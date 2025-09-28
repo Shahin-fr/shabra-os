@@ -255,7 +255,7 @@ export function ProfileChecklists({ userId }: ProfileChecklistsProps) {
             متأسفانه خطایی در بارگذاری چک‌لیست‌ها رخ داده است.
           </p>
           <Button onClick={() => refetch()} variant="outline">
-            <RefreshCw className="h-4 w-4 mr-2" />
+            <RefreshCw className="h-4 w-4 me-2" />
             تلاش مجدد
           </Button>
         </CardContent>
@@ -277,7 +277,7 @@ export function ProfileChecklists({ userId }: ProfileChecklistsProps) {
           <Dialog open={isAssignDialogOpen} onOpenChange={setIsAssignDialogOpen}>
             <DialogTrigger asChild>
               <Button>
-                <Plus className="h-4 w-4 mr-2" />
+                <Plus className="h-4 w-4 me-2" />
                 اختصاص چک‌لیست جدید
               </Button>
             </DialogTrigger>
@@ -294,7 +294,7 @@ export function ProfileChecklists({ userId }: ProfileChecklistsProps) {
                     انتخاب قالب
                   </label>
                   <Select value={selectedTemplateId} onValueChange={setSelectedTemplateId}>
-                    <SelectTrigger>
+                    <SelectTrigger className="w-full justify-end text-right">
                       <SelectValue placeholder="قالب چک‌لیست را انتخاب کنید" />
                     </SelectTrigger>
                     <SelectContent>
@@ -311,7 +311,7 @@ export function ProfileChecklists({ userId }: ProfileChecklistsProps) {
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="flex justify-end gap-2">
+                <div className="flex justify-end rtl:justify-start gap-2">
                   <Button
                     variant="outline"
                     onClick={() => setIsAssignDialogOpen(false)}
@@ -323,9 +323,9 @@ export function ProfileChecklists({ userId }: ProfileChecklistsProps) {
                     disabled={!selectedTemplateId || assignMutation.isPending}
                   >
                     {assignMutation.isPending ? (
-                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      <Loader2 className="h-4 w-4 me-2 animate-spin" />
                     ) : (
-                      <Plus className="h-4 w-4 mr-2" />
+                      <Plus className="h-4 w-4 me-2" />
                     )}
                     اختصاص
                   </Button>
@@ -341,7 +341,7 @@ export function ProfileChecklists({ userId }: ProfileChecklistsProps) {
         <Card>
           <CardContent className="flex items-center justify-center py-12">
             <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
-            <span className="mr-3 text-gray-600">در حال بارگذاری چک‌لیست‌ها...</span>
+            <span className="me-3 text-gray-600">در حال بارگذاری چک‌لیست‌ها...</span>
           </CardContent>
         </Card>
       ) : checklists.length === 0 ? (
@@ -356,7 +356,7 @@ export function ProfileChecklists({ userId }: ProfileChecklistsProps) {
             </p>
             {canAssignChecklists && (
               <Button onClick={() => setIsAssignDialogOpen(true)}>
-                <Plus className="h-4 w-4 mr-2" />
+                <Plus className="h-4 w-4 me-2" />
                 اختصاص اولین چک‌لیست
               </Button>
             )}
@@ -373,7 +373,7 @@ export function ProfileChecklists({ userId }: ProfileChecklistsProps) {
             >
               <Card className="hover:shadow-lg transition-shadow">
                 <CardContent className="p-6">
-                  <div className="flex items-start justify-between">
+                  <div className="flex items-start rtl:items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
                         <h3 className="text-lg font-semibold text-gray-900">
@@ -433,7 +433,7 @@ export function ProfileChecklists({ userId }: ProfileChecklistsProps) {
                         size="sm"
                         onClick={() => handleViewChecklist(checklist)}
                       >
-                        <Eye className="h-4 w-4 mr-2" />
+                        <Eye className="h-4 w-4 me-2" />
                         مشاهده
                       </Button>
 
@@ -442,7 +442,7 @@ export function ProfileChecklists({ userId }: ProfileChecklistsProps) {
                           value={checklist.status}
                           onValueChange={(value) => handleUpdateStatus(checklist.id, value)}
                         >
-                          <SelectTrigger className="w-32">
+                          <SelectTrigger className="w-32 w-full justify-end text-right">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>

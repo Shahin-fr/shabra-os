@@ -220,7 +220,7 @@ export function CreateTaskModal({
                     handleInputChange('priority', value as 'low' | 'medium' | 'high')
                   }
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="w-full justify-end text-right w-full justify-end text-right">
                     <SelectValue placeholder='انتخاب اولویت' />
                   </SelectTrigger>
                   <SelectContent>
@@ -241,7 +241,7 @@ export function CreateTaskModal({
                     }
                     disabled={usersLoading}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="text-right w-full justify-end text-right">
                       <SelectValue
                         placeholder={
                           usersLoading ? 'در حال بارگذاری...' : 'انتخاب مسئول'
@@ -267,7 +267,7 @@ export function CreateTaskModal({
                     }
                     disabled={projectsLoading}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="text-right w-full justify-end text-right">
                       <SelectValue
                         placeholder={
                           projectsLoading
@@ -293,9 +293,9 @@ export function CreateTaskModal({
                   <PopoverTrigger asChild>
                     <Button
                       variant='outline'
-                      className='w-full justify-start text-left font-normal border-pink-200 hover:border-pink-300 hover:bg-pink-50'
+                      className='w-full justify-start rtl:justify-start text-start font-normal border-pink-200 hover:border-pink-300 hover:bg-pink-50'
                     >
-                      <CalendarIcon className='mr-2 h-4 w-4 text-pink-600' />
+                      <CalendarIcon className='me-2 h-4 w-4 text-pink-600' />
                       {formData.dueDate
                         ? formatJalaliDate(formData.dueDate, 'yyyy/M/d')
                         : 'انتخاب تاریخ'}
@@ -312,7 +312,7 @@ export function CreateTaskModal({
                 </Popover>
               </div>
 
-              <div className='flex justify-end gap-3 pt-4'>
+              <div className='flex justify-end rtl:justify-start gap-3 pt-4'>
                 <Button
                   type='button'
                   variant='outline'
@@ -328,7 +328,7 @@ export function CreateTaskModal({
                 >
                   {createTaskMutation.isPending ? (
                     <>
-                      <Loader2 className='h-4 w-4 ml-2 animate-spin' />
+                      <Loader2 className='h-4 w-4 ms-2 animate-spin' />
                       در حال ایجاد...
                     </>
                   ) : (

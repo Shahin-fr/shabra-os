@@ -39,7 +39,7 @@ export function LandingHeader() {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.8 }}
-      className="fixed top-0 left-0 right-0 z-50 bg-transparent"
+      className="fixed top-0 start-0 end-0 z-50 bg-transparent"
     >
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
@@ -83,7 +83,7 @@ export function LandingHeader() {
                   : 'text-white hover:text-blue-200'
               }`}
             >
-              <Phone className="w-4 h-4 mr-2" />
+              <Phone className="w-4 h-4 me-2" />
               تماس
             </Button>
             <Button
@@ -123,7 +123,7 @@ export function LandingHeader() {
               <button
                 key={item.name}
                 onClick={() => scrollToSection(item.href)}
-                className="block w-full text-right px-4 py-2 text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-colors duration-300"
+                className="block w-full text-end px-4 py-2 text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-colors duration-300"
               >
                 {item.name}
               </button>
@@ -131,9 +131,9 @@ export function LandingHeader() {
             <div className="px-4 pt-4 border-t border-gray-200 space-y-2">
               <Button
                 variant="ghost"
-                className="w-full justify-start text-gray-700"
+                className="w-full justify-start rtl:justify-start text-gray-700"
               >
-                <Phone className="w-4 h-4 mr-2" />
+                <Phone className="w-4 h-4 me-2" />
                 تماس
               </Button>
               <Button

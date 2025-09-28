@@ -10,13 +10,13 @@ export function MyLatestTask() {
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case 'high':
-        return 'border-l-red-500';
+        return 'border-s-red-500';
       case 'medium':
-        return 'border-l-yellow-500';
+        return 'border-s-yellow-500';
       case 'low':
-        return 'border-l-green-500';
+        return 'border-s-green-500';
       default:
-        return 'border-l-gray-300';
+        return 'border-s-gray-300';
     }
   };
 
@@ -30,7 +30,7 @@ export function MyLatestTask() {
       />
       <CardContent>
         <div
-          className={`p-3 rounded-lg border-l-4 ${getPriorityColor(mockLatestTask.priority)} bg-white/5`}
+          className={`p-3 rounded-lg border-s-4 ${getPriorityColor(mockLatestTask.priority)} bg-white/5`}
         >
           <p className='text-sm font-medium text-gray-900 leading-relaxed'>
             {mockLatestTask.title}

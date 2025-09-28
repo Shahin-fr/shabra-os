@@ -175,7 +175,7 @@ export function MobileTaskList({
           size='sm'
           className='bg-blue-600 hover:bg-blue-700 text-white rounded-full px-4 py-2'
         >
-          <CheckSquare className='h-4 w-4 mr-2' />
+          <CheckSquare className='h-4 w-4 me-2' />
           وظیفه جدید
         </Button>
       </div>
@@ -305,7 +305,7 @@ export function MobileTaskList({
                         onClick={() => handleTaskPress(task)}
                       >
                         <CardHeader className='pb-3'>
-                          <div className='flex items-start justify-between'>
+                          <div className='flex items-start rtl:items-start justify-between'>
                             <div className='flex-1 min-w-0'>
                               <h3 className='font-medium text-gray-900 truncate'>
                                 {task.title}
@@ -315,13 +315,13 @@ export function MobileTaskList({
                               </p>
                             </div>
 
-                            <div className='flex items-center space-x-2 space-x-reverse'>
+                            <div className='flex items-center space-x-2 rtl:space-x-reverse space-x-reverse'>
                               <Badge className={statusInfo.color}>
-                                <StatusIcon className='h-3 w-3 mr-1' />
+                                <StatusIcon className='h-3 w-3 me-1' />
                                 {statusInfo.label}
                               </Badge>
                               <Badge className={priorityInfo.color}>
-                                <PriorityIcon className='h-3 w-3 mr-1' />
+                                <PriorityIcon className='h-3 w-3 me-1' />
                                 {priorityInfo.label}
                               </Badge>
                             </div>
@@ -331,16 +331,16 @@ export function MobileTaskList({
                         {/* Task Meta Information */}
                         <CardContent className='pt-0'>
                           <div className='flex items-center justify-between text-sm text-gray-500'>
-                            <div className='flex items-center space-x-4 space-x-reverse'>
+                            <div className='flex items-center space-x-4 rtl:space-x-reverse space-x-reverse'>
                               {task.assignee && (
                                 <div className='flex items-center'>
-                                  <User className='h-4 w-4 mr-1' />
+                                  <User className='h-4 w-4 me-1' />
                                   <span>{task.assignee.name}</span>
                                 </div>
                               )}
                               {task.dueDate && (
                                 <div className='flex items-center'>
-                                  <Calendar className='h-4 w-4 mr-1' />
+                                  <Calendar className='h-4 w-4 me-1' />
                                   <span>{formatDate(task.dueDate)}</span>
                                 </div>
                               )}
@@ -356,9 +356,9 @@ export function MobileTaskList({
                               }}
                             >
                               {isExpanded ? (
-                                <ChevronUp className='h-4 w-4' />
+                                <ChevronUp className="rtl:rotate-180 h-4 w-4" />
                               ) : (
-                                <ChevronDown className='h-4 w-4' />
+                                <ChevronDown className="rtl:rotate-180 h-4 w-4" />
                               )}
                             </Button>
                           </div>
@@ -417,7 +417,7 @@ export function MobileTaskList({
                                   </div>
 
                                   {/* Action Buttons */}
-                                  <div className='flex space-x-2 space-x-reverse pt-2'>
+                                  <div className='flex space-x-2 rtl:space-x-reverse space-x-reverse pt-2'>
                                     <Button
                                       size='sm'
                                       variant='outline'
@@ -482,7 +482,7 @@ export function MobileTaskList({
             onClick={onCreateTask}
             className='bg-blue-600 hover:bg-blue-700'
           >
-            <CheckSquare className='h-4 w-4 mr-2' />
+            <CheckSquare className='h-4 w-4 me-2' />
             ایجاد وظیفه جدید
           </Button>
         </OptimizedMotion>

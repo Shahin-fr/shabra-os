@@ -239,12 +239,12 @@ export function AnnouncementsWidget({ className, variant = 'desktop' }: Announce
                 transition={{ delay: index * 0.1 }}
                 className={cn(
                   "bg-white rounded-xl p-4 shadow-sm border transition-all duration-200 hover:shadow-md",
-                  !announcement.isRead ? "border-l-4 border-l-blue-500" : "border-gray-200"
+                  !announcement.isRead ? "border-s-4 border-s-blue-500" : "border-gray-200"
                 )}
               >
                 <div className="space-y-3">
                   {/* Announcement Header */}
-                  <div className="flex items-start justify-between">
+                  <div className="flex items-start rtl:items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
                         <span className={cn(
@@ -275,7 +275,7 @@ export function AnnouncementsWidget({ className, variant = 'desktop' }: Announce
                           onClick={() => setExpandedAnnouncement(null)}
                           className="text-xs p-1 h-auto"
                         >
-                          <ChevronUp className="h-3 w-3 ml-1" />
+                          <ChevronUp className="rtl:rotate-180 h-3 w-3 ms-1" />
                           بستن
                         </Button>
                       </div>
@@ -321,7 +321,7 @@ export function AnnouncementsWidget({ className, variant = 'desktop' }: Announce
                         disabled={markAsReadMutation.isPending}
                         className="bg-blue-500 hover:bg-blue-600 text-white text-xs px-3 py-1 h-7"
                       >
-                        <Eye className="h-3 w-3 ml-1" />
+                        <Eye className="h-3 w-3 ms-1" />
                         خواندم
                       </Button>
                     )}

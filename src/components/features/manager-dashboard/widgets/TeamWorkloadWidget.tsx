@@ -47,7 +47,7 @@ const TeamWorkloadWidget = () => {
             </div>
 
             {/* Task Count and Status */}
-            <div className="flex items-center space-x-2 space-x-reverse">
+            <div className="flex items-center space-x-2 rtl:space-x-reverse space-x-reverse">
               <span className={`text-sm font-medium ${getWorkloadColor(member.activeTasks)}`}>
                 {member.activeTasks} وظیفه فعال
               </span>

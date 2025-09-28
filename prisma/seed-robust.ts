@@ -57,7 +57,7 @@ async function main() {
     });
     console.log('✅ Updated employee with manager relationship');
   } catch (error) {
-    console.log('⚠️ Could not set manager relationship (column may not exist yet):', error.message);
+    console.log('⚠️ Could not set manager relationship (column may not exist yet):', (error as Error).message);
   }
 
   console.log('✅ Created users:');

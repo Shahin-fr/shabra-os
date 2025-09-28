@@ -83,14 +83,27 @@ function SortableWikiItem({
     >
       <div
         className={cn(
-          'flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-all duration-200 hover:bg-gray-100',
+          'flex items-center gap-3 p-2 rounded-lg transition-all duration-200 hover:bg-gray-100',
           isSelected && 'bg-pink-100 border border-pink-200',
-          level > 0 && 'mr-4'
+          level > 0 && 'me-4'
         )}
-        onClick={() => onSelect(item.id)}
-        {...attributes}
-        {...listeners}
       >
+        {/* Drag handle - only for non-folder items */}
+        {item.type !== 'FOLDER' && (
+          <div
+            className="cursor-grab active:cursor-grabbing p-1 hover:bg-gray-200 rounded"
+            {...attributes}
+            {...listeners}
+          >
+            <div className="w-1 h-4 bg-gray-300 rounded"></div>
+          </div>
+        )}
+        
+        {/* Clickable content area */}
+        <div
+          className="flex items-center gap-3 flex-1 cursor-pointer"
+          onClick={() => onSelect(item.id)}
+        >
         {item.type === 'FOLDER' ? (
           <>
             <button
@@ -101,9 +114,9 @@ function SortableWikiItem({
               className='p-1 hover:bg-gray-200 rounded transition-colors'
             >
               {isExpanded ? (
-                <ChevronDown className='h-4 w-4 text-gray-600 flex-shrink-0' />
+                <ChevronDown className="rtl:rotate-180 h-4 w-4 text-gray-600 flex-shrink-0" />
               ) : (
-                <ChevronRight className='h-4 w-4 text-gray-600 flex-shrink-0' />
+                <ChevronRight className="rtl:rotate-180 h-4 w-4 text-gray-600 flex-shrink-0" />
               )}
             </button>
             <Folder className='h-4 w-4 text-blue-500 flex-shrink-0' />
@@ -113,6 +126,7 @@ function SortableWikiItem({
         )}
 
         <span className='truncate flex-1'>{item.title}</span>
+        </div>
       </div>
 
       {item.type === 'FOLDER' && isExpanded && hasChildren && (
@@ -147,6 +161,7 @@ export function WikiSidebar({
   const { addToast } = useToast();
   const { data: wikiItems = [], isLoading, error, refetch } = useWikiItems();
   const reorderMutation = useReorderWikiItems();
+
 
   // Drag and drop sensors
   const sensors = useSensors(
@@ -282,7 +297,7 @@ export function WikiSidebar({
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
-              خطا در بارگذاری آیتم‌های ویکی. لطفاً دوباره تلاش کنید.
+              {error.message || 'خطا در بارگذاری آیتم‌های ویکی. لطفاً دوباره تلاش کنید.'}
             </AlertDescription>
           </Alert>
           <Button 
@@ -298,7 +313,7 @@ export function WikiSidebar({
   }
 
   return (
-    <div className='w-full lg:w-80 bg-gray-50/80 backdrop-blur supports-[backdrop-filter]:bg-gray-50/80 rounded-xl border border-gray-200/50 shadow-sm'>
+    <div className='w-full lg:w-80 h-full bg-gray-50/80 backdrop-blur supports-[backdrop-filter]:bg-gray-50/80 rounded-xl border border-gray-200/50 shadow-sm flex flex-col'>
       <div className='p-6 border-b border-gray-200/50'>
         <div className='flex items-center justify-between mb-4'>
           <h2 className='font-bold text-xl text-gray-800'>ساختار شبرالوگ</h2>
@@ -342,13 +357,13 @@ export function WikiSidebar({
         
         {/* Search Input */}
         <div className='relative mb-4'>
-          <Search className='absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400' />
+          <Search className='absolute end-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400' />
           <Input
             type='text'
             placeholder='جستجو در مستندات...'
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className='pr-10 text-right'
+            className='pe-10 text-end'
           />
         </div>
         
@@ -357,21 +372,22 @@ export function WikiSidebar({
         </p>
       </div>
 
-      <div className='p-4'>
-        {filteredItems.length === 0 ? (
-          <div className='text-center py-12 text-gray-500'>
-            <Folder className='h-16 w-16 mx-auto mb-4 opacity-60' />
-            <p className='text-sm font-medium mb-2'>
-              {searchQuery ? 'هیچ نتیجه‌ای یافت نشد' : 'هیچ آیتمی یافت نشد'}
-            </p>
-            <p className='text-xs'>
-              {searchQuery 
-                ? 'سعی کنید کلمات کلیدی دیگری جستجو کنید'
-                : 'برای شروع، اولین پوشه یا مستند را ایجاد کنید'
-              }
-            </p>
-          </div>
-        ) : (
+      <div className='flex-1 overflow-hidden flex flex-col'>
+        <div className='flex-1 overflow-y-auto p-4'>
+          {filteredItems.length === 0 ? (
+            <div className='text-center py-12 text-gray-500'>
+              <Folder className='h-16 w-16 mx-auto mb-4 opacity-60' />
+              <p className='text-sm font-medium mb-2'>
+                {searchQuery ? 'هیچ نتیجه‌ای یافت نشد' : 'هیچ آیتمی یافت نشد'}
+              </p>
+              <p className='text-xs'>
+                {searchQuery 
+                  ? 'سعی کنید کلمات کلیدی دیگری جستجو کنید'
+                  : 'برای شروع، اولین پوشه یا مستند را ایجاد کنید'
+                }
+              </p>
+            </div>
+          ) : (
           <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}
@@ -395,10 +411,11 @@ export function WikiSidebar({
                       onToggleFolder={toggleFolder}
                     />
                   ))}
-              </div>
-            </SortableContext>
-          </DndContext>
-        )}
+                </div>
+              </SortableContext>
+            </DndContext>
+          )}
+        </div>
       </div>
     </div>
   );

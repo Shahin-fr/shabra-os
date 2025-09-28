@@ -205,7 +205,7 @@ export function RecentTeamActivityFeed() {
                 {/* Collapsed View - Always Visible */}
                 <button
                   onClick={() => toggleExpanded(item.id)}
-                  className='w-full p-4 text-right hover:bg-gray-50 transition-colors'
+                  className='w-full p-4 text-end hover:bg-gray-50 transition-colors'
                 >
                   <div className='flex items-center justify-between'>
                     <div className='flex items-center gap-3'>
@@ -214,7 +214,7 @@ export function RecentTeamActivityFeed() {
                           {IconComponent}
                         </div>
                       </div>
-                      <div className='text-right'>
+                      <div className='text-end'>
                         <div className='text-sm font-medium text-gray-900'>
                           {item.user}
                         </div>
@@ -229,7 +229,7 @@ export function RecentTeamActivityFeed() {
                         animate={{ rotate: isExpanded ? 180 : 0 }}
                         transition={{ duration: 0.2 }}
                       >
-                        <ChevronDown className='h-4 w-4 text-gray-400' />
+                        <ChevronDown className="rtl:rotate-180 h-4 w-4 text-gray-400" />
                       </OptimizedMotion>
                     </div>
                   </div>

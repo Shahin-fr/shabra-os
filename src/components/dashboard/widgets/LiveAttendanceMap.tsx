@@ -106,7 +106,7 @@ export function LiveAttendanceMap() {
               <MapPin className='h-5 w-5 text-[#ff0a54]' />
             </div>
             نقشه حضور زنده
-            <Badge variant='outline' className='ml-auto'>
+            <Badge variant='outline' className='ms-auto'>
               {totalPresent}/{totalEmployees}
             </Badge>
           </CardTitle>
@@ -126,7 +126,7 @@ export function LiveAttendanceMap() {
                 </h3>
                 <p className='text-sm text-muted-foreground'>حضور کلی امروز</p>
               </div>
-              <div className='text-right'>
+              <div className='text-end'>
                 <div className='text-lg font-semibold text-foreground'>
                   {totalPresent} نفر
                 </div>
@@ -173,7 +173,7 @@ export function LiveAttendanceMap() {
                     </div>
                   </div>
 
-                  <div className='text-right'>
+                  <div className='text-end'>
                     <div className='text-lg font-bold text-foreground'>
                       {dept.present}/{dept.total}
                     </div>
@@ -219,7 +219,7 @@ export function LiveAttendanceMap() {
               variant='outline'
               className='w-full bg-white/5 hover:bg-white/10 border-white/20 hover:border-white/30'
             >
-              <Users className='h-4 w-4 mr-2' />
+              <Users className='h-4 w-4 me-2' />
               مشاهده جزئیات حضور
             </Button>
           </OptimizedMotion>

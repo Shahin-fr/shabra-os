@@ -16,8 +16,8 @@ export default function ReelCardSkeleton() {
           <div className='absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20' />
 
           {/* Top Overlay Skeleton - User Info */}
-          <div className='absolute top-3 left-3 z-10'>
-            <div className='flex items-start gap-2'>
+          <div className='absolute top-3 start-3 z-10'>
+            <div className='flex items-start rtl:items-start gap-2'>
               {/* Avatar Skeleton */}
               <Skeleton className='h-8 w-8 rounded-full border border-white/30 flex-shrink-0' />
               <div className='flex flex-col justify-center gap-1'>
@@ -30,8 +30,8 @@ export default function ReelCardSkeleton() {
           </div>
 
           {/* Bottom Overlay Skeleton - Stats */}
-          <div className='absolute bottom-3 left-3 right-3 z-10'>
-            <div className='flex items-end justify-between'>
+          <div className='absolute bottom-3 start-3 end-3 z-10'>
+            <div className='flex items-end rtl:items-start justify-between'>
               {/* Left side - Time and Views Skeleton */}
               <div className='flex flex-col gap-1'>
                 <Skeleton className='h-3 w-16 bg-white/30' />

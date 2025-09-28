@@ -97,15 +97,11 @@ function LoginForm() {
       >
         <CardHeader className='pb-6 text-center'>
           <CardTitle className='text-3xl font-bold text-foreground mb-3'>
-            ورود به شبرا OS
+            ورود به سیستم عامل شبرا
           </CardTitle>
           <p className='text-muted-foreground'>
             برای دسترسی به پنل مدیریت وارد شوید
           </p>
-          <div className='mt-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-700'>
-            در حالت تست هستید. برای ورود می‌توانید از هر ایمیل و رمز عبوری
-            استفاده کنید.
-          </div>
         </CardHeader>
 
         <CardContent className='space-y-6'>
@@ -172,7 +168,7 @@ function LoginForm() {
             >
               {isLoading ? (
                 <>
-                  <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                  <Loader2 className='me-2 h-4 w-4 animate-spin' />
                   در حال ورود...
                 </>
               ) : (

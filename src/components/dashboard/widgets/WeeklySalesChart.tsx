@@ -104,8 +104,8 @@ export function WeeklySalesChart() {
               `}</style>
 
               {/* Background decoration */}
-              <div className='absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#ff0a54]/10 to-transparent rounded-full -translate-y-16 translate-x-16'></div>
-              <div className='absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-blue-500/10 to-transparent rounded-full translate-y-12 -translate-x-12'></div>
+              <div className='absolute top-0 end-0 w-32 h-32 bg-gradient-to-br from-[#ff0a54]/10 to-transparent rounded-full -translate-y-16 translate-x-16'></div>
+              <div className='absolute bottom-0 start-0 w-24 h-24 bg-gradient-to-tr from-blue-500/10 to-transparent rounded-full translate-y-12 -translate-x-12'></div>
 
               <svg
                 width='100%'

@@ -131,14 +131,14 @@ export function OfflineIndicator({
         exit={{ y: position === 'top' ? -50 : 50, opacity: 0 }}
         transition={{ duration: 0.3, ease: 'easeOut' }}
         className={cn(
-          'fixed left-0 right-0 z-50 px-4 py-2',
+          'fixed start-0 end-0 z-50 px-4 py-2',
           position === 'top' ? 'top-0' : 'bottom-0',
           className
         )}
       >
         <div
           className={cn(
-            'flex items-center justify-center space-x-2 space-x-reverse rounded-lg px-4 py-2 shadow-lg',
+            'flex items-center justify-center space-x-2 rtl:space-x-reverse space-x-reverse rounded-lg px-4 py-2 shadow-lg',
             config.bgColor,
             config.textColor
           )}

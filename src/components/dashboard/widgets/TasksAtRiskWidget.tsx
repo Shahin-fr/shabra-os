@@ -159,7 +159,7 @@ export function TasksAtRiskWidget({ className, variant = 'desktop' }: TasksAtRis
                     key={task.id}
                     className="p-3 rounded-xl bg-red-50 border border-red-200 hover:bg-red-100 transition-all duration-200"
                   >
-                    <div className="flex items-start gap-3">
+                    <div className="flex items-start rtl:items-start gap-3">
                       {/* Risk Icon */}
                       <div className="flex-shrink-0 mt-1">
                         {getRiskIcon(task.dueDate)}
@@ -167,7 +167,7 @@ export function TasksAtRiskWidget({ className, variant = 'desktop' }: TasksAtRis
 
                       {/* Task Info */}
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-start justify-between gap-2 mb-2">
+                        <div className="flex items-start rtl:items-start justify-between gap-2 mb-2">
                           <h4 className={cn(
                             'font-vazirmatn font-semibold text-gray-900 leading-tight',
                             isMobile ? 'text-sm' : 'text-base'
@@ -233,7 +233,7 @@ export function TasksAtRiskWidget({ className, variant = 'desktop' }: TasksAtRis
                     key={task.id}
                     className="p-3 rounded-xl bg-orange-50 border border-orange-200 hover:bg-orange-100 transition-all duration-200"
                   >
-                    <div className="flex items-start gap-3">
+                    <div className="flex items-start rtl:items-start gap-3">
                       {/* Risk Icon */}
                       <div className="flex-shrink-0 mt-1">
                         {getRiskIcon(task.dueDate)}
@@ -241,7 +241,7 @@ export function TasksAtRiskWidget({ className, variant = 'desktop' }: TasksAtRis
 
                       {/* Task Info */}
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-start justify-between gap-2 mb-2">
+                        <div className="flex items-start rtl:items-start justify-between gap-2 mb-2">
                           <h4 className={cn(
                             'font-vazirmatn font-semibold text-gray-900 leading-tight',
                             isMobile ? 'text-sm' : 'text-base'
@@ -302,7 +302,7 @@ export function TasksAtRiskWidget({ className, variant = 'desktop' }: TasksAtRis
               className="w-full font-vazirmatn text-sm hover:bg-white/80"
             >
               <span>مشاهده همه تسک‌ها</span>
-              <ChevronRight className="h-4 w-4 mr-2" />
+              <ChevronRight className="rtl:rotate-180 h-4 w-4 me-2" />
             </Button>
           </Link>
         </div>

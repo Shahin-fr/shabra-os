@@ -242,7 +242,7 @@ export function MyTasksWidget() {
                       transition={{ delay: 0.3 + index * 0.1 }}
                       className={`p-4 rounded-lg border ${statusInfo.borderColor} ${statusInfo.bgColor} hover:shadow-md transition-all duration-200`}
                     >
-                      <div className='flex items-start justify-between'>
+                      <div className='flex items-start rtl:items-start justify-between'>
                         <div className='flex-1'>
                           <div className='flex items-center gap-2 mb-2'>
                             <StatusIcon className={`h-4 w-4 ${statusInfo.color}`} />
@@ -268,7 +268,7 @@ export function MyTasksWidget() {
                             </div>
                           </div>
                         </div>
-                        <div className='text-left'>
+                        <div className='text-start'>
                           <div className='text-xs text-gray-500 mb-1'>پیشرفت</div>
                           <div className='text-sm font-bold text-[#ff0a54]'>
                             {task.progress}%
@@ -312,7 +312,7 @@ export function MyTasksWidget() {
                       transition={{ delay: 0.3 + index * 0.1 }}
                       className={`p-4 rounded-lg border border-red-200 bg-red-50 hover:shadow-md transition-all duration-200`}
                     >
-                      <div className='flex items-start justify-between'>
+                      <div className='flex items-start rtl:items-start justify-between'>
                         <div className='flex-1'>
                           <div className='flex items-center gap-2 mb-2'>
                             <AlertCircle className="h-4 w-4 text-red-500" />
@@ -341,7 +341,7 @@ export function MyTasksWidget() {
                             </div>
                           </div>
                         </div>
-                        <div className='text-left'>
+                        <div className='text-start'>
                           <div className='text-xs text-gray-500 mb-1'>پیشرفت</div>
                           <div className='text-sm font-bold text-red-600'>
                             {task.progress}%
@@ -380,7 +380,7 @@ export function MyTasksWidget() {
           >
             <div className='flex gap-2'>
               <Button variant='outline' size='sm' className='flex-1 text-xs'>
-                <Plus className='h-3 w-3 ml-1' />
+                <Plus className='h-3 w-3 ms-1' />
                 تسک جدید
               </Button>
               <Button variant='outline' size='sm' className='flex-1 text-xs'>

@@ -95,7 +95,7 @@ export function ChecklistTemplateDetails({ template, onClose }: ChecklistTemplat
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-start justify-between">
+      <div className="flex items-start rtl:items-start justify-between">
         <div className="flex-1">
           <h2 className="text-2xl font-bold text-gray-900 mb-2">{template.name}</h2>
           <div className="flex items-center gap-3">
@@ -205,13 +205,13 @@ export function ChecklistTemplateDetails({ template, onClose }: ChecklistTemplat
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
                 >
-                  <div className="flex items-start gap-4 p-4 border rounded-lg hover:bg-gray-50 transition-colors">
+                  <div className="flex items-start rtl:items-start gap-4 p-4 border rounded-lg hover:bg-gray-50 transition-colors">
                     <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-sm font-medium text-gray-600">
                       {index + 1}
                     </div>
 
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between">
+                      <div className="flex items-start rtl:items-start justify-between">
                         <div className="flex-1">
                           <h4 className="font-medium text-gray-900 mb-1">{task.title}</h4>
                           {task.description && (
@@ -225,7 +225,7 @@ export function ChecklistTemplateDetails({ template, onClose }: ChecklistTemplat
                             </Badge>
                           )}
                           <Badge className={getAssigneeColor(task.defaultAssigneeRole)}>
-                            <AssigneeIcon className="h-3 w-3 mr-1" />
+                            <AssigneeIcon className="h-3 w-3 me-1" />
                             {ASSIGNEE_ROLE_LABELS[task.defaultAssigneeRole]}
                           </Badge>
                         </div>
@@ -277,7 +277,7 @@ export function ChecklistTemplateDetails({ template, onClose }: ChecklistTemplat
       )}
 
       {/* Actions */}
-      <div className="flex justify-end">
+      <div className="flex justify-end rtl:justify-start">
         <Button onClick={onClose}>
           بستن
         </Button>

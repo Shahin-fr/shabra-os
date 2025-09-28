@@ -101,8 +101,8 @@ export function CompanyStatsWidget({
     >
       {/* Background Pattern */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#ff0a54]/5 via-transparent to-purple-500/5 rounded-3xl"></div>
-      <div className="absolute top-0 right-0 w-96 h-96 bg-[#ff0a54]/10 rounded-full -translate-y-48 translate-x-48"></div>
-      <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-500/10 rounded-full translate-y-32 -translate-x-32"></div>
+      <div className="absolute top-0 end-0 w-96 h-96 bg-[#ff0a54]/10 rounded-full -translate-y-48 translate-x-48"></div>
+      <div className="absolute bottom-0 start-0 w-64 h-64 bg-purple-500/10 rounded-full translate-y-32 -translate-x-32"></div>
 
       {/* Content */}
       <div className="relative z-10">

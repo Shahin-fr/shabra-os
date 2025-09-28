@@ -76,7 +76,7 @@ export default function StoryboardPage() {
       >
         <div className='flex items-center justify-between'>
           {/* Title Section - Left Side */}
-          <div className='flex items-center space-x-4 space-x-reverse'>
+          <div className='flex items-center space-x-4 rtl:space-x-reverse space-x-reverse'>
             <OptimizedMotion
               className='w-12 h-12 bg-gradient-to-br from-pink-500 to-pink-600 rounded-xl flex items-center justify-center'
               whileHover={{ scale: 1.05, rotate: 5 }}
@@ -111,9 +111,9 @@ export default function StoryboardPage() {
                 <PopoverTrigger asChild>
                   <Button
                     variant='outline'
-                    className='w-48 justify-start text-left font-normal border-pink-200 hover:border-pink-300 hover:bg-pink-50'
+                    className='w-48 justify-start rtl:justify-start text-start font-normal border-pink-200 hover:border-pink-300 hover:bg-pink-50'
                   >
-                    <CalendarIcon className='mr-2 h-4 w-4 text-pink-600' />
+                    <CalendarIcon className='me-2 h-4 w-4 text-pink-600' />
                     <ClientOnly fallback='...'>
                       {selectedDate
                         ? formatJalaliDate(selectedDate, 'yyyy/M/d')

@@ -192,21 +192,21 @@ export default function TeamPage() {
         {/* Filters */}
         <Card className="mb-6">
           <CardContent className="p-6">
-            <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex flex-col md:flex-row rtl:flex-row-reverse gap-4">
               <div className="flex-1">
                 <div className="relative">
-                  <Search className="h-4 w-4 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                  <Search className="h-4 w-4 absolute end-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                   <Input
                     placeholder="جستجو در نام، ایمیل یا بخش..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pr-10"
+                    className="pe-10"
                   />
                 </div>
               </div>
               
               <Select value={departmentFilter} onValueChange={setDepartmentFilter}>
-                <SelectTrigger className="w-48">
+                <SelectTrigger className="w-48 w-full justify-end text-right">
                   <SelectValue placeholder="فیلتر بر اساس بخش" />
                 </SelectTrigger>
                 <SelectContent>
@@ -224,7 +224,7 @@ export default function TeamPage() {
                 onClick={() => refetch()}
                 disabled={isLoading}
               >
-                <RefreshCw className={`h-4 w-4 ml-2 ${isLoading ? 'animate-spin' : ''}`} />
+                <RefreshCw className={`h-4 w-4 ms-2 ${isLoading ? 'animate-spin' : ''}`} />
                 بروزرسانی
               </Button>
             </div>

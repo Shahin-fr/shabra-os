@@ -88,7 +88,7 @@ export function MobileTasksList() {
             </p>
           </div>
           <Button className='mobile-button bg-[#ff0a54] hover:bg-[#ff0a54]/90 text-white'>
-            <Plus className='h-5 w-5 ml-2' />
+            <Plus className='h-5 w-5 ms-2' />
             تسک جدید
           </Button>
         </div>

@@ -102,7 +102,7 @@ export class ErrorBoundary extends Component<Props, State> {
                 onClick={this.handleRetry}
                 className="w-full font-vazirmatn bg-blue-500 hover:bg-blue-600 text-white"
               >
-                <RefreshCw className="h-4 w-4 ml-2" />
+                <RefreshCw className="h-4 w-4 ms-2" />
                 تلاش مجدد
               </Button>
 
@@ -111,7 +111,7 @@ export class ErrorBoundary extends Component<Props, State> {
                 variant="outline"
                 className="w-full font-vazirmatn"
               >
-                <Home className="h-4 w-4 ml-2" />
+                <Home className="h-4 w-4 ms-2" />
                 بازگشت به صفحه اصلی
               </Button>
             </motion.div>
@@ -119,7 +119,7 @@ export class ErrorBoundary extends Component<Props, State> {
             {/* Error Details (only in development) */}
             {process.env.NODE_ENV === 'development' && this.state.error && (
               <motion.details
-                className="mt-8 text-left"
+                className="mt-8 text-start"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.6 }}
@@ -206,7 +206,7 @@ export function ErrorRetry({ error, onRetry, className }: ErrorRetryProps) {
         variant="outline"
         className="font-vazirmatn border-red-300 text-red-600 hover:bg-red-50"
       >
-        <RefreshCw className="h-4 w-4 ml-2" />
+        <RefreshCw className="h-4 w-4 ms-2" />
         تلاش مجدد
       </Button>
     </motion.div>

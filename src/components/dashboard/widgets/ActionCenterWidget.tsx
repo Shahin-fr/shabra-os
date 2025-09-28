@@ -229,9 +229,9 @@ export const ActionCenterWidget = React.memo(function ActionCenterWidget({ class
             <button
               key={request.id}
               onClick={() => handleRequestClick(request)}
-              className="w-full p-3 rounded-xl bg-white/60 border border-white/40 hover:bg-white/80 transition-all duration-200 text-right"
+              className="w-full p-3 rounded-xl bg-white/60 border border-white/40 hover:bg-white/80 transition-all duration-200 text-end"
             >
-              <div className="flex items-start gap-3">
+              <div className="flex items-start rtl:items-start gap-3">
                 {/* User Avatar */}
                 <div className="flex-shrink-0">
                   {request.requester?.avatar ? (
@@ -300,7 +300,7 @@ export const ActionCenterWidget = React.memo(function ActionCenterWidget({ class
                 className="w-full font-vazirmatn text-sm hover:bg-white/80"
               >
                 <span>مشاهده همه درخواست‌ها</span>
-                <ChevronRight className="h-4 w-4 mr-2" />
+                <ChevronRight className="rtl:rotate-180 h-4 w-4 me-2" />
               </Button>
             </Link>
           </div>
@@ -374,7 +374,7 @@ export const ActionCenterWidget = React.memo(function ActionCenterWidget({ class
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
                   ) : (
                     <>
-                      <CheckCircle className="h-4 w-4 ml-2" />
+                      <CheckCircle className="h-4 w-4 ms-2" />
                       تأیید
                     </>
                   )}
@@ -389,7 +389,7 @@ export const ActionCenterWidget = React.memo(function ActionCenterWidget({ class
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-500"></div>
                   ) : (
                     <>
-                      <XCircle className="h-4 w-4 ml-2" />
+                      <XCircle className="h-4 w-4 ms-2" />
                       رد
                     </>
                   )}

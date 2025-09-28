@@ -274,7 +274,7 @@ export function NewLeaveRequestForm() {
           transition={{ duration: 0.3 }}
         >
           <Card className='p-4 bg-gray-50 border-gray-200'>
-            <div className='flex items-start gap-3'>
+            <div className='flex items-start rtl:items-start gap-3'>
               <CheckCircle className='h-5 w-5 text-green-600 mt-0.5' />
               <div>
                 <h4 className='font-medium text-gray-900 mb-1'>
@@ -290,7 +290,7 @@ export function NewLeaveRequestForm() {
       )}
 
       {/* Submit Button */}
-      <div className='flex justify-end pt-4'>
+      <div className='flex justify-end rtl:justify-start pt-4'>
         <Button
           type='submit'
           disabled={isSubmitting}

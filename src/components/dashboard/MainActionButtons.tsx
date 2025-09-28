@@ -58,7 +58,7 @@ export function MainActionButtons() {
                   >
                     <action.icon className='h-8 w-8 text-white' />
                   </div>
-                  <div className='flex-1 text-right'>
+                  <div className='flex-1 text-end'>
                     <h3 className='text-lg font-semibold text-gray-900 mb-1'>
                       {action.title}
                     </h3>

@@ -77,7 +77,7 @@ const StoryboardCanvas = memo<StoryboardCanvasProps>(
                   size='sm'
                   onClick={onRemoveSlot}
                   disabled={slotCount <= 1}
-                  className='h-10 w-10 p-0 rounded-r-none border-r border-[#fdd6e8]/30 hover:bg-[#fdd6e8]/10 disabled:opacity-50'
+                  className='h-10 w-10 p-0 rounded-e-none border-r border-[#fdd6e8]/30 hover:bg-[#fdd6e8]/10 disabled:opacity-50'
                 >
                   <Minus className='h-4 w-4 text-[#ff0a54]' />
                 </Button>
@@ -88,7 +88,7 @@ const StoryboardCanvas = memo<StoryboardCanvasProps>(
                   variant='ghost'
                   size='sm'
                   onClick={onAddSlot}
-                  className='h-10 w-10 p-0 rounded-l-none border-l border-[#fdd6e8]/30 hover:bg-[#fdd6e8]/10'
+                  className='h-10 w-10 p-0 rounded-s-none border-l border-[#fdd6e8]/30 hover:bg-[#fdd6e8]/10'
                 >
                   <Plus className='h-4 w-4 text-[#ff0a54]' />
                 </Button>
@@ -114,7 +114,7 @@ const StoryboardCanvas = memo<StoryboardCanvasProps>(
                 {storiesErrorDetails && (
                   <details className='text-xs text-red-600 mb-4'>
                     <summary>جزئیات خطا (برای توسعه‌دهنده)</summary>
-                    <pre className='mt-2 text-left direction-ltr'>
+                    <pre className='mt-2 text-start direction-ltr'>
                       {JSON.stringify(storiesErrorDetails, null, 2)}
                     </pre>
                   </details>

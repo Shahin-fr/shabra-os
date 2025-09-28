@@ -135,7 +135,7 @@ export function TestimonialsSection() {
               <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
                 ش
               </div>
-              <div className="text-right">
+              <div className="text-end">
                 <div className="font-semibold text-gray-900">شهریار احمدی</div>
                 <div className="text-gray-600">مدیرعامل گروه صنعتی پارس</div>
               </div>

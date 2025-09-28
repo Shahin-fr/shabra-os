@@ -88,7 +88,7 @@ export function TeamActivityWidget({ className, variant = 'desktop' }: TeamActiv
             key={member.id}
             className="p-3 rounded-xl bg-white/60 border border-white/40 hover:bg-white/80 transition-all duration-200"
           >
-            <div className="flex items-start gap-3">
+            <div className="flex items-start rtl:items-start gap-3">
               {/* Avatar */}
               <div className="flex-shrink-0">
                 {member.avatar ? (
@@ -165,7 +165,7 @@ export function TeamActivityWidget({ className, variant = 'desktop' }: TeamActiv
               className="w-full font-vazirmatn text-sm hover:bg-white/80"
             >
               <span>مشاهده همه فعالیت‌ها</span>
-              <ChevronRight className="h-4 w-4 mr-2" />
+              <ChevronRight className="rtl:rotate-180 h-4 w-4 me-2" />
             </Button>
           </Link>
         </div>

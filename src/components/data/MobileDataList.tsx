@@ -124,12 +124,12 @@ export function MobileDataList({
         <div className='flex gap-3'>
           {searchable && (
             <div className='flex-1 relative'>
-              <Search className='absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400' />
+              <Search className='absolute end-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400' />
               <Input
                 placeholder='جستجو...'
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
-                className='pr-10 h-10'
+                className='pe-10 h-10'
               />
             </div>
           )}

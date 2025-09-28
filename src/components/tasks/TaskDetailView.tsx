@@ -84,11 +84,11 @@ const TaskDetailView: React.FC<TaskDetailViewProps> = ({ task }) => {
   const config = priorityConfig[priority];
 
   return (
-    <div className="space-y-6 text-right">
+    <div className="space-y-6 text-end">
       {/* Task Header */}
       <div className="space-y-4">
         {/* Title and Status */}
-        <div className="flex items-start justify-between">
+        <div className="flex items-start rtl:items-start justify-between">
           <div className="flex items-center gap-3">
             {config.icon}
             <h2 className={`text-2xl font-bold text-gray-800 ${
@@ -189,7 +189,7 @@ const TaskDetailView: React.FC<TaskDetailViewProps> = ({ task }) => {
             <h3 className="text-lg font-semibold text-gray-800">نظرات</h3>
           </div>
           <Button size="sm" variant="outline" className="text-xs">
-            <Plus className="w-4 h-4 ml-1" />
+            <Plus className="w-4 h-4 ms-1" />
             نظر جدید
           </Button>
         </div>
@@ -197,7 +197,7 @@ const TaskDetailView: React.FC<TaskDetailViewProps> = ({ task }) => {
         {/* Placeholder Comments */}
         <div className="space-y-3">
           <div className="bg-gray-50 rounded-lg p-4">
-            <div className="flex items-start gap-3">
+            <div className="flex items-start rtl:items-start gap-3">
               <Avatar alt="علی احمدی" size="sm" />
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
@@ -212,7 +212,7 @@ const TaskDetailView: React.FC<TaskDetailViewProps> = ({ task }) => {
           </div>
 
           <div className="bg-gray-50 rounded-lg p-4">
-            <div className="flex items-start gap-3">
+            <div className="flex items-start rtl:items-start gap-3">
               <Avatar alt="سارا محمدی" size="sm" />
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
@@ -270,7 +270,7 @@ const TaskDetailView: React.FC<TaskDetailViewProps> = ({ task }) => {
       </div>
 
       {/* Action Buttons */}
-      <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200">
+      <div className="flex items-center justify-end rtl:justify-start gap-3 pt-4 border-t border-gray-200">
         <Button variant="outline" size="sm">
           ویرایش
         </Button>

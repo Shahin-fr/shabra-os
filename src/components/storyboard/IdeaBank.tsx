@@ -135,7 +135,7 @@ export function IdeaBank({
                   onClick={handleBackToList}
                   className='p-2 hover:bg-gray-100'
                 >
-                  <ArrowLeft className='h-4 w-4' />
+                  <ArrowLeft className="rtl:rotate-180 h-4 w-4" />
                 </Button>
               )}
               <div className='flex items-center gap-2'>
@@ -178,12 +178,12 @@ export function IdeaBank({
                   <div className='p-6 border-b border-gray-100 space-y-4'>
                     {/* Search */}
                     <div className='relative'>
-                      <Search className='absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400' />
+                      <Search className='absolute end-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400' />
                       <Input
                         placeholder='جستجو در ایده‌های استوری...'
                         value={searchQuery}
                         onChange={e => setSearchQuery(e.target.value)}
-                        className='pr-10 bg-gray-50 border-gray-200 focus:border-[#ff0a54]/50'
+                        className='pe-10 bg-gray-50 border-gray-200 focus:border-[#ff0a54]/50'
                       />
                     </div>
 
@@ -268,7 +268,7 @@ export function IdeaBank({
                                 onClick={() => handleIdeaSelect(idea)}
                               >
                                 <CardContent className='p-4'>
-                                  <div className='flex items-start gap-3'>
+                                  <div className='flex items-start rtl:items-start gap-3'>
                                     <div className='w-10 h-10 rounded-full bg-gradient-to-br from-[#ff0a54]/20 to-[#ff0a54]/40 flex items-center justify-center flex-shrink-0'>
                                       <DynamicLucideIcon
                                         iconName={idea.icon}

@@ -19,7 +19,7 @@ export function RecentActivity() {
           {mockActivities.map(activity => (
             <div
               key={activity.id}
-              className='flex items-start gap-3 p-3 rounded-lg hover:bg-white/5 transition-colors duration-200'
+              className='flex items-start rtl:items-start gap-3 p-3 rounded-lg hover:bg-white/5 transition-colors duration-200'
             >
               <div className='w-2 h-2 bg-[#ff0a54] rounded-full mt-2 flex-shrink-0'></div>
               <div className='flex-1 min-w-0'>

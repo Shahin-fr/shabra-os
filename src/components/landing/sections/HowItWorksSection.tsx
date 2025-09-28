@@ -79,7 +79,7 @@ export function HowItWorksSection() {
             transition={{ duration: 0.8, delay: index * 0.2 }}
             viewport={{ once: true }}
             className={`flex flex-col lg:flex-row items-center gap-8 ${
-              index % 2 === 1 ? 'lg:flex-row-reverse' : ''
+              index % 2 === 1 ? 'lg:flex-row' : ''
             }`}
           >
             {/* Content */}
@@ -139,7 +139,7 @@ export function HowItWorksSection() {
                 viewport={{ once: true }}
                 className="hidden lg:block"
               >
-                <ArrowRight className="w-8 h-8 text-gray-400" />
+                <ArrowRight className="rtl:rotate-180 w-8 h-8 text-gray-400" />
               </motion.div>
             )}
           </motion.div>

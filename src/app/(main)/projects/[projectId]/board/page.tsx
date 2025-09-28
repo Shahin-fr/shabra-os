@@ -420,7 +420,7 @@ export default function BoardPage() {
                 onClick={() => router.back()}
                 className="text-pink-600 hover:text-pink-700 hover:bg-pink-50"
               >
-                <ArrowRight className="w-4 h-4 ml-2" />
+                <ArrowRight className="w-4 h-4 ms-2" />
                 بازگشت
               </Button>
               <div className="h-6 w-px bg-pink-300" />
@@ -436,7 +436,7 @@ export default function BoardPage() {
                 size="sm"
                 className="text-pink-600 border-pink-200 hover:bg-pink-50"
               >
-                <Plus className="w-4 h-4 ml-2" />
+                <Plus className="w-4 h-4 ms-2" />
                 افزودن وظیفه
               </Button>
               <Button

@@ -134,7 +134,7 @@ export function MyRequestsWidget({ className, variant = 'desktop' }: MyRequestsW
             key={request.id}
             className="p-3 rounded-xl bg-white/60 border border-white/40 hover:bg-white/80 transition-all duration-200"
           >
-            <div className="flex items-start justify-between gap-3">
+            <div className="flex items-start rtl:items-start justify-between gap-3">
               <div className="flex-1 min-w-0">
                 <h4 className={cn(
                   'font-vazirmatn font-medium text-gray-900 leading-tight',

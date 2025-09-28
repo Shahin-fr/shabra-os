@@ -134,7 +134,7 @@ export function MobileClockInCard() {
                 onClick={handleClockIn}
                 className='mobile-button flex-1 bg-[#ff0a54] hover:bg-[#ff0a54]/90 text-white'
               >
-                <Play className='h-5 w-5 ml-2' />
+                <Play className='h-5 w-5 ms-2' />
                 شروع کار
               </Button>
             ) : (
@@ -144,14 +144,14 @@ export function MobileClockInCard() {
                   variant='outline'
                   className='mobile-button flex-1 border-gray-200'
                 >
-                  <Coffee className='h-5 w-5 ml-2' />
+                  <Coffee className='h-5 w-5 ms-2' />
                   {clockData.status === 'break' ? 'ادامه کار' : 'استراحت'}
                 </Button>
                 <Button
                   onClick={handleClockOut}
                   className='mobile-button flex-1 bg-red-500 hover:bg-red-600 text-white'
                 >
-                  <Square className='h-5 w-5 ml-2' />
+                  <Square className='h-5 w-5 ms-2' />
                   پایان کار
                 </Button>
               </>

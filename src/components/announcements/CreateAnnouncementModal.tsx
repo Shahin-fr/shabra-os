@@ -161,7 +161,7 @@ export function CreateAnnouncementModal({
                       handleInputChange('category', value as 'GENERAL' | 'TECHNICAL' | 'EVENT' | 'IMPORTANT')
                     }
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="w-full justify-end text-right">
                       <SelectValue placeholder='انتخاب دسته‌بندی' />
                     </SelectTrigger>
                     <SelectContent>
@@ -173,7 +173,7 @@ export function CreateAnnouncementModal({
                   </Select>
                 </div>
 
-                <div className='flex items-center space-x-2 space-x-reverse'>
+                <div className='flex items-center space-x-2 rtl:space-x-reverse space-x-reverse'>
                   <Checkbox
                     id='isPinned'
                     checked={formData.isPinned}
@@ -185,7 +185,7 @@ export function CreateAnnouncementModal({
                 </div>
               </div>
 
-              <div className='flex justify-end gap-3 pt-4'>
+              <div className='flex justify-end rtl:justify-start gap-3 pt-4'>
                 <Button
                   type='button'
                   variant='outline'
@@ -201,7 +201,7 @@ export function CreateAnnouncementModal({
                 >
                   {createAnnouncementMutation.isPending ? (
                     <>
-                      <Loader2 className='h-4 w-4 ml-2 animate-spin' />
+                      <Loader2 className='h-4 w-4 ms-2 animate-spin' />
                       در حال ایجاد...
                     </>
                   ) : (

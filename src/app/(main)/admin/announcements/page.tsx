@@ -262,21 +262,21 @@ export default function AdminAnnouncementsPage() {
         {/* Filters */}
         <Card className="mb-6">
           <CardContent className="p-6">
-            <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex flex-col md:flex-row rtl:flex-row-reverse gap-4">
               <div className="flex-1">
                 <div className="relative">
-                  <Search className="h-4 w-4 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                  <Search className="h-4 w-4 absolute end-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                   <Input
                     placeholder="جستجو در عنوان یا محتوا..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pr-10"
+                    className="pe-10"
                   />
                 </div>
               </div>
               
               <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                <SelectTrigger className="w-48">
+                <SelectTrigger className="w-48 w-full justify-end text-right">
                   <SelectValue placeholder="فیلتر بر اساس دسته" />
                 </SelectTrigger>
                 <SelectContent>
@@ -289,7 +289,7 @@ export default function AdminAnnouncementsPage() {
               </Select>
 
               <Select value={isPinnedFilter} onValueChange={setIsPinnedFilter}>
-                <SelectTrigger className="w-40">
+                <SelectTrigger className="w-40 w-full justify-end text-right">
                   <SelectValue placeholder="وضعیت" />
                 </SelectTrigger>
                 <SelectContent>
@@ -304,7 +304,7 @@ export default function AdminAnnouncementsPage() {
                 onClick={() => refetch()}
                 disabled={isLoading}
               >
-                <RefreshCw className={`h-4 w-4 ml-2 ${isLoading ? 'animate-spin' : ''}`} />
+                <RefreshCw className={`h-4 w-4 ms-2 ${isLoading ? 'animate-spin' : ''}`} />
                 بروزرسانی
               </Button>
             </div>
@@ -404,7 +404,7 @@ export default function AdminAnnouncementsPage() {
                             <TableCell>
                               {announcement.isPinned ? (
                                 <Badge variant="outline" className="text-yellow-600">
-                                  <Pin className="h-3 w-3 ml-1" />
+                                  <Pin className="h-3 w-3 ms-1" />
                                   سنجاق شده
                                 </Badge>
                               ) : (
@@ -420,14 +420,14 @@ export default function AdminAnnouncementsPage() {
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
                                   <DropdownMenuItem onClick={() => handleEdit(announcement)}>
-                                    <Edit className="h-4 w-4 ml-2" />
+                                    <Edit className="h-4 w-4 ms-2" />
                                     ویرایش
                                   </DropdownMenuItem>
                                   <DropdownMenuItem 
                                     onClick={() => handleDelete(announcement)}
                                     className="text-red-600"
                                   >
-                                    <Trash2 className="h-4 w-4 ml-2" />
+                                    <Trash2 className="h-4 w-4 ms-2" />
                                     حذف
                                   </DropdownMenuItem>
                                 </DropdownMenuContent>
@@ -449,7 +449,7 @@ export default function AdminAnnouncementsPage() {
                       transition={{ duration: 0.3, delay: index * 0.05 }}
                     >
                       <div className="p-4 border rounded-lg bg-gray-50">
-                        <div className="flex items-start justify-between mb-3">
+                        <div className="flex items-start rtl:items-start justify-between mb-3">
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-1">
                               {announcement.isPinned && (
@@ -491,7 +491,7 @@ export default function AdminAnnouncementsPage() {
                             onClick={() => handleEdit(announcement)}
                             className="flex-1"
                           >
-                            <Edit className="h-4 w-4 ml-2" />
+                            <Edit className="h-4 w-4 ms-2" />
                             ویرایش
                           </Button>
                           <Button
@@ -500,7 +500,7 @@ export default function AdminAnnouncementsPage() {
                             onClick={() => handleDelete(announcement)}
                             className="flex-1 text-red-600"
                           >
-                            <Trash2 className="h-4 w-4 ml-2" />
+                            <Trash2 className="h-4 w-4 ms-2" />
                             حذف
                           </Button>
                         </div>

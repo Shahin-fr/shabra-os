@@ -121,7 +121,7 @@ export function MobileProjectsList() {
             </p>
           </div>
           <Button className='mobile-button bg-[#ff0a54] hover:bg-[#ff0a54]/90 text-white'>
-            <Plus className='h-5 w-5 ml-2' />
+            <Plus className='h-5 w-5 ms-2' />
             پروژه جدید
           </Button>
         </div>
@@ -142,8 +142,8 @@ export function MobileProjectsList() {
             <Card className='mobile-card'>
               <CardContent className='mobile-padding'>
                 {/* Header */}
-                <div className='flex items-start justify-between mb-4'>
-                  <div className='flex items-start gap-3 flex-1'>
+                <div className='flex items-start rtl:items-start justify-between mb-4'>
+                  <div className='flex items-start rtl:items-start gap-3 flex-1'>
                     <div className='w-12 h-12 bg-[#ff0a54]/20 rounded-2xl flex items-center justify-center flex-shrink-0'>
                       <FolderOpen className='h-6 w-6 text-[#ff0a54]' />
                     </div>
@@ -200,7 +200,7 @@ export function MobileProjectsList() {
                 {/* Team Avatars */}
                 <div className='flex items-center gap-2 mb-4'>
                   <Users className='h-4 w-4 text-gray-500' />
-                  <div className='flex -space-x-2'>
+                  <div className='flex -space-x-2 rtl:space-x-reverse'>
                     {project.team.slice(0, 3).map((member, memberIndex) => (
                       <div
                         key={memberIndex}

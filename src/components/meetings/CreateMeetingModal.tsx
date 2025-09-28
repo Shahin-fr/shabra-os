@@ -215,7 +215,7 @@ export function CreateMeetingModal({
                     handleInputChange('type', value as 'ONE_ON_ONE' | 'TEAM_MEETING')
                   }
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="w-full justify-end text-right">
                     <SelectValue placeholder='انتخاب نوع جلسه' />
                   </SelectTrigger>
                   <SelectContent>
@@ -265,7 +265,7 @@ export function CreateMeetingModal({
                     </div>
                   ) : (
                     safeUsers.map(user => (
-                      <div key={user.id} className='flex items-center space-x-2 space-x-reverse'>
+                      <div key={user.id} className='flex items-center space-x-2 rtl:space-x-reverse space-x-reverse'>
                         <input
                           type='checkbox'
                           id={`attendee-${user.id}`}
@@ -285,7 +285,7 @@ export function CreateMeetingModal({
                 </div>
               </div>
 
-              <div className='flex justify-end gap-3 pt-4'>
+              <div className='flex justify-end rtl:justify-start gap-3 pt-4'>
                 <Button
                   type='button'
                   variant='outline'
@@ -301,7 +301,7 @@ export function CreateMeetingModal({
                 >
                   {createMeetingMutation.isPending ? (
                     <>
-                      <Loader2 className='h-4 w-4 ml-2 animate-spin' />
+                      <Loader2 className='h-4 w-4 ms-2 animate-spin' />
                       در حال ایجاد...
                     </>
                   ) : (

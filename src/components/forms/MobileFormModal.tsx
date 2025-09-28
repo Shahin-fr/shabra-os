@@ -58,7 +58,7 @@ export function MobileFormModal({
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-            className='fixed bottom-0 left-0 right-0 z-50 bg-white rounded-t-3xl shadow-2xl max-h-[90vh] overflow-hidden'
+            className='fixed bottom-0 start-0 end-0 z-50 bg-white rounded-t-3xl shadow-2xl max-h-[90vh] overflow-hidden'
           >
             {/* Header */}
             <div className='flex items-center justify-center p-4 border-b border-gray-200 bg-white sticky top-0 z-10'>

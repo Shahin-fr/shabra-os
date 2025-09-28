@@ -105,7 +105,7 @@ export function MobileFormModal({
                         ) : (
                           <>
                             {primaryAction.label}
-                            <ArrowRight className='h-4 w-4 mr-2' />
+                            <ArrowRight className="rtl:rotate-180 h-4 w-4 me-2" />
                           </>
                         )}
                       </Button>
@@ -174,7 +174,7 @@ export function MobileCreateTaskModal({
               اولویت
             </Label>
             <Select>
-              <SelectTrigger>
+              <SelectTrigger className="w-full justify-end text-right">
                 <SelectValue placeholder="انتخاب اولویت" />
               </SelectTrigger>
               <SelectContent>

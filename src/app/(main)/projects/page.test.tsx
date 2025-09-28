@@ -133,8 +133,8 @@ const MockProjectsPageContent = () => {
             transition={{ duration: 0.5, delay: 0.1 * (index + 3) }}
           >
             <Card className='border shadow-lg text-card-foreground flex flex-col gap-6 rounded-xl py-6 h-full bg-white/20 backdrop-blur-sm border-white/30 hover:bg-white/30 transition-all cursor-pointer group'>
-              <CardHeader className='@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-1.5 px-6 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6 pb-3'>
-                <div className='flex items-start justify-between'>
+              <CardHeader className='@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start rtl:items-start gap-1.5 px-6 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6 pb-3'>
+                <div className='flex items-start rtl:items-start justify-between'>
                   <div className='flex-1'>
                     <CardTitle className='text-lg font-bold text-foreground mb-2 line-clamp-2'>
                       {project.title}

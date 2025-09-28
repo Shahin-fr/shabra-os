@@ -171,14 +171,14 @@ export function AttendanceLogTable({
     if (record.status === 'completed') {
       return (
         <Badge className='bg-green-100 text-green-800 border-green-200'>
-          <CheckCircle className='h-3 w-3 mr-1' />
+          <CheckCircle className='h-3 w-3 me-1' />
           تکمیل شده
         </Badge>
       );
     }
     return (
       <Badge className='bg-blue-100 text-blue-800 border-blue-200'>
-        <Clock className='h-3 w-3 mr-1' />
+        <Clock className='h-3 w-3 me-1' />
         در حال انجام
       </Badge>
     );
@@ -196,7 +196,7 @@ export function AttendanceLogTable({
             متأسفانه خطایی در بارگذاری رکوردهای حضور رخ داده است.
           </p>
           <Button onClick={handleRefresh} variant='outline'>
-            <RefreshCw className='h-4 w-4 mr-2' />
+            <RefreshCw className='h-4 w-4 me-2' />
             تلاش مجدد
           </Button>
         </CardContent>
@@ -219,7 +219,7 @@ export function AttendanceLogTable({
               variant='outline'
               size='sm'
             >
-              <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+              <RefreshCw className={`h-4 w-4 me-2 ${isLoading ? 'animate-spin' : ''}`} />
               بروزرسانی
             </Button>
           </div>
@@ -327,14 +327,14 @@ export function AttendanceLogTable({
                               </DropdownMenuTrigger>
                               <DropdownMenuContent align='end'>
                                 <DropdownMenuItem onClick={() => handleEdit(record)}>
-                                  <Edit className='h-4 w-4 mr-2' />
+                                  <Edit className='h-4 w-4 me-2' />
                                   ویرایش
                                 </DropdownMenuItem>
                                 <DropdownMenuItem
                                   onClick={() => handleDelete(record)}
                                   className='text-red-600'
                                 >
-                                  <Trash2 className='h-4 w-4 mr-2' />
+                                  <Trash2 className='h-4 w-4 me-2' />
                                   حذف
                                 </DropdownMenuItem>
                               </DropdownMenuContent>
@@ -359,7 +359,7 @@ export function AttendanceLogTable({
                       onClick={() => onPageChange(page - 1)}
                       disabled={!attendanceData.pagination.hasPrevPage}
                     >
-                      <ChevronLeft className='h-4 w-4' />
+                      <ChevronLeft className="rtl:rotate-180 h-4 w-4" />
                       قبلی
                     </Button>
                     <div className='flex items-center gap-1'>
@@ -385,7 +385,7 @@ export function AttendanceLogTable({
                       disabled={!attendanceData.pagination.hasNextPage}
                     >
                       بعدی
-                      <ChevronRight className='h-4 w-4' />
+                      <ChevronRight className="rtl:rotate-180 h-4 w-4" />
                     </Button>
                   </div>
                 </div>

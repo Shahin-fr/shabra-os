@@ -241,7 +241,7 @@ export function ActionableInbox() {
             </div>
             اقدامات فوری
             {!isLoading && !isError && (
-              <Badge className='ml-auto bg-[#ff0a54] hover:bg-[#ff0a54]/90'>
+              <Badge className='ms-auto bg-[#ff0a54] hover:bg-[#ff0a54]/90'>
                 {data?.data?.length || 0}
               </Badge>
             )}

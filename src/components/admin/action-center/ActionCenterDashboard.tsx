@@ -247,7 +247,7 @@ export function ActionCenterDashboard() {
             متأسفانه خطایی در بارگذاری مرکز اقدامات رخ داده است.
           </p>
           <Button onClick={() => refetch()} variant='outline'>
-            <RefreshCw className='h-4 w-4 mr-2' />
+            <RefreshCw className='h-4 w-4 me-2' />
             تلاش مجدد
           </Button>
         </CardContent>
@@ -335,7 +335,7 @@ export function ActionCenterDashboard() {
                   value={filters.type}
                   onValueChange={(value) => handleFilterChange('type', value)}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="w-full justify-end text-right">
                     <SelectValue placeholder="انتخاب نوع" />
                   </SelectTrigger>
                   <SelectContent>
@@ -354,7 +354,7 @@ export function ActionCenterDashboard() {
                   value={filters.status}
                   onValueChange={(value) => handleFilterChange('status', value)}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="w-full justify-end text-right">
                     <SelectValue placeholder="انتخاب وضعیت" />
                   </SelectTrigger>
                   <SelectContent>
@@ -373,7 +373,7 @@ export function ActionCenterDashboard() {
                   value={filters.employeeId}
                   onValueChange={(value) => handleFilterChange('employeeId', value)}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="w-full justify-end text-right">
                     <SelectValue placeholder="انتخاب کارمند" />
                   </SelectTrigger>
                   <SelectContent>
@@ -408,9 +408,9 @@ export function ActionCenterDashboard() {
                 disabled={isLoading}
               >
                 {isLoading ? (
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  <Loader2 className="h-4 w-4 me-2 animate-spin" />
                 ) : (
-                  <RefreshCw className="h-4 w-4 mr-2" />
+                  <RefreshCw className="h-4 w-4 me-2" />
                 )}
                 بروزرسانی
               </Button>
@@ -420,7 +420,7 @@ export function ActionCenterDashboard() {
             {isLoading ? (
               <div className="flex items-center justify-center py-8">
                 <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
-                <span className="mr-2 text-gray-600">در حال بارگذاری...</span>
+                <span className="me-2 text-gray-600">در حال بارگذاری...</span>
               </div>
             ) : actionCenterData?.requests.length === 0 ? (
               <div className="text-center py-8">
@@ -480,7 +480,7 @@ export function ActionCenterDashboard() {
                             variant="outline"
                             size="sm"
                           >
-                            <Eye className="h-4 w-4 mr-2" />
+                            <Eye className="h-4 w-4 me-2" />
                             مشاهده
                           </Button>
                         </TableCell>
@@ -562,7 +562,7 @@ export function ActionCenterDashboard() {
                         variant={actionData.action === 'APPROVE' ? 'default' : 'outline'}
                         className={actionData.action === 'APPROVE' ? 'bg-green-600 hover:bg-green-700' : ''}
                       >
-                        <CheckCircle className="h-4 w-4 mr-2" />
+                        <CheckCircle className="h-4 w-4 me-2" />
                         تأیید
                       </Button>
                       <Button
@@ -570,7 +570,7 @@ export function ActionCenterDashboard() {
                         variant={actionData.action === 'REJECT' ? 'default' : 'outline'}
                         className={actionData.action === 'REJECT' ? 'bg-red-600 hover:bg-red-700' : ''}
                       >
-                        <XCircle className="h-4 w-4 mr-2" />
+                        <XCircle className="h-4 w-4 me-2" />
                         رد
                       </Button>
                     </div>
@@ -589,7 +589,7 @@ export function ActionCenterDashboard() {
                     </div>
                   )}
 
-                  <div className="flex justify-end gap-2">
+                  <div className="flex justify-end rtl:justify-start gap-2">
                     <Button
                       variant="outline"
                       onClick={() => setIsDetailsOpen(false)}
@@ -606,11 +606,11 @@ export function ActionCenterDashboard() {
                       }
                     >
                       {processActionMutation.isPending ? (
-                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        <Loader2 className="h-4 w-4 me-2 animate-spin" />
                       ) : actionData.action === 'APPROVE' ? (
-                        <CheckCircle className="h-4 w-4 mr-2" />
+                        <CheckCircle className="h-4 w-4 me-2" />
                       ) : (
-                        <XCircle className="h-4 w-4 mr-2" />
+                        <XCircle className="h-4 w-4 me-2" />
                       )}
                       {actionData.action === 'APPROVE' ? 'تأیید درخواست' : 'رد درخواست'}
                     </Button>

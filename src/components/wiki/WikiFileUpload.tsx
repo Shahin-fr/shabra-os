@@ -254,7 +254,7 @@ export function WikiFileUpload({ onClose, onSuccess, parentId }: WikiFileUploadP
         )}
       </div>
 
-      <div className="flex justify-end gap-2 pt-4">
+      <div className="flex justify-end rtl:justify-start gap-2 pt-4">
         <Button
           type="button"
           variant="outline"

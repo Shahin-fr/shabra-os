@@ -21,7 +21,7 @@ export function MyTasks() {
 
   const getPriorityColor = () => {
     // Removed colored borders - now using consistent styling
-    return 'border-l-gray-200';
+    return 'border-s-gray-200';
   };
 
   return (
@@ -32,11 +32,11 @@ export function MyTasks() {
         subtitle='وظایف محول شده'
       />
       <CardContent>
-        <div className='space-y-3 max-h-48 overflow-y-auto pl-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent'>
+        <div className='space-y-3 max-h-48 overflow-y-auto ps-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent'>
           {taskList.map(task => (
             <div
               key={task.id}
-              className={`flex items-center gap-3 p-3 rounded-lg border-l-4 ${getPriorityColor()} hover:bg-white/5 transition-colors duration-200`}
+              className={`flex items-center gap-3 p-3 rounded-lg border-s-4 ${getPriorityColor()} hover:bg-white/5 transition-colors duration-200`}
             >
               <Checkbox
                 checked={task.completed}

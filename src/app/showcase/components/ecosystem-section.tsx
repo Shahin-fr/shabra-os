@@ -190,7 +190,7 @@ export default function EcosystemSection() {
                 >
                   {/* Key module badge */}
                   {module.isKey && (
-                    <div className="absolute -top-2 -right-2 bg-gradient-to-r from-[#E000A0] to-[#B8008A] text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+                    <div className="absolute -top-2 -end-2 bg-gradient-to-r from-[#E000A0] to-[#B8008A] text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
                       {t('ecosystem_instapulse_badge')}
                     </div>
                   )}
@@ -209,12 +209,12 @@ export default function EcosystemSection() {
                           <h3 className={`text-lg font-bold ${
                             expandedModule === module.id ? 'text-[#E000A0]' : 'text-[#F5F5F5]'
                           } ${
-                            isRTL(module.name) ? 'text-right' : 'text-left'
+                            isRTL(module.name) ? 'text-end' : 'text-start'
                           }`}>
                             {module.name}
                           </h3>
                           <p className={`text-sm text-[#A1A1A1] mt-1 ${
-                            isRTL(module.description) ? 'text-right' : 'text-left'
+                            isRTL(module.description) ? 'text-end' : 'text-start'
                           }`}>
                             {module.description}
                           </p>
@@ -244,13 +244,13 @@ export default function EcosystemSection() {
                           {/* Module details */}
                           <div className="pt-6">
                             <h4 className={`text-lg font-semibold text-[#F5F5F5] mb-4 ${
-                              isRTL(module.details.title) ? 'text-right' : 'text-left'
+                              isRTL(module.details.title) ? 'text-end' : 'text-start'
                             }`}>
                               {module.details.title}
                             </h4>
                             
                             <p className={`text-[#A1A1A1] leading-relaxed mb-6 ${
-                              isRTL(module.details.description) ? 'text-right' : 'text-left'
+                              isRTL(module.details.description) ? 'text-end' : 'text-start'
                             }`}>
                               {module.details.description}
                             </p>
@@ -258,7 +258,7 @@ export default function EcosystemSection() {
                             {/* Features list */}
                             <div className="mb-6">
                               <h5 className={`text-base font-semibold text-[#F5F5F5] mb-3 ${
-                                isRTL('Features') ? 'text-right' : 'text-left'
+                                isRTL('Features') ? 'text-end' : 'text-start'
                               }`}>
                                 Key Features
                               </h5>
@@ -276,7 +276,7 @@ export default function EcosystemSection() {
                                       style={{ backgroundColor: module.color }}
                                     />
                                     <span className={`text-sm text-[#A1A1A1] ${
-                                      isRTL(feature) ? 'text-right' : 'text-left'
+                                      isRTL(feature) ? 'text-end' : 'text-start'
                                     }`}>
                                       {feature.trim()}
                                     </span>
@@ -337,7 +337,7 @@ export default function EcosystemSection() {
                   `}>
                     {/* Key module badge */}
                     {module.isKey && (
-                      <div className="absolute -top-2 -right-2 bg-gradient-to-r from-[#E000A0] to-[#B8008A] text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+                      <div className="absolute -top-2 -end-2 bg-gradient-to-r from-[#E000A0] to-[#B8008A] text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
                         {t('ecosystem_instapulse_badge')}
                       </div>
                     )}
@@ -354,12 +354,12 @@ export default function EcosystemSection() {
                         <h3 className={`text-xl font-bold ${
                           selectedModule === module.id ? 'text-[#E000A0]' : 'text-[#F5F5F5]'
                         } ${
-                          isRTL(module.name) ? 'text-right' : 'text-left'
+                          isRTL(module.name) ? 'text-end' : 'text-start'
                         }`}>
                           {module.name}
                         </h3>
                         <p className={`text-sm text-[#A1A1A1] mt-1 ${
-                          isRTL(module.description) ? 'text-right' : 'text-left'
+                          isRTL(module.description) ? 'text-end' : 'text-start'
                         }`}>
                           {module.description}
                         </p>
@@ -395,11 +395,11 @@ export default function EcosystemSection() {
                       </div>
                       <div className="flex-1">
                         <h3 className={`text-2xl font-bold text-[#F5F5F5] ${
-                          isRTL(selectedModuleData.details.title) ? 'text-right' : 'text-left'
+                          isRTL(selectedModuleData.details.title) ? 'text-end' : 'text-start'
                         }`}>
                           {selectedModuleData.details.title}
                           {selectedModuleData.isKey && (
-                            <span className="ml-3 text-sm bg-gradient-to-r from-[#E000A0] to-[#B8008A] text-white px-3 py-1 rounded-full">
+                            <span className="ms-3 text-sm bg-gradient-to-r from-[#E000A0] to-[#B8008A] text-white px-3 py-1 rounded-full">
                               {t('ecosystem_instapulse_badge')}
                             </span>
                           )}
@@ -408,7 +408,7 @@ export default function EcosystemSection() {
                     </div>
                     
                     <p className={`text-[#A1A1A1] leading-relaxed ${
-                      isRTL(selectedModuleData.details.description) ? 'text-right' : 'text-left'
+                      isRTL(selectedModuleData.details.description) ? 'text-end' : 'text-start'
                     }`}>
                       {selectedModuleData.details.description}
                     </p>
@@ -417,7 +417,7 @@ export default function EcosystemSection() {
                   {/* Features list */}
                   <div className="p-8">
                     <h4 className={`text-lg font-semibold text-[#F5F5F5] mb-4 ${
-                      isRTL('Features') ? 'text-right' : 'text-left'
+                      isRTL('Features') ? 'text-end' : 'text-start'
                     }`}>
                       Key Features
                     </h4>
@@ -435,7 +435,7 @@ export default function EcosystemSection() {
                             style={{ backgroundColor: selectedModuleData.color }}
                           />
                           <span className={`text-sm text-[#A1A1A1] ${
-                            isRTL(feature) ? 'text-right' : 'text-left'
+                            isRTL(feature) ? 'text-end' : 'text-start'
                           }`}>
                             {feature.trim()}
                           </span>

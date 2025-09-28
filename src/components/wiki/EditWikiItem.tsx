@@ -136,7 +136,7 @@ export function EditWikiItem({ document, onClose, onSuccess }: EditWikiItemProps
           value={parentId || 'none'}
           onValueChange={value => setParentId(value === 'none' ? null : value)}
         >
-          <SelectTrigger>
+          <SelectTrigger className="w-full justify-end text-right">
             <SelectValue placeholder='بدون پوشه والد' />
           </SelectTrigger>
           <SelectContent>
@@ -159,13 +159,13 @@ export function EditWikiItem({ document, onClose, onSuccess }: EditWikiItemProps
         </Select>
       </div>
 
-      <div className='flex justify-end gap-2 pt-4'>
+      <div className='flex justify-end rtl:justify-start gap-2 pt-4'>
         <Button type='button' variant='outline' onClick={onClose}>
-          <X className='h-4 w-4 mr-2' />
+          <X className='h-4 w-4 me-2' />
           انصراف
         </Button>
         <Button type='submit' disabled={updateMutation.isPending || !title.trim()}>
-          <Save className='h-4 w-4 mr-2' />
+          <Save className='h-4 w-4 me-2' />
           {updateMutation.isPending ? 'در حال ذخیره...' : 'ذخیره تغییرات'}
         </Button>
       </div>

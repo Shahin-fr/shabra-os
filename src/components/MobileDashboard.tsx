@@ -51,7 +51,7 @@ const NotificationIcon: React.FC<{
     <div className={`relative ${className}`}>
       <Bell className="w-6 h-6 text-gray-600" />
       {hasNotification && (
-        <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold">
+        <div className="absolute -top-1 -end-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold">
           {count > 9 ? '9+' : count}
         </div>
       )}
@@ -82,7 +82,7 @@ const TaskCard: React.FC<{
 
   return (
     <div className={`p-4 rounded-xl border-2 ${priorityColors[priority]} ${isCompleted ? 'opacity-60' : ''} ${className}`}>
-      <div className="flex items-start justify-between mb-2">
+      <div className="flex items-start rtl:items-start justify-between mb-2">
         <div className="flex items-center gap-2">
           {priorityIcons[priority]}
           <h3 className="font-semibold text-gray-800 text-sm">{title}</h3>
@@ -120,7 +120,7 @@ const BottomNavbar: React.FC<{
   ];
 
   return (
-    <div className={`fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-lg border-t border-gray-200 safe-area-pb ${className}`}>
+    <div className={`fixed bottom-0 start-0 end-0 bg-white/90 backdrop-blur-lg border-t border-gray-200 safe-area-pb ${className}`}>
       <div className="flex justify-around items-center py-2">
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -233,7 +233,7 @@ const MobileDashboard: React.FC = () => {
               count={2}
             />
             <button className="p-2 rounded-lg hover:bg-gray-100 transition-colors">
-              <Menu className="w-5 h-5 text-gray-600" />
+              <Menu className="rtl:rotate-180 w-5 h-5 text-gray-600" />
             </button>
           </div>
         </div>
@@ -298,7 +298,7 @@ const MobileDashboard: React.FC = () => {
                     : 'bg-pink-50 border-pink-200'
                 }`}
               >
-                <div className="flex items-start justify-between mb-2">
+                <div className="flex items-start rtl:items-start justify-between mb-2">
                   <h4 className="font-semibold text-gray-800 text-sm">
                     {notification.title}
                   </h4>
@@ -336,7 +336,7 @@ const MobileDashboard: React.FC = () => {
             <Button 
               variant="default" 
               size="lg" 
-              className="h-16 flex-col gap-2 glass-morphism"
+              className="h-16 flex-col rtl:flex-col-reverse gap-2 glass-morphism"
             >
               <Calendar className="w-6 h-6" />
               <span className="text-sm font-medium">تقویم</span>
@@ -345,7 +345,7 @@ const MobileDashboard: React.FC = () => {
             <Button 
               variant="secondary" 
               size="lg" 
-              className="h-16 flex-col gap-2 glass-morphism"
+              className="h-16 flex-col rtl:flex-col-reverse gap-2 glass-morphism"
             >
               <User className="w-6 h-6" />
               <span className="text-sm font-medium">تیم</span>

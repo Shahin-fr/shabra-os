@@ -157,7 +157,7 @@ export function CreateMeetingForm({ onSuccess, initialDate }: CreateMeetingFormP
               value={form.watch('type')}
               onValueChange={(value) => form.setValue('type', value as 'ONE_ON_ONE' | 'TEAM_MEETING')}
             >
-              <SelectTrigger className="mt-1">
+              <SelectTrigger className="mt-1 w-full justify-end text-right">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -218,11 +218,11 @@ export function CreateMeetingForm({ onSuccess, initialDate }: CreateMeetingFormP
           {form.watch('startTime') && form.watch('endTime') && (
             <div className="p-3 bg-gray-50 rounded-lg">
               <p className="text-sm text-gray-600">
-                <Calendar className="h-4 w-4 inline ml-1" />
+                <Calendar className="h-4 w-4 inline ms-1" />
                 {formatDate(form.watch('startTime'))}
               </p>
               <p className="text-sm text-gray-600">
-                <Clock className="h-4 w-4 inline ml-1" />
+                <Clock className="h-4 w-4 inline ms-1" />
                 {formatTime(form.watch('startTime'))} - {formatTime(form.watch('endTime'))}
               </p>
             </div>
@@ -245,9 +245,9 @@ export function CreateMeetingForm({ onSuccess, initialDate }: CreateMeetingFormP
               <p className="text-sm text-gray-500 mt-2">در حال بارگذاری...</p>
             </div>
           ) : (
-            <div className="space-y-2 max-h-48 overflow-y-auto pr-2">
+            <div className="space-y-2 max-h-48 overflow-y-auto pe-2">
               {users?.map((user) => (
-                <div key={user.id} className="flex items-center space-x-3 space-x-reverse p-2 hover:bg-gray-50 rounded-lg transition-colors">
+                <div key={user.id} className="flex items-center space-x-3 rtl:space-x-reverse space-x-reverse p-2 hover:bg-gray-50 rounded-lg transition-colors">
                   <Checkbox
                     id={`attendee-${user.id}`}
                     checked={form.watch('attendeeIds').includes(user.id)}
@@ -257,7 +257,7 @@ export function CreateMeetingForm({ onSuccess, initialDate }: CreateMeetingFormP
                   />
                   <label
                     htmlFor={`attendee-${user.id}`}
-                    className="flex items-center space-x-3 space-x-reverse cursor-pointer flex-1"
+                    className="flex items-center space-x-3 rtl:space-x-reverse space-x-reverse cursor-pointer flex-1"
                   >
                     <Avatar className="h-7 w-7">
                       <AvatarImage src={user.avatar} />
@@ -296,7 +296,7 @@ export function CreateMeetingForm({ onSuccess, initialDate }: CreateMeetingFormP
       </Card>
 
         {/* Submit Button */}
-        <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+        <div className="flex justify-end rtl:justify-start gap-3 pt-4 border-t border-gray-200">
           <Button
             type="button"
             variant="outline"

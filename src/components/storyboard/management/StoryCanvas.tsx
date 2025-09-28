@@ -43,7 +43,7 @@ export function StoryCanvas({
         {storiesErrorDetails && (
           <details className='text-xs text-red-600 mb-4'>
             <summary>جزئیات خطا (برای توسعه‌دهنده)</summary>
-            <pre className='mt-2 text-left direction-ltr'>
+            <pre className='mt-2 text-start direction-ltr'>
               {JSON.stringify(storiesErrorDetails, null, 2)}
             </pre>
           </details>

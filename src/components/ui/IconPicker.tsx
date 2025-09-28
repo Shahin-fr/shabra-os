@@ -207,7 +207,7 @@ export function IconPicker({
         <Button
           variant='outline'
           className={cn(
-            'h-10 w-full justify-start gap-2',
+            'h-10 w-full justify-start rtl:justify-start gap-2',
             !currentIcon && 'text-muted-foreground',
             className
           )}
@@ -229,18 +229,18 @@ export function IconPicker({
       <PopoverContent className='w-80 p-0' align='start'>
         <div className='p-4 border-b'>
           <div className='relative'>
-            <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground' />
+            <Search className='absolute start-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground' />
             <Input
               placeholder='جستجوی آیکون...'
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              className='pl-10 pr-3'
+              className='ps-10 pe-3'
             />
             {searchQuery && (
               <Button
                 variant='ghost'
                 size='sm'
-                className='absolute right-1 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0'
+                className='absolute end-1 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0'
                 onClick={() => setSearchQuery('')}
               >
                 <X className='h-3 w-3' />

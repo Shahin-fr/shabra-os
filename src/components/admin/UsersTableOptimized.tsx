@@ -145,7 +145,7 @@ export const UsersTable = memo(function UsersTable({ className }: UsersTableProp
               variant='outline'
               size='sm'
             >
-              <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+              <RefreshCw className={`h-4 w-4 me-2 ${isLoading ? 'animate-spin' : ''}`} />
               بروزرسانی
             </Button>
           </div>

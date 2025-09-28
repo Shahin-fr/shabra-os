@@ -219,7 +219,7 @@ export function WorkScheduleManagement() {
                 variant="outline"
                 size="sm"
               >
-                <RefreshCw className="h-4 w-4 mr-2" />
+                <RefreshCw className="h-4 w-4 me-2" />
                 بروزرسانی
               </Button>
             </div>
@@ -249,7 +249,7 @@ export function WorkScheduleManagement() {
                   onValueChange={handleEmployeeSelect}
                   disabled={employeesLoading}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="w-full justify-end text-right">
                     <SelectValue placeholder="انتخاب کارمند برای تنظیم برنامه کاری" />
                   </SelectTrigger>
                   <SelectContent>
@@ -307,9 +307,9 @@ export function WorkScheduleManagement() {
                         className="bg-[#ff0a54] hover:bg-[#ff0a54]/90"
                       >
                         {updateWorkScheduleMutation.isPending ? (
-                          <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                          <RefreshCw className="h-4 w-4 me-2 animate-spin" />
                         ) : (
-                          <Save className="h-4 w-4 mr-2" />
+                          <Save className="h-4 w-4 me-2" />
                         )}
                         ذخیره
                       </Button>
@@ -322,7 +322,7 @@ export function WorkScheduleManagement() {
               {workScheduleLoading ? (
                 <div className="flex items-center justify-center py-8">
                   <RefreshCw className="h-6 w-6 animate-spin text-gray-400" />
-                  <span className="mr-2 text-gray-600">در حال بارگذاری...</span>
+                  <span className="me-2 text-gray-600">در حال بارگذاری...</span>
                 </div>
               ) : workScheduleError ? (
                 <Alert>

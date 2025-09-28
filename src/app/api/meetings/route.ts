@@ -324,16 +324,16 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("!!! MEETING CREATION FAILED !!!", error);
     console.error("Error details:", {
-      name: error.name,
-      message: error.message,
-      stack: error.stack,
+      name: (error as Error).name,
+      message: (error as Error).message,
+      stack: (error as Error).stack,
     });
     
     return NextResponse.json(
       {
         success: false,
         error: 'خطا در ایجاد جلسه',
-        details: process.env.NODE_ENV === 'development' ? error.message : undefined,
+        details: process.env.NODE_ENV === 'development' ? (error as Error).message : undefined,
       },
       { status: 500 }
     );

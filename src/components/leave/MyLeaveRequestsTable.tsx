@@ -434,7 +434,7 @@ export function MyLeaveRequestsTable() {
               )}
             </div>
 
-            <div className='flex justify-end pt-4'>
+            <div className='flex justify-end rtl:justify-start pt-4'>
               <Button onClick={handleCloseDetails} variant='outline'>
                 بستن
               </Button>

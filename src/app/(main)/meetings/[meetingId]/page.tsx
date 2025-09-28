@@ -138,7 +138,7 @@ export default function MeetingPage() {
               جلسه مورد نظر وجود ندارد یا شما دسترسی به آن ندارید.
             </p>
             <Button onClick={() => router.push('/meetings')}>
-              <ArrowLeft className="h-4 w-4 ml-2" />
+              <ArrowLeft className="rtl:rotate-180 h-4 w-4 ms-2" />
               بازگشت به جلسات
             </Button>
           </div>
@@ -158,7 +158,7 @@ export default function MeetingPage() {
               size="sm"
               onClick={() => router.push('/meetings')}
             >
-              <ArrowLeft className="h-4 w-4 ml-2" />
+              <ArrowLeft className="rtl:rotate-180 h-4 w-4 ms-2" />
               بازگشت
             </Button>
             <div>

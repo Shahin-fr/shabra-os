@@ -13,7 +13,7 @@ import {
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { format, startOfWeek, addDays } from 'date-fns';
+import { format, startOfWeek, addDays } from 'date-fns-jalali';
 import { AnimatePresence } from 'framer-motion';
 import { OptimizedMotion } from '@/components/ui/OptimizedMotion';
 import {
@@ -477,7 +477,7 @@ export default function ContentCalendarPage() {
                   variant='outline'
                   className='bg-pink-100 text-pink-700 hover:bg-pink-200 border-pink-200 hover:border-pink-300'
                 >
-                  <Calendar className='mr-2 h-4 w-4 text-pink-600' />
+                  <Calendar className='me-2 h-4 w-4 text-pink-600' />
                   هفته جاری
                 </Button>
 
@@ -487,7 +487,7 @@ export default function ContentCalendarPage() {
                 >
                   <DialogTrigger asChild>
                     <Button className='bg-pink-100 text-pink-700 hover:bg-pink-200'>
-                      <Plus className='mr-2 h-4 w-4' />
+                      <Plus className='me-2 h-4 w-4' />
                       محتوای جدید
                     </Button>
                   </DialogTrigger>
@@ -838,7 +838,7 @@ function ContentCard({
               }}
               className='w-full text-xs bg-pink-50 hover:bg-pink-100 border-pink-200 text-pink-700 hover:text-pink-800'
             >
-              <ArrowRight className='h-3 w-3 mr-1' />
+              <ArrowRight className="rtl:rotate-180 h-3 w-3 me-1" />
               استوری بورد
             </Button>
           )}
@@ -931,7 +931,7 @@ function ContentForm({
             setFormData(prev => ({ ...prev, type: value }))
           }
         >
-          <SelectTrigger>
+          <SelectTrigger className="w-full justify-end text-right">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -952,7 +952,7 @@ function ContentForm({
             setFormData(prev => ({ ...prev, dayOfWeek: parseInt(value) }))
           }
         >
-          <SelectTrigger>
+          <SelectTrigger className="w-full justify-end text-right">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -988,7 +988,7 @@ function ContentForm({
             disabled={isLoading}
             className='text-red-600 border-red-200 hover:bg-red-50 hover:border-red-300 hover:text-red-700'
           >
-            <Trash2 className='h-4 w-4 mr-2' />
+            <Trash2 className='h-4 w-4 me-2' />
             حذف
           </Button>
         )}

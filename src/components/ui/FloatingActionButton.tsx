@@ -35,7 +35,7 @@ export function FloatingActionButton({
       as="button"
       onClick={onClick}
       className={cn(
-        'fixed bottom-20 right-4 z-40 flex items-center gap-3 px-6 py-4 rounded-2xl font-semibold text-sm',
+        'fixed bottom-20 end-4 z-40 flex items-center gap-3 px-6 py-4 rounded-2xl font-semibold text-sm',
         'transition-all duration-200 active:scale-95',
         'backdrop-blur-xl border border-white/20',
         variantStyles[variant],

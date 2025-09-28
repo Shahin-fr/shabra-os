@@ -33,7 +33,7 @@ export function WeeklyPerformanceChart() {
               <BarChart3 className='h-5 w-5 text-[#ff0a54]' />
             </div>
             نمودار عملکرد هفتگی
-            <div className='ml-auto text-right'>
+            <div className='ms-auto text-end'>
               <div className='text-2xl font-bold text-foreground'>
                 {avgEfficiency}%
               </div>

@@ -19,7 +19,7 @@ export function ScrollIndicator() {
   }, []);
 
   return (
-    <div className="fixed top-0 left-0 right-0 h-1 bg-gray-200 z-50">
+    <div className="fixed top-0 start-0 end-0 h-1 bg-gray-200 z-50">
       <motion.div
         className="h-full bg-gradient-to-r from-blue-600 to-purple-600"
         style={{ width: `${scrollProgress}%` }}

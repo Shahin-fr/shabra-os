@@ -96,13 +96,13 @@ export function MobileNotificationsWidget() {
               !notification.read ? 'ring-2 ring-[#ff0a54]/20' : ''
             }`}
           >
-            <div className='flex items-start gap-3'>
+            <div className='flex items-start rtl:items-start gap-3'>
               <div className='flex-shrink-0 mt-1'>
                 {getNotificationIcon(notification.type)}
               </div>
 
               <div className='flex-1 min-w-0'>
-                <div className='flex items-start justify-between'>
+                <div className='flex items-start rtl:items-start justify-between'>
                   <h4
                     className={`font-semibold text-sm ${!notification.read ? 'text-gray-900' : 'text-gray-700'}`}
                   >

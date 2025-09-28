@@ -86,7 +86,7 @@ const TaskCard = React.forwardRef<HTMLDivElement, TaskCardProps>(
     const CardContent = () => (
       <>
         {/* Header with priority icon and title */}
-        <div className="flex items-start justify-between mb-2">
+        <div className="flex items-start rtl:items-start justify-between mb-2">
           <div className="flex items-center gap-2 flex-1 min-w-0">
             {config.icon}
             <h3 className={`font-semibold text-gray-800 text-sm truncate ${
@@ -133,7 +133,7 @@ const TaskCard = React.forwardRef<HTMLDivElement, TaskCardProps>(
             
             {/* Assignees avatars */}
             {assignees.length > 0 && (
-              <div className="flex items-center -space-x-1">
+              <div className="flex items-center -space-x-1 rtl:space-x-reverse">
                 {assignees.slice(0, 3).map((assignee, index) => (
                   <Avatar
                     key={index}
@@ -181,7 +181,7 @@ const TaskCard = React.forwardRef<HTMLDivElement, TaskCardProps>(
             ${isCompleted ? 'opacity-60' : ''} 
             transition-all duration-200 hover:scale-[1.02] hover:shadow-md 
             focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2
-            text-right ${className}
+            text-end ${className}
           `}
           role="button"
           aria-label={`کار: ${title}${isCompleted ? ' (تکمیل شده)' : ''}`}
@@ -200,7 +200,7 @@ const TaskCard = React.forwardRef<HTMLDivElement, TaskCardProps>(
           w-full p-4 rounded-xl border-2 ${config.border} ${config.background} 
           ${isCompleted ? 'opacity-60' : ''} 
           transition-all duration-200 hover:scale-[1.02] hover:shadow-md 
-          text-right ${className}
+          text-end ${className}
         `}
         role="article"
         aria-label={`کار: ${title}${isCompleted ? ' (تکمیل شده)' : ''}`}

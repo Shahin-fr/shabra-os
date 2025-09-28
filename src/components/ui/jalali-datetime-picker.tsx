@@ -1,12 +1,14 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Calendar, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
+import { getYear, getMonth, getDate, setYear, setMonth, setDate, setHours, setMinutes } from 'date-fns-jalali';
+import { persianMonths, persianWeekdaysShort } from '@/lib/date-utils';
 
 interface JalaliDateTimePickerProps {
   value?: Date;
@@ -30,55 +32,37 @@ export function JalaliDateTimePicker({
     minutes: value ? value.getMinutes() : 0,
   });
 
-  // Convert Gregorian to Jalali
-  const gregorianToJalali = (date: Date) => {
-    const gYear = date.getFullYear();
-    const gMonth = date.getMonth() + 1;
-    const gDay = date.getDate();
-
-    const gy2 = (gYear > 1600) ? gYear - 1600 : gYear - 621;
-    const gm2 = (gMonth > 2) ? gMonth - 3 : gMonth + 9;
-    const gd2 = (gDay > 15) ? gDay - 15 : gDay + 15;
-
-    const jy = Math.floor((gy2 * 365 + Math.floor(gy2 / 4) - Math.floor(gy2 / 100) + Math.floor(gy2 / 400) + 80 + gd2) / 365.25);
-    const jm = Math.floor((gm2 * 30.6 + 1) / 30.6);
-    const jd = Math.floor(gd2 - Math.floor(gm2 * 30.6));
-
-    return { year: jy, month: jm, day: jd };
+  // Get Jalali date components from a Date object
+  const getJalaliDate = (date: Date) => {
+    return {
+      year: getYear(date),
+      month: getMonth(date) + 1, // getMonth returns 0-based month
+      day: getDate(date)
+    };
   };
 
-  // Convert Jalali to Gregorian
-  const jalaliToGregorian = (jYear: number, jMonth: number, jDay: number) => {
-    const jy = jYear;
-    const jm = jMonth;
-    const jd = jDay;
-
-    const gy = jy + 621;
-    const gm = (jm > 2) ? jm - 3 : jm + 9;
-    const gd = (jd > 15) ? jd - 15 : jd + 15;
-
-    return new Date(gy, gm - 1, gd);
+  // Create a Date object from Jalali date components
+  const createDateFromJalali = (year: number, month: number, day: number, hours: number = 0, minutes: number = 0) => {
+    const baseDate = new Date();
+    return setMinutes(setHours(setDate(setMonth(setYear(baseDate, year), month - 1), day), hours), minutes);
   };
 
   const [jalaliDate, setJalaliDate] = useState(() => {
     if (selectedDate) {
-      return gregorianToJalali(selectedDate);
+      return getJalaliDate(selectedDate);
     }
     const now = new Date();
-    return gregorianToJalali(now);
+    return getJalaliDate(now);
   });
 
   const [currentMonth, setCurrentMonth] = useState(jalaliDate.month);
   const [currentYear, setCurrentYear] = useState(jalaliDate.year);
 
-  // Jalali month names
-  const jalaliMonths = [
-    'فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور',
-    'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'
-  ];
+  // Use Persian month names from date-utils
+  const jalaliMonths = persianMonths;
 
-  // Days of week in Persian
-  const weekDays = ['ش', 'ی', 'د', 'س', 'چ', 'پ', 'ج'];
+  // Use Persian weekdays from date-utils
+  const weekDays = persianWeekdaysShort;
 
   // Get days in month
   const getDaysInMonth = (year: number, month: number) => {
@@ -120,8 +104,7 @@ export function JalaliDateTimePicker({
   };
 
   const handleDateSelect = (day: number) => {
-    const newDate = jalaliToGregorian(currentYear, currentMonth, day);
-    newDate.setHours(time.hours, time.minutes, 0, 0);
+    const newDate = createDateFromJalali(currentYear, currentMonth, day, time.hours, time.minutes);
     setSelectedDate(newDate);
     setJalaliDate({ year: currentYear, month: currentMonth, day });
     onChange(newDate);
@@ -142,8 +125,7 @@ export function JalaliDateTimePicker({
   const formatDisplayValue = () => {
     if (!selectedDate) return placeholder;
     
-    const jalali = gregorianToJalali(selectedDate);
-    const monthName = jalaliMonths[jalali.month - 1];
+    const jalali = getJalaliDate(selectedDate);
     const timeStr = `${time.hours.toString().padStart(2, '0')}:${time.minutes.toString().padStart(2, '0')}`;
     
     return `${jalali.year}/${jalali.month}/${jalali.day} - ${timeStr}`;
@@ -157,13 +139,13 @@ export function JalaliDateTimePicker({
         <Button
           variant="outline"
           className={cn(
-            "w-full justify-start text-left font-normal",
+            "w-full justify-start rtl:justify-start text-start font-normal",
             !selectedDate && "text-muted-foreground",
             className
           )}
           disabled={disabled}
         >
-          <Calendar className="mr-2 h-4 w-4" />
+          <Calendar className="me-2 h-4 w-4" />
           {formatDisplayValue()}
         </Button>
       </PopoverTrigger>
@@ -284,7 +266,7 @@ export function JalaliDateTimePicker({
                   size="sm"
                   onClick={() => {
                     setSelectedDate(null);
-                    setJalaliDate(gregorianToJalali(new Date()));
+                    setJalaliDate(getJalaliDate(new Date()));
                     setTime({ hours: 9, minutes: 0 });
                     setIsOpen(false);
                   }}

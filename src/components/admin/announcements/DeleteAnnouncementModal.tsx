@@ -107,7 +107,7 @@ export function DeleteAnnouncementModal({
               onClick={handleClose}
               disabled={isLoading}
             >
-              <X className="h-4 w-4 ml-2" />
+              <X className="h-4 w-4 ms-2" />
               لغو
             </Button>
           </div>

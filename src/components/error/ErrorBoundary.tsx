@@ -269,8 +269,8 @@ export class ErrorBoundary extends Component<Props, State> {
                   </h4>
                   <ul className='text-sm text-gray-600 space-y-1'>
                     {this.state.suggestions.map((suggestion, index) => (
-                      <li key={index} className='flex items-start'>
-                        <span className='text-blue-500 mr-2'>•</span>
+                      <li key={index} className='flex items-start rtl:items-start'>
+                        <span className='text-blue-500 me-2'>•</span>
                         {suggestion}
                       </li>
                     ))}
@@ -278,7 +278,7 @@ export class ErrorBoundary extends Component<Props, State> {
                 </div>
               )}
 
-              <div className='mt-6 flex space-x-3'>
+              <div className='mt-6 flex space-x-3 rtl:space-x-reverse'>
                 {this.state.retryable && (
                   <Button
                     onClick={this.handleRetry}

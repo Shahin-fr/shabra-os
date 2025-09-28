@@ -146,13 +146,13 @@ export function TaskCard({
       className={`${isDragging || isDraggingState ? 'opacity-50' : ''}`}
     >
       <Card
-        className={`hover:shadow-lg transition-all duration-200 border-l-4 border-l-[#ff0a54] ${
+        className={`hover:shadow-lg transition-all duration-200 border-s-4 border-l-[#ff0a54] ${
           canEdit ? 'cursor-pointer' : ''
         } ${isDragging || isDraggingState ? 'opacity-0' : ''}`}
         onDoubleClick={handleDoubleClick}
       >
         <CardHeader className='pb-3'>
-          <div className='flex items-start justify-between'>
+          <div className='flex items-start rtl:items-start justify-between'>
             <div className='flex-1'>
               <CardTitle className='text-lg font-semibold text-gray-900 mb-2 line-clamp-2'>
                 {task.title}

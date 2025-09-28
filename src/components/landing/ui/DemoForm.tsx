@@ -144,7 +144,7 @@ export function DemoForm() {
           اندازه شرکت
         </Label>
         <Select value={formData.companySize} onValueChange={(value) => handleInputChange('companySize', value)}>
-          <SelectTrigger className="mt-1">
+          <SelectTrigger className="mt-1 w-full justify-end text-right">
             <SelectValue placeholder="انتخاب کنید" />
           </SelectTrigger>
           <SelectContent>
@@ -181,7 +181,7 @@ export function DemoForm() {
           className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-4 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
         >
           درخواست دموی رایگان
-          <ArrowLeft className="mr-2 w-5 h-5" />
+          <ArrowLeft className="rtl:rotate-180 me-2 w-5 h-5" />
         </Button>
       </motion.div>
 

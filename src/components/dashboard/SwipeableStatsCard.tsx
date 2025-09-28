@@ -180,7 +180,7 @@ export function SwipeableStatsCard({
       </OptimizedMotion>
 
       {/* Swipe Indicator */}
-      <div className='absolute bottom-2 left-1/2 transform -translate-x-1/2'>
+      <div className='absolute bottom-2 start-1/2 transform -translate-x-1/2'>
         <div className='flex gap-1'>
           {stats.map((_, index) => (
             <div
@@ -194,7 +194,7 @@ export function SwipeableStatsCard({
       </div>
 
       {/* Swipe Hint */}
-      <div className='absolute top-1/2 left-2 transform -translate-y-1/2 opacity-30'>
+      <div className='absolute top-1/2 start-2 transform -translate-y-1/2 opacity-30'>
         <OptimizedMotion
           animate={{ x: [0, 5, 0] }}
           transition={{ duration: 1.5, repeat: Infinity }}
@@ -203,7 +203,7 @@ export function SwipeableStatsCard({
           ←
         </OptimizedMotion>
       </div>
-      <div className='absolute top-1/2 right-2 transform -translate-y-1/2 opacity-30'>
+      <div className='absolute top-1/2 end-2 transform -translate-y-1/2 opacity-30'>
         <OptimizedMotion
           animate={{ x: [0, -5, 0] }}
           transition={{ duration: 1.5, repeat: Infinity }}

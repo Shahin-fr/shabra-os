@@ -78,7 +78,7 @@ export default function DemoPage() {
                 size="lg"
                 className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
               >
-                <Play className="ml-2 w-5 h-5" />
+                <Play className="ms-2 w-5 h-5" />
                 تماشای ویدیو دمو
               </Button>
               <Button
@@ -86,7 +86,7 @@ export default function DemoPage() {
                 size="lg"
                 className="border-2 border-gray-300 hover:border-blue-500 text-gray-700 hover:text-blue-600 px-8 py-4 text-lg font-semibold rounded-xl transition-all duration-300"
               >
-                <Download className="ml-2 w-5 h-5" />
+                <Download className="ms-2 w-5 h-5" />
                 دانلود بروشور
               </Button>
             </div>
@@ -160,7 +160,7 @@ export default function DemoPage() {
             </div>
             <div className="text-center">
               <div className="w-16 h-16 bg-green-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <ArrowRight className="w-8 h-8 text-green-600" />
+                <ArrowRight className="rtl:rotate-180 w-8 h-8 text-green-600" />
               </div>
               <h4 className="text-lg font-semibold text-gray-900 mb-2">پشتیبانی کامل</h4>
               <p className="text-gray-600">

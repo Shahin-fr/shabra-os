@@ -125,7 +125,7 @@ export function CreateWikiItem({ onClose, onSuccess }: CreateWikiItemProps) {
           value={type}
           onValueChange={(value: 'FOLDER' | 'DOCUMENT') => setType(value)}
         >
-          <SelectTrigger>
+          <SelectTrigger className="w-full justify-end text-right">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -175,7 +175,7 @@ export function CreateWikiItem({ onClose, onSuccess }: CreateWikiItemProps) {
           value={parentId || 'none'}
           onValueChange={value => setParentId(value === 'none' ? null : value)}
         >
-          <SelectTrigger>
+          <SelectTrigger className="w-full justify-end text-right">
             <SelectValue placeholder='بدون پوشه والد' />
           </SelectTrigger>
           <SelectContent>
@@ -192,7 +192,7 @@ export function CreateWikiItem({ onClose, onSuccess }: CreateWikiItemProps) {
         </Select>
       </div>
 
-      <div className='flex justify-end gap-2 pt-4'>
+      <div className='flex justify-end rtl:justify-start gap-2 pt-4'>
         <Button type='button' variant='outline' onClick={onClose}>
           انصراف
         </Button>

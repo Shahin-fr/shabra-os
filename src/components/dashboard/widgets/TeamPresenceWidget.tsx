@@ -150,9 +150,9 @@ export function TeamPresenceWidget({ className, variant = 'desktop' }: TeamPrese
           >
             <span>جزئیات بیشتر</span>
             {isExpanded ? (
-              <ChevronUp className="h-4 w-4" />
+              <ChevronUp className="rtl:rotate-180 h-4 w-4" />
             ) : (
-              <ChevronDown className="h-4 w-4" />
+              <ChevronDown className="rtl:rotate-180 h-4 w-4" />
             )}
           </Button>
         </div>

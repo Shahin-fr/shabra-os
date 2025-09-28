@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { format, startOfWeek, addDays } from 'date-fns';
+import { format, startOfWeek, addDays } from 'date-fns-jalali';
 import { AnimatePresence } from 'framer-motion';
 import { OptimizedMotion } from '@/components/ui/OptimizedMotion';
 import {
@@ -288,7 +288,7 @@ export function MobileContentCalendar({
                 size='sm'
                 className='bg-pink-100 text-pink-700 hover:bg-pink-200 border-pink-200'
               >
-                <Calendar className='h-4 w-4 ml-1' />
+                <Calendar className='h-4 w-4 ms-1' />
                 هفته جاری
               </Button>
 
@@ -296,7 +296,7 @@ export function MobileContentCalendar({
                 onClick={() => setIsCreateDialogOpen(true)}
                 className='bg-pink-500 hover:bg-pink-600 text-white'
               >
-                <Plus className='h-4 w-4 ml-1' />
+                <Plus className='h-4 w-4 ms-1' />
                 محتوای جدید
               </Button>
             </div>
@@ -320,7 +320,7 @@ export function MobileContentCalendar({
               size='sm'
               className='hover:bg-pink-100'
             >
-              <ChevronRight className='h-4 w-4 ml-1' />
+              <ChevronRight className="rtl:rotate-180 h-4 w-4 ms-1" />
               هفته قبل
             </Button>
 
@@ -341,7 +341,7 @@ export function MobileContentCalendar({
               className='hover:bg-pink-100'
             >
               هفته بعد
-              <ChevronLeft className='h-4 w-4 mr-1' />
+              <ChevronLeft className="rtl:rotate-180 h-4 w-4 me-1" />
             </Button>
           </div>
         </CardContent>
@@ -470,7 +470,7 @@ function ContentCard({
   return (
     <Card className='bg-white/30 backdrop-blur-sm border-white/40 hover:bg-white/40 transition-all'>
       <CardContent className='p-3'>
-        <div className='flex items-start justify-between mb-2'>
+        <div className='flex items-start rtl:items-start justify-between mb-2'>
           <div className='flex items-center gap-2'>
             <TypeIcon className='h-4 w-4 text-pink-500' />
             <Badge variant='secondary' className='text-xs'>

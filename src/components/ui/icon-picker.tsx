@@ -271,8 +271,8 @@ export function IconPicker({ value, onValueChange, trigger }: IconPickerProps) {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         {trigger || (
-          <Button variant='outline' className='w-full justify-start'>
-            <DynamicLucideIcon iconName={value} className='h-4 w-4 mr-2' />
+          <Button variant='outline' className='w-full justify-start rtl:justify-start'>
+            <DynamicLucideIcon iconName={value} className='h-4 w-4 me-2' />
             انتخاب آیکون
           </Button>
         )}
@@ -284,12 +284,12 @@ export function IconPicker({ value, onValueChange, trigger }: IconPickerProps) {
 
         <div className='space-y-4'>
           <div className='relative'>
-            <Search className='absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400' />
+            <Search className='absolute end-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400' />
             <Input
               placeholder='جستجو در آیکون‌ها...'
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              className='pr-10'
+              className='pe-10'
             />
           </div>
 
@@ -307,7 +307,7 @@ export function IconPicker({ value, onValueChange, trigger }: IconPickerProps) {
               >
                 <DynamicLucideIcon iconName={icon} className='h-5 w-5' />
                 {value === icon && (
-                  <Check className='absolute top-1 right-1 h-3 w-3 text-white' />
+                  <Check className='absolute top-1 end-1 h-3 w-3 text-white' />
                 )}
               </Button>
             ))}

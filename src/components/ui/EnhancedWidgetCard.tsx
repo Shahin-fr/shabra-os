@@ -171,7 +171,7 @@ export function EnhancedWidgetCard({
               variant="outline"
               className="border-red-300 text-red-600 hover:bg-red-50"
             >
-              <RefreshCw className="h-4 w-4 ml-2" />
+              <RefreshCw className="h-4 w-4 ms-2" />
               تلاش مجدد
             </Button>
           )}

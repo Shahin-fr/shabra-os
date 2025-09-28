@@ -165,7 +165,7 @@ export default function AboutSection() {
                 whileTap={{ scale: 0.95 }}
               >
                 <div 
-                  className={`flex items-center ${isMobile ? 'space-x-2 px-4 py-2' : 'space-x-3 px-6 py-3'} rtl:space-x-reverse bg-[#1A1A1A] rounded-xl border border-[#2A2A2A] hover:border-[#E000A0]/50 transition-all duration-300 cursor-pointer group-hover:shadow-lg group-hover:shadow-[#E000A0]/10`}
+                  className={`flex items-center ${isMobile ? 'space-x-2 rtl:space-x-reverse px-4 py-2' : 'space-x-3 rtl:space-x-reverse px-6 py-3'} rtl:space-x-reverse bg-[#1A1A1A] rounded-xl border border-[#2A2A2A] hover:border-[#E000A0]/50 transition-all duration-300 cursor-pointer group-hover:shadow-lg group-hover:shadow-[#E000A0]/10`}
                   style={{ borderColor: `${social.color}20` }}
                 >
                   <span className={`${isMobile ? 'text-lg' : 'text-xl'} group-hover:scale-110 transition-transform duration-300`}>
@@ -211,8 +211,8 @@ export default function AboutSection() {
           animate={{ opacity: inView ? 0.03 : 0 }}
           transition={{ duration: 2 }}
         >
-          <div className="absolute top-1/3 left-1/3 w-96 h-96 bg-[#E000A0] rounded-full blur-3xl" />
-          <div className="absolute bottom-1/3 right-1/3 w-64 h-64 bg-[#8B5CF6] rounded-full blur-3xl" />
+          <div className="absolute top-1/3 start-1/3 w-96 h-96 bg-[#E000A0] rounded-full blur-3xl" />
+          <div className="absolute bottom-1/3 end-1/3 w-64 h-64 bg-[#8B5CF6] rounded-full blur-3xl" />
         </motion.div>
       </motion.div>
     </section>

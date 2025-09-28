@@ -34,7 +34,7 @@ const Toast = React.forwardRef<HTMLDivElement, ToastProps>(
       <div
         ref={ref}
         className={cn(
-          'relative flex w-full items-center justify-between space-x-4 overflow-hidden rounded-md border p-6 pr-8 shadow-lg transition-all',
+          'relative flex w-full items-center justify-between space-x-4 rtl:space-x-reverse overflow-hidden rounded-md border p-6 pe-8 shadow-lg transition-all',
           variantStyles[variant]
         )}
       >
@@ -47,7 +47,7 @@ const Toast = React.forwardRef<HTMLDivElement, ToastProps>(
           )}
         </div>
         <button
-          className="absolute right-2 top-2 rounded-md p-1 text-gray-400 hover:text-gray-600"
+          className="absolute end-2 top-2 rounded-md p-1 text-gray-400 hover:text-gray-600"
           onClick={() => onClose(id)}
         >
           <X className="h-4 w-4" />
@@ -82,7 +82,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   return (
     <ToastContext.Provider value={{ toasts, addToast, removeToast }}>
       {children}
-      <div className="fixed bottom-0 right-0 z-50 flex flex-col-reverse p-4 space-y-2 space-y-reverse">
+      <div className="fixed bottom-0 end-0 z-50 flex flex-col p-4 space-y-2 space-y-reverse">
         {toasts.map(toast => (
           <Toast key={toast.id} {...toast} />
         ))}

@@ -232,7 +232,7 @@ export function PersonalNotificationsWidget() {
                     !notification.isRead ? 'ring-2 ring-[#ff0a54]/20' : ''
                   }`}
                 >
-                  <div className='flex items-start gap-3'>
+                  <div className='flex items-start rtl:items-start gap-3'>
                     <div
                       className={`p-2 rounded-full ${notificationInfo.bgColor} ${notificationInfo.borderColor} border`}
                     >
@@ -241,7 +241,7 @@ export function PersonalNotificationsWidget() {
                       />
                     </div>
                     <div className='flex-1 min-w-0'>
-                      <div className='flex items-start justify-between'>
+                      <div className='flex items-start rtl:items-start justify-between'>
                         <div className='flex-1'>
                           <h4
                             className={`font-medium ${notification.isRead ? 'text-gray-700' : 'text-gray-900'}`}
@@ -289,11 +289,11 @@ export function PersonalNotificationsWidget() {
           >
             <div className='flex gap-2'>
               <Button variant='outline' size='sm' className='flex-1 text-xs'>
-                <Bell className='h-3 w-3 ml-1' />
+                <Bell className='h-3 w-3 ms-1' />
                 همه اعلان‌ها
               </Button>
               <Button variant='outline' size='sm' className='flex-1 text-xs'>
-                <X className='h-3 w-3 ml-1' />
+                <X className='h-3 w-3 ms-1' />
                 پاک کردن همه
               </Button>
             </div>

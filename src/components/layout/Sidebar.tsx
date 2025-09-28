@@ -195,10 +195,10 @@ export function Sidebar() {
 
         {/* Sidebar */}
         <OptimizedMotion
-          className='fixed right-0 top-0 h-full w-80 max-w-[85vw] z-[60] lg:hidden'
-          initial={{ x: '100%', opacity: 0 }}
+          className='fixed start-0 top-0 h-full w-80 max-w-[85vw] z-[60] lg:hidden'
+          initial={{ x: '-100%', opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
-          exit={{ x: '100%', opacity: 0 }}
+          exit={{ x: '-100%', opacity: 0 }}
           transition={{
             type: 'spring',
             damping: 15,
@@ -218,7 +218,7 @@ export function Sidebar() {
                 ease: [0.25, 0.46, 0.45, 0.94]
               }}
             >
-              <div className='flex justify-end p-4'>
+              <div className='flex justify-start rtl:justify-end p-4'>
                 <Button
                   variant='ghost'
                   size='sm'
@@ -341,7 +341,7 @@ export function Sidebar() {
     if (isMobile) return null;
 
     return (
-      <div className='fixed right-0 top-0 h-full z-50 flex flex-col transition-all duration-300 ease-in-out w-16'>
+      <div className='fixed start-0 top-0 h-full z-50 flex flex-col transition-all duration-300 ease-in-out w-16'>
         {/* Navigation - Icon-only with hover text */}
         <div className='flex-1 flex items-center justify-center px-2'>
           <nav className='flex flex-col gap-3 w-full'>
@@ -356,7 +356,7 @@ export function Sidebar() {
                 </Button>
                 
                 {/* Hover Text - Appears from left */}
-                <div className='absolute left-full ml-3 top-1/2 transform -translate-y-1/2 pointer-events-none'>
+                <div className='absolute start-full ms-3 top-1/2 transform -translate-y-1/2 pointer-events-none'>
                   <div className='bg-white/90 backdrop-blur-sm text-gray-900 px-3 py-2 rounded-lg shadow-lg border border-white/20 whitespace-nowrap transition-all duration-200 ease-out opacity-0 translate-x-[-10px] scale-95 group-hover:opacity-100 group-hover:translate-x-0 group-hover:scale-100'>
                     اقدامات جدید
                   </div>
@@ -399,7 +399,7 @@ export function Sidebar() {
                   </Link>
 
                   {/* Hover Text - Appears from left */}
-                  <div className='absolute left-full ml-3 top-1/2 transform -translate-y-1/2 pointer-events-none'>
+                  <div className='absolute start-full ms-3 top-1/2 transform -translate-y-1/2 pointer-events-none'>
                     <div className='bg-white/90 backdrop-blur-sm text-gray-900 px-3 py-2 rounded-lg shadow-lg border border-white/20 whitespace-nowrap transition-all duration-200 ease-out opacity-0 translate-x-[-10px] scale-95 group-hover:opacity-100 group-hover:translate-x-0 group-hover:scale-100'>
                       {item.label}
                     </div>

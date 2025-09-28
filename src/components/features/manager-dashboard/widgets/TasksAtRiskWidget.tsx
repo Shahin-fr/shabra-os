@@ -46,7 +46,7 @@ const TasksAtRiskWidget = () => {
               key={task.id}
               className="p-4 border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200"
             >
-              <div className="flex items-start justify-between mb-2">
+              <div className="flex items-start rtl:items-start justify-between mb-2">
                 <h4 className="font-semibold text-text-primary text-sm">
                   {task.name}
                 </h4>

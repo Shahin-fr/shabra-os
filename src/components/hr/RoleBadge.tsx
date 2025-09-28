@@ -11,13 +11,13 @@ export function RoleBadge({ role, className }: RoleBadgeProps) {
   const getIcon = (role: UserRole) => {
     switch (role) {
       case 'ADMIN':
-        return <Shield className='h-3 w-3 mr-1' />;
+        return <Shield className='h-3 w-3 me-1' />;
       case 'MANAGER':
-        return <Shield className='h-3 w-3 mr-1' />;
+        return <Shield className='h-3 w-3 me-1' />;
       case 'EMPLOYEE':
-        return <User className='h-3 w-3 mr-1' />;
+        return <User className='h-3 w-3 me-1' />;
       default:
-        return <User className='h-3 w-3 mr-1' />;
+        return <User className='h-3 w-3 me-1' />;
     }
   };
 

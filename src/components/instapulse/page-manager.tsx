@@ -158,7 +158,7 @@ export default function PageManager() {
               >
                 {isUpdatingPage ? (
                   <>
-                    <Loader2 className='h-4 w-4 animate-spin mr-2' />
+                    <Loader2 className='h-4 w-4 animate-spin me-2' />
                     در حال ذخیره...
                   </>
                 ) : (
@@ -203,7 +203,7 @@ export default function PageManager() {
               >
                 {isAddingPage ? (
                   <>
-                    <Loader2 className='h-4 w-4 animate-spin mr-2' />
+                    <Loader2 className='h-4 w-4 animate-spin me-2' />
                     در حال افزودن...
                   </>
                 ) : (

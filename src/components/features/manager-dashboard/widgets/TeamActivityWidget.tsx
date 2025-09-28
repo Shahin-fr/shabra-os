@@ -41,7 +41,7 @@ const TeamActivityWidget = () => {
         {teamActivity.map((member) => (
           <li
             key={member.id}
-            className="flex items-center space-x-3 space-x-reverse p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200"
+            className="flex items-center space-x-3 rtl:space-x-reverse space-x-reverse p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200"
           >
             {/* Avatar */}
             <div className="relative">
@@ -49,7 +49,7 @@ const TeamActivityWidget = () => {
                 {member.avatar}
               </div>
               {/* Status Indicator Dot */}
-              <div className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-white dark:border-gray-900 ${getStatusColor(member.status)}`}></div>
+              <div className={`absolute -bottom-1 -end-1 w-3 h-3 rounded-full border-2 border-white dark:border-gray-900 ${getStatusColor(member.status)}`}></div>
             </div>
 
             {/* Member Info */}

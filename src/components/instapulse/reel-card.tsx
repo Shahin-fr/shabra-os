@@ -182,8 +182,8 @@ export default function ReelCard({ reel }: ReelCardProps) {
           <div className='absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20' />
 
           {/* Top Overlay - User Info */}
-          <div className='absolute top-3 left-3 z-10'>
-            <div className='flex items-start gap-2'>
+          <div className='absolute top-3 start-3 z-10'>
+            <div className='flex items-start rtl:items-start gap-2'>
               <Avatar className='h-8 w-8 border border-white/30 flex-shrink-0'>
                 <AvatarImage
                   src={`https://www.instagram.com/${reel.trackedPage.username}/`}
@@ -205,8 +205,8 @@ export default function ReelCard({ reel }: ReelCardProps) {
           </div>
 
           {/* Bottom Overlay - Stats */}
-          <div className='absolute bottom-3 left-3 right-3 z-10'>
-            <div className='flex items-end justify-between'>
+          <div className='absolute bottom-3 start-3 end-3 z-10'>
+            <div className='flex items-end rtl:items-start justify-between'>
               {/* Left side - Time and Views */}
               <div className='flex flex-col gap-1'>
                 <span className='text-white text-xs font-medium drop-shadow-md'>

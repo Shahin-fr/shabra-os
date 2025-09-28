@@ -345,7 +345,7 @@ export function StoryIdeaManager() {
         <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
           <DialogTrigger asChild>
             <Button className='bg-[#ff0a54] hover:bg-[#ff0a54]/90 text-white'>
-              <Plus className='h-4 w-4 ml-2' />
+              <Plus className='h-4 w-4 ms-2' />
               افزودن ایده جدید
             </Button>
           </DialogTrigger>
@@ -489,12 +489,12 @@ export function StoryIdeaManager() {
       <div className='flex flex-wrap gap-4'>
         <div className='flex-1 min-w-[200px]'>
           <div className='relative'>
-            <Search className='absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400' />
+            <Search className='absolute end-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400' />
             <Input
               placeholder='جستجو در ایده‌ها...'
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              className='pr-10'
+              className='pe-10'
             />
           </div>
         </div>
@@ -574,7 +574,7 @@ export function StoryIdeaManager() {
                       onClick={() => handleEdit(idea)}
                       className='flex-1'
                     >
-                      <Edit className='h-3 w-3 ml-1' />
+                      <Edit className='h-3 w-3 ms-1' />
                       ویرایش
                     </Button>
                     <Button

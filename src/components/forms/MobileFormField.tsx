@@ -26,7 +26,7 @@ export const MobileFormField = forwardRef<HTMLDivElement, MobileFormFieldProps>(
       >
         <Label className='block text-sm font-medium text-gray-900'>
           {label}
-          {required && <span className='text-red-500 mr-1'>*</span>}
+          {required && <span className='text-red-500 me-1'>*</span>}
         </Label>
         {children}
         {error && (

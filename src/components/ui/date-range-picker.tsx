@@ -3,7 +3,7 @@
 import { CalendarIcon, ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
 import { DateRange } from 'react-day-picker';
 import { useState } from 'react';
-import { format } from 'date-fns';
+import { format } from 'date-fns-jalali';
 
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
@@ -53,12 +53,12 @@ export function DateRangePicker({
         <Button
           variant='outline'
           className={cn(
-            'w-full justify-start text-left font-semibold backdrop-blur-xl bg-gradient-to-r from-white/25 via-pink-500/20 to-rose-500/25 border border-white/40 text-white hover:bg-gradient-to-r hover:from-white/30 hover:via-pink-500/25 hover:to-rose-500/30 hover:border-white/50 rounded-2xl px-6 py-3 shadow-lg shadow-pink-500/30 transition-all duration-300 hover:shadow-xl hover:shadow-pink-500/40 hover:scale-105 relative overflow-hidden before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-r before:from-pink-400/20 before:to-rose-400/20 before:-z-10',
+            'w-full justify-start rtl:justify-start text-start font-semibold backdrop-blur-xl bg-gradient-to-r from-white/25 via-pink-500/20 to-rose-500/25 border border-white/40 text-white hover:bg-gradient-to-r hover:from-white/30 hover:via-pink-500/25 hover:to-rose-500/30 hover:border-white/50 rounded-2xl px-6 py-3 shadow-lg shadow-pink-500/30 transition-all duration-300 hover:shadow-xl hover:shadow-pink-500/40 hover:scale-105 relative overflow-hidden before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-r before:from-pink-400/20 before:to-rose-400/20 before:-z-10',
             !date && 'text-white/70',
             className
           )}
         >
-          <CalendarIcon className='mr-2 h-5 w-5 text-white/80' />
+          <CalendarIcon className='me-2 h-5 w-5 text-white/80' />
           {formatDateRange(date)}
         </Button>
       </PopoverTrigger>
@@ -79,7 +79,7 @@ export function DateRangePicker({
               Chevron: ({ className, orientation, ...props }) => {
                 if (orientation === 'left') {
                   return (
-                    <ChevronRightIcon
+                    <ChevronRight className="rtl:rotate-180"Icon
                       className={cn('size-4', className)}
                       {...props}
                     />
@@ -88,7 +88,7 @@ export function DateRangePicker({
 
                 if (orientation === 'right') {
                   return (
-                    <ChevronLeftIcon
+                    <ChevronLeft className="rtl:rotate-180"Icon
                       className={cn('size-4', className)}
                       {...props}
                     />
@@ -96,7 +96,7 @@ export function DateRangePicker({
                 }
 
                 return (
-                  <ChevronRightIcon
+                  <ChevronRight className="rtl:rotate-180"Icon
                     className={cn('size-4', className)}
                     {...props}
                   />
@@ -106,7 +106,7 @@ export function DateRangePicker({
             classNames={{
               root: 'w-fit bg-transparent',
               months: 'relative flex flex-col gap-4 md:flex-row',
-              month: 'flex w-full flex-col gap-4',
+              month: 'flex w-full flex-col rtl:flex-col-reverse gap-4',
               nav: 'absolute inset-x-0 top-0 flex w-full items-center justify-between gap-1',
               button_previous:
                 'h-8 w-8 select-none p-0 text-white hover:bg-white/10 hover:shadow-lg hover:shadow-pink-500/20 rounded-lg transition-all duration-200 backdrop-blur-sm flex items-center justify-center',
@@ -129,11 +129,11 @@ export function DateRangePicker({
               week_number: 'text-white/50 select-none text-xs',
               day: 'group/day relative aspect-square h-full w-full select-none p-0 text-center text-white hover:bg-white/10 hover:shadow-lg hover:shadow-pink-500/20 rounded-lg transition-all duration-200 backdrop-blur-sm',
               range_start:
-                'bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-l-lg shadow-lg shadow-pink-500/40',
+                'bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-s-lg shadow-lg shadow-pink-500/40',
               range_middle:
                 'bg-gradient-to-r from-pink-500/50 to-rose-500/50 text-white rounded-none',
               range_end:
-                'bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-r-lg shadow-lg shadow-pink-500/40',
+                'bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-e-lg shadow-lg shadow-pink-500/40',
               today:
                 'bg-white/20 text-white rounded-lg data-[selected=true]:rounded-none font-semibold',
               outside: 'text-white/30 aria-selected:text-white/30',

@@ -113,7 +113,7 @@ export default function InstaPulsePage() {
                           size='lg'
                           className='w-full sm:w-auto'
                         >
-                          <Plus className='w-5 h-5 mr-2' />
+                          <Plus className='w-5 h-5 me-2' />
                           مدیریت پیج ها
                         </Button>
                       </OptimizedMotion>

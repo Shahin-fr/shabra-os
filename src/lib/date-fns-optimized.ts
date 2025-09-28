@@ -1,4 +1,4 @@
-// Optimized date-fns imports to reduce bundle size
+// Optimized date-fns-jalali imports to reduce bundle size
 // Only import the specific functions we need instead of the entire library
 
 // Common date functions
@@ -104,7 +104,7 @@ export {
   getDaysInMonth as getDaysInMonthAlt,
   getDaysInYear as getDaysInYearAlt,
   getWeeksInMonth as getWeeksInMonthAlt,
-} from 'date-fns';
+} from 'date-fns-jalali';
 
 // Jalali date functions
 export {

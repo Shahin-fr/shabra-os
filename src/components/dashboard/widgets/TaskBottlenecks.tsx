@@ -119,7 +119,7 @@ export function TaskBottlenecks() {
               <AlertTriangle className='h-5 w-5 text-[#ff0a54]' />
             </div>
             گلوگاه‌های تسک
-            <Badge variant='destructive' className='ml-auto'>
+            <Badge variant='destructive' className='ms-auto'>
               {criticalBottlenecks} بحرانی
             </Badge>
           </CardTitle>
@@ -162,8 +162,8 @@ export function TaskBottlenecks() {
                 transition={{ duration: 0.4, delay: 0.9 + index * 0.1 }}
                 className='group p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 transition-all duration-300'
               >
-                <div className='flex items-start justify-between mb-3'>
-                  <div className='flex items-start gap-3'>
+                <div className='flex items-start rtl:items-start justify-between mb-3'>
+                  <div className='flex items-start rtl:items-start gap-3'>
                     <div
                       className={`w-10 h-10 ${getStatusColor(bottleneck.status)} rounded-full flex items-center justify-center group-hover:scale-110 transition-transform`}
                     >
@@ -226,7 +226,7 @@ export function TaskBottlenecks() {
                     size='sm'
                     className='bg-[#ff0a54] hover:bg-[#ff0a54]/90 text-white px-3 py-1 h-8 text-xs'
                   >
-                    <ArrowRight className='h-3 w-3 mr-1' />
+                    <ArrowRight className="rtl:rotate-180 h-3 w-3 me-1" />
                     پیگیری
                   </Button>
                   <Button
@@ -234,7 +234,7 @@ export function TaskBottlenecks() {
                     variant='outline'
                     className='px-3 py-1 h-8 text-xs'
                   >
-                    <CheckCircle className='h-3 w-3 mr-1' />
+                    <CheckCircle className='h-3 w-3 me-1' />
                     حل شد
                   </Button>
                 </div>
@@ -252,7 +252,7 @@ export function TaskBottlenecks() {
               variant='outline'
               className='w-full bg-white/5 hover:bg-white/10 border-white/20 hover:border-white/30'
             >
-              <AlertTriangle className='h-4 w-4 mr-2' />
+              <AlertTriangle className='h-4 w-4 me-2' />
               مدیریت گلوگاه‌ها
             </Button>
           </OptimizedMotion>

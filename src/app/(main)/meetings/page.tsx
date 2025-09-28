@@ -1,11 +1,11 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Calendar, momentLocalizer } from 'react-big-calendar';
-import moment from 'moment';
+import { Calendar } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
+import { jalaliLocalizer } from '@/lib/jalali-localizer';
 import { useQuery } from '@tanstack/react-query';
-import { Plus, Users, Clock, Calendar as CalendarIcon, Filter, Grid3X3, List, ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { Plus, Users, Clock, Calendar as CalendarIcon, Grid3X3, List, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -14,10 +14,8 @@ import { MeetingDetails } from '@/components/meetings/MeetingDetails';
 import { useAuth } from '@/hooks/useAuth';
 import { isAdminOrManagerUser } from '@/lib/auth-utils';
 
-// Set up moment for Persian calendar
-moment.locale('fa');
-
-const localizer = momentLocalizer(moment);
+// Use Jalali localizer for Persian calendar
+const localizer = jalaliLocalizer;
 
 interface Meeting {
   id: string;
@@ -78,7 +76,7 @@ export default function MeetingsPage() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedMeeting, setSelectedMeeting] = useState<Meeting | null>(null);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
-  const [view, setView] = useState<'month' | 'week' | 'agenda'>('month');
+  const [view, setView] = useState('month');
   const [currentDate, setCurrentDate] = useState(new Date());
   const [overflowPopover, setOverflowPopover] = useState<{
     isOpen: boolean;
@@ -86,6 +84,11 @@ export default function MeetingsPage() {
     events: CalendarEvent[];
   }>({ isOpen: false, date: null, events: [] });
   const { user } = useAuth();
+
+  // View change handler
+  const handleViewChange = (newView) => {
+    setView(newView);
+  };
 
   // Fetch meetings
   const { data: meetings, isLoading, error } = useQuery({
@@ -123,13 +126,6 @@ export default function MeetingsPage() {
     setIsCreateDialogOpen(true);
   };
 
-  const handleShowMore = (date: Date, events: CalendarEvent[]) => {
-    setOverflowPopover({
-      isOpen: true,
-      date,
-      events
-    });
-  };
 
   const closeOverflowPopover = () => {
     setOverflowPopover({
@@ -281,28 +277,28 @@ export default function MeetingsPage() {
               <Button
                 variant={view === 'month' ? 'default' : 'ghost'}
                 size="sm"
-                onClick={() => setView('month')}
+                onClick={() => handleViewChange('month')}
                 className="h-8 px-3 rounded-md"
               >
-                <Grid3X3 className="h-4 w-4 ml-1" />
+                <Grid3X3 className="h-4 w-4 ms-1" />
                 ماه
               </Button>
               <Button
                 variant={view === 'week' ? 'default' : 'ghost'}
                 size="sm"
-                onClick={() => setView('week')}
+                onClick={() => handleViewChange('week')}
                 className="h-8 px-3 rounded-md"
               >
-                <CalendarIcon className="h-4 w-4 ml-1" />
+                <CalendarIcon className="h-4 w-4 ms-1" />
                 هفته
               </Button>
               <Button
                 variant={view === 'agenda' ? 'default' : 'ghost'}
                 size="sm"
-                onClick={() => setView('agenda')}
+                onClick={() => handleViewChange('agenda')}
                 className="h-8 px-3 rounded-md"
               >
-                <List className="h-4 w-4 ml-1" />
+                <List className="h-4 w-4 ms-1" />
                 برنامه
               </Button>
             </div>
@@ -312,7 +308,7 @@ export default function MeetingsPage() {
               <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
                 <DialogTrigger asChild>
                   <Button className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg">
-                    <Plus className="h-4 w-4 ml-2" />
+                    <Plus className="h-4 w-4 ms-2" />
                     جلسه جدید
                   </Button>
                 </DialogTrigger>
@@ -354,18 +350,24 @@ export default function MeetingsPage() {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => setCurrentDate(moment(currentDate).subtract(1, view === 'month' ? 'month' : view === 'week' ? 'week' : 'day').toDate())}
+                    onClick={() => {
+                      const unit = view === 'month' ? 'month' : view === 'week' ? 'week' : 'day';
+                      setCurrentDate(localizer.subtract(currentDate, 1, unit));
+                    }}
                     className="h-8 w-8 p-0 rounded-md"
                   >
-                    <ChevronRight className="h-4 w-4" />
+                    <ChevronRight className="rtl:rotate-180 h-4 w-4" />
                   </Button>
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => setCurrentDate(moment(currentDate).add(1, view === 'month' ? 'month' : view === 'week' ? 'week' : 'day').toDate())}
+                    onClick={() => {
+                      const unit = view === 'month' ? 'month' : view === 'week' ? 'week' : 'day';
+                      setCurrentDate(localizer.add(currentDate, 1, unit));
+                    }}
                     className="h-8 w-8 p-0 rounded-md"
                   >
-                    <ChevronLeft className="h-4 w-4" />
+                    <ChevronLeft className="rtl:rotate-180 h-4 w-4" />
                   </Button>
                 </div>
               </div>
@@ -386,7 +388,7 @@ export default function MeetingsPage() {
                     onClick={() => setIsCreateDialogOpen(true)}
                     className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3 text-lg shadow-lg"
                   >
-                    <Plus className="h-5 w-5 ml-2" />
+                    <Plus className="h-5 w-5 ms-2" />
                     ایجاد اولین جلسه
                   </Button>
                 )}
@@ -403,6 +405,8 @@ export default function MeetingsPage() {
                   style={{ height: 750 }}
                   onSelectEvent={handleSelectEvent}
                   onSelectSlot={handleSelectSlot}
+                  onView={handleViewChange}
+                  onNavigate={setCurrentDate}
                   popup
                   eventPropGetter={getEventStyle}
                   components={{
@@ -414,19 +418,37 @@ export default function MeetingsPage() {
                   min={new Date(2024, 0, 1, 8, 0)}
                   max={new Date(2024, 0, 1, 20, 0)}
                   formats={{
+                    // Time formats (using 24-hour format compatible with date-fns-jalali)
                     timeGutterFormat: 'HH:mm',
-                    eventTimeRangeFormat: ({ start, end }) => 
-                      `${start.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' })} - ${end.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' })}`,
-                    dayFormat: 'dddd',
-                    dayHeaderFormat: 'dddd، DD MMMM',
-                    dayRangeFormat: ({ start, end }) => 
-                      `${start.toLocaleDateString('fa-IR', { day: 'numeric', month: 'long' })} - ${end.toLocaleDateString('fa-IR', { day: 'numeric', month: 'long' })}`,
-                    monthHeaderFormat: 'MMMM YYYY',
-                    weekdayFormat: 'dddd',
-                    agendaDateFormat: 'dddd، DD MMMM',
+                    eventTimeRangeFormat: ({ start, end }: { start: Date; end: Date }) => 
+                      `${jalaliLocalizer.format(start, 'HH:mm')} - ${jalaliLocalizer.format(end, 'HH:mm')}`,
                     agendaTimeFormat: 'HH:mm',
-                    agendaTimeRangeFormat: ({ start, end }) => 
-                      `${start.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' })} - ${end.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' })}`,
+                    agendaTimeRangeFormat: ({ start, end }: { start: Date; end: Date }) => 
+                      `${jalaliLocalizer.format(start, 'HH:mm')} - ${jalaliLocalizer.format(end, 'HH:mm')}`,
+                    
+                    // Day formats (using Persian day names)
+                    dayFormat: 'dddd',
+                    weekdayFormat: 'dddd',
+                    workWeekFormat: 'dddd',
+                    dayHeaderFormat: 'dddd، d MMMM',
+                    dayRangeFormat: ({ start, end }: { start: Date; end: Date }) =>
+                      `${jalaliLocalizer.format(start, 'd MMMM')} - ${jalaliLocalizer.format(end, 'd MMMM')}`,
+                    
+                    // Month formats (using Persian month names)
+                    monthFormat: 'MMMM',
+                    monthHeaderFormat: 'MMMM yyyy',
+                    
+                    // Year format
+                    yearFormat: 'yyyy',
+                    
+                    // Date formats
+                    dateFormat: 'yyyy/MM/dd',
+                    dateTimeFormat: 'yyyy/MM/dd HH:mm',
+                    
+                    // Agenda formats
+                    agendaDateFormat: 'dddd، d MMMM',
+                    agendaDateRangeFormat: ({ start, end }: { start: Date; end: Date }) =>
+                      `${jalaliLocalizer.format(start, 'd MMMM')} - ${jalaliLocalizer.format(end, 'd MMMM')}`,
                   }}
                   messages={{
                     next: 'بعدی',
@@ -513,19 +535,19 @@ export default function MeetingsPage() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setView('month')}
-                className="w-full justify-start"
+                onClick={() => handleViewChange('month')}
+                className="w-full justify-start rtl:justify-start"
               >
-                <Grid3X3 className="h-4 w-4 ml-2" />
+                <Grid3X3 className="h-4 w-4 ms-2" />
                 نمای ماهانه
               </Button>
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setView('week')}
-                className="w-full justify-start"
+                onClick={() => handleViewChange('week')}
+                className="w-full justify-start rtl:justify-start"
               >
-                <CalendarIcon className="h-4 w-4 ml-2" />
+                <CalendarIcon className="h-4 w-4 ms-2" />
                 نمای هفتگی
               </Button>
               {isAdminOrManagerUser(user) && (
@@ -533,9 +555,9 @@ export default function MeetingsPage() {
                   variant="outline"
                   size="sm"
                   onClick={() => setIsCreateDialogOpen(true)}
-                  className="w-full justify-start"
+                  className="w-full justify-start rtl:justify-start"
                 >
-                  <Plus className="h-4 w-4 ml-2" />
+                  <Plus className="h-4 w-4 ms-2" />
                   جلسه جدید
                 </Button>
               )}

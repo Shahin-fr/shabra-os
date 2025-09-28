@@ -96,7 +96,7 @@ export const NavigationItem = memo<NavigationItemProps>(
           <AnimatePresence>
             {isHovered && (
               <OptimizedMotion
-                className='absolute left-full ml-4 z-50 pointer-events-none'
+                className='absolute start-full ms-4 z-50 pointer-events-none'
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
@@ -116,7 +116,7 @@ export const NavigationItem = memo<NavigationItemProps>(
         {!isCollapsed && (
           <span
             className={cn(
-              'transition-all duration-200 whitespace-nowrap ml-3',
+              'transition-all duration-200 whitespace-nowrap ms-3',
               isActive
                 ? 'text-[#ff0a54]'
                 : isMobile
@@ -141,9 +141,9 @@ export const NavigationItem = memo<NavigationItemProps>(
 
         {/* Tooltip for collapsed state */}
         {isCollapsed && (
-          <div className='absolute left-full ml-2 px-2 py-1 bg-black/80 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50'>
+          <div className='absolute start-full ms-2 px-2 py-1 bg-black/80 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50'>
             {item.label}
-            <div className='absolute right-full top-1/2 transform -translate-y-1/2 w-0 h-0 border-l-4 border-l-black/80 border-t-2 border-t-transparent border-b-2 border-b-transparent'></div>
+            <div className='absolute end-full top-1/2 transform -translate-y-1/2 w-0 h-0 border-s-4 border-s-black/80 border-t-2 border-t-transparent border-b-2 border-b-transparent'></div>
           </div>
         )}
       </Link>

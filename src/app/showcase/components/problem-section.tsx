@@ -292,7 +292,7 @@ export default function ProblemSection() {
       {isMobile && (
         <>
           {/* Top Icon Grid */}
-          <div className="absolute top-8 left-1/2 transform -translate-x-1/2 pointer-events-none">
+          <div className="absolute top-8 start-1/2 transform -translate-x-1/2 pointer-events-none">
             <div className="grid grid-cols-3 gap-4 max-w-xs">
               {iconCollection.slice(0, 6).map((iconData, index) => (
                 <motion.div
@@ -332,7 +332,7 @@ export default function ProblemSection() {
           </div>
 
           {/* Bottom Icon Grid */}
-          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 pointer-events-none">
+          <div className="absolute bottom-8 start-1/2 transform -translate-x-1/2 pointer-events-none">
             <div className="grid grid-cols-3 gap-4 max-w-xs">
               {iconCollection.slice(6, 12).map((iconData, index) => (
                 <motion.div

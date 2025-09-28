@@ -137,7 +137,7 @@ export function WhosOutWidget({ className, variant = 'desktop' }: WhosOutWidgetP
             key={employee.id}
             className="p-3 rounded-xl bg-white/60 border border-white/40 hover:bg-white/80 transition-all duration-200"
           >
-            <div className="flex items-start gap-3">
+            <div className="flex items-start rtl:items-start gap-3">
               {/* Avatar */}
               <div className="flex-shrink-0">
                 {employee.avatar ? (

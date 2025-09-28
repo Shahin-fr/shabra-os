@@ -429,7 +429,7 @@ export function EnhancedMeetingWorkspace({ meeting }: EnhancedMeetingWorkspacePr
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -20 }}
                       transition={{ delay: index * 0.1 }}
-                      className="flex items-start gap-3 p-4 border rounded-lg hover:bg-gray-50 transition-colors group"
+                      className="flex items-start rtl:items-start gap-3 p-4 border rounded-lg hover:bg-gray-50 transition-colors group"
                     >
                       <motion.button
                         onClick={() => handleToggleTalkingPoint(point.id, point.isCompleted)}
@@ -496,7 +496,7 @@ export function EnhancedMeetingWorkspace({ meeting }: EnhancedMeetingWorkspacePr
                   onClick={() => setIsEditingNotes(!isEditingNotes)}
                   className="hover:bg-purple-50"
                 >
-                  <Edit className="h-4 w-4 ml-1" />
+                  <Edit className="h-4 w-4 ms-1" />
                   {isEditingNotes ? 'لغو' : 'ویرایش'}
                 </Button>
               </div>
@@ -523,7 +523,7 @@ export function EnhancedMeetingWorkspace({ meeting }: EnhancedMeetingWorkspacePr
                       className="bg-purple-600 hover:bg-purple-700"
                     >
                       {updateNotesMutation.isPending ? (
-                        <Loader2 className="h-4 w-4 animate-spin ml-1" />
+                        <Loader2 className="h-4 w-4 animate-spin ms-1" />
                       ) : null}
                       ذخیره
                     </Button>
@@ -559,7 +559,7 @@ export function EnhancedMeetingWorkspace({ meeting }: EnhancedMeetingWorkspacePr
                         className="mt-3 hover:bg-purple-50"
                         onClick={() => setIsEditingNotes(true)}
                       >
-                        <Plus className="h-4 w-4 ml-1" />
+                        <Plus className="h-4 w-4 ms-1" />
                         اضافه کردن یادداشت
                       </Button>
                     </div>
@@ -602,7 +602,7 @@ export function EnhancedMeetingWorkspace({ meeting }: EnhancedMeetingWorkspacePr
                 />
                 <div className="flex gap-2">
                   <Select value={selectedAssignee} onValueChange={setSelectedAssignee}>
-                    <SelectTrigger className="flex-1">
+                    <SelectTrigger className="flex-1 w-full justify-end text-right">
                       <SelectValue placeholder="انتخاب مسئول..." />
                     </SelectTrigger>
                     <SelectContent>
@@ -646,7 +646,7 @@ export function EnhancedMeetingWorkspace({ meeting }: EnhancedMeetingWorkspacePr
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -20 }}
                       transition={{ delay: index * 0.1 }}
-                      className="flex items-start gap-3 p-4 border rounded-lg hover:bg-gray-50 transition-colors group"
+                      className="flex items-start rtl:items-start gap-3 p-4 border rounded-lg hover:bg-gray-50 transition-colors group"
                     >
                       <motion.button
                         onClick={() => handleToggleActionItem(item.id, item.isCompleted)}
@@ -680,7 +680,7 @@ export function EnhancedMeetingWorkspace({ meeting }: EnhancedMeetingWorkspacePr
                             {item.relatedTaskId ? (
                               <Link href={`/tasks/${item.relatedTaskId}`}>
                                 <Button variant="outline" size="sm" className="hover:bg-green-50">
-                                  <ExternalLink className="h-3 w-3 ml-1" />
+                                  <ExternalLink className="h-3 w-3 ms-1" />
                                   تسک
                                 </Button>
                               </Link>
@@ -693,9 +693,9 @@ export function EnhancedMeetingWorkspace({ meeting }: EnhancedMeetingWorkspacePr
                                 className="hover:bg-green-50"
                               >
                                 {createTaskMutation.isPending ? (
-                                  <Loader2 className="h-3 w-3 animate-spin ml-1" />
+                                  <Loader2 className="h-3 w-3 animate-spin ms-1" />
                                 ) : (
-                                  <Plus className="h-3 w-3 ml-1" />
+                                  <Plus className="h-3 w-3 ms-1" />
                                 )}
                                 تسک
                               </Button>

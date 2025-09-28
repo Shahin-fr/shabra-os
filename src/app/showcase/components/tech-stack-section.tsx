@@ -256,9 +256,9 @@ export default function TechStackSection() {
           animate={{ opacity: inView ? 0.03 : 0 }}
           transition={{ duration: 2 }}
         >
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#E000A0] rounded-full blur-3xl" />
-          <div className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-[#8B5CF6] rounded-full blur-3xl" />
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-[#06B6D4] rounded-full blur-3xl" />
+          <div className="absolute top-1/4 start-1/4 w-96 h-96 bg-[#E000A0] rounded-full blur-3xl" />
+          <div className="absolute bottom-1/4 end-1/4 w-72 h-72 bg-[#8B5CF6] rounded-full blur-3xl" />
+          <div className="absolute top-1/2 start-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-[#06B6D4] rounded-full blur-3xl" />
         </motion.div>
       </motion.div>
     </section>

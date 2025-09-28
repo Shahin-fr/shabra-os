@@ -91,7 +91,7 @@ export function TeamWorkloadAnalysis() {
               <BarChart3 className='h-5 w-5 text-[#ff0a54]' />
             </div>
             تحلیل بار کاری تیم
-            <Badge variant='outline' className='ml-auto'>
+            <Badge variant='outline' className='ms-auto'>
               میانگین: {avgWorkload}%
             </Badge>
           </CardTitle>
@@ -153,7 +153,7 @@ export function TeamWorkloadAnalysis() {
                     </div>
                   </div>
 
-                  <div className='text-right'>
+                  <div className='text-end'>
                     <div className='text-lg font-bold text-foreground'>
                       {employee.workload}%
                     </div>
@@ -224,7 +224,7 @@ export function TeamWorkloadAnalysis() {
               variant='outline'
               className='w-full bg-white/5 hover:bg-white/10 border-white/20 hover:border-white/30'
             >
-              <BarChart3 className='h-4 w-4 mr-2' />
+              <BarChart3 className='h-4 w-4 me-2' />
               مشاهده گزارش کامل
             </Button>
           </OptimizedMotion>

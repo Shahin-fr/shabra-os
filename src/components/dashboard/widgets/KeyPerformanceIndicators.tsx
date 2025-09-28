@@ -114,7 +114,7 @@ export function KeyPerformanceIndicators() {
               <Target className='h-5 w-5 text-[#ff0a54]' />
             </div>
             شاخص‌های کلیدی عملکرد
-            <Badge variant='outline' className='ml-auto'>
+            <Badge variant='outline' className='ms-auto'>
               {achievementRate}% دستیابی به اهداف
             </Badge>
           </CardTitle>
@@ -136,7 +136,7 @@ export function KeyPerformanceIndicators() {
                   دستیابی به اهداف KPI
                 </p>
               </div>
-              <div className='text-right'>
+              <div className='text-end'>
                 <div className='text-lg font-semibold text-foreground'>
                   {achievedTargets}/{totalKPIs}
                 </div>
@@ -165,7 +165,7 @@ export function KeyPerformanceIndicators() {
                 transition={{ duration: 0.4, delay: 1.1 + index * 0.05 }}
                 className='group p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 transition-all duration-300'
               >
-                <div className='flex items-start justify-between mb-3'>
+                <div className='flex items-start rtl:items-start justify-between mb-3'>
                   <div
                     className={`w-10 h-10 ${kpi.bgColor} rounded-full flex items-center justify-center group-hover:scale-110 transition-transform`}
                   >

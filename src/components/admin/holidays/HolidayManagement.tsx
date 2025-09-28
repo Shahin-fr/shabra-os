@@ -258,13 +258,13 @@ export function HolidayManagement() {
                   variant="outline"
                   size="sm"
                 >
-                  <RefreshCw className="h-4 w-4 mr-2" />
+                  <RefreshCw className="h-4 w-4 me-2" />
                   بروزرسانی
                 </Button>
                 <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
                   <DialogTrigger asChild>
                     <Button size="sm" className="bg-[#ff0a54] hover:bg-[#ff0a54]/90">
-                      <Plus className="h-4 w-4 mr-2" />
+                      <Plus className="h-4 w-4 me-2" />
                       افزودن تعطیل
                     </Button>
                   </DialogTrigger>
@@ -291,7 +291,7 @@ export function HolidayManagement() {
                           onChange={(e) => setFormData(prev => ({ ...prev, date: e.target.value }))}
                         />
                       </div>
-                      <div className="flex justify-end gap-2">
+                      <div className="flex justify-end rtl:justify-start gap-2">
                         <Button
                           variant="outline"
                           onClick={() => setIsCreateDialogOpen(false)}
@@ -304,9 +304,9 @@ export function HolidayManagement() {
                           className="bg-[#ff0a54] hover:bg-[#ff0a54]/90"
                         >
                           {createHolidayMutation.isPending ? (
-                            <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                            <RefreshCw className="h-4 w-4 me-2 animate-spin" />
                           ) : (
-                            <Plus className="h-4 w-4 mr-2" />
+                            <Plus className="h-4 w-4 me-2" />
                           )}
                           افزودن
                         </Button>
@@ -341,7 +341,7 @@ export function HolidayManagement() {
                   value={filters.year}
                   onValueChange={(value) => handleFilterChange('year', value)}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="w-full justify-end text-right">
                     <SelectValue placeholder="انتخاب سال" />
                   </SelectTrigger>
                   <SelectContent>
@@ -362,7 +362,7 @@ export function HolidayManagement() {
                   value={filters.upcoming}
                   onValueChange={(value) => handleFilterChange('upcoming', value)}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="w-full justify-end text-right">
                     <SelectValue placeholder="انتخاب نوع" />
                   </SelectTrigger>
                   <SelectContent>
@@ -431,7 +431,7 @@ export function HolidayManagement() {
             {isLoading ? (
               <div className="flex items-center justify-center py-8">
                 <RefreshCw className="h-6 w-6 animate-spin text-gray-400" />
-                <span className="mr-2 text-gray-600">در حال بارگذاری...</span>
+                <span className="me-2 text-gray-600">در حال بارگذاری...</span>
               </div>
             ) : error ? (
               <Alert>
@@ -525,7 +525,7 @@ export function HolidayManagement() {
                 onChange={(e) => setFormData(prev => ({ ...prev, date: e.target.value }))}
               />
             </div>
-            <div className="flex justify-end gap-2">
+            <div className="flex justify-end rtl:justify-start gap-2">
               <Button
                 variant="outline"
                 onClick={() => setIsEditDialogOpen(false)}
@@ -538,9 +538,9 @@ export function HolidayManagement() {
                 className="bg-[#ff0a54] hover:bg-[#ff0a54]/90"
               >
                 {updateHolidayMutation.isPending ? (
-                  <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                  <RefreshCw className="h-4 w-4 me-2 animate-spin" />
                 ) : (
-                  <Edit className="h-4 w-4 mr-2" />
+                  <Edit className="h-4 w-4 me-2" />
                 )}
                 به‌روزرسانی
               </Button>

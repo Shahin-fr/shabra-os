@@ -14,13 +14,17 @@ export default function WikiPage() {
     setRefreshKey(prev => prev + 1);
   };
 
+  const handleDocumentSelect = (documentId: string | null) => {
+    setSelectedDocument(documentId);
+  };
+
   return (
     <ToastProvider>
       <div className='flex flex-col lg:flex-row h-screen bg-background p-2 sm:p-4 lg:p-6 xl:p-8 gap-4 lg:gap-6 rounded-2xl'>
         {/* Sidebar */}
         <div className='lg:w-80 w-full lg:flex-shrink-0'>
           <WikiSidebar
-            onDocumentSelect={setSelectedDocument}
+            onDocumentSelect={handleDocumentSelect}
             selectedDocument={selectedDocument}
             onRefresh={handleRefresh}
           />

@@ -93,7 +93,7 @@ export default function ProfilePage() {
                 شما مجاز به مشاهده این پروفایل نیستید.
               </p>
               <Button onClick={() => router.back()}>
-                <ArrowLeft className="h-4 w-4 me-2" />
+                <ArrowLeft className="rtl:rotate-180 h-4 w-4 me-2" />
                 بازگشت
               </Button>
             </CardContent>
@@ -162,7 +162,7 @@ export default function ProfilePage() {
                 پروفایل مورد نظر یافت نشد.
               </p>
               <Button onClick={() => router.back()}>
-                <ArrowLeft className="h-4 w-4 me-2" />
+                <ArrowLeft className="rtl:rotate-180 h-4 w-4 me-2" />
                 بازگشت
               </Button>
             </CardContent>
@@ -186,7 +186,7 @@ export default function ProfilePage() {
             onClick={() => router.back()}
             className="mb-4"
           >
-            <ArrowLeft className="h-4 w-4 me-2" />
+            <ArrowLeft className="rtl:rotate-180 h-4 w-4 me-2" />
             بازگشت
           </Button>
           

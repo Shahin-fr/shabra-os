@@ -9,13 +9,27 @@ const globalForPrisma = globalThis as unknown as {
  * Handles both regular database connections and Prisma Accelerate
  */
 const createPrismaClient = () => {
-  // Prisma client initialization
-
   // Determine which database URL to use
   // Prisma Accelerate takes precedence if available
   const databaseUrl = process.env.PRISMA_DATABASE_URL || process.env.DATABASE_URL;
 
+  // Add diagnostic logging
+  console.log('[PRISMA DEBUG] Environment check:', {
+    NODE_ENV: process.env.NODE_ENV,
+    DATABASE_URL: process.env.DATABASE_URL ? 'SET' : 'NOT SET',
+    PRISMA_DATABASE_URL: process.env.PRISMA_DATABASE_URL ? 'SET' : 'NOT SET',
+    selectedUrl: databaseUrl ? 'SET' : 'NOT SET',
+  });
+
+  if (databaseUrl) {
+    console.log('[PRISMA DEBUG] Attempting to connect with DATABASE_URL:', databaseUrl.substring(0, 30) + '...');
+  } else {
+    console.error('[PRISMA DEBUG] !!! DATABASE_URL UNDEFINED !!!');
+  }
+
   if (!databaseUrl) {
+    console.error('[PRISMA DEBUG] ❌ No database URL found!');
+    console.error('[PRISMA DEBUG] Available environment variables:', Object.keys(process.env).filter(key => key.includes('DATABASE') || key.includes('DB')));
     throw new Error('DATABASE_URL or PRISMA_DATABASE_URL environment variable is not set');
   }
 
@@ -23,7 +37,11 @@ const createPrismaClient = () => {
   const isUsingAccelerate = !!process.env.PRISMA_DATABASE_URL;
   const isProduction = process.env.NODE_ENV === 'production';
 
-  // Database configuration determined
+  console.log('[PRISMA DEBUG] Client configuration:', {
+    isUsingAccelerate,
+    isProduction,
+    databaseUrlLength: databaseUrl.length,
+  });
 
   // Configure Prisma client based on environment and connection type
   const clientConfig: {
@@ -32,34 +50,68 @@ const createPrismaClient = () => {
   } = {
     log: isProduction
       ? ['error']
-      : ['query', 'error', 'warn', 'info'],
+      : ['error', 'warn'],
   };
 
-  // Add Prisma Accelerate configuration if using it
-  if (isUsingAccelerate) {
-    clientConfig.datasources = {
-      db: {
-        url: databaseUrl,
-      },
-    };
-  }
+  // Always set datasource URL explicitly for consistency
+  clientConfig.datasources = {
+    db: {
+      url: databaseUrl,
+    },
+  };
+
+  console.log('[PRISMA DEBUG] Creating PrismaClient with config:', {
+    hasDatasources: !!clientConfig.datasources,
+    logLevels: clientConfig.log,
+  });
 
   const client = new PrismaClient(clientConfig);
-
-  // PrismaClient created successfully
-
+  
+  // Test the connection immediately with retry
+  console.log('[PRISMA DEBUG] Testing database connection...');
+  
+  const testConnection = async () => {
+    try {
+      await client.$connect();
+      console.log('[PRISMA DEBUG] ✅ Database connection successful!');
+    } catch (error) {
+      console.error('[PRISMA DEBUG] ❌ Database connection failed:', error);
+      console.error('[PRISMA DEBUG] Error details:', {
+        message: error.message,
+        code: error.code,
+        meta: error.meta,
+      });
+      
+      // Don't throw here, let the actual query handle the error
+      console.log('[PRISMA DEBUG] Connection test failed, but client will be returned for retry');
+    }
+  };
+  
+  // Test connection asynchronously
+  testConnection();
+  
   return client;
 };
 
 // Create or reuse existing Prisma client instance
 // This prevents multiple instances in development (hot reloading)
-export const prisma = globalForPrisma.prisma ?? createPrismaClient();
+let prisma: PrismaClient;
 
-// Store the client globally in non-production environments
-// This prevents creating multiple instances during development hot reloads
-if (process.env.NODE_ENV !== 'production') {
-  globalForPrisma.prisma = prisma;
+if (globalForPrisma.prisma) {
+  console.log('[PRISMA DEBUG] Using existing global Prisma client');
+  prisma = globalForPrisma.prisma;
+} else {
+  console.log('[PRISMA DEBUG] Creating new Prisma client');
+  prisma = createPrismaClient();
+  
+  // Store the client globally in non-production environments
+  // This prevents creating multiple instances during development hot reloads
+  if (process.env.NODE_ENV !== 'production') {
+    globalForPrisma.prisma = prisma;
+  }
 }
+
+export { prisma };
 
 // Export for backward compatibility
 export { prisma as prismaLocal };

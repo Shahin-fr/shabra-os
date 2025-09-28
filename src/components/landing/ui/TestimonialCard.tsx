@@ -26,7 +26,7 @@ export function TestimonialCard({
       className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 h-full"
     >
       {/* Quote Icon */}
-      <div className="flex justify-end mb-4">
+      <div className="flex justify-end rtl:justify-start mb-4">
         <Quote className="w-8 h-8 text-blue-200" />
       </div>
 

@@ -33,7 +33,7 @@ export function CompactTeamOverview() {
         <div className='space-y-3'>
           {/* Compact Avatar Display */}
           <div className='flex items-center justify-center'>
-            <div className='flex -space-x-2'>
+            <div className='flex -space-x-2 rtl:space-x-reverse'>
               {mockCompactTeamMembers.map(member => (
                 <div key={member.id} className='relative group'>
                   <Avatar className='w-8 h-8 border-2 border-white/20 hover:scale-110 transition-transform duration-200 cursor-pointer'>
@@ -46,7 +46,7 @@ export function CompactTeamOverview() {
                     </AvatarFallback>
                   </Avatar>
                   <div
-                    className={`absolute -bottom-0.5 -right-0.5 w-2 h-2 ${getStatusColor(member.status)} rounded-full border border-white/20`}
+                    className={`absolute -bottom-0.5 -end-0.5 w-2 h-2 ${getStatusColor(member.status)} rounded-full border border-white/20`}
                   ></div>
                 </div>
               ))}

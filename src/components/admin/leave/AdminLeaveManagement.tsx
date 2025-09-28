@@ -180,28 +180,28 @@ export function AdminLeaveManagement() {
       case 'PENDING':
         return (
           <Badge className='bg-yellow-100 text-yellow-800 border-yellow-200'>
-            <Clock className='h-3 w-3 mr-1' />
+            <Clock className='h-3 w-3 me-1' />
             در انتظار
           </Badge>
         );
       case 'APPROVED':
         return (
           <Badge className='bg-green-100 text-green-800 border-green-200'>
-            <CheckCircle className='h-3 w-3 mr-1' />
+            <CheckCircle className='h-3 w-3 me-1' />
             تایید شده
           </Badge>
         );
       case 'REJECTED':
         return (
           <Badge className='bg-red-100 text-red-800 border-red-200'>
-            <XCircle className='h-3 w-3 mr-1' />
+            <XCircle className='h-3 w-3 me-1' />
             رد شده
           </Badge>
         );
       case 'CANCELLED':
         return (
           <Badge className='bg-gray-100 text-gray-800 border-gray-200'>
-            <XCircle className='h-3 w-3 mr-1' />
+            <XCircle className='h-3 w-3 me-1' />
             لغو شده
           </Badge>
         );
@@ -226,7 +226,7 @@ export function AdminLeaveManagement() {
             متأسفانه خطایی در بارگذاری درخواست‌های مرخصی رخ داده است.
           </p>
           <Button onClick={handleRefresh} variant='outline'>
-            <RefreshCw className='h-4 w-4 mr-2' />
+            <RefreshCw className='h-4 w-4 me-2' />
             تلاش مجدد
           </Button>
         </CardContent>
@@ -321,7 +321,7 @@ export function AdminLeaveManagement() {
                   value={filters.status}
                   onValueChange={(value) => handleFilterChange('status', value)}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="w-full justify-end text-right">
                     <SelectValue placeholder='انتخاب وضعیت' />
                   </SelectTrigger>
                   <SelectContent>
@@ -340,7 +340,7 @@ export function AdminLeaveManagement() {
                   value={filters.leaveType}
                   onValueChange={(value) => handleFilterChange('leaveType', value)}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="w-full justify-end text-right">
                     <SelectValue placeholder='انتخاب نوع مرخصی' />
                   </SelectTrigger>
                   <SelectContent>
@@ -360,7 +360,7 @@ export function AdminLeaveManagement() {
                   value={filters.employeeId}
                   onValueChange={(value) => handleFilterChange('employeeId', value)}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="w-full justify-end text-right">
                     <SelectValue placeholder='انتخاب کارمند' />
                   </SelectTrigger>
                   <SelectContent>
@@ -397,7 +397,7 @@ export function AdminLeaveManagement() {
                 variant='outline'
                 size='sm'
               >
-                <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+                <RefreshCw className={`h-4 w-4 me-2 ${isLoading ? 'animate-spin' : ''}`} />
                 بروزرسانی
               </Button>
             </div>
@@ -495,7 +495,7 @@ export function AdminLeaveManagement() {
                                   size='sm'
                                   className='bg-green-600 hover:bg-green-700 text-white'
                                 >
-                                  <CheckCircle className='h-3 w-3 mr-1' />
+                                  <CheckCircle className='h-3 w-3 me-1' />
                                   تایید
                                 </Button>
                                 <Button
@@ -503,7 +503,7 @@ export function AdminLeaveManagement() {
                                   size='sm'
                                   variant='destructive'
                                 >
-                                  <XCircle className='h-3 w-3 mr-1' />
+                                  <XCircle className='h-3 w-3 me-1' />
                                   رد
                                 </Button>
                               </div>

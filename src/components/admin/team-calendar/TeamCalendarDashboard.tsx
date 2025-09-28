@@ -2,8 +2,8 @@
 
 import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Calendar, momentLocalizer, View } from 'react-big-calendar';
-import moment from 'moment';
+import { Calendar, View } from 'react-big-calendar';
+import { jalaliLocalizer } from '@/lib/jalali-localizer';
 import { OptimizedMotion } from '@/components/ui/OptimizedMotion';
 import {
   Calendar as CalendarIcon,
@@ -23,12 +23,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { CapacityForecastWidget } from './CapacityForecastWidget';
 
-// Set up moment locale for Persian
-import 'moment/locale/fa';
-moment.locale('fa');
-
-// Set up the localizer
-const localizer = momentLocalizer(moment);
+// Use Jalali localizer for Persian calendar
+const localizer = jalaliLocalizer;
 
 interface TeamCalendarData {
   leaveRequests: Array<{
@@ -271,7 +267,7 @@ export function TeamCalendarDashboard() {
             متأسفانه خطایی در بارگذاری داده‌های تقویم رخ داده است.
           </p>
           <Button onClick={() => refetch()} variant='outline'>
-            <RefreshCw className='h-4 w-4 mr-2' />
+            <RefreshCw className='h-4 w-4 me-2' />
             تلاش مجدد
           </Button>
         </CardContent>
@@ -376,9 +372,9 @@ export function TeamCalendarDashboard() {
                   disabled={isLoading}
                 >
                   {isLoading ? (
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    <Loader2 className="h-4 w-4 me-2 animate-spin" />
                   ) : (
-                    <RefreshCw className="h-4 w-4 mr-2" />
+                    <RefreshCw className="h-4 w-4 me-2" />
                   )}
                   بروزرسانی
                 </Button>
@@ -389,7 +385,7 @@ export function TeamCalendarDashboard() {
             {isLoading ? (
               <div className="flex items-center justify-center py-12">
                 <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
-                <span className="mr-3 text-gray-600">در حال بارگذاری تقویم...</span>
+                <span className="me-3 text-gray-600">در حال بارگذاری تقویم...</span>
               </div>
             ) : (
               <div className="h-[600px]">
@@ -445,7 +441,7 @@ export function TeamCalendarDashboard() {
                           </Button>
                         </div>
                         <div className="text-lg font-semibold">
-                          {moment(currentDate).format('MMMM YYYY')}
+                          {jalaliLocalizer.format(currentDate, 'MMMM yyyy')}
                         </div>
                         <div className="flex items-center gap-2">
                           <Button

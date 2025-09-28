@@ -13,15 +13,15 @@ export function StatusBadge({ status, className }: StatusBadgeProps) {
   const getIcon = (status: LeaveStatus) => {
     switch (status) {
       case 'PENDING':
-        return <Clock className='h-3 w-3 mr-1' />;
+        return <Clock className='h-3 w-3 me-1' />;
       case 'APPROVED':
-        return <CheckCircle className='h-3 w-3 mr-1' />;
+        return <CheckCircle className='h-3 w-3 me-1' />;
       case 'REJECTED':
-        return <XCircle className='h-3 w-3 mr-1' />;
+        return <XCircle className='h-3 w-3 me-1' />;
       case 'CANCELLED':
-        return <XCircle className='h-3 w-3 mr-1' />;
+        return <XCircle className='h-3 w-3 me-1' />;
       default:
-        return <AlertCircle className='h-3 w-3 mr-1' />;
+        return <AlertCircle className='h-3 w-3 me-1' />;
     }
   };
 

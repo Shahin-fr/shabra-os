@@ -250,7 +250,7 @@ export function MobileDashboard({ className }: MobileDashboardProps) {
                       onClick={() => handleStatSwipe('right')}
                       className='h-8 w-8 p-0'
                     >
-                      <ChevronRight className='h-4 w-4' />
+                      <ChevronRight className="rtl:rotate-180 h-4 w-4" />
                     </Button>
                     <div className='flex gap-1'>
                       {transformedStats.map((_, index) => (
@@ -270,7 +270,7 @@ export function MobileDashboard({ className }: MobileDashboardProps) {
                       onClick={() => handleStatSwipe('left')}
                       className='h-8 w-8 p-0'
                     >
-                      <ChevronLeft className='h-4 w-4' />
+                      <ChevronLeft className="rtl:rotate-180 h-4 w-4" />
                     </Button>
                   </div>
                 )}
@@ -416,7 +416,7 @@ export function MobileDashboard({ className }: MobileDashboardProps) {
               <div className='space-y-3'>
                 {isLoading ? (
                   Array.from({ length: 3 }).map((_, index) => (
-                    <div key={index} className='flex items-start gap-3 p-3 rounded-lg bg-gray-50/50'>
+                    <div key={index} className='flex items-start rtl:items-start gap-3 p-3 rounded-lg bg-gray-50/50'>
                       <Skeleton className='w-2 h-2 rounded-full mt-2' />
                       <div className='flex-1 space-y-2'>
                         <Skeleton className='h-4 w-3/4' />
@@ -451,7 +451,7 @@ export function MobileDashboard({ className }: MobileDashboardProps) {
                   dashboardData.recentActivity.map(activity => (
                     <div
                       key={activity.id}
-                      className='flex items-start gap-3 p-3 rounded-lg bg-gray-50/50'
+                      className='flex items-start rtl:items-start gap-3 p-3 rounded-lg bg-gray-50/50'
                     >
                       <div
                         className={`w-2 h-2 rounded-full mt-2 ${
