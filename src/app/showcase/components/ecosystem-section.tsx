@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { useIsMobile } from '../../../hooks/useMediaQuery';
 import { t } from '../utils/i18n';
+import { LayoutGrid, Clapperboard, Zap, BookOpen, Users } from 'lucide-react';
 
 /**
  * EcosystemSection Component - Completely Re-architected
@@ -28,7 +29,7 @@ export default function EcosystemSection() {
       name: t('ecosystem_task_management'),
       description: t('ecosystem_task_management_desc'),
       isKey: false,
-      icon: '📋',
+      icon: LayoutGrid,
       color: '#3B82F6',
       details: {
         title: t('modal_task_management_title'),
@@ -42,7 +43,7 @@ export default function EcosystemSection() {
       name: t('ecosystem_storyboard'),
       description: t('ecosystem_storyboard_desc'),
       isKey: false,
-      icon: '🎬',
+      icon: Clapperboard,
       color: '#8B5CF6',
       details: {
         title: t('modal_storyboard_title'),
@@ -56,7 +57,7 @@ export default function EcosystemSection() {
       name: t('ecosystem_instapulse'),
       description: t('ecosystem_instapulse_desc'),
       isKey: true,
-      icon: '⚡',
+      icon: Zap,
       color: '#E000A0',
       details: {
         title: t('modal_instapulse_title'),
@@ -70,7 +71,7 @@ export default function EcosystemSection() {
       name: t('ecosystem_wiki'),
       description: t('ecosystem_wiki_desc'),
       isKey: false,
-      icon: '📚',
+      icon: BookOpen,
       color: '#10B981',
       details: {
         title: t('modal_wiki_title'),
@@ -84,7 +85,7 @@ export default function EcosystemSection() {
       name: t('ecosystem_hr'),
       description: t('ecosystem_hr_desc'),
       isKey: false,
-      icon: '👥',
+      icon: Users,
       color: '#F59E0B',
       details: {
         title: t('modal_hr_title'),
@@ -148,6 +149,24 @@ export default function EcosystemSection() {
     return /[\u0600-\u06FF]/.test(text);
   };
 
+  const renderMixedText = (text: string) => {
+    // Check if text contains both Persian and English
+    const hasPersian = /[\u0600-\u06FF]/.test(text);
+    const hasEnglish = /[a-zA-Z]/.test(text);
+    
+    if (hasPersian && hasEnglish) {
+      // More sophisticated splitting to handle mixed content
+      const parts = text.split(/([a-zA-Z\s\-\(\)]+)/).filter(part => part.trim());
+      const persianParts = parts.filter(part => /[\u0600-\u06FF]/.test(part)).join(' ');
+      const englishParts = parts.filter(part => /[a-zA-Z]/.test(part)).join(' ');
+      
+      return { persian: persianParts, english: englishParts, isMixed: true };
+    }
+    
+    // For pure Persian or pure English text
+    return { persian: text, english: '', isMixed: false };
+  };
+
   return (
     <section className="relative min-h-screen bg-transparent overflow-hidden">
       <motion.div 
@@ -188,14 +207,8 @@ export default function EcosystemSection() {
                   whileTap={{ scale: 0.98 }}
                   onClick={() => setExpandedModule(expandedModule === module.id ? null : module.id)}
                 >
-                  {/* Key module badge */}
-                  {module.isKey && (
-                    <div className="absolute -top-2 -end-2 bg-gradient-to-r from-[#E000A0] to-[#B8008A] text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
-                      {t('ecosystem_instapulse_badge')}
-                    </div>
-                  )}
 
-                  {/* Module header - always visible */}
+                  {/* هدر ماژول - همیشه قابل مشاهده */}
                   <div className="p-6">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-4 rtl:space-x-reverse">
@@ -203,19 +216,15 @@ export default function EcosystemSection() {
                           className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl"
                           style={{ backgroundColor: `${module.color}20` }}
                         >
-                          {module.icon}
+                          <module.icon size={20} />
                         </div>
                         <div className="flex-1">
                           <h3 className={`text-lg font-bold ${
                             expandedModule === module.id ? 'text-[#E000A0]' : 'text-[#F5F5F5]'
-                          } ${
-                            isRTL(module.name) ? 'text-end' : 'text-start'
-                          }`}>
+                          } text-right`} dir="rtl">
                             {module.name}
                           </h3>
-                          <p className={`text-sm text-[#A1A1A1] mt-1 ${
-                            isRTL(module.description) ? 'text-end' : 'text-start'
-                          }`}>
+                          <p className="text-sm text-[#A1A1A1] mt-1 text-right" dir="rtl">
                             {module.description}
                           </p>
                         </div>
@@ -230,7 +239,7 @@ export default function EcosystemSection() {
                     </div>
                   </div>
 
-                  {/* Expandable content */}
+                  {/* محتوای قابل گسترش */}
                   <AnimatePresence>
                     {expandedModule === module.id && (
                       <motion.div
@@ -241,7 +250,7 @@ export default function EcosystemSection() {
                         className="overflow-hidden"
                       >
                         <div className="px-6 pb-6 border-t border-[#2A2A2A]">
-                          {/* Module details */}
+                          {/* جزئیات ماژول */}
                           <div className="pt-6">
                             <h4 className={`text-lg font-semibold text-[#F5F5F5] mb-4 ${
                               isRTL(module.details.title) ? 'text-end' : 'text-start'
@@ -249,54 +258,47 @@ export default function EcosystemSection() {
                               {module.details.title}
                             </h4>
                             
-                            <p className={`text-[#A1A1A1] leading-relaxed mb-6 ${
-                              isRTL(module.details.description) ? 'text-end' : 'text-start'
-                            }`}>
+                            <p className="text-[#A1A1A1] leading-relaxed mb-6 text-right" dir="rtl">
                               {module.details.description}
                             </p>
 
-                            {/* Features list */}
+                            {/* لیست ویژگی‌ها */}
                             <div className="mb-6">
                               <h5 className={`text-base font-semibold text-[#F5F5F5] mb-3 ${
-                                isRTL('Features') ? 'text-end' : 'text-start'
+                                isRTL('ویژگی‌های کلیدی') ? 'text-end' : 'text-start'
                               }`}>
-                                Key Features
+                                ویژگی‌های کلیدی
                               </h5>
-                              <div className="space-y-2">
+                              <ul className="space-y-2">
                                 {module.details.features.map((feature, featureIndex) => (
-                                  <motion.div
+                                  <motion.li
                                     key={featureIndex}
-                                    className="flex items-center space-x-3 rtl:space-x-reverse"
+                                    className="flex items-center justify-between w-full"
                                     initial={{ opacity: 0, x: -20 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     transition={{ delay: featureIndex * 0.1 }}
                                   >
-                                    <div 
-                                      className="w-2 h-2 rounded-full flex-shrink-0"
-                                      style={{ backgroundColor: module.color }}
-                                    />
-                                    <span className={`text-sm text-[#A1A1A1] ${
-                                      isRTL(feature) ? 'text-end' : 'text-start'
-                                    }`}>
+                                    <span className="text-right text-gray-300">
+                                      <span className="ml-2">•</span>
                                       {feature.trim()}
                                     </span>
-                                  </motion.div>
+                                  </motion.li>
                                 ))}
-                              </div>
+                              </ul>
                             </div>
 
-                            {/* Screenshot placeholder */}
+                            {/* جایگاه تصویر */}
                             <div className="relative bg-[#0A0A0A] rounded-2xl border border-[#2A2A2A] overflow-hidden">
                               <div className="aspect-video bg-gradient-to-br from-[#1A1A1A] to-[#0F0F0F] flex items-center justify-center">
                                 <div className="text-center">
                                   <div 
-                                    className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-3"
-                                    style={{ backgroundColor: `${module.color}20` }}
+                                    className="w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-3"
+                                    style={{ backgroundColor: module.color }}
                                   >
-                                    {module.icon}
+                                    <module.icon size={20} />
                                   </div>
                                   <p className="text-[#666666] text-xs">
-                                    {module.details.title} Screenshot
+                                    نمایی از {module.details.title}
                                   </p>
                                 </div>
                               </div>
@@ -335,32 +337,22 @@ export default function EcosystemSection() {
                       : 'bg-[#1A1A1A] border-[#2A2A2A] hover:border-[#E000A0]/30'
                     }
                   `}>
-                    {/* Key module badge */}
-                    {module.isKey && (
-                      <div className="absolute -top-2 -end-2 bg-gradient-to-r from-[#E000A0] to-[#B8008A] text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
-                        {t('ecosystem_instapulse_badge')}
-                      </div>
-                    )}
 
                     {/* Module icon and name */}
                     <div className="flex items-center space-x-4 rtl:space-x-reverse">
                       <div 
-                        className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl"
-                        style={{ backgroundColor: `${module.color}20` }}
+                        className="w-12 h-12 rounded-xl flex items-center justify-center"
+                        style={{ backgroundColor: module.color }}
                       >
-                        {module.icon}
+                        <module.icon size={20} style={{ color: "#FFFFFF" }} />
                       </div>
                       <div className="flex-1">
                         <h3 className={`text-xl font-bold ${
                           selectedModule === module.id ? 'text-[#E000A0]' : 'text-[#F5F5F5]'
-                        } ${
-                          isRTL(module.name) ? 'text-end' : 'text-start'
-                        }`}>
+                        } text-right`} dir="rtl">
                           {module.name}
                         </h3>
-                        <p className={`text-sm text-[#A1A1A1] mt-1 ${
-                          isRTL(module.description) ? 'text-end' : 'text-start'
-                        }`}>
+                        <p className="text-sm text-[#A1A1A1] mt-1 text-right" dir="rtl">
                           {module.description}
                         </p>
                       </div>
@@ -370,7 +362,7 @@ export default function EcosystemSection() {
               ))}
             </motion.div>
 
-            {/* Right side - Module details */}
+            {/* سمت راست - جزئیات ماژول */}
             <motion.div 
               className="relative"
               variants={contentVariants}
@@ -384,79 +376,63 @@ export default function EcosystemSection() {
                   exit={{ opacity: 0, x: -50, scale: 0.95 }}
                   transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
                 >
-                  {/* Module header */}
+                  {/* هدر ماژول */}
                   <div className="p-8 border-b border-[#2A2A2A]">
                     <div className="flex items-center space-x-4 rtl:space-x-reverse mb-4">
                       <div 
-                        className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl"
-                        style={{ backgroundColor: `${selectedModuleData.color}20` }}
+                        className="w-16 h-16 rounded-2xl flex items-center justify-center"
+                        style={{ backgroundColor: selectedModuleData.color }}
                       >
-                        {selectedModuleData.icon}
+                        <selectedModuleData.icon size={32} style={{ color: "#FFFFFF" }} />
                       </div>
                       <div className="flex-1">
-                        <h3 className={`text-2xl font-bold text-[#F5F5F5] ${
-                          isRTL(selectedModuleData.details.title) ? 'text-end' : 'text-start'
-                        }`}>
+                        <h3 className="text-2xl font-bold text-right text-white" dir="rtl">
                           {selectedModuleData.details.title}
-                          {selectedModuleData.isKey && (
-                            <span className="ms-3 text-sm bg-gradient-to-r from-[#E000A0] to-[#B8008A] text-white px-3 py-1 rounded-full">
-                              {t('ecosystem_instapulse_badge')}
-                            </span>
-                          )}
                         </h3>
                       </div>
                     </div>
                     
-                    <p className={`text-[#A1A1A1] leading-relaxed ${
-                      isRTL(selectedModuleData.details.description) ? 'text-end' : 'text-start'
-                    }`}>
+                    <p className="mt-2 text-gray-300 text-right" dir="rtl">
                       {selectedModuleData.details.description}
                     </p>
                   </div>
 
-                  {/* Features list */}
+                  {/* لیست ویژگی‌ها */}
                   <div className="p-8">
-                    <h4 className={`text-lg font-semibold text-[#F5F5F5] mb-4 ${
-                      isRTL('Features') ? 'text-end' : 'text-start'
-                    }`}>
-                      Key Features
-                    </h4>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      {selectedModuleData.details.features.map((feature, featureIndex) => (
-                        <motion.div
-                          key={featureIndex}
-                          className="flex items-center space-x-3 rtl:space-x-reverse"
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: featureIndex * 0.1 }}
-                        >
-                          <div 
-                            className="w-2 h-2 rounded-full flex-shrink-0"
-                            style={{ backgroundColor: selectedModuleData.color }}
-                          />
-                          <span className={`text-sm text-[#A1A1A1] ${
-                            isRTL(feature) ? 'text-end' : 'text-start'
-                          }`}>
-                            {feature.trim()}
-                          </span>
-                        </motion.div>
-                      ))}
+                    <div className="mt-8">
+                      <h4 className="text-xl font-semibold text-right text-white" dir="rtl">ویژگی‌های کلیدی</h4>
+                      <ul className="mt-4 space-y-2">
+                        {selectedModuleData.details.features.map((feature, featureIndex) => (
+                          <motion.li
+                            key={featureIndex}
+                            className="flex items-center justify-between w-full"
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: featureIndex * 0.1 }}
+                          >
+                            <span className="text-right text-gray-300">
+                              <span className="ml-2">•</span>
+                              {feature.trim()}
+                            </span>
+                          </motion.li>
+                        ))}
+                      </ul>
                     </div>
                   </div>
 
-                  {/* Screenshot placeholder */}
+                  {/* جایگاه تصویر */}
                   <div className="p-8 pt-0">
                     <div className="relative bg-[#0A0A0A] rounded-2xl border border-[#2A2A2A] overflow-hidden">
                       <div className="aspect-video bg-gradient-to-br from-[#1A1A1A] to-[#0F0F0F] flex items-center justify-center">
                         <div className="text-center">
                           <div 
-                            className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4"
-                            style={{ backgroundColor: `${selectedModuleData.color}20` }}
+                            className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
+                            style={{ backgroundColor: selectedModuleData.color }}
                           >
-                            {selectedModuleData.icon}
+                            <selectedModuleData.icon size={32} style={{ color: "#FFFFFF" }} />
                           </div>
-                          <p className="text-[#666666] text-sm">
-                            {selectedModuleData.details.title} Screenshot
+                          <p className="text-[#666666] text-sm text-right" dir="rtl">
+                            نمایی از {selectedModuleData.details.title}
                           </p>
                         </div>
                       </div>
@@ -483,27 +459,6 @@ export default function EcosystemSection() {
           </div>
         )}
 
-        {/* Bottom transition */}
-        <motion.div
-          className="mt-16 text-center"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1, duration: 1 }}
-        >
-          <motion.div
-            className="inline-flex items-center space-x-2 rtl:space-x-reverse text-[#E000A0]"
-            animate={{ y: [0, -5, 0] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          >
-            <span className="text-sm font-medium">Explore the ecosystem</span>
-            <motion.span
-              animate={{ x: [0, 5, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
-            >
-              →
-            </motion.span>
-          </motion.div>
-        </motion.div>
       </motion.div>
     </section>
   );

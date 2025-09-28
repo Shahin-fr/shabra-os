@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>شبرا OS - Placeholder Images Generator</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0a0a;
+            color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #E000A0;
+            margin-bottom: 30px;
+        }
+        
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .image-container {
+            background: #1a1a1a;
+            border: 2px solid #333;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .image-placeholder {
+            width: 100%;
+            height: 200px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .admin-desktop {
+            background: linear-gradient(135deg, #E000A0, #B8008A);
+            color: white;
+        }
+        
+        .admin-mobile {
+            background: linear-gradient(135deg, #E000A0, #B8008A);
+            color: white;
+        }
+        
+        .employee-desktop {
+            background: linear-gradient(135deg, #10B981, #059669);
+            color: white;
+        }
+        
+        .employee-mobile {
+            background: linear-gradient(135deg, #10B981, #059669);
+            color: white;
+        }
+        
+        .instructions {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        
+        .instructions h3 {
+            color: #E000A0;
+            margin-bottom: 15px;
+        }
+        
+        .instructions ol {
+            color: #a1a1a1;
+            line-height: 1.6;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>شبرا OS - Placeholder Images Generator</h1>
+        
+        <div class="image-grid">
+            <div class="image-container">
+                <div class="image-placeholder admin-desktop">
+                    مدیر (دسکتاپ)
+                </div>
+                <p>dashboard-admin-desktop.png</p>
+                <p style="color: #a1a1a1; font-size: 14px;">1200x800</p>
+            </div>
+            
+            <div class="image-container">
+                <div class="image-placeholder admin-mobile">
+                    مدیر (موبایل)
+                </div>
+                <p>dashboard-admin-mobile.png</p>
+                <p style="color: #a1a1a1; font-size: 14px;">400x800</p>
+            </div>
+            
+            <div class="image-container">
+                <div class="image-placeholder employee-desktop">
+                    کارمند (دسکتاپ)
+                </div>
+                <p>dashboard-employee-desktop.png</p>
+                <p style="color: #a1a1a1; font-size: 14px;">1200x800</p>
+            </div>
+            
+            <div class="image-container">
+                <div class="image-placeholder employee-mobile">
+                    کارمند (موبایل)
+                </div>
+                <p>dashboard-employee-mobile.png</p>
+                <p style="color: #a1a1a1; font-size: 14px;">400x800</p>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <h3>دستورالعمل ایجاد تصاویر:</h3>
+            <ol>
+                <li>از این صفحه اسکرین‌شات بگیرید</li>
+                <li>هر کدام از تصاویر بالا را جداگانه کراپ کنید</li>
+                <li>تصاویر را با نام‌های مشخص شده ذخیره کنید</li>
+                <li>تصاویر را در پوشه public/images قرار دهید</li>
+                <li>برای بهترین نتیجه، از ابزارهای ویرایش تصویر استفاده کنید</li>
+            </ol>
+        </div>
+    </div>
+</body>
+</html>

@@ -3,37 +3,27 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { useIsMobile } from '../../../hooks/useMediaQuery';
+import { Button } from '@/components/ui/button';
 
 /**
- * AboutSection Component - Completely Re-architected
+ * AboutSection Component - Grand Creator Spotlight
  * 
- * A clean, professional about section with centered title,
- * developer bio, and interactive social media links.
+ * A signature, expansive final section that gives the creator
+ * the spotlight they deserve with a focused, vertical layout.
  */
 export default function AboutSection() {
-  const isMobile = useIsMobile();
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1
   });
-
-  // Social media links
-  const socialLinks = [
-    { name: 'GitHub', icon: '🐙', url: '#', color: '#333333' },
-    { name: 'LinkedIn', icon: '💼', url: '#', color: '#0077B5' },
-    { name: 'Twitter', icon: '🐦', url: '#', color: '#1DA1F2' },
-    { name: 'Email', icon: '📧', url: '#', color: '#EA4335' },
-    { name: 'Portfolio', icon: '🌐', url: '#', color: '#8B5CF6' }
-  ];
 
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.2,
-        delayChildren: 0.3
+        staggerChildren: 0.3,
+        delayChildren: 0.2
       }
     }
   };
@@ -41,180 +31,180 @@ export default function AboutSection() {
   const itemVariants = {
     hidden: { 
       opacity: 0, 
-      y: 30,
+      y: 40,
       scale: 0.95
     },
     visible: { 
       opacity: 1, 
       y: 0,
-      scale: 1
+      scale: 1,
+      transition: {
+        duration: 0.8,
+        ease: "easeOut"
+      }
     }
   };
 
-  const socialItemVariants = {
+  const profileVariants = {
     hidden: { 
       opacity: 0, 
       scale: 0.8,
-      rotateY: -90
+      rotateY: -15
     },
     visible: { 
       opacity: 1, 
       scale: 1,
-      rotateY: 0
+      rotateY: 0,
+      transition: {
+        duration: 1,
+        ease: "easeOut"
+      }
     }
   };
 
   return (
     <section 
       ref={ref}
-      className="relative py-20 px-4 sm:px-6 lg:px-8 bg-transparent overflow-hidden"
+      className="relative py-32 px-4 sm:px-6 lg:px-8 overflow-hidden"
+      style={{
+        background: 'radial-gradient(circle at center, #1a1a1a 0%, #0a0a0a 50%, #000000 100%)'
+      }}
     >
-      <motion.div 
-        className="max-w-4xl mx-auto text-center"
-        variants={containerVariants}
-        initial="hidden"
-        animate={inView ? "visible" : "hidden"}
+      {/* Subtle background decoration */}
+      <motion.div
+        className="absolute inset-0 pointer-events-none"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: inView ? 0.1 : 0 }}
+        transition={{ duration: 2 }}
       >
-        {/* Section Title */}
-        <motion.div 
-          className="mb-16"
-          variants={itemVariants}
-        >
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#F5F5F5] mb-6">
-            درباره توسعه‌دهنده
-          </h2>
-          <p className="text-lg sm:text-xl text-[#A1A1A1] max-w-3xl mx-auto leading-relaxed">
-            با من آشنا شوید و از تجربه‌ها و مهارت‌هایم در توسعه نرم‌افزار مطلع شوید
-          </p>
-        </motion.div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#E000A0] rounded-full blur-3xl" />
+        <div className="absolute top-1/4 right-1/4 w-[400px] h-[400px] bg-[#8B5CF6] rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 left-1/4 w-[300px] h-[300px] bg-[#06B6D4] rounded-full blur-3xl" />
+      </motion.div>
 
-        {/* Developer Bio */}
-        <motion.div 
-          className="mb-12"
-          variants={itemVariants}
+      <div className="max-w-4xl mx-auto">
+        <motion.div
+          className="flex flex-col items-center text-center"
+          variants={containerVariants}
+          initial="hidden"
+          animate={inView ? "visible" : "hidden"}
         >
-          <div className={`bg-gradient-to-br from-[#1A1A1A] to-[#0F0F0F] rounded-3xl border border-[#2A2A2A] ${isMobile ? 'p-6' : 'p-8 sm:p-12'} shadow-2xl`}>
-            {/* Profile Image Placeholder */}
-            <motion.div 
-              className={`${isMobile ? 'w-20 h-20 mb-4' : 'w-24 h-24 mb-6'} bg-gradient-to-br from-[#E000A0] to-[#B8008A] rounded-full mx-auto flex items-center justify-center`}
-              whileHover={{ scale: 1.05, rotate: 5 }}
-              transition={{ duration: 0.3 }}
+          {/* Pre-title */}
+          <motion.p 
+            className="text-lg text-gray-400 tracking-wider mb-6"
+            variants={itemVariants}
+          >
+            درباره سازنده
+          </motion.p>
+
+          {/* Name - Hero Element */}
+          <motion.h2 
+            className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-4"
+            variants={itemVariants}
+          >
+            شاهین فرهمند
+          </motion.h2>
+
+          {/* Title */}
+          <motion.p 
+            className="text-xl text-gray-400 mb-8"
+            variants={itemVariants}
+          >
+            Product Builder & Software Developer
+          </motion.p>
+
+          {/* Profile Picture with Animated Ring */}
+          <motion.div 
+            className="relative mt-8"
+            variants={profileVariants}
+          >
+            {/* Animated Glowing Ring */}
+            <motion.div
+              className="absolute inset-0 rounded-full"
+              animate={{
+                scale: [1, 1.1, 1],
+                opacity: [0.3, 0.6, 0.3]
+              }}
+              transition={{
+                duration: 3,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
             >
-              <span className={`${isMobile ? 'text-2xl' : 'text-3xl'} font-bold text-white`}>S</span>
+              <div className="w-40 h-40 rounded-full border-2 border-[#E000A0] blur-sm" />
             </motion.div>
 
-            {/* Bio Text */}
-            <div className={`space-y-${isMobile ? '4' : '6'}`}>
-              <h3 className={`${isMobile ? 'text-xl' : 'text-2xl'} font-bold text-[#F5F5F5] ${isMobile ? 'mb-3' : 'mb-4'}`}>
-                سلام، من شابرا هستم
-              </h3>
-              
-              <p className={`text-[#A1A1A1] leading-relaxed ${isMobile ? 'text-base' : 'text-lg'}`}>
-                یک توسعه‌دهنده فول‌استک با بیش از ۵ سال تجربه در ایجاد نرم‌افزارهای مدرن و کاربردی. 
-                من عاشق حل مسائل پیچیده و ایجاد تجربه‌های دیجیتال بی‌نظیر هستم.
-              </p>
-              
-              <p className={`text-[#A1A1A1] leading-relaxed ${isMobile ? 'text-base' : 'text-lg'}`}>
-                پروژه شابرا OS نتیجه سال‌ها تحقیق، طراحی و توسعه است که با هدف ساده‌سازی 
-                و یکپارچه‌سازی ابزارهای مختلف کاری ایجاد شده است.
-              </p>
+            {/* Secondary Ring */}
+            <motion.div
+              className="absolute inset-0 rounded-full"
+              animate={{
+                scale: [1, 1.2, 1],
+                opacity: [0.1, 0.4, 0.1]
+              }}
+              transition={{
+                duration: 4,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: 1
+              }}
+            >
+              <div className="w-40 h-40 rounded-full border border-[#E000A0] blur-md" />
+            </motion.div>
 
-              {/* Skills */}
-              <div className={`flex flex-wrap justify-center gap-2 ${isMobile ? 'mt-6' : 'mt-8'}`}>
-                {['React', 'TypeScript', 'Node.js', 'PostgreSQL', 'UI/UX Design', 'DevOps'].map((skill) => (
-                  <motion.span
-                    key={skill}
-                    className={`${isMobile ? 'px-3 py-1 text-xs' : 'px-4 py-2 text-sm'} bg-[#E000A0]/10 text-[#E000A0] rounded-full font-medium border border-[#E000A0]/20`}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.1 }}
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    {skill}
-                  </motion.span>
-                ))}
-              </div>
+            {/* Main Profile Circle */}
+            <div className="relative w-40 h-40 bg-gradient-to-br from-[#E000A0] to-[#B8008A] rounded-full flex items-center justify-center shadow-2xl border-4 border-white/10">
+              <span className="text-5xl font-bold text-white">ش</span>
             </div>
-          </div>
-        </motion.div>
 
-        {/* Social Media Links */}
-        <motion.div 
-          className="mb-8"
-          variants={itemVariants}
-        >
-          <h3 className="text-xl font-semibold text-[#F5F5F5] mb-6">
-            با من در ارتباط باشید
-          </h3>
-          
-          <motion.div 
-            className={`flex flex-wrap justify-center ${isMobile ? 'gap-3' : 'gap-4'}`}
-            variants={containerVariants}
+            {/* Hover Glow Effect */}
+            <motion.div
+              className="absolute inset-0 rounded-full opacity-0"
+              whileHover={{
+                opacity: 0.3,
+                scale: 1.1
+              }}
+              transition={{ duration: 0.3 }}
+            >
+              <div className="w-full h-full bg-gradient-to-br from-[#E000A0] to-[#B8008A] rounded-full blur-lg" />
+            </motion.div>
+          </motion.div>
+
+          {/* Bio Text */}
+          <motion.p 
+            className="mt-8 max-w-xl text-center text-gray-300 leading-relaxed text-lg"
+            variants={itemVariants}
           >
-            {socialLinks.map((social) => (
-              <motion.a
-                key={social.name}
-                href={social.url}
-                className="group"
-                variants={socialItemVariants}
-                whileHover={{ 
-                  scale: 1.1,
-                  y: -5,
-                  transition: { duration: 0.2 }
-                }}
-                whileTap={{ scale: 0.95 }}
+            من به ساختن محصولاتی علاقه‌مندم که مسائل واقعی را حل می‌کنند. این پروژه، سفر من در تبدیل یک چالش روزمره به یک راه‌حل نرم‌افزاری بود.
+          </motion.p>
+
+          {/* Final CTA Button */}
+          <motion.div 
+            className="mt-12"
+            variants={itemVariants}
+          >
+            <Button
+              asChild
+              variant="outline"
+              className="bg-transparent border-[#E000A0] text-[#E000A0] hover:bg-[#E000A0] hover:text-white transition-all duration-300 px-8 py-3 text-base font-semibold shadow-lg hover:shadow-xl hover:shadow-[#E000A0]/25"
+            >
+              <a 
+                href="https://shahinfarhadi.dev" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center gap-2"
               >
-                <div 
-                  className={`flex items-center ${isMobile ? 'space-x-2 rtl:space-x-reverse px-4 py-2' : 'space-x-3 rtl:space-x-reverse px-6 py-3'} rtl:space-x-reverse bg-[#1A1A1A] rounded-xl border border-[#2A2A2A] hover:border-[#E000A0]/50 transition-all duration-300 cursor-pointer group-hover:shadow-lg group-hover:shadow-[#E000A0]/10`}
-                  style={{ borderColor: `${social.color}20` }}
+                وب‌سایت شخصی من
+                <motion.span
+                  animate={{ x: [0, 4, 0] }}
+                  transition={{ duration: 1.5, repeat: Infinity }}
                 >
-                  <span className={`${isMobile ? 'text-lg' : 'text-xl'} group-hover:scale-110 transition-transform duration-300`}>
-                    {social.icon}
-                  </span>
-                  <span className={`${isMobile ? 'text-sm' : 'text-base'} text-[#F5F5F5] group-hover:text-[#E000A0] transition-colors duration-300 font-medium`}>
-                    {social.name}
-                  </span>
-                </div>
-              </motion.a>
-            ))}
+                  →
+                </motion.span>
+              </a>
+            </Button>
           </motion.div>
         </motion.div>
-
-        {/* Call to Action */}
-        <motion.div 
-          className="mt-12"
-          variants={itemVariants}
-        >
-          <motion.a
-            href="mailto:contact@shabra.dev"
-            className={`inline-flex items-center gap-2 ${isMobile ? 'px-6 py-3 text-sm' : 'px-8 py-4 text-base'} bg-gradient-to-r from-[#E000A0] to-[#B8008A] text-white font-semibold rounded-xl shadow-lg shadow-[#E000A0]/25 hover:shadow-[#E000A0]/40 transition-all duration-300`}
-            whileHover={{ 
-              scale: 1.05,
-              boxShadow: "0 20px 40px rgba(224, 0, 160, 0.3)"
-            }}
-            whileTap={{ scale: 0.98 }}
-          >
-            شروع همکاری
-            <motion.span
-              animate={{ x: [0, 5, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
-            >
-              →
-            </motion.span>
-          </motion.a>
-        </motion.div>
-
-        {/* Subtle background decoration */}
-        <motion.div
-          className="absolute inset-0 pointer-events-none"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: inView ? 0.03 : 0 }}
-          transition={{ duration: 2 }}
-        >
-          <div className="absolute top-1/3 start-1/3 w-96 h-96 bg-[#E000A0] rounded-full blur-3xl" />
-          <div className="absolute bottom-1/3 end-1/3 w-64 h-64 bg-[#8B5CF6] rounded-full blur-3xl" />
-        </motion.div>
-      </motion.div>
+      </div>
     </section>
   );
 }

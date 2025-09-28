@@ -1,8 +1,10 @@
 import HeroSection from './components/hero-section';
 import ProblemSection from './components/problem-section';
 import PhilosophySection from './components/philosophy-section';
+import DocumentationSection from './components/documentation-section';
 import EcosystemSection from './components/ecosystem-section';
 import TechStackSection from './components/tech-stack-section';
+import StatusAndV1RoadmapSection from './components/status-and-v1-roadmap-section';
 import RoadmapSection from './components/roadmap-section';
 import AboutSection from './components/about-section';
 import AnimatedBackground from './components/animated-background';
@@ -41,8 +43,14 @@ export default function ShowcasePage() {
         {/* Tech Stack Section - The foundation */}
         <TechStackSection />
         
+        {/* Status and V1.0 Roadmap Section - Current project status and detailed roadmap */}
+        <StatusAndV1RoadmapSection />
+        
         {/* Roadmap Section - A clear, forward-thinking vision for the future */}
         <RoadmapSection />
+        
+        {/* Documentation Section - Professional design process showcase */}
+        <DocumentationSection />
         
         {/* About Section - The creator */}
         <AboutSection />

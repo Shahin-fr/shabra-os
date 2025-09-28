@@ -385,14 +385,14 @@ export default function ProblemSection() {
             className={`${isMobile ? 'text-3xl sm:text-4xl mb-6' : 'text-4xl sm:text-5xl lg:text-6xl mb-8'} font-bold text-[#F5F5F5] leading-tight`}
             variants={textVariants}
           >
-            هرج‌ومرجی که هر روز زندگی می‌کردم
+            هرج‌ومرج ابزارهای پراکنده
           </motion.h2>
           
           <motion.p 
             className={`${isMobile ? 'text-base sm:text-lg max-w-2xl' : 'text-lg sm:text-xl max-w-4xl'} text-[#A1A1A1] mx-auto leading-relaxed`}
             variants={textVariants}
           >
-            قبل از شبرا، تیم ما بین چندین ابزار پراکنده سرگردان بود. هر روز ساعت‌ها صرف جابجایی، هماهنگی و جستجوی اطلاعات می‌شد. این فقط یک مشکل کارایی نبود؛ یک فرسودگی مداوم بود که انرژی را از کارهای مهم‌تر می‌گرفت.
+            مدیریت تیم بین چندین پلتفرم، هماهنگی را کند، تمرکز را از بین می‌برد و پیدا کردن اطلاعات ضروری را به یک چالش روزمره تبدیل می‌کند.
           </motion.p>
         </motion.div>
       </div>

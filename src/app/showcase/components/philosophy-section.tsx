@@ -4,6 +4,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { useIsMobile } from '../../../hooks/useMediaQuery';
+import { Link2, Feather, Zap } from 'lucide-react';
 
 /**
  * PhilosophySection Component - Core Principles
@@ -55,28 +56,25 @@ export default function PhilosophySection() {
 
   const principles = [
     {
-      icon: "🔗",
+      icon: Link2,
       title: "یکپارچه‌سازی",
-      description: "پایان دادن به جابجایی مداوم بین پلتفرم‌ها و ایجاد یک منبع حقیقت واحد.",
-      color: "from-[#E000A0] to-[#B8008A]",
-      bgColor: "bg-[#E000A0]/10",
-      borderColor: "border-[#E000A0]/30"
+      description: "تمام ابزارهای مورد نیاز تیم، از مدیریت پروژه تا دانش سازمانی، در یک اکوسیستم واحد و متصل.",
+      color: "#E000A0",
+      gradientColor: "rgba(224, 0, 160, 0.08)"
     },
     {
-      icon: "✨",
+      icon: Feather,
       title: "سادگی",
-      description: "طراحی ابزارهایی که استفاده از آنها بصری و بدون نیاز به آموزش پیچیده باشد.",
-      color: "from-[#3B82F6] to-[#1D4ED8]",
-      bgColor: "bg-[#3B82F6]/10",
-      borderColor: "border-[#3B82F6]/30"
+      description: "رابط کاربری هوشمند و به دور از پیچیدگی که استفاده از آن نیاز به آموزش طولانی ندارد و بر انجام وظایف متمرکز است.",
+      color: "#3B82F6",
+      gradientColor: "rgba(59, 130, 246, 0.08)"
     },
     {
-      icon: "⚡",
+      icon: Zap,
       title: "کارایی",
-      description: "تمرکز بر خودکارسازی کارهای تکراری تا تیم بتواند روی وظایف خلاقانه و استراتژیک تمرکز کند.",
-      color: "from-[#8B5CF6] to-[#7C3AED]",
-      bgColor: "bg-[#8B5CF6]/10",
-      borderColor: "border-[#8B5CF6]/30"
+      description: "طراحی شده برای سرعت. کاهش مراحل اضافی و خودکارسازی فرآیندها برای به حداکثر رساندن بهره‌وری تیم.",
+      color: "#8B5CF6",
+      gradientColor: "rgba(139, 92, 246, 0.08)"
     }
   ];
 
@@ -99,7 +97,7 @@ export default function PhilosophySection() {
             className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#F5F5F5] mb-6"
             variants={itemVariants}
           >
-            فلسفه راه حل: یکپارچگی، سادگی و کارایی
+            فلسفه ما: سه اصل کلیدی در طراحی محصول
           </motion.h2>
           <motion.p 
             className="text-lg sm:text-xl text-[#A1A1A1] max-w-3xl mx-auto leading-relaxed"
@@ -114,80 +112,97 @@ export default function PhilosophySection() {
           className={`grid ${isMobile ? 'grid-cols-1 gap-6' : 'grid-cols-1 md:grid-cols-3 gap-8'}`}
           variants={containerVariants}
         >
-          {principles.map((principle, index) => (
-            <motion.div
-              key={principle.title}
-              className="group"
-              variants={itemVariants}
-              whileHover={{
-                y: -10,
-                scale: 1.02,
-                transition: { duration: 0.3 }
-              }}
-            >
-              <div className={`
-                relative ${isMobile ? 'p-6' : 'p-8'} rounded-2xl border-2 ${principle.borderColor} ${principle.bgColor}
-                backdrop-blur-sm bg-gradient-to-br from-white/5 to-white/10
-                hover:shadow-2xl hover:shadow-[#E000A0]/10 transition-all duration-500
-                h-full flex flex-col items-center text-center
-              `}>
-                {/* Animated Background Glow */}
-                <motion.div
-                  className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${principle.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}
-                  initial={{ opacity: 0 }}
-                  whileHover={{ opacity: 0.1 }}
-                />
-
-                {/* Icon */}
-                <motion.div
+          {principles.map((principle, index) => {
+            const IconComponent = principle.icon;
+            return (
+              <motion.div
+                key={principle.title}
+                className="group"
+                variants={itemVariants}
+                whileHover={{
+                  y: -8,
+                  scale: 1.03,
+                  transition: { duration: 0.3, ease: "easeOut" }
+                }}
+              >
+                <div 
                   className={`
-                    ${isMobile ? 'w-16 h-16 text-2xl mb-4' : 'w-20 h-20 text-3xl mb-6'} rounded-full bg-gradient-to-br ${principle.color} 
-                    flex items-center justify-center
-                    shadow-lg group-hover:shadow-xl transition-shadow duration-300
+                    relative ${isMobile ? 'p-6' : 'p-8'} rounded-2xl border border-[#2A2A2A] 
+                    hover:border-[#E000A0]/40 hover:shadow-xl hover:shadow-[#E000A0]/20 
+                    transition-all duration-500 h-full flex flex-col items-center text-center
+                    overflow-hidden
                   `}
-                  variants={iconVariants}
-                  transition={{ duration: 0.8, ease: "backOut" }}
-                  whileHover={{
-                    scale: 1.1,
-                    rotate: [0, -5, 5, 0],
-                    transition: { duration: 0.5 }
+                  style={{
+                    background: `radial-gradient(circle at center, ${principle.gradientColor} 0%, transparent 60%), #111111`
                   }}
                 >
-                  {principle.icon}
-                </motion.div>
+                  {/* Enhanced Radial Gradient on Hover */}
+                  <motion.div
+                    className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                    style={{
+                      background: `radial-gradient(circle at center, ${principle.gradientColor.replace('0.08', '0.15')} 0%, transparent 70%)`
+                    }}
+                  />
 
-                {/* Title */}
-                <motion.h3 
-                  className={`${isMobile ? 'text-lg' : 'text-xl'} font-bold text-[#F5F5F5] ${isMobile ? 'mb-3' : 'mb-4'} group-hover:text-white transition-colors duration-300`}
-                  variants={itemVariants}
-                >
-                  {principle.title}
-                </motion.h3>
+                  {/* Icon */}
+                  <motion.div
+                    className={`
+                      relative z-10 ${isMobile ? 'w-16 h-16 mb-4' : 'w-20 h-20 mb-6'} rounded-full 
+                      flex items-center justify-center
+                      shadow-lg group-hover:shadow-xl transition-all duration-300
+                    `}
+                    style={{ backgroundColor: principle.color }}
+                    variants={iconVariants}
+                    transition={{ duration: 0.8, ease: "backOut" }}
+                    whileHover={{
+                      scale: 1.1,
+                      rotate: [0, -5, 5, 0],
+                      transition: { duration: 0.5 }
+                    }}
+                  >
+                    <IconComponent 
+                      size={isMobile ? 24 : 32} 
+                      className="group-hover:scale-110 transition-transform duration-300"
+                      style={{ color: "#FFFFFF" }}
+                    />
+                  </motion.div>
 
-                {/* Description */}
-                <motion.p 
-                  className={`${isMobile ? 'text-sm' : 'text-base'} text-[#A1A1A1] leading-relaxed group-hover:text-[#E5E5E5] transition-colors duration-300`}
-                  variants={itemVariants}
-                >
-                  {principle.description}
-                </motion.p>
+                  {/* Title */}
+                  <motion.h3 
+                    className={`relative z-10 ${isMobile ? 'text-lg' : 'text-xl'} font-bold text-white ${isMobile ? 'mb-3' : 'mb-4'} 
+                      group-hover:text-[#E000A0] transition-colors duration-300`}
+                    variants={itemVariants}
+                  >
+                    {principle.title}
+                  </motion.h3>
 
-                {/* Decorative Elements */}
-                <motion.div
-                  className="absolute top-4 end-4 w-2 h-2 rounded-full bg-gradient-to-r from-[#E000A0] to-[#B8008A] opacity-60"
-                  animate={{
-                    scale: [1, 1.2, 1],
-                    opacity: [0.6, 1, 0.6]
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    delay: index * 0.5
-                  }}
-                />
-              </div>
-            </motion.div>
-          ))}
+                  {/* Description */}
+                  <motion.p 
+                    className={`relative z-10 ${isMobile ? 'text-sm' : 'text-base'} text-gray-300 leading-relaxed 
+                      group-hover:text-gray-100 transition-colors duration-300`}
+                    variants={itemVariants}
+                  >
+                    {principle.description}
+                  </motion.p>
+
+                  {/* Decorative Elements */}
+                  <motion.div
+                    className="absolute top-4 end-4 w-2 h-2 rounded-full opacity-60 z-10"
+                    style={{ backgroundColor: principle.color }}
+                    animate={{
+                      scale: [1, 1.2, 1],
+                      opacity: [0.6, 1, 0.6]
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      delay: index * 0.5
+                    }}
+                  />
+                </div>
+              </motion.div>
+            );
+          })}
         </motion.div>
 
         {/* Bottom Decorative Line */}

@@ -23,7 +23,7 @@ const translations: { [key: string]: string } = {
   'ecosystem_task_management_desc': 'سیستم جامع مدیریت وظایف با قابلیت‌های پیشرفته پروژه‌ریزی',
   'ecosystem_storyboard': 'استوری‌بورد',
   'ecosystem_storyboard_desc': 'ابزار حرفه‌ای برای برنامه‌ریزی و تولید محتوای بصری',
-  'ecosystem_instapulse': 'InstaPulse',
+  'ecosystem_instapulse': 'اینستاپالس',
   'ecosystem_instapulse_desc': 'پلتفرم تولید محتوای خودکار با معماری Decoupled',
   'ecosystem_instapulse_badge': 'Key Module',
   'ecosystem_wiki': 'شبرالوگ (پایگاه دانش)',
@@ -52,30 +52,30 @@ const translations: { [key: string]: string } = {
   'about_portfolio': 'Portfolio',
 
   // Modal Content
-  'modal_instapulse_title': 'InstaPulse',
-  'modal_instapulse_description': 'این ماژول برای جایگزینی فرآیند دستی و زمان‌بر تحقیق روندها ساخته شد. InstaPulse به صورت خودکار صفحات کلیدی صنعت را رصد کرده و محتوای وایرال را برای تحلیل استراتژیک به نمایش می‌گذارد.',
-  'modal_instapulse_features': 'جمع‌آوری خودکار روزانه داده‌ها,داشبورد تحلیلی محتوای وایرال,معماری Decoupled برای پایداری بالا,استراتژی محتوا بر اساس داده',
+  'modal_instapulse_title': 'اینستاپالس',
+  'modal_instapulse_description': 'این ماژول برای جایگزینی فرآیند دستی و زمان‌بر تحقیق روندها ساخته شد. اینستاپالس به صورت خودکار صفحات کلیدی صنعت را رصد کرده و محتوای وایرال را برای تحلیل استراتژیک به نمایش می‌گذارد.',
+  'modal_instapulse_features': 'جمع‌آوری خودکار روزانه داده‌ها,داشبورد تحلیلی محتوای وایرال,معماری مستقل برای پایداری بالا,استراتژی محتوا بر اساس داده',
   
-  'modal_storyboard_title': 'Storyboard',
+  'modal_storyboard_title': 'استوری‌بورد',
   'modal_storyboard_description': 'این ابزار بصری برای حل مشکل استوری‌های بدون ساختار و ناهماهنگ ایجاد شد. تیم می‌تواند به صورت مشترک سناریوهای محتوایی روزانه را برنامه‌ریزی کرده و از هماهنگی برند و افزایش تعامل اطمینان حاصل کند.',
-  'modal_storyboard_features': 'رابط کاربری کشیدن و رها کردن (Drag & Drop),قالب‌های آماده برای کمپین‌ها,برنامه‌ریزی مشترک تیمی,کاهش وابستگی به مدیران',
+  'modal_storyboard_features': 'رابط کاربری کشیدن و رها کردن,قالب‌های آماده برای کمپین‌ها,برنامه‌ریزی مشترک تیمی,کاهش وابستگی به مدیران',
   
-  'modal_task_management_title': 'Task Management',
+  'modal_task_management_title': 'مدیریت وظایف',
   'modal_task_management_description': 'این ماژول تمام وظایف و پروژه‌های تیم را متمرکز می‌کند. این سیستم به عنوان یک منبع حقیقت واحد برای وضعیت پروژه‌ها، ددلاین‌ها و مسئولیت‌ها عمل کرده و شفافیت و کارایی گردش کار را بهبود می‌بخشد.',
-  'modal_task_management_features': 'نمای Kanban Board,تخصیص وظیفه و تعیین ددلاین,رهگیری پیشرفت پروژه,به‌روزرسانی UI برای تجربه کاربری روان',
+  'modal_task_management_features': 'نمای کانبان,تخصیص وظیفه و تعیین ددلاین,رهگیری پیشرفت پروژه,بهبود تجربه کاربری',
   
-  'modal_wiki_title': 'ShabraLog (Knowledge Base)',
-  'modal_wiki_description': 'ShabraLog serves as the central repository for all organizational knowledge, processes, and documentation. It eliminates the need for scattered note-taking tools and ensures that critical information is always accessible and up-to-date.',
-  'modal_wiki_features': 'Centralized Documentation,Search & Discovery,Version Control,Team Collaboration',
+  'modal_wiki_title': 'شیرالوگ (پایگاه دانش)',
+  'modal_wiki_description': 'شیرالوگ به عنوان مخزن مرکزی برای تمام دانش سازمانی، فرآیندها و مستندات عمل می‌کند. این ماژول نیاز به ابزارهای یادداشت‌برداری پراکنده را از بین می‌برد و تضمین می‌کند که اطلاعات حیاتی همیشه در دسترس و به‌روز هستند.',
+  'modal_wiki_features': 'مستندات متمرکز,جستجو و کشف,کنترل نسخه,همکاری تیمی',
   
-  'modal_hr_title': 'Human Resources',
-  'modal_hr_description': 'The HR module streamlines personnel management and attendance tracking, replacing manual processes with an automated system. It provides insights into team productivity and helps maintain accurate records.',
-  'modal_hr_features': 'Attendance Tracking,Performance Monitoring,Leave Management,Team Analytics',
+  'modal_hr_title': 'منابع انسانی',
+  'modal_hr_description': 'ماژول منابع انسانی مدیریت پرسنل و ردیابی حضور را ساده‌سازی می‌کند و فرآیندهای دستی را با یک سیستم خودکار جایگزین می‌کند. این ماژول بینش‌هایی در مورد بهره‌وری تیم ارائه می‌دهد و به حفظ سوابق دقیق کمک می‌کند.',
+  'modal_hr_features': 'ردیابی حضور,نظارت بر عملکرد,مدیریت مرخصی,تحلیل تیمی',
 
   // Enhanced Roadmap Content
-  'roadmap_phase1_features': 'Performance optimization and code refactoring,Advanced UI/UX improvements with micro-interactions,Comprehensive bug fixes and stability enhancements,Core feature refinement based on user feedback',
-  'roadmap_phase2_features': 'Advanced analytics dashboard with real-time insights,Third-party API integrations (Instagram, Google Analytics),Enhanced mobile responsiveness and PWA features,Advanced collaboration tools with real-time updates',
-  'roadmap_phase3_features': 'Enterprise-grade security and compliance features,Advanced third-party integrations and webhooks,AI-powered automation and smart recommendations,Horizontal scaling and microservices architecture',
+  'roadmap_phase1_features': 'بهینه‌سازی عملکرد و بازسازی کد,بهبودهای پیشرفته UI/UX با تعاملات ریز,رفع باگ‌های جامع و بهبودهای پایداری,پالایش ویژگی‌های اصلی بر اساس بازخورد کاربران',
+  'roadmap_phase2_features': 'داشبورد تحلیلی پیشرفته با بینش‌های بلادرنگ,یکپارچه‌سازی API های شخص ثالث (اینستاگرام، Google Analytics),پاسخگویی موبایل بهبود یافته و ویژگی‌های PWA,ابزارهای همکاری پیشرفته با به‌روزرسانی‌های بلادرنگ',
+  'roadmap_phase3_features': 'ویژگی‌های امنیتی و انطباق در سطح سازمانی,یکپارچه‌سازی‌های پیشرفته شخص ثالث و وب‌هوک‌ها,خودکارسازی مبتنی بر هوش مصنوعی و توصیه‌های هوشمند,مقیاس‌پذیری افقی و معماری میکروسرویس‌ها',
 };
 
 /**

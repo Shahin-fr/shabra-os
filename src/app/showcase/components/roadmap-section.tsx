@@ -196,32 +196,27 @@ export default function RoadmapSection() {
                 <div className={`bg-gradient-to-br from-[#1A1A1A]/80 to-[#0F0F0F]/80 backdrop-blur-xl rounded-3xl border border-[#2A2A2A]/50 shadow-2xl ${
                   isMobile ? 'p-6' : 'p-8'
                 }`}>
-                  <div className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold mb-6 text-[#E000A0] border-[#E000A0] bg-[#E000A0]/10">
-                    Current Phase
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold text-[#E000A0] border-[#E000A0] bg-[#E000A0]/10">
+                      Current Phase
+                    </div>
+                    <span className="text-sm text-gray-400">(v1.0 - v1.3)</span>
                   </div>
-                  <h3 className={`text-2xl font-bold text-[#F5F5F5] mb-4 ${
-                    isRTL(phases[0]?.title || '') ? 'text-end' : 'text-start'
-                  }`}>
+                  <h3 className="text-2xl font-bold text-[#F5F5F5] mb-4 text-left" dir="ltr">
                     {phases[0]?.title}
                   </h3>
-                  <p className={`text-[#A1A1A1] mb-6 leading-relaxed ${
-                    isRTL(phases[0]?.description || '') ? 'text-end' : 'text-start'
-                  }`}>
+                  <p className="text-[#A1A1A1] mb-6 leading-relaxed text-right" dir="rtl">
                     {phases[0]?.description}
                   </p>
                   <div className="space-y-3">
-                    <h4 className={`text-lg font-semibold text-[#F5F5F5] ${
-                      isRTL('Key Features') ? 'text-end' : 'text-start'
-                    }`}>
+                    <h4 className="text-lg font-semibold text-[#F5F5F5] text-left" dir="ltr">
                       Key Features
                     </h4>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       {phases[0]?.features?.map((feature, featureIndex) => (
                         <div key={featureIndex} className="flex items-start rtl:items-start space-x-3 rtl:space-x-reverse">
                           <div className="w-2 h-2 rounded-full flex-shrink-0 mt-2 bg-[#E000A0]" />
-                          <span className={`text-sm text-[#A1A1A1] ${
-                            isRTL(feature) ? 'text-end' : 'text-start'
-                          }`}>
+                          <span className="text-sm text-[#A1A1A1] text-left" dir="ltr">
                             {feature?.trim()}
                           </span>
                         </div>
@@ -298,32 +293,27 @@ export default function RoadmapSection() {
                 <div className={`bg-gradient-to-br from-[#1A1A1A]/80 to-[#0F0F0F]/80 backdrop-blur-xl rounded-3xl border border-[#2A2A2A]/50 shadow-2xl ${
                   isMobile ? 'p-6' : 'p-8'
                 }`}>
-                  <div className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold mb-6 text-[#3B82F6] border-[#3B82F6] bg-[#3B82F6]/10">
-                    Upcoming
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold text-[#3B82F6] border-[#3B82F6] bg-[#3B82F6]/10">
+                      Upcoming
+                    </div>
+                    <span className="text-sm text-gray-400">(v1.4 - v1.7)</span>
                   </div>
-                  <h3 className={`text-2xl font-bold text-[#F5F5F5] mb-4 ${
-                    isRTL(phases[1]?.title || '') ? 'text-end' : 'text-start'
-                  }`}>
+                  <h3 className="text-2xl font-bold text-[#F5F5F5] mb-4 text-left" dir="ltr">
                     {phases[1]?.title}
                   </h3>
-                  <p className={`text-[#A1A1A1] mb-6 leading-relaxed ${
-                    isRTL(phases[1]?.description || '') ? 'text-end' : 'text-start'
-                  }`}>
+                  <p className="text-[#A1A1A1] mb-6 leading-relaxed text-right" dir="rtl">
                     {phases[1]?.description}
                   </p>
                   <div className="space-y-3">
-                    <h4 className={`text-lg font-semibold text-[#F5F5F5] ${
-                      isRTL('Key Features') ? 'text-end' : 'text-start'
-                    }`}>
+                    <h4 className="text-lg font-semibold text-[#F5F5F5] text-left" dir="ltr">
                       Key Features
                     </h4>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       {phases[1]?.features?.map((feature, featureIndex) => (
                         <div key={featureIndex} className="flex items-start rtl:items-start space-x-3 rtl:space-x-reverse">
                           <div className="w-2 h-2 rounded-full flex-shrink-0 mt-2 bg-[#3B82F6]" />
-                          <span className={`text-sm text-[#A1A1A1] ${
-                            isRTL(feature) ? 'text-end' : 'text-start'
-                          }`}>
+                          <span className="text-sm text-[#A1A1A1] text-left" dir="ltr">
                             {feature?.trim()}
                           </span>
                         </div>
@@ -400,32 +390,27 @@ export default function RoadmapSection() {
                 <div className={`bg-gradient-to-br from-[#1A1A1A]/80 to-[#0F0F0F]/80 backdrop-blur-xl rounded-3xl border border-[#2A2A2A]/50 shadow-2xl ${
                   isMobile ? 'p-6' : 'p-8'
                 }`}>
-                  <div className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold mb-6 text-[#8B5CF6] border-[#8B5CF6] bg-[#8B5CF6]/10">
-                    Future Vision
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold text-[#8B5CF6] border-[#8B5CF6] bg-[#8B5CF6]/10">
+                      Future Vision
+                    </div>
+                    <span className="text-sm text-gray-400">(v1.8 - v2.0)</span>
                   </div>
-                  <h3 className={`text-2xl font-bold text-[#F5F5F5] mb-4 ${
-                    isRTL(phases[2]?.title || '') ? 'text-end' : 'text-start'
-                  }`}>
+                  <h3 className="text-2xl font-bold text-[#F5F5F5] mb-4 text-left" dir="ltr">
                     {phases[2]?.title}
                   </h3>
-                  <p className={`text-[#A1A1A1] mb-6 leading-relaxed ${
-                    isRTL(phases[2]?.description || '') ? 'text-end' : 'text-start'
-                  }`}>
+                  <p className="text-[#A1A1A1] mb-6 leading-relaxed text-right" dir="rtl">
                     {phases[2]?.description}
                   </p>
                   <div className="space-y-3">
-                    <h4 className={`text-lg font-semibold text-[#F5F5F5] ${
-                      isRTL('Key Features') ? 'text-end' : 'text-start'
-                    }`}>
+                    <h4 className="text-lg font-semibold text-[#F5F5F5] text-left" dir="ltr">
                       Key Features
                     </h4>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       {phases[2]?.features?.map((feature, featureIndex) => (
                         <div key={featureIndex} className="flex items-start rtl:items-start space-x-3 rtl:space-x-reverse">
                           <div className="w-2 h-2 rounded-full flex-shrink-0 mt-2 bg-[#8B5CF6]" />
-                          <span className={`text-sm text-[#A1A1A1] ${
-                            isRTL(feature) ? 'text-end' : 'text-start'
-                          }`}>
+                          <span className="text-sm text-[#A1A1A1] text-left" dir="ltr">
                             {feature?.trim()}
                           </span>
                         </div>
@@ -438,27 +423,6 @@ export default function RoadmapSection() {
           </div>
         </div>
 
-        {/* Bottom transition */}
-        <motion.div
-          className="mt-20 text-center"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.5, duration: 1 }}
-        >
-          <motion.div
-            className="inline-flex items-center space-x-2 rtl:space-x-reverse text-[#E000A0]"
-            animate={{ y: [0, -5, 0] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          >
-            <span className="text-sm font-medium">The journey continues</span>
-            <motion.span
-              animate={{ x: [0, 5, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
-            >
-              →
-            </motion.span>
-          </motion.div>
-        </motion.div>
       </motion.div>
     </section>
   );
