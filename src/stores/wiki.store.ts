@@ -277,7 +277,7 @@ export const useUpdateWikiItem = () => {
   
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: any }) => updateWikiItem(id, data),
-    onSuccess: (data, { id }) => {
+    onSuccess: (_, { id }) => {
       // Invalidate and refetch to ensure immediate update
       queryClient.invalidateQueries({ queryKey: ['wiki-items'] });
       queryClient.invalidateQueries({ queryKey: ['wiki-item', id] });

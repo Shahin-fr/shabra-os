@@ -77,7 +77,6 @@ export function TodaysFocusWidget({ className }: TodaysFocusWidgetProps) {
   const overdueTasks = safeTasks.filter(task => 
     task.dueDate && isOverdue(task.dueDate) && task.status !== 'Done'
   );
-  const completedTasks = safeTasks.filter(task => task.status === 'Done');
 
   // Update task status mutation
   const updateTaskMutation = useMutation({

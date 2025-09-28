@@ -1,12 +1,11 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Plus, Users, FileText, Megaphone, X } from 'lucide-react';
+import { Plus, Users, FileText, Megaphone } from 'lucide-react';
 import { EnhancedWidgetCard } from '@/components/ui/EnhancedWidgetCard';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
-import { toast } from 'sonner';
 import { CreateTaskModal } from '@/components/tasks/CreateTaskModal';
 import { CreateProjectModal } from '@/components/projects/CreateProjectModal';
 import { CreateMeetingModal } from '@/components/meetings/CreateMeetingModal';

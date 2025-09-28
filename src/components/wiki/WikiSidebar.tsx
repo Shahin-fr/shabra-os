@@ -27,7 +27,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Input } from '@/components/ui/input';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { cn } from '@/lib/utils';
-import { useWikiItems, useWikiStore, useReorderWikiItems, type WikiItem } from '@/stores/wiki.store';
+import { useWikiItems, useReorderWikiItems, type WikiItem } from '@/stores/wiki.store';
 import { useToast } from '@/components/ui/toast';
 import { CreateWikiItem } from './CreateWikiItem';
 import { WikiFileUpload } from './WikiFileUpload';
@@ -220,7 +220,7 @@ export function WikiSidebar({
           variant: 'success',
         });
       },
-      onError: (error) => {
+      onError: (_error) => {
         addToast({
           title: 'خطا',
           description: 'خطا در تغییر ترتیب آیتم‌ها',

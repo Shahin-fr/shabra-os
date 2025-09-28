@@ -24,7 +24,6 @@ import {
   FileText,
   ClipboardList,
   BarChart3,
-  MessageSquare,
 } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';

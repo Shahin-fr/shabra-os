@@ -77,9 +77,9 @@ const createPrismaClient = () => {
     } catch (error) {
       console.error('[PRISMA DEBUG] ❌ Database connection failed:', error);
       console.error('[PRISMA DEBUG] Error details:', {
-        message: error.message,
-        code: error.code,
-        meta: error.meta,
+        message: error instanceof Error ? error.message : 'Unknown error',
+        code: (error as any)?.code,
+        meta: (error as any)?.meta,
       });
       
       // Don't throw here, let the actual query handle the error

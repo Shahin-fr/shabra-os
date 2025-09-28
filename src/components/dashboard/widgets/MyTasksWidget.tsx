@@ -299,8 +299,6 @@ export function MyTasksWidget() {
             <TabsContent value="overdue" className="space-y-3 mt-4">
               {overdueTasks.length > 0 ? (
                 overdueTasks.map((task, index) => {
-                  const statusInfo = getStatusInfo(task.status);
-                  const StatusIcon = statusInfo.icon;
                   const daysOverdue = Math.ceil((new Date().getTime() - task.dueDate.getTime()) / (1000 * 60 * 60 * 24));
 
                   return (

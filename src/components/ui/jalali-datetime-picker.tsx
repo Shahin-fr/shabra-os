@@ -96,8 +96,10 @@ export function JalaliDateTimePicker({
     }
 
     // Add days of month
-    for (let day = 1; day <= daysInMonth; day++) {
-      days.push(day);
+    if (daysInMonth) {
+      for (let day = 1; day <= daysInMonth; day++) {
+        days.push(day);
+      }
     }
 
     return days;

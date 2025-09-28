@@ -28,7 +28,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { formatJalaliDate } from '@/lib/date-utils';
 import { sanitizeHtml } from '@/lib/security/html-sanitizer';
-import { useWikiItem, useDeleteWikiItem, useWikiStore, type WikiItem } from '@/stores/wiki.store';
+import { useWikiItem, useDeleteWikiItem } from '@/stores/wiki.store';
 import { useToast } from '@/components/ui/toast';
 import { EditWikiItem } from './EditWikiItem';
 import { PDFViewer } from './PDFViewer';
@@ -269,7 +269,7 @@ export function WikiContent({ documentId, onRefresh }: WikiContentProps) {
               </div>
             </div>
 
-            {document?.tags?.length > 0 && (
+            {document?.tags && document.tags.length > 0 && (
               <div className='flex flex-wrap gap-2'>
                 {document?.tags?.map(tag => (
                   <Badge
@@ -298,8 +298,8 @@ export function WikiContent({ documentId, onRefresh }: WikiContentProps) {
             ) : (
               /* Markdown/Text Content */
               <div className='prose prose-lg max-w-none prose-headings:text-gray-800 prose-p:text-gray-700 prose-strong:text-gray-800 prose-code:text-gray-800 prose-pre:bg-gray-50 prose-pre:text-gray-800'>
-                {document?.htmlContent ? (
-                  <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(document?.htmlContent) }} />
+                {document?.content ? (
+                  <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(document?.content) }} />
                 ) : (
                   <ReactMarkdown remarkPlugins={[remarkGfm]}>
                     {document?.content}
@@ -318,23 +318,12 @@ export function WikiContent({ documentId, onRefresh }: WikiContentProps) {
             <div className='p-6'>
               <h2 className='text-2xl font-bold mb-4'>ویرایش {(document?.type as string) === 'FOLDER' ? 'پوشه' : 'مستند'}</h2>
               <EditWikiItem
-                document={{
-                  id: document?.id,
-                  title: document?.title,
-                  content: document?.content,
-                  type: document?.type || 'DOCUMENT',
-                  parentId: null, // We'll need to get this from the document
-                  authorId: document?.authorId || '',
-                }}
+                document={document}
                 onClose={() => setShowEditDialog(false)}
                 onSuccess={() => {
                   setShowEditDialog(false);
                   if (onRefresh) {
                     onRefresh();
-                  }
-                  // Refresh the current document
-                  if (documentId) {
-                    fetchDocument(documentId);
                   }
                 }}
               />
