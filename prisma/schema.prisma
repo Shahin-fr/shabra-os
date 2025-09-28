@@ -53,6 +53,7 @@ model User {
   // Document relations
   documents EmployeeDocument[]
   uploadedDocuments EmployeeDocument[] @relation("DocumentUploader")
+  wikiDocuments Document[] // Wiki documents created by this user
   
   // Checklist relations
   employeeChecklists EmployeeChecklist[]
@@ -66,6 +67,12 @@ model User {
 
   // Announcement relations
   announcements Announcement[]
+
+  // Meeting relations
+  createdMeetings Meeting[] @relation("MeetingCreator")
+  meetingAttendances MeetingAttendee[] @relation("MeetingAttendee")
+  addedTalkingPoints TalkingPoint[] @relation("TalkingPointAddedBy")
+  assignedActionItems ActionItem[] @relation("ActionItemAssignee")
 
   @@index([email])
   @@index([isActive])
@@ -147,6 +154,7 @@ model Task {
   title       String
   description String?
   status      TaskStatus @default(Todo)
+  priority    TaskPriority @default(MEDIUM)
   dueDate     DateTime?
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
@@ -171,9 +179,30 @@ model Document {
   isPublic  Boolean  @default(false)
   type      String   @default("DOCUMENT")
   parentId  String?
+  order     Int      @default(0)  // For drag-and-drop ordering
   createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
+  // File upload fields for Cloudinary integration
+  fileUrl       String?  // Cloudinary URL for uploaded files
+  filePublicId  String?  // Cloudinary public ID for file management
+  fileType      String?  // File type (markdown, pdf, etc.)
+  originalName  String?  // Original filename
+  fileSize      Int?     // File size in bytes
+
+  // Relations
+  author        User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  parent        Document? @relation("DocumentHierarchy", fields: [parentId], references: [id], onDelete: Cascade)
+  children      Document[] @relation("DocumentHierarchy")
+
+  // Indexes for performance
+  @@index([authorId])
+  @@index([parentId])
+  @@index([type])
+  @@index([isPublic])
+  @@index([createdAt])
+  @@index([title])
+  @@index([order])
   @@map("documents")
 }
 
@@ -509,6 +538,12 @@ enum TaskStatus {
   Done
 }
 
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
 enum AnnouncementCategory {
   GENERAL
   TECHNICAL
@@ -580,4 +615,95 @@ model Holiday {
 
   @@index([date])
   @@map("holidays")
+}
+
+model Meeting {
+  id        String        @id @default(cuid())
+  title     String
+  creatorId String
+  startTime DateTime
+  endTime   DateTime
+  type      MeetingType   @default(ONE_ON_ONE)
+  status    MeetingStatus @default(SCHEDULED)
+  notes     String?       // Markdown notes
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  // Relations
+  creator   User              @relation("MeetingCreator", fields: [creatorId], references: [id], onDelete: Cascade)
+  attendees MeetingAttendee[]
+  talkingPoints TalkingPoint[]
+  actionItems ActionItem[]
+
+  @@index([creatorId])
+  @@index([startTime])
+  @@index([endTime])
+  @@index([type])
+  @@index([status])
+  @@map("meetings")
+}
+
+model MeetingAttendee {
+  id        String   @id @default(cuid())
+  meetingId String
+  userId    String
+  createdAt DateTime @default(now())
+
+  // Relations
+  meeting   Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  user      User    @relation("MeetingAttendee", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([meetingId, userId])
+  @@index([meetingId])
+  @@index([userId])
+  @@map("meeting_attendees")
+}
+
+model TalkingPoint {
+  id        String   @id @default(cuid())
+  meetingId String
+  content   String
+  addedById String
+  isCompleted Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  meeting   Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  addedBy   User    @relation("TalkingPointAddedBy", fields: [addedById], references: [id], onDelete: Cascade)
+
+  @@index([meetingId])
+  @@index([addedById])
+  @@map("talking_points")
+}
+
+model ActionItem {
+  id            String   @id @default(cuid())
+  meetingId     String
+  content       String
+  assigneeId    String
+  isCompleted   Boolean  @default(false)
+  relatedTaskId String?  // Optional link to existing Task
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  meeting       Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  assignee      User    @relation("ActionItemAssignee", fields: [assigneeId], references: [id], onDelete: Cascade)
+
+  @@index([meetingId])
+  @@index([assigneeId])
+  @@index([relatedTaskId])
+  @@map("action_items")
+}
+
+enum MeetingType {
+  ONE_ON_ONE
+  TEAM_MEETING
+}
+
+enum MeetingStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
 }

@@ -17,10 +17,9 @@ export async function GET(request: NextRequest) {
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
 
-    // Get all subordinates for the current manager
-    const subordinates = await prisma.user.findMany({
+    // Get all active users (team members) who have completed tasks today
+    const allUsers = await prisma.user.findMany({
       where: {
-        managerId: context.userId,
         isActive: true,
       },
       select: {
@@ -38,17 +37,14 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    const subordinateIds = subordinates.map(sub => sub.id);
+    const allUserIds = allUsers.map(user => user.id);
 
-    // Get tasks completed today by subordinates
-    const completedTasksToday = await prisma.task.findMany({
+    // Get tasks completed today by all team members
+    // First, let's get all Done tasks for all users to see what we have
+    const allDoneTasks = await prisma.task.findMany({
       where: {
-        assignedTo: { in: subordinateIds },
+        assignedTo: { in: allUserIds },
         status: 'Done',
-        updatedAt: {
-          gte: today,
-          lt: tomorrow,
-        },
       },
       include: {
         assignee: {
@@ -71,6 +67,12 @@ export async function GET(request: NextRequest) {
       },
     });
 
+    // Filter tasks that were completed today (updatedAt within today's range)
+    const completedTasksToday = allDoneTasks.filter(task => {
+      const taskUpdatedAt = new Date(task.updatedAt);
+      return taskUpdatedAt >= today && taskUpdatedAt < tomorrow;
+    });
+
     // Group tasks by user
     const tasksByUser = completedTasksToday.reduce((acc, task) => {
       if (task.assignedTo) {
@@ -82,28 +84,30 @@ export async function GET(request: NextRequest) {
       return acc;
     }, {} as Record<string, typeof completedTasksToday>);
 
-    // Build team activity data
-    const teamActivity = subordinates.map((subordinate) => {
-      const userTasks = tasksByUser[subordinate.id] || [];
-      const latestTask = userTasks[0] || null;
+    // Build team activity data - only include users who completed tasks today
+    const teamActivity = allUsers
+      .filter(user => tasksByUser[user.id] && tasksByUser[user.id].length > 0)
+      .map((user) => {
+        const userTasks = tasksByUser[user.id] || [];
+        const latestTask = userTasks[0] || null;
 
-      return {
-        id: subordinate.id,
-        name: `${subordinate.firstName} ${subordinate.lastName}`,
-        avatar: subordinate.avatar,
-        jobTitle: subordinate.profile?.jobTitle || 'کارمند',
-        department: subordinate.profile?.department || 'نامشخص',
-        isActive: userTasks.length > 0,
-        lastActivity: latestTask ? {
-          taskId: latestTask.id,
-          title: latestTask.title,
-          status: latestTask.status,
-          projectName: latestTask.project?.name,
-          updatedAt: latestTask.updatedAt,
-        } : null,
-        completedTasksCount: userTasks.length,
-      };
-    });
+        return {
+          id: user.id,
+          name: `${user.firstName} ${user.lastName}`,
+          avatar: user.avatar,
+          jobTitle: user.profile?.jobTitle || 'کارمند',
+          department: user.profile?.department || 'نامشخص',
+          isActive: true, // All users in this list are active (completed tasks today)
+          lastActivity: latestTask ? {
+            taskId: latestTask.id,
+            title: latestTask.title,
+            status: latestTask.status,
+            projectName: latestTask.project?.name,
+            updatedAt: latestTask.updatedAt,
+          } : null,
+          completedTasksCount: userTasks.length,
+        };
+      });
 
     // Sort by activity (most active first)
     teamActivity.sort((a, b) => {
@@ -122,8 +126,8 @@ export async function GET(request: NextRequest) {
       data: teamActivity,
       total: teamActivity.length,
       summary: {
-        totalMembers: subordinates.length,
-        activeMembers: teamActivity.filter(member => member.isActive).length,
+        totalMembers: allUsers.length,
+        activeMembers: teamActivity.length, // All members in this list are active
         totalCompletedTasks: completedTasksToday.length,
       },
     });

@@ -17,10 +17,9 @@ export async function GET(request: NextRequest) {
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
 
-    // Get all admin users
-    const adminUsers = await prisma.user.findMany({
+    // Get all active users (not just admins)
+    const allUsers = await prisma.user.findMany({
       where: {
-        roles: 'ADMIN',
         isActive: true,
       },
       select: {
@@ -28,20 +27,19 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    const adminIds = adminUsers.map(admin => admin.id);
+    const allUserIds = allUsers.map(user => user.id);
 
-    // Get tasks assigned to admins that are due today
+    // Get tasks assigned to any user that are due today or overdue and not completed
     const urgentTasks = await prisma.task.findMany({
       where: {
         assignedTo: {
-          in: adminIds,
+          in: allUserIds,
         },
         status: {
           in: ['Todo', 'InProgress'],
         },
         dueDate: {
-          gte: today,
-          lt: tomorrow,
+          lt: tomorrow, // Include all tasks due before tomorrow (today and overdue)
         },
       },
       include: {

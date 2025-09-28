@@ -1,13 +1,15 @@
 'use client';
 
+import { useState } from 'react';
 import { OptimizedMotion } from '@/components/ui/OptimizedMotion';
 import { CheckCircle, Clock, AlertCircle, Calendar, Plus } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-// Mock data for today's tasks
+// Mock data for tasks
 const mockTasks = [
   {
     id: 1,
@@ -16,6 +18,7 @@ const mockTasks = [
     status: 'in_progress',
     priority: 'high',
     dueTime: '14:00',
+    dueDate: new Date(), // Today
     progress: 60,
   },
   {
@@ -25,6 +28,7 @@ const mockTasks = [
     status: 'pending',
     priority: 'medium',
     dueTime: '16:30',
+    dueDate: new Date(), // Today
     progress: 0,
   },
   {
@@ -34,6 +38,7 @@ const mockTasks = [
     status: 'completed',
     priority: 'low',
     dueTime: '12:00',
+    dueDate: new Date(), // Today
     progress: 100,
   },
   {
@@ -43,11 +48,60 @@ const mockTasks = [
     status: 'pending',
     priority: 'high',
     dueTime: '10:00',
+    dueDate: new Date(), // Today
+    progress: 0,
+  },
+  // Overdue tasks
+  {
+    id: 5,
+    title: 'بررسی پیشنهادات مشتری',
+    description: 'مرور و پاسخ به پیشنهادات دریافتی از مشتریان',
+    status: 'pending',
+    priority: 'high',
+    dueTime: '09:00',
+    dueDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
+    progress: 0,
+  },
+  {
+    id: 6,
+    title: 'تهیه گزارش هفتگی',
+    description: 'نوشتن گزارش فعالیت‌های هفته گذشته',
+    status: 'in_progress',
+    priority: 'medium',
+    dueTime: '17:00',
+    dueDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000), // 1 day ago
+    progress: 30,
+  },
+  {
+    id: 7,
+    title: 'بررسی کدهای قدیمی',
+    description: 'مرور و بهینه‌سازی کدهای قدیمی پروژه',
+    status: 'pending',
+    priority: 'low',
+    dueTime: '15:00',
+    dueDate: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), // 3 days ago
     progress: 0,
   },
 ];
 
 export function MyTasksWidget() {
+  // Helper function to check if a task is overdue
+  const isOverdue = (dueDate: Date) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return dueDate < today;
+  };
+
+  // Helper function to check if a task is due today
+  const isDueToday = (dueDate: Date) => {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    today.setHours(0, 0, 0, 0);
+    tomorrow.setHours(0, 0, 0, 0);
+    return dueDate >= today && dueDate < tomorrow;
+  };
+
   // Get status color and icon
   const getStatusInfo = (status: string) => {
     switch (status) {
@@ -110,8 +164,13 @@ export function MyTasksWidget() {
     }
   };
 
-  // Filter tasks for today
-  const todayTasks = mockTasks.filter(task => task.status !== 'completed');
+  // Filter tasks for today and overdue
+  const todayTasks = mockTasks.filter(task => 
+    isDueToday(task.dueDate) && task.status !== 'completed'
+  );
+  const overdueTasks = mockTasks.filter(task => 
+    isOverdue(task.dueDate) && task.status !== 'completed'
+  );
   const completedTasks = mockTasks.filter(task => task.status === 'completed');
 
   return (
@@ -124,10 +183,10 @@ export function MyTasksWidget() {
         <CardHeader className='pb-4'>
           <CardTitle className='text-xl font-bold text-[#ff0a54] flex items-center gap-2'>
             <CheckCircle className='h-5 w-5' />
-            تسک‌های امروز
+            تسک‌های من
           </CardTitle>
           <p className='text-sm text-gray-600'>
-            {todayTasks.length} تسک باقی‌مانده از {mockTasks.length} تسک کل
+            {todayTasks.length + overdueTasks.length} تسک باقی‌مانده از {mockTasks.length} تسک کل
           </p>
         </CardHeader>
         <CardContent className='space-y-4'>
@@ -146,7 +205,7 @@ export function MyTasksWidget() {
                 {Math.round((completedTasks.length / mockTasks.length) * 100)}%
               </span>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden overflow-hidden">
+            <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
               <OptimizedMotion
                 className='h-2 rounded-full bg-gradient-to-r from-[#ff0a54] to-purple-500'
                 initial={{ scaleX: 0 }}
@@ -158,69 +217,159 @@ export function MyTasksWidget() {
             </div>
           </OptimizedMotion>
 
-          {/* Tasks List */}
-          <div className='space-y-3'>
-            {todayTasks.map((task, index) => {
-              const statusInfo = getStatusInfo(task.status);
-              const StatusIcon = statusInfo.icon;
+          {/* Tabbed Interface */}
+          <Tabs defaultValue="today" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="today" className="font-vazirmatn">
+                امروز ({todayTasks.length})
+              </TabsTrigger>
+              <TabsTrigger value="overdue" className="font-vazirmatn">
+                با تاخیر ({overdueTasks.length})
+              </TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="today" className="space-y-3 mt-4">
+              {todayTasks.length > 0 ? (
+                todayTasks.map((task, index) => {
+                  const statusInfo = getStatusInfo(task.status);
+                  const StatusIcon = statusInfo.icon;
 
-              return (
-                <OptimizedMotion
-                  key={task.id}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.3 + index * 0.1 }}
-                  className={`p-4 rounded-lg border ${statusInfo.borderColor} ${statusInfo.bgColor} hover:shadow-md transition-all duration-200`}
-                >
-                  <div className='flex items-start justify-between'>
-                    <div className='flex-1'>
-                      <div className='flex items-center gap-2 mb-2'>
-                        <StatusIcon className={`h-4 w-4 ${statusInfo.color}`} />
-                        <h4 className='font-medium text-gray-900'>
-                          {task.title}
-                        </h4>
-                      </div>
-                      {task.description && (
-                        <p className='text-sm text-gray-600 mb-2'>
-                          {task.description}
-                        </p>
-                      )}
-                      <div className='flex items-center gap-2'>
-                        <Badge
-                          variant='outline'
-                          className={`text-xs ${getPriorityColor(task.priority)}`}
-                        >
-                          {getPriorityText(task.priority)}
-                        </Badge>
-                        <div className='flex items-center gap-1 text-xs text-gray-500'>
-                          <Calendar className='h-3 w-3' />
-                          <span>{task.dueTime}</span>
+                  return (
+                    <OptimizedMotion
+                      key={task.id}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.3 + index * 0.1 }}
+                      className={`p-4 rounded-lg border ${statusInfo.borderColor} ${statusInfo.bgColor} hover:shadow-md transition-all duration-200`}
+                    >
+                      <div className='flex items-start justify-between'>
+                        <div className='flex-1'>
+                          <div className='flex items-center gap-2 mb-2'>
+                            <StatusIcon className={`h-4 w-4 ${statusInfo.color}`} />
+                            <h4 className='font-medium text-gray-900'>
+                              {task.title}
+                            </h4>
+                          </div>
+                          {task.description && (
+                            <p className='text-sm text-gray-600 mb-2'>
+                              {task.description}
+                            </p>
+                          )}
+                          <div className='flex items-center gap-2'>
+                            <Badge
+                              variant='outline'
+                              className={`text-xs ${getPriorityColor(task.priority)}`}
+                            >
+                              {getPriorityText(task.priority)}
+                            </Badge>
+                            <div className='flex items-center gap-1 text-xs text-gray-500'>
+                              <Calendar className='h-3 w-3' />
+                              <span>{task.dueTime}</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className='text-left'>
+                          <div className='text-xs text-gray-500 mb-1'>پیشرفت</div>
+                          <div className='text-sm font-bold text-[#ff0a54]'>
+                            {task.progress}%
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div className='text-left'>
-                      <div className='text-xs text-gray-500 mb-1'>پیشرفت</div>
-                      <div className='text-sm font-bold text-[#ff0a54]'>
-                        {task.progress}%
-                      </div>
-                    </div>
-                  </div>
 
-                  {/* Progress Bar */}
-                  {task.status === 'in_progress' && (
-                    <div className='mt-3 w-full bg-gray-200 rounded-full h-1'>
-                      <OptimizedMotion
-                        className='h-1 rounded-full bg-gradient-to-r from-[#ff0a54] to-purple-500'
-                        initial={{ scaleX: 0 }}
-                        animate={{ scaleX: task.progress / 100 }}
-                        transition={{ duration: 0.8, delay: 0.5 + index * 0.1 }}
-                      />
-                    </div>
-                  )}
-                </OptimizedMotion>
-              );
-            })}
-          </div>
+                      {/* Progress Bar */}
+                      {task.status === 'in_progress' && (
+                        <div className='mt-3 w-full bg-gray-200 rounded-full h-1'>
+                          <OptimizedMotion
+                            className='h-1 rounded-full bg-gradient-to-r from-[#ff0a54] to-purple-500'
+                            initial={{ scaleX: 0 }}
+                            animate={{ scaleX: task.progress / 100 }}
+                            transition={{ duration: 0.8, delay: 0.5 + index * 0.1 }}
+                          />
+                        </div>
+                      )}
+                    </OptimizedMotion>
+                  );
+                })
+              ) : (
+                <div className="text-center py-8 text-gray-500 font-vazirmatn">
+                  هیچ تسکی برای امروز ندارید
+                </div>
+              )}
+            </TabsContent>
+            
+            <TabsContent value="overdue" className="space-y-3 mt-4">
+              {overdueTasks.length > 0 ? (
+                overdueTasks.map((task, index) => {
+                  const statusInfo = getStatusInfo(task.status);
+                  const StatusIcon = statusInfo.icon;
+                  const daysOverdue = Math.ceil((new Date().getTime() - task.dueDate.getTime()) / (1000 * 60 * 60 * 24));
+
+                  return (
+                    <OptimizedMotion
+                      key={task.id}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.3 + index * 0.1 }}
+                      className={`p-4 rounded-lg border border-red-200 bg-red-50 hover:shadow-md transition-all duration-200`}
+                    >
+                      <div className='flex items-start justify-between'>
+                        <div className='flex-1'>
+                          <div className='flex items-center gap-2 mb-2'>
+                            <AlertCircle className="h-4 w-4 text-red-500" />
+                            <h4 className='font-medium text-gray-900'>
+                              {task.title}
+                            </h4>
+                            <Badge variant="destructive" className="text-xs">
+                              {daysOverdue} روز تاخیر
+                            </Badge>
+                          </div>
+                          {task.description && (
+                            <p className='text-sm text-gray-600 mb-2'>
+                              {task.description}
+                            </p>
+                          )}
+                          <div className='flex items-center gap-2'>
+                            <Badge
+                              variant='outline'
+                              className={`text-xs ${getPriorityColor(task.priority)}`}
+                            >
+                              {getPriorityText(task.priority)}
+                            </Badge>
+                            <div className='flex items-center gap-1 text-xs text-red-500'>
+                              <Calendar className='h-3 w-3' />
+                              <span>تاریخ سررسید: {task.dueDate.toLocaleDateString('fa-IR')}</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className='text-left'>
+                          <div className='text-xs text-gray-500 mb-1'>پیشرفت</div>
+                          <div className='text-sm font-bold text-red-600'>
+                            {task.progress}%
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Progress Bar */}
+                      {task.status === 'in_progress' && (
+                        <div className='mt-3 w-full bg-gray-200 rounded-full h-1'>
+                          <OptimizedMotion
+                            className='h-1 rounded-full bg-gradient-to-r from-red-500 to-red-600'
+                            initial={{ scaleX: 0 }}
+                            animate={{ scaleX: task.progress / 100 }}
+                            transition={{ duration: 0.8, delay: 0.5 + index * 0.1 }}
+                          />
+                        </div>
+                      )}
+                    </OptimizedMotion>
+                  );
+                })
+              ) : (
+                <div className="text-center py-8 text-gray-500 font-vazirmatn">
+                  هیچ تسک با تاخیری ندارید
+                </div>
+              )}
+            </TabsContent>
+          </Tabs>
 
           {/* Quick Actions */}
           <OptimizedMotion
@@ -251,7 +400,7 @@ export function MyTasksWidget() {
               <div className='flex items-center gap-2 text-green-700'>
                 <CheckCircle className='h-4 w-4' />
                 <span className='text-sm font-medium'>
-                  {completedTasks.length} تسک امروز تکمیل شده
+                  {completedTasks.length} تسک تکمیل شده
                 </span>
               </div>
             </OptimizedMotion>

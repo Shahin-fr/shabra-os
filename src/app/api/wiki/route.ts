@@ -8,9 +8,10 @@ import {
   createSuccessResponse,
   createValidationErrorResponse,
   createServerErrorResponse,
+  createUnauthorizedErrorResponse,
   HTTP_STATUS_CODES,
   getHttpStatusForErrorCode,
-} from '@/lib/api/response-utils';
+} from '@/lib/api-response';
 // import { getAllDocs } from '@/lib/docs';
 import { logger } from '@/lib/logger';
 import { prisma } from '@/lib/prisma';
@@ -54,21 +55,51 @@ export async function GET(request: NextRequest) {
     const { withAuth } = await import('@/lib/middleware/auth-middleware');
 
     // Check authentication
+    console.log('[WIKI API DEBUG] Starting authentication check...');
     const authResult = await withAuth(request);
-    if (authResult.response) {
-      return authResult.response;
+    console.log('[WIKI API DEBUG] Auth result:', {
+      hasResponse: !!authResult.response,
+      hasContext: !!authResult.context,
+      userId: authResult.context?.userId,
+      roles: authResult.context?.roles,
+    });
+    
+    // If authentication fails, we'll still return public documents
+    let userId: string | null = null;
+    if (!authResult.response && authResult.context?.userId) {
+      userId = authResult.context.userId;
     }
 
     // Get all documents and folders from database
-    const dbItems = await prisma.document.findMany({
-      where: {
-        isPublic: true, // Only get public documents for now
-      },
-      orderBy: [
-        { type: 'asc' }, // Folders first
-        { title: 'asc' },
-      ],
-    });
+    // Return public documents OR documents created by the current user (if authenticated)
+    console.log('[WIKI API DEBUG] Querying database for documents...');
+    let dbItems: any[] = [];
+    
+    try {
+      const whereClause = userId 
+        ? {
+            OR: [
+              { isPublic: true }, // Public documents
+              { authorId: userId }, // User's own documents
+            ],
+          }
+        : { isPublic: true }; // Only public documents if not authenticated
+
+      dbItems = await prisma.document.findMany({
+        where: whereClause,
+        orderBy: [
+          { type: 'asc' }, // Folders first
+          { order: 'asc' }, // Then by custom order
+          { title: 'asc' }, // Finally by title
+        ],
+      });
+      console.log('[WIKI API DEBUG] Database query successful, found', dbItems.length, 'items');
+    } catch (dbError) {
+      console.error('[WIKI API DEBUG] Database query failed:', dbError);
+      console.log('[WIKI API DEBUG] Continuing with empty database results...');
+      // Continue with empty database results if database is not available
+      dbItems = [];
+    }
 
     // Get all markdown documents from content/docs
     let markdownDocs: any[] = [];
@@ -162,7 +193,11 @@ export async function GET(request: NextRequest) {
 
     const tree = buildTree(allItems);
 
-    return NextResponse.json(tree);
+    console.log('[WIKI API DEBUG] Building response with', tree.length, 'root items');
+    const successResponse = createSuccessResponse(tree);
+    return NextResponse.json(successResponse, {
+      status: HTTP_STATUS_CODES.OK,
+    });
   } catch (error) {
     logger.error('Error fetching wiki items', error as Error, {
       operation: 'GET /api/wiki',
@@ -182,20 +217,39 @@ export async function POST(request: NextRequest) {
     const { withAuth } = await import('@/lib/middleware/auth-middleware');
 
     // Check authentication - any authenticated user can create wiki items
-    const authResult = await withAuth(request, {
-      requiredPrivilegeLevel: 'EMPLOYEE',
+    const authResult = await withAuth(request);
+
+    // Debug authentication
+    console.log('Auth result:', {
+      hasResponse: !!authResult.response,
+      userId: authResult.context.userId,
+      roles: authResult.context.roles,
+      userEmail: authResult.context.userEmail
     });
 
     if (authResult.response) {
+      console.log('Auth failed, returning response:', authResult.response);
       return authResult.response;
     }
 
     const body = await request.json();
     const { title, content, type, parentId } = body;
 
+    // CRITICAL: Log the incoming data to see what we're receiving
+    console.log('[WIKI CREATE DEBUG] Incoming data:', {
+      body,
+      title,
+      content,
+      type,
+      parentId,
+      userId: authResult.context.userId,
+      userRoles: authResult.context.roles,
+    });
+
     logger.info('Wiki item creation request received', {
       body,
       userId: authResult.context.userId,
+      userRoles: authResult.context.roles,
       operation: 'POST /api/wiki',
       source: 'api/wiki/route.ts',
     });
@@ -232,6 +286,15 @@ export async function POST(request: NextRequest) {
     }
 
     // Create the document/folder in a transaction
+    console.log('Creating document with data:', {
+      title,
+      content: type === 'DOCUMENT' ? content : null,
+      type,
+      parentId,
+      authorId: authResult.context.userId,
+      isPublic: false
+    });
+
     const newItem = await prisma.$transaction(async (tx) => {
       return await tx.document.create({
         data: {
@@ -257,10 +320,24 @@ export async function POST(request: NextRequest) {
       status: HTTP_STATUS_CODES.CREATED,
     });
   } catch (error) {
-    logger.error('Error creating wiki item', error as Error, {
+    // CRITICAL: Log the full error object to see what's actually happening
+    console.error('[CRITICAL WIKI CREATE ERROR]', {
+      error: error,
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
+      name: error instanceof Error ? error.name : 'Unknown',
       operation: 'POST /api/wiki',
       source: 'api/wiki/route.ts',
     });
+    
+    logger.error('Error creating wiki item', {
+      error: error as Error,
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
+      operation: 'POST /api/wiki',
+      source: 'api/wiki/route.ts',
+    });
+    
     const errorResponse = createServerErrorResponse('Internal server error');
     return NextResponse.json(errorResponse, {
       status: getHttpStatusForErrorCode(errorResponse.error.code),

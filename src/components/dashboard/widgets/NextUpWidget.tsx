@@ -29,7 +29,6 @@ export function NextUpWidget({ className, variant = 'desktop' }: NextUpWidgetPro
       const response = await fetch('/api/calendar/next-event');
       
       if (!response.ok) {
-        // const errorText = await response.text();
         throw new Error('Failed to fetch next event');
       }
       
@@ -37,6 +36,8 @@ export function NextUpWidget({ className, variant = 'desktop' }: NextUpWidgetPro
       return data.data;
     },
     refetchInterval: 300000, // Refetch every 5 minutes
+    retry: 3,
+    retryDelay: 1000,
   });
 
   const formatTime = (dateString: string) => {
@@ -183,11 +184,15 @@ export function NextUpWidget({ className, variant = 'desktop' }: NextUpWidgetPro
               variant="outline"
               className="w-full font-vazirmatn text-sm"
               onClick={() => {
-                // Navigate to calendar page
-                window.location.href = '/calendar';
+                // Navigate to meetings page for meetings, calendar for other events
+                if (nextEvent.type === 'meeting' || nextEvent.type === 'team-meeting') {
+                  window.location.href = '/meetings';
+                } else {
+                  window.location.href = '/calendar';
+                }
               }}
             >
-              مشاهده تقویم
+              {nextEvent.type === 'meeting' || nextEvent.type === 'team-meeting' ? 'مشاهده جلسات' : 'مشاهده تقویم'}
             </Button>
           </div>
         </div>

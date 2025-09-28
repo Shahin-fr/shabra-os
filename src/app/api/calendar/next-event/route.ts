@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma';
 
 export async function GET(request: NextRequest) {
   try {
-    const { response } = await withAuth(request, {
+    const { context, response } = await withAuth(request, {
       requiredRoles: ['ADMIN', 'MANAGER', 'EMPLOYEE'],
     });
 
@@ -16,31 +16,69 @@ export async function GET(request: NextRequest) {
     const endOfDay = new Date(now);
     endOfDay.setHours(23, 59, 59, 999);
 
-    // Get the next event from content calendar
-    const nextEvent = await prisma.contentSlot.findFirst({
+    // First, try to get the next meeting for today
+    const nextMeeting = await prisma.meeting.findFirst({
       where: {
-        startDate: {
+        startTime: {
           gte: now,
           lte: endOfDay,
         },
+        status: 'SCHEDULED',
+        OR: [
+          { creatorId: context.userId },
+          { attendees: { some: { userId: context.userId } } }
+        ],
       },
       include: {
-        project: {
+        creator: {
           select: {
             id: true,
-            name: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+        attendees: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+              },
+            },
           },
         },
       },
       orderBy: {
-        startDate: 'asc',
+        startTime: 'asc',
       },
     });
 
-    // Get today's meetings (if you have a meetings table, otherwise return null)
-    // For now, we'll return the next content slot as the "next event"
-    
-    if (!nextEvent) {
+    // If no meeting found, fall back to content slot
+    let nextEvent = null;
+    if (!nextMeeting) {
+      nextEvent = await prisma.contentSlot.findFirst({
+        where: {
+          startDate: {
+            gte: now,
+            lte: endOfDay,
+          },
+        },
+        include: {
+          project: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
+        orderBy: {
+          startDate: 'asc',
+        },
+      });
+    }
+
+    if (!nextMeeting && !nextEvent) {
       return NextResponse.json({
         success: true,
         data: null,
@@ -48,21 +86,34 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    const timeUntilEvent = Math.ceil((nextEvent.startDate.getTime() - now.getTime()) / (1000 * 60));
+    // Return meeting if found, otherwise content slot
+    const event = nextMeeting || nextEvent;
+    const isMeeting = !!nextMeeting;
+    
+    if (!event) {
+      return NextResponse.json({
+        success: false,
+        message: 'رویداد بعدی برای امروز وجود ندارد',
+      });
+    }
+    
+    const timeUntilEvent = Math.ceil((isMeeting ? (event as any).startTime : (event as any).startDate).getTime() - now.getTime()) / (1000 * 60);
     const isUpcoming = timeUntilEvent <= 60; // Within next hour
 
     return NextResponse.json({
       success: true,
       data: {
-        id: nextEvent.id,
-        title: nextEvent.title,
-        description: nextEvent.description,
-        type: nextEvent.type,
-        startDate: nextEvent.startDate,
-        endDate: nextEvent.endDate,
-        project: nextEvent.project ? {
-          id: nextEvent.project.id,
-          name: nextEvent.project.name,
+        id: event.id,
+        title: event.title,
+        description: isMeeting ? (event as any).notes : (event as any).description,
+        type: isMeeting ? ((event as any).type === 'ONE_ON_ONE' ? 'meeting' : 'team-meeting') : (event as any).type,
+        startDate: (event as any).startTime || (event as any).startDate,
+        endDate: (event as any).endTime || (event as any).endDate,
+        location: isMeeting ? null : ((event as any).project ? (event as any).project.name : null),
+        attendees: isMeeting ? (event as any).attendees.length : null,
+        project: !isMeeting && (event as any).project ? {
+          id: (event as any).project.id,
+          name: (event as any).project.name,
         } : null,
         timeUntilEvent,
         isUpcoming,

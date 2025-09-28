@@ -14,7 +14,8 @@ interface PendingRequest {
   type: string;
   requestType?: string;
   title: string;
-  description: string;
+  description?: string;
+  reason?: string;
   requester: {
     id: string;
     name: string;
@@ -266,7 +267,7 @@ export const ActionCenterWidget = React.memo(function ActionCenterWidget({ class
                     'text-gray-600 font-vazirmatn mt-1 line-clamp-2',
                     isMobile ? 'text-xs' : 'text-sm'
                   )}>
-                    {request.description}
+                    {request.reason || request.description || 'بدون توضیح'}
                   </p>
 
                   <div className="flex items-center gap-2 mt-2">
@@ -337,7 +338,7 @@ export const ActionCenterWidget = React.memo(function ActionCenterWidget({ class
                   دلیل:
                 </h5>
                 <p className="text-sm text-gray-600 font-vazirmatn bg-gray-50 p-3 rounded-lg">
-                  {selectedRequest.description}
+                  {selectedRequest.reason || selectedRequest.description || 'بدون توضیح'}
                 </p>
               </div>
 

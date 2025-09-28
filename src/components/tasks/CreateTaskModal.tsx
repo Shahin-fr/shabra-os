@@ -51,6 +51,7 @@ interface CreateTaskData {
   assignedTo: string;
   projectId: string;
   dueDate: Date | null;
+  priority: 'low' | 'medium' | 'high';
 }
 
 const fetchUsers = async (): Promise<User[]> => {
@@ -82,6 +83,7 @@ const createTask = async (data: CreateTaskData) => {
     body: JSON.stringify({
       ...data,
       dueDate: data.dueDate ? data.dueDate.toISOString() : null,
+      priority: data.priority.toUpperCase(),
     }),
   });
 
@@ -110,6 +112,7 @@ export function CreateTaskModal({
     assignedTo: '',
     projectId: '',
     dueDate: null,
+    priority: 'medium',
   });
 
   const queryClient = useQueryClient();
@@ -142,6 +145,7 @@ export function CreateTaskModal({
         assignedTo: '',
         projectId: '',
         dueDate: null,
+        priority: 'medium',
       });
     },
     onError: (error: Error) => {
@@ -176,7 +180,7 @@ export function CreateTaskModal({
     <AnimatePresence>
       {isOpen && (
         <Dialog open={isOpen} onOpenChange={onClose}>
-          <DialogContent className='sm:max-w-[500px]'>
+          <DialogContent className='sm:max-w-[700px] max-h-[90vh] overflow-y-auto'>
             <DialogHeader>
               <DialogTitle className='text-xl font-semibold'>
                 ایجاد تسک جدید
@@ -206,6 +210,25 @@ export function CreateTaskModal({
                   placeholder='توضیحات تسک را وارد کنید'
                   rows={3}
                 />
+              </div>
+
+              <div className='space-y-2'>
+                <Label htmlFor='priority'>اولویت</Label>
+                <Select
+                  value={formData.priority}
+                  onValueChange={value =>
+                    handleInputChange('priority', value as 'low' | 'medium' | 'high')
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder='انتخاب اولویت' />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value='low'>پایین</SelectItem>
+                    <SelectItem value='medium'>متوسط</SelectItem>
+                    <SelectItem value='high'>بالا</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
               <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>

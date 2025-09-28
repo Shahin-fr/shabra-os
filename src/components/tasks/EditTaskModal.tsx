@@ -83,11 +83,12 @@ interface EditTaskData {
 }
 
 const fetchUsers = async (): Promise<User[]> => {
-  const response = await fetch('/api/users');
+  const response = await fetch('/api/users/assignable');
   if (!response.ok) {
     throw new Error('خطا در دریافت کاربران');
   }
-  return response.json();
+  const data = await response.json();
+  return data.data || [];
 };
 
 const fetchProjects = async (): Promise<Project[]> => {
@@ -113,7 +114,8 @@ const updateTask = async (taskId: string, data: EditTaskData) => {
 
   if (!response.ok) {
     const errorData = await response.json();
-    throw new Error(errorData.error || 'خطا در بروزرسانی تسک');
+    const errorMessage = errorData.error?.message || errorData.error || 'خطا در بروزرسانی تسک';
+    throw new Error(errorMessage);
   }
 
   return response.json();
@@ -126,7 +128,8 @@ const deleteTask = async (taskId: string) => {
 
   if (!response.ok) {
     const errorData = await response.json();
-    throw new Error(errorData.error || 'خطا در حذف تسک');
+    const errorMessage = errorData.error?.message || errorData.error || 'خطا در حذف تسک';
+    throw new Error(errorMessage);
   }
 
   return response.json();

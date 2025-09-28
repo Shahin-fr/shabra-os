@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/auth';
-// import { prisma } from '@/lib/prisma';
 
 // POST /api/announcements/[id]/read - Mark announcement as read
 export async function POST(
   _request: NextRequest,
-  _params: { params: { id: string } }
+  { params }: { params: { id: string } }
 ) {
   try {
     const session = await auth();
@@ -18,15 +17,17 @@ export async function POST(
       );
     }
 
-    // const announcementId = params.id;
+    const announcementId = params.id;
 
-    // For now, we'll just return success since we don't have a read status table
-    // In a real implementation, you would create a table to track read status
-    // and mark the announcement as read for this user
+    // For now, we'll just return success
+    // The actual read status tracking is handled on the client side using localStorage
+    // In a production environment, you would implement a proper database table
+    // to track read status for each user-announcement pair
 
     return NextResponse.json({
       success: true,
       message: 'اعلان به عنوان خوانده شده علامت‌گذاری شد',
+      announcementId,
     });
   } catch (error) {
     console.error('Error marking announcement as read:', error);

@@ -24,6 +24,7 @@ import {
   FileText,
   ClipboardList,
   BarChart3,
+  MessageSquare,
 } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
@@ -90,6 +91,12 @@ export function Sidebar() {
       priority: 'high',
     },
     {
+      href: '/meetings',
+      label: 'جلسات',
+      icon: Users,
+      priority: 'high',
+    },
+    {
       href: '/storyboard',
       label: 'استوری‌بورد',
       icon: Palette,
@@ -123,6 +130,7 @@ export function Sidebar() {
     { href: '/', label: 'داشبورد', icon: LayoutDashboard, priority: 'high' },
     { href: '/tasks', label: 'تسک‌ها', icon: CheckSquare, priority: 'high' },
     { href: '/projects', label: 'پروژه‌ها', icon: FolderOpen, priority: 'high' },
+    { href: '/meetings', label: 'جلسات', icon: Users, priority: 'high' },
     { href: '/inbox', label: 'صندوق ورودی', icon: Inbox, priority: 'high' },
     { href: '/team', label: 'مدیریت تیم', icon: Users, priority: 'high' },
     { href: '/action-center', label: 'مرکز اقدامات', icon: Inbox, priority: 'high' },
@@ -134,6 +142,7 @@ export function Sidebar() {
   const employeeNavigationItems: NavigationItemType[] = [
     { href: '/', label: 'خانه', icon: LayoutDashboard, priority: 'high' },
     { href: '/tasks', label: 'تسک‌ها', icon: CheckSquare, priority: 'high' },
+    { href: '/meetings', label: 'جلسات', icon: Users, priority: 'high' },
     { href: '/calendar', label: 'تقویم', icon: Calendar, priority: 'high' },
     { href: '/inbox', label: 'صندوق ورودی', icon: Inbox, priority: 'high' },
     { href: '/projects', label: 'پروژه‌ها', icon: FolderOpen, priority: 'medium' },

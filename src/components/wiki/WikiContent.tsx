@@ -1,75 +1,93 @@
 'use client';
 
-import { FileText, BookOpen } from 'lucide-react';
+import { FileText, BookOpen, Edit, Trash2, MoreVertical, AlertCircle } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import ClientOnly from '@/components/ui/ClientOnly';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { formatJalaliDate } from '@/lib/date-utils';
-import { logger } from '@/lib/logger';
 import { sanitizeHtml } from '@/lib/security/html-sanitizer';
-
-interface WikiDocument {
-  id: string;
-  title: string;
-  content: string;
-  type?: 'FOLDER' | 'DOCUMENT';
-  author?:
-    | {
-        firstName: string;
-        lastName: string;
-      }
-    | string;
-  createdAt: string;
-  updatedAt: string;
-  tags: string[];
-  htmlContent?: string;
-}
+import { useWikiItem, useDeleteWikiItem, useWikiStore, type WikiItem } from '@/stores/wiki.store';
+import { useToast } from '@/components/ui/toast';
+import { EditWikiItem } from './EditWikiItem';
+import { PDFViewer } from './PDFViewer';
 
 interface WikiContentProps {
   documentId: string | null;
+  onRefresh?: () => void;
 }
 
-export function WikiContent({ documentId }: WikiContentProps) {
-  const [document, setDocument] = useState<WikiDocument | null>(null);
-  const [loading, setLoading] = useState(false);
+export function WikiContent({ documentId, onRefresh }: WikiContentProps) {
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  
+  const { addToast } = useToast();
+  const { data: document, isLoading, error } = useWikiItem(documentId);
+  const deleteMutation = useDeleteWikiItem();
 
   useEffect(() => {
-    if (documentId) {
-      fetchDocument(documentId);
-    } else {
-      setDocument(null);
-    }
-  }, [documentId]);
+    // Get current user ID from session
+    fetch('/api/auth/session')
+      .then(res => res.json())
+      .then(data => {
+        if (data?.user?.id) {
+          setCurrentUserId(data.user.id);
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching current user:', error);
+      });
+  }, []);
 
-  const fetchDocument = async (id: string) => {
-    setLoading(true);
-    try {
-      // Check if it's a markdown document
-      if (id.startsWith('doc-')) {
-        const slug = id.replace('doc-', '');
-        const response = await fetch(`/api/wiki/docs/${slug}`);
-        if (response.ok) {
-          const data = await response.json();
-          setDocument(data);
+  const handleDelete = async () => {
+    if (!document) return;
+
+    deleteMutation.mutate(document.id, {
+      onSuccess: () => {
+        addToast({
+          title: 'موفقیت',
+          description: 'آیتم با موفقیت حذف شد',
+          variant: 'success',
+        });
+        setShowDeleteDialog(false);
+        if (onRefresh) {
+          onRefresh();
         }
-      } else {
-        // Regular database document
-        const response = await fetch(`/api/wiki/${id}`);
-        if (response.ok) {
-          const data = await response.json();
-          setDocument(data);
-        }
-      }
-    } catch (error) {
-      logger.error('Error fetching document:', error as Error);
-    } finally {
-      setLoading(false);
-    }
+      },
+      onError: (error) => {
+        addToast({
+          title: 'خطا',
+          description: error.message || 'خطا در حذف آیتم',
+          variant: 'destructive',
+        });
+      },
+    });
   };
+
+  const canEdit = document && currentUserId && document.authorId === currentUserId;
+  const isSystemDocument = document && document.id && document.id.startsWith('doc-');
 
   if (!documentId) {
     return (
@@ -101,7 +119,7 @@ export function WikiContent({ documentId }: WikiContentProps) {
     );
   }
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className='flex-1 flex items-center justify-center min-h-[50vh]'>
         <div className='animate-pulse space-y-6 w-full max-w-5xl px-8'>
@@ -113,6 +131,28 @@ export function WikiContent({ documentId }: WikiContentProps) {
             <div className='h-4 bg-gray-200 rounded-lg w-4/6'></div>
             <div className='h-4 bg-gray-200 rounded-lg w-3/4'></div>
           </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className='flex-1 flex items-center justify-center min-h-[50vh]'>
+        <div className='text-center max-w-lg'>
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              خطا در بارگذاری مستند. لطفاً دوباره تلاش کنید.
+            </AlertDescription>
+          </Alert>
+          <Button 
+            onClick={() => window.location.reload()} 
+            variant="outline" 
+            className="mt-4"
+          >
+            تلاش مجدد
+          </Button>
         </div>
       </div>
     );
@@ -162,16 +202,40 @@ export function WikiContent({ documentId }: WikiContentProps) {
   }
 
   return (
-    <div className='flex-1 p-8'>
+    <div className='flex-1 p-4 sm:p-6 lg:p-8'>
       <div className='max-w-5xl mx-auto'>
         {/* Document Header */}
         <Card className='mb-8'>
           <CardHeader>
-            <CardTitle className='text-4xl font-bold text-gray-800'>
-              {document.title}
-            </CardTitle>
+            <div className='flex items-start justify-between gap-4'>
+              <CardTitle className='text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 break-words'>
+                {document.title}
+              </CardTitle>
+              {canEdit && !isSystemDocument && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant='outline' size='sm' className='flex-shrink-0'>
+                      <MoreVertical className='h-4 w-4' />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align='end'>
+                    <DropdownMenuItem onClick={() => setShowEditDialog(true)}>
+                      <Edit className='h-4 w-4 mr-2' />
+                      ویرایش
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      onClick={() => setShowDeleteDialog(true)}
+                      className='text-red-600 focus:text-red-600'
+                    >
+                      <Trash2 className='h-4 w-4 mr-2' />
+                      حذف
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
+            </div>
 
-            <div className='flex items-center gap-6 text-sm text-gray-600 mb-4'>
+            <div className='flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 text-sm text-gray-600 mb-4'>
               <div className='flex items-center gap-2'>
                 <span className='text-gray-500'>نویسنده:</span>
                 <span className='font-semibold text-gray-800'>
@@ -216,17 +280,83 @@ export function WikiContent({ documentId }: WikiContentProps) {
 
         {/* Document Content */}
         <Card className='overflow-hidden'>
-          <CardContent className='p-8 prose prose-lg max-w-none prose-headings:text-gray-800 prose-p:text-gray-700 prose-strong:text-gray-800 prose-code:text-gray-800 prose-pre:bg-gray-50 prose-pre:text-gray-800'>
-            {document.htmlContent ? (
-              <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(document.htmlContent) }} />
+          <CardContent className='p-8'>
+            {/* PDF Viewer */}
+            {document.fileType === 'pdf' && document.fileUrl ? (
+              <PDFViewer
+                fileUrl={document.fileUrl}
+                fileName={document.originalName || document.title}
+                fileSize={document.fileSize}
+              />
             ) : (
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                {document.content}
-              </ReactMarkdown>
+              /* Markdown/Text Content */
+              <div className='prose prose-lg max-w-none prose-headings:text-gray-800 prose-p:text-gray-700 prose-strong:text-gray-800 prose-code:text-gray-800 prose-pre:bg-gray-50 prose-pre:text-gray-800'>
+                {document.htmlContent ? (
+                  <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(document.htmlContent) }} />
+                ) : (
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {document.content}
+                  </ReactMarkdown>
+                )}
+              </div>
             )}
           </CardContent>
         </Card>
       </div>
+
+      {/* Edit Dialog */}
+      {showEditDialog && document && (
+        <div className='fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4'>
+          <div className='bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto'>
+            <div className='p-6'>
+              <h2 className='text-2xl font-bold mb-4'>ویرایش {(document?.type as string) === 'FOLDER' ? 'پوشه' : 'مستند'}</h2>
+              <EditWikiItem
+                document={{
+                  id: document.id,
+                  title: document.title,
+                  content: document.content,
+                  type: document.type || 'DOCUMENT',
+                  parentId: null, // We'll need to get this from the document
+                  authorId: document.authorId || '',
+                }}
+                onClose={() => setShowEditDialog(false)}
+                onSuccess={() => {
+                  setShowEditDialog(false);
+                  if (onRefresh) {
+                    onRefresh();
+                  }
+                  // Refresh the current document
+                  if (documentId) {
+                    fetchDocument(documentId);
+                  }
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>حذف {(document?.type as string) === 'FOLDER' ? 'پوشه' : 'مستند'}</AlertDialogTitle>
+            <AlertDialogDescription>
+              آیا مطمئن هستید که می‌خواهید "{document?.title}" را حذف کنید؟ این عمل قابل بازگشت نیست.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>انصراف</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDelete}
+              disabled={deleteMutation.isPending}
+              className='bg-red-600 hover:bg-red-700'
+            >
+              {deleteMutation.isPending ? 'در حال حذف...' : 'حذف'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

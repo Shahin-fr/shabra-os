@@ -1,201 +1,314 @@
 import { NextRequest, NextResponse } from 'next/server';
-
-import { auth } from '@/auth';
-import {
-  createSuccessResponse,
-  createAuthErrorResponse,
-  createAuthorizationErrorResponse,
-  createNotFoundErrorResponse,
-  HTTP_STATUS_CODES,
-  getHttpStatusForErrorCode,
-} from '@/lib/api/response-utils';
-// import { logger } from '@/lib/logger';
 import { prisma } from '@/lib/prisma';
-import { handleApiError } from '@/lib/utils/error-handler';
+import { logger } from '@/lib/logger';
+import { 
+  createSuccessResponse, 
+  createValidationErrorResponse, 
+  createServerErrorResponse,
+  createNotFoundErrorResponse,
+  createUnauthorizedErrorResponse,
+  getHttpStatusForErrorCode,
+  HTTP_STATUS_CODES
+} from '@/lib/api-response';
 
-// GET /api/wiki/[documentId] - Get specific document
+// GET /api/wiki/[documentId] - Get individual wiki item
 export async function GET(
-  _request: NextRequest,
-  { params }: { params: { documentId: string } }
+  request: NextRequest,
+  { params }: { params: Promise<{ documentId: string }> }
 ) {
   try {
-    const session = await auth();
-    if (!session?.user?.email) {
-      const errorResponse = createAuthErrorResponse('Unauthorized');
-      return NextResponse.json(errorResponse, {
-        status: getHttpStatusForErrorCode(errorResponse.error.code),
-      });
+    const { withAuth } = await import('@/lib/middleware/auth-middleware');
+    
+    // Check authentication
+    const authResult = await withAuth(request);
+    if (authResult.response) {
+      return authResult.response;
     }
 
-    const { documentId } = params;
+    const { documentId } = await params;
 
+    // Get the document with author information
     const document = await prisma.document.findUnique({
       where: { id: documentId },
+      include: {
+        author: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+          },
+        },
+      },
     });
 
     if (!document) {
-      const errorResponse = createNotFoundErrorResponse();
+      const errorResponse = createNotFoundErrorResponse('Wiki item not found');
       return NextResponse.json(errorResponse, {
         status: getHttpStatusForErrorCode(errorResponse.error.code),
       });
     }
 
-    // Check access permissions
-    if (!document.isPublic) {
-      // Fetch author to check permissions
-      const author = await prisma.user.findUnique({
-        where: { id: document.authorId },
-        select: { email: true },
+    // Check if user has access to the document
+    const isPublic = document.isPublic;
+    const isAuthor = document.authorId === authResult.context.userId;
+    const isAdmin = authResult.context.roles?.includes('ADMIN');
+
+    if (!isPublic && !isAuthor && !isAdmin) {
+      const errorResponse = createUnauthorizedErrorResponse('Access denied to this wiki item');
+      return NextResponse.json(errorResponse, {
+        status: getHttpStatusForErrorCode(errorResponse.error.code),
+      });
+    }
+
+    logger.info('Wiki item retrieved successfully', {
+      itemId: documentId,
+      userId: authResult.context.userId,
+      operation: 'GET /api/wiki/[documentId]',
+      source: 'api/wiki/[documentId]/route.ts',
+    });
+
+    const successResponse = createSuccessResponse(document);
+    return NextResponse.json(successResponse, {
+      status: HTTP_STATUS_CODES.OK,
+    });
+
+  } catch (error) {
+    // CRITICAL: Log the full error object to see what's actually happening
+    console.error('[CRITICAL WIKI GET ERROR]', {
+      error: error,
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
+      name: error instanceof Error ? error.name : 'Unknown',
+      operation: 'GET /api/wiki/[documentId]',
+      source: 'api/wiki/[documentId]/route.ts',
+    });
+    
+    logger.error('Error retrieving wiki item', {
+      error: error as Error,
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
+      operation: 'GET /api/wiki/[documentId]',
+      source: 'api/wiki/[documentId]/route.ts',
+    });
+    
+    const errorResponse = createServerErrorResponse('Internal server error');
+    return NextResponse.json(errorResponse, {
+      status: getHttpStatusForErrorCode(errorResponse.error.code),
+    });
+  }
+}
+
+// PUT /api/wiki/[documentId] - Update wiki item
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Promise<{ documentId: string }> }
+) {
+  try {
+    const { withAuth } = await import('@/lib/middleware/auth-middleware');
+    
+    // Check authentication
+    const authResult = await withAuth(request);
+    if (authResult.response) {
+      return authResult.response;
+    }
+
+    const { documentId } = await params;
+    const body = await request.json();
+    const { title, content, type, parentId } = body;
+
+    // CRITICAL: Log the incoming data to see what we're receiving
+    console.log('[WIKI PUT DEBUG] Incoming data:', {
+      documentId,
+      body,
+      title,
+      content,
+      type,
+      parentId,
+      userId: authResult.context.userId,
+    });
+
+    // Validate required fields
+    if (!title || !type) {
+      const errorResponse = createValidationErrorResponse('Title and type are required');
+      return NextResponse.json(errorResponse, {
+        status: getHttpStatusForErrorCode(errorResponse.error.code),
+      });
+    }
+
+    // Get the existing document
+    const existingDocument = await prisma.document.findUnique({
+      where: { id: documentId },
+    });
+
+    if (!existingDocument) {
+      const errorResponse = createNotFoundErrorResponse('Wiki item not found');
+      return NextResponse.json(errorResponse, {
+        status: getHttpStatusForErrorCode(errorResponse.error.code),
+      });
+    }
+
+    // Check permissions
+    const isAuthor = existingDocument.authorId === authResult.context.userId;
+    const isAdmin = authResult.context.roles?.includes('ADMIN');
+
+    if (!isAuthor && !isAdmin) {
+      const errorResponse = createUnauthorizedErrorResponse('You can only edit your own wiki items');
+      return NextResponse.json(errorResponse, {
+        status: getHttpStatusForErrorCode(errorResponse.error.code),
+      });
+    }
+
+    // Validate parent if provided
+    if (parentId) {
+      const parent = await prisma.document.findUnique({
+        where: { id: parentId },
       });
 
-      if (author?.email !== session.user.email) {
-        const errorResponse = createAuthorizationErrorResponse('Access denied');
+      if (!parent || parent.type !== 'FOLDER') {
+        const errorResponse = createValidationErrorResponse('Parent must be a valid folder');
+        return NextResponse.json(errorResponse, {
+          status: getHttpStatusForErrorCode(errorResponse.error.code),
+        });
+      }
+
+      // Prevent circular references
+      if (parentId === documentId) {
+        const errorResponse = createValidationErrorResponse('Cannot set item as its own parent');
         return NextResponse.json(errorResponse, {
           status: getHttpStatusForErrorCode(errorResponse.error.code),
         });
       }
     }
 
-    // Convert content to HTML if it's markdown
-    let htmlContent = document.content;
-    if (document.content && document.type === 'DOCUMENT') {
-      // TODO: Add markdown to HTML conversion
-      // For now, just return the raw content
-      htmlContent = document.content;
-    }
-
-    const response = {
-      ...document,
-      content: htmlContent,
-      tags: [], // TODO: Add tags support
-    };
-
-    return NextResponse.json(response);
-  } catch (error) {
-    return handleApiError(error, {
-      operation: 'GET /api/wiki/[documentId]',
-      source: 'api/wiki/[documentId]/route.ts',
-    });
-  }
-}
-
-// PUT /api/wiki/[documentId] - Update document
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: { documentId: string } }
-) {
-  try {
-    const session = await auth();
-    if (!session?.user?.email) {
-      const errorResponse = createAuthErrorResponse('Unauthorized');
-      return NextResponse.json(errorResponse, {
-        status: getHttpStatusForErrorCode(errorResponse.error.code),
-      });
-    }
-
-    const { documentId } = params;
-    const body = await request.json();
-
-    // Check if user owns the document
-    const existingDocument = await prisma.document.findUnique({
-      where: { id: documentId },
-    });
-
-    if (!existingDocument) {
-      const errorResponse = createNotFoundErrorResponse();
-      return NextResponse.json(errorResponse, {
-        status: getHttpStatusForErrorCode(errorResponse.error.code),
-      });
-    }
-
-    // Fetch author to check permissions
-    const author = await prisma.user.findUnique({
-      where: { id: existingDocument.authorId },
-      select: { email: true },
-    });
-
-    if (author?.email !== session.user.email) {
-      const errorResponse = createAuthorizationErrorResponse('Access denied');
-      return NextResponse.json(errorResponse, {
-        status: getHttpStatusForErrorCode(errorResponse.error.code),
-      });
-    }
-
     // Update the document
     const updatedDocument = await prisma.document.update({
       where: { id: documentId },
       data: {
-        title: body.title,
-        content: body.content,
-        type: body.type,
-        parentId: body.parentId,
+        title: title.trim(),
+        content: type === 'DOCUMENT' ? content : null,
+        type,
+        parentId,
         updatedAt: new Date(),
+      },
+      include: {
+        author: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+          },
+        },
       },
     });
 
-    return NextResponse.json(updatedDocument);
-  } catch (error) {
-    return handleApiError(error, {
+    logger.info('Wiki item updated successfully', {
+      itemId: documentId,
+      userId: authResult.context.userId,
       operation: 'PUT /api/wiki/[documentId]',
       source: 'api/wiki/[documentId]/route.ts',
+    });
+
+    const successResponse = createSuccessResponse(updatedDocument);
+    return NextResponse.json(successResponse, {
+      status: HTTP_STATUS_CODES.OK,
+    });
+
+  } catch (error) {
+    // CRITICAL: Log the full error object to see what's actually happening
+    console.error('[CRITICAL WIKI PUT ERROR]', {
+      error: error,
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
+      name: error instanceof Error ? error.name : 'Unknown',
+      operation: 'PUT /api/wiki/[documentId]',
+      source: 'api/wiki/[documentId]/route.ts',
+    });
+    
+    logger.error('Error updating wiki item', {
+      error: error as Error,
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
+      operation: 'PUT /api/wiki/[documentId]',
+      source: 'api/wiki/[documentId]/route.ts',
+    });
+    
+    const errorResponse = createServerErrorResponse('Internal server error');
+    return NextResponse.json(errorResponse, {
+      status: getHttpStatusForErrorCode(errorResponse.error.code),
     });
   }
 }
 
-// DELETE /api/wiki/[documentId] - Delete document
+// DELETE /api/wiki/[documentId] - Delete wiki item
 export async function DELETE(
-  _request: NextRequest,
-  { params }: { params: { documentId: string } }
+  request: NextRequest,
+  { params }: { params: Promise<{ documentId: string }> }
 ) {
   try {
-    const session = await auth();
-    if (!session?.user?.email) {
-      const errorResponse = createAuthErrorResponse('Unauthorized');
-      return NextResponse.json(errorResponse, {
-        status: getHttpStatusForErrorCode(errorResponse.error.code),
-      });
+    const { withAuth } = await import('@/lib/middleware/auth-middleware');
+    
+    // Check authentication
+    const authResult = await withAuth(request);
+    if (authResult.response) {
+      return authResult.response;
     }
 
-    const { documentId } = params;
+    const { documentId } = await params;
 
-    // Check if user owns the document
+    // Get the existing document
     const existingDocument = await prisma.document.findUnique({
       where: { id: documentId },
     });
 
     if (!existingDocument) {
-      const errorResponse = createNotFoundErrorResponse();
+      const errorResponse = createNotFoundErrorResponse('Wiki item not found');
       return NextResponse.json(errorResponse, {
         status: getHttpStatusForErrorCode(errorResponse.error.code),
       });
     }
 
-    // Fetch author to check permissions
-    const author = await prisma.user.findUnique({
-      where: { id: existingDocument.authorId },
-      select: { email: true },
-    });
+    // Check permissions
+    const isAuthor = existingDocument.authorId === authResult.context.userId;
+    const isAdmin = authResult.context.roles?.includes('ADMIN');
 
-    if (author?.email !== session.user.email) {
-      const errorResponse = createAuthorizationErrorResponse('Access denied');
+    if (!isAuthor && !isAdmin) {
+      const errorResponse = createUnauthorizedErrorResponse('You can only delete your own wiki items');
       return NextResponse.json(errorResponse, {
         status: getHttpStatusForErrorCode(errorResponse.error.code),
       });
     }
 
-    // Check if document has children
-    const childrenCount = await prisma.document.count({
-      where: { parentId: documentId },
-    });
+    // If it's a folder, check if it has children
+    if (existingDocument.type === 'FOLDER') {
+      const children = await prisma.document.findMany({
+        where: { parentId: documentId },
+      });
 
-    if (childrenCount > 0) {
-      return NextResponse.json(
-        {
-          error:
-            'Cannot delete document with children. Move or delete children first.',
-        },
-        { status: 400 }
-      );
+      if (children.length > 0) {
+        const errorResponse = createValidationErrorResponse(
+          'Cannot delete folder that contains items. Please delete or move all items first.'
+        );
+        return NextResponse.json(errorResponse, {
+          status: getHttpStatusForErrorCode(errorResponse.error.code),
+        });
+      }
+    }
+
+    // Delete from Cloudinary if file exists
+    if (existingDocument.filePublicId) {
+      try {
+        const { deleteFromCloudinary } = await import('@/lib/cloudinary');
+        await deleteFromCloudinary(existingDocument.filePublicId);
+      } catch (cloudinaryError) {
+        logger.warn('Failed to delete file from Cloudinary', {
+          error: cloudinaryError as Error,
+          documentId: documentId,
+          publicId: existingDocument.filePublicId,
+        });
+        // Continue with database deletion even if Cloudinary deletion fails
+      }
     }
 
     // Delete the document
@@ -203,12 +316,40 @@ export async function DELETE(
       where: { id: documentId },
     });
 
-    const successResponse = createSuccessResponse({ success: true });
-    return NextResponse.json(successResponse, { status: HTTP_STATUS_CODES.OK });
-  } catch (error) {
-    return handleApiError(error, {
+    logger.info('Wiki item deleted successfully', {
+      itemId: documentId,
+      userId: authResult.context.userId,
       operation: 'DELETE /api/wiki/[documentId]',
       source: 'api/wiki/[documentId]/route.ts',
+    });
+
+    const successResponse = createSuccessResponse({ id: documentId, deleted: true });
+    return NextResponse.json(successResponse, {
+      status: HTTP_STATUS_CODES.OK,
+    });
+
+  } catch (error) {
+    // CRITICAL: Log the full error object to see what's actually happening
+    console.error('[CRITICAL WIKI DELETE ERROR]', {
+      error: error,
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
+      name: error instanceof Error ? error.name : 'Unknown',
+      operation: 'DELETE /api/wiki/[documentId]',
+      source: 'api/wiki/[documentId]/route.ts',
+    });
+    
+    logger.error('Error deleting wiki item', {
+      error: error as Error,
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
+      operation: 'DELETE /api/wiki/[documentId]',
+      source: 'api/wiki/[documentId]/route.ts',
+    });
+    
+    const errorResponse = createServerErrorResponse('Internal server error');
+    return NextResponse.json(errorResponse, {
+      status: getHttpStatusForErrorCode(errorResponse.error.code),
     });
   }
 }

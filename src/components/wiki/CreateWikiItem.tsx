@@ -1,7 +1,7 @@
 'use client';
 
 import { Folder, FileText } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,50 +14,107 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { logger } from '@/lib/logger';
+import { useCreateWikiItem, useWikiItems, type WikiItem } from '@/stores/wiki.store';
+import { useToast } from '@/components/ui/toast';
 
 interface CreateWikiItemProps {
   onClose: () => void;
+  onSuccess?: () => void;
 }
 
-export function CreateWikiItem({ onClose }: CreateWikiItemProps) {
+interface WikiFolder {
+  id: string;
+  title: string;
+  type: 'FOLDER';
+  parentId: string | null;
+}
+
+export function CreateWikiItem({ onClose, onSuccess }: CreateWikiItemProps) {
   const [type, setType] = useState<'FOLDER' | 'DOCUMENT'>('DOCUMENT');
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [parentId, setParentId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  
+  const { addToast } = useToast();
+  const createMutation = useCreateWikiItem();
+  const { data: wikiItems = [] } = useWikiItems();
+
+  // Extract only folders from the tree structure
+  const folders = React.useMemo(() => {
+    const extractFolders = (items: WikiItem[]): WikiFolder[] => {
+      const result: WikiFolder[] = [];
+      for (const item of items) {
+        if (item.type === 'FOLDER') {
+          result.push({
+            id: item.id,
+            title: item.title,
+            type: 'FOLDER',
+            parentId: item.parentId,
+          });
+          if (item.children) {
+            result.push(...extractFolders(item.children));
+          }
+        }
+      }
+      return result;
+    };
+    return extractFolders(wikiItems);
+  }, [wikiItems]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!title.trim()) {
+      addToast({
+        title: 'خطا',
+        description: 'لطفاً عنوان را وارد کنید',
+        variant: 'destructive',
+      });
       return;
     }
 
-    setLoading(true);
-    try {
-      const response = await fetch('/api/wiki', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+    // CRITICAL: Log what we're sending to the API
+    const mutationData = {
+      title: title.trim(),
+      content: type === 'DOCUMENT' ? content : undefined,
+      type,
+      parentId,
+    };
+    
+    console.log('[FRONTEND WIKI CREATE DEBUG] Sending data:', mutationData);
+    
+    createMutation.mutate(
+      mutationData,
+      {
+        onSuccess: (data) => {
+          console.log('[FRONTEND WIKI CREATE SUCCESS] Response:', data);
+          // Reset form
+          setTitle('');
+          setContent('');
+          setParentId(null);
+          onClose();
+          if (onSuccess) {
+            onSuccess();
+          }
         },
-        body: JSON.stringify({
-          title: title.trim(),
-          content: type === 'DOCUMENT' ? content : null,
-          type,
-          parentId,
-        }),
-      });
-
-      if (response.ok) {
-        onClose();
-        // TODO: Refresh the wiki items list
+        onError: (error) => {
+          // CRITICAL: Log the full error details
+          console.error('[FRONTEND WIKI CREATE ERROR] Full error details:', {
+            error: error,
+            message: error.message,
+            cause: error.cause,
+            stack: error.stack,
+            name: error.name,
+          });
+          
+          addToast({
+            title: 'خطا',
+            description: error.message || 'خطا در ایجاد آیتم',
+            variant: 'destructive',
+          });
+        },
       }
-    } catch (error) {
-      logger.error('Error creating wiki item:', error as Error);
-    } finally {
-      setLoading(false);
-    }
+    );
   };
 
   return (
@@ -115,15 +172,22 @@ export function CreateWikiItem({ onClose }: CreateWikiItemProps) {
       <div className='space-y-2'>
         <Label htmlFor='parent'>پوشه والد (اختیاری)</Label>
         <Select
-          value={parentId || ''}
-          onValueChange={value => setParentId(value || null)}
+          value={parentId || 'none'}
+          onValueChange={value => setParentId(value === 'none' ? null : value)}
         >
           <SelectTrigger>
             <SelectValue placeholder='بدون پوشه والد' />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value=''>بدون پوشه والد</SelectItem>
-            {/* TODO: Add parent folder options */}
+            <SelectItem value='none'>بدون پوشه والد</SelectItem>
+            {folders.map(folder => (
+              <SelectItem key={folder.id} value={folder.id}>
+                <div className='flex items-center gap-2'>
+                  <Folder className='h-4 w-4' />
+                  {folder.title}
+                </div>
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </div>
@@ -132,8 +196,8 @@ export function CreateWikiItem({ onClose }: CreateWikiItemProps) {
         <Button type='button' variant='outline' onClick={onClose}>
           انصراف
         </Button>
-        <Button type='submit' disabled={loading || !title.trim()}>
-          {loading ? 'در حال ایجاد...' : 'ایجاد'}
+        <Button type='submit' disabled={createMutation.isPending || !title.trim()}>
+          {createMutation.isPending ? 'در حال ایجاد...' : 'ایجاد'}
         </Button>
       </div>
     </form>

@@ -91,19 +91,24 @@ export function TasksAtRiskWidget({ className, variant = 'desktop' }: TasksAtRis
   // Safety check to ensure tasksAtRisk is always an array
   const safeTasksAtRisk = Array.isArray(tasksAtRisk) ? tasksAtRisk : [];
 
-  const overdueCount = safeTasksAtRisk.filter(task => {
-    const now = new Date();
-    const due = new Date(task.dueDate);
-    return due.getTime() < now.getTime();
-  }).length;
+  // Categorize tasks into Today and Overdue
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
 
-  const dueTodayCount = safeTasksAtRisk.filter(task => {
-    const now = new Date();
+  const overdueTasks = safeTasksAtRisk.filter(task => {
     const due = new Date(task.dueDate);
-    const diffMs = due.getTime() - now.getTime();
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-    return diffDays === 0;
-  }).length;
+    return due.getTime() < today.getTime();
+  });
+
+  const todayTasks = safeTasksAtRisk.filter(task => {
+    const due = new Date(task.dueDate);
+    return due.getTime() >= today.getTime() && due.getTime() < tomorrow.getTime();
+  });
+
+  const overdueCount = overdueTasks.length;
+  const dueTodayCount = todayTasks.length;
 
   return (
     <WidgetCard
@@ -136,94 +141,156 @@ export function TasksAtRiskWidget({ className, variant = 'desktop' }: TasksAtRis
         )
       }
     >
-      {/* Risk Summary */}
-      {safeTasksAtRisk.length > 0 && (
-        <div className="mb-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="text-center p-3 rounded-xl bg-white/60">
-              <div className="text-2xl font-bold text-red-600 font-vazirmatn">
-                {overdueCount}
-              </div>
-              <div className="text-sm text-gray-600 font-vazirmatn">
-                تأخیر
-              </div>
-            </div>
-            <div className="text-center p-3 rounded-xl bg-white/60">
-              <div className="text-2xl font-bold text-orange-600 font-vazirmatn">
-                {dueTodayCount}
-              </div>
-              <div className="text-sm text-gray-600 font-vazirmatn">
-                امروز
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Tasks List */}
-      <div className="space-y-3">
-        {safeTasksAtRisk.slice(0, isMobile ? 3 : 6).map((task) => {
-          const risk = getRiskLevel(task.dueDate);
-          return (
-            <div
-              key={task.id}
-              className="p-3 rounded-xl bg-white/60 border border-white/40 hover:bg-white/80 transition-all duration-200"
-            >
-              <div className="flex items-start gap-3">
-                {/* Risk Icon */}
-                <div className="flex-shrink-0 mt-1">
-                  {getRiskIcon(task.dueDate)}
-                </div>
-
-                {/* Task Info */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-start justify-between gap-2 mb-2">
-                    <h4 className={cn(
-                      'font-vazirmatn font-semibold text-gray-900 leading-tight',
-                      isMobile ? 'text-sm' : 'text-base'
-                    )}>
-                      {task.title}
-                    </h4>
-                    <span className={cn(
-                      'inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-vazirmatn font-medium',
-                      risk.color
-                    )}>
-                      {risk.text}
-                    </span>
-                  </div>
-
-                  <div className="space-y-2">
-                    {/* Assignee */}
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <User className="h-4 w-4 text-gray-400" />
-                      <span className="font-vazirmatn">
-                        {task.assignee.firstName} {task.assignee.lastName}
-                      </span>
-                    </div>
-
-                    {/* Project */}
-                    {task.project && (
-                      <div className="flex items-center gap-2 text-sm text-gray-600">
-                        <Folder className="h-4 w-4 text-gray-400" />
-                        <span className="font-vazirmatn">
-                          {task.project.name}
-                        </span>
+      <div className="space-y-4">
+        {/* Overdue Tasks Section */}
+        {overdueTasks.length > 0 && (
+          <div>
+            <h3 className="text-sm font-semibold text-red-700 font-vazirmatn mb-3 flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4" />
+              با تاخیر ({overdueCount})
+            </h3>
+            <div className="space-y-3">
+              {overdueTasks.slice(0, isMobile ? 2 : 3).map((task) => {
+                const risk = getRiskLevel(task.dueDate);
+                return (
+                  <div
+                    key={task.id}
+                    className="p-3 rounded-xl bg-red-50 border border-red-200 hover:bg-red-100 transition-all duration-200"
+                  >
+                    <div className="flex items-start gap-3">
+                      {/* Risk Icon */}
+                      <div className="flex-shrink-0 mt-1">
+                        {getRiskIcon(task.dueDate)}
                       </div>
-                    )}
 
-                    {/* Due Date */}
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <Calendar className="h-4 w-4 text-gray-400" />
-                      <span className="font-vazirmatn">
-                        {formatDate(task.dueDate)} - {formatTime(task.dueDate)}
-                      </span>
+                      {/* Task Info */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between gap-2 mb-2">
+                          <h4 className={cn(
+                            'font-vazirmatn font-semibold text-gray-900 leading-tight',
+                            isMobile ? 'text-sm' : 'text-base'
+                          )}>
+                            {task.title}
+                          </h4>
+                          <span className={cn(
+                            'inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-vazirmatn font-medium',
+                            risk.color
+                          )}>
+                            {risk.text}
+                          </span>
+                        </div>
+
+                        <div className="space-y-2">
+                          {/* Assignee */}
+                          <div className="flex items-center gap-2 text-sm text-gray-600">
+                            <User className="h-4 w-4 text-gray-400" />
+                            <span className="font-vazirmatn">
+                              {task.assignee.firstName} {task.assignee.lastName}
+                            </span>
+                          </div>
+
+                          {/* Project */}
+                          {task.project && (
+                            <div className="flex items-center gap-2 text-sm text-gray-600">
+                              <Folder className="h-4 w-4 text-gray-400" />
+                              <span className="font-vazirmatn">
+                                {task.project.name}
+                              </span>
+                            </div>
+                          )}
+
+                          {/* Due Date */}
+                          <div className="flex items-center gap-2 text-sm text-gray-600">
+                            <Calendar className="h-4 w-4 text-gray-400" />
+                            <span className="font-vazirmatn">
+                              {formatDate(task.dueDate)} - {formatTime(task.dueDate)}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
+                );
+              })}
             </div>
-          );
-        })}
+          </div>
+        )}
+
+        {/* Today Tasks Section */}
+        {todayTasks.length > 0 && (
+          <div>
+            <h3 className="text-sm font-semibold text-orange-700 font-vazirmatn mb-3 flex items-center gap-2">
+              <Clock className="h-4 w-4" />
+              امروز ({dueTodayCount})
+            </h3>
+            <div className="space-y-3">
+              {todayTasks.slice(0, isMobile ? 2 : 3).map((task) => {
+                const risk = getRiskLevel(task.dueDate);
+                return (
+                  <div
+                    key={task.id}
+                    className="p-3 rounded-xl bg-orange-50 border border-orange-200 hover:bg-orange-100 transition-all duration-200"
+                  >
+                    <div className="flex items-start gap-3">
+                      {/* Risk Icon */}
+                      <div className="flex-shrink-0 mt-1">
+                        {getRiskIcon(task.dueDate)}
+                      </div>
+
+                      {/* Task Info */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between gap-2 mb-2">
+                          <h4 className={cn(
+                            'font-vazirmatn font-semibold text-gray-900 leading-tight',
+                            isMobile ? 'text-sm' : 'text-base'
+                          )}>
+                            {task.title}
+                          </h4>
+                          <span className={cn(
+                            'inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-vazirmatn font-medium',
+                            risk.color
+                          )}>
+                            {risk.text}
+                          </span>
+                        </div>
+
+                        <div className="space-y-2">
+                          {/* Assignee */}
+                          <div className="flex items-center gap-2 text-sm text-gray-600">
+                            <User className="h-4 w-4 text-gray-400" />
+                            <span className="font-vazirmatn">
+                              {task.assignee.firstName} {task.assignee.lastName}
+                            </span>
+                          </div>
+
+                          {/* Project */}
+                          {task.project && (
+                            <div className="flex items-center gap-2 text-sm text-gray-600">
+                              <Folder className="h-4 w-4 text-gray-400" />
+                              <span className="font-vazirmatn">
+                                {task.project.name}
+                              </span>
+                            </div>
+                          )}
+
+                          {/* Due Date */}
+                          <div className="flex items-center gap-2 text-sm text-gray-600">
+                            <Calendar className="h-4 w-4 text-gray-400" />
+                            <span className="font-vazirmatn">
+                              {formatDate(task.dueDate)} - {formatTime(task.dueDate)}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Action Button - Only show if more than max items */}

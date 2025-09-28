@@ -39,7 +39,15 @@ export function AnnouncementsWidget({ className, variant = 'desktop' }: Announce
         throw new Error('Failed to fetch announcements');
       }
       const data = await response.json();
-      return Array.isArray(data.data) ? data.data : [];
+      const fetchedAnnouncements = Array.isArray(data.data) ? data.data : [];
+      
+      // Check read status from localStorage
+      const readAnnouncements = JSON.parse(localStorage.getItem('readAnnouncements') || '[]');
+      
+      return fetchedAnnouncements.map((announcement: any) => ({
+        ...announcement,
+        isRead: readAnnouncements.includes(announcement.id)
+      }));
     },
     refetchInterval: 300000, // Refetch every 5 minutes
   });
@@ -55,10 +63,18 @@ export function AnnouncementsWidget({ className, variant = 'desktop' }: Announce
         throw new Error('Failed to mark announcement as read');
       }
       
+      // Update localStorage
+      const readAnnouncements = JSON.parse(localStorage.getItem('readAnnouncements') || '[]');
+      if (!readAnnouncements.includes(announcementId)) {
+        readAnnouncements.push(announcementId);
+        localStorage.setItem('readAnnouncements', JSON.stringify(readAnnouncements));
+      }
+      
       return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['announcements', 'recent'] });
+      toast.success('اعلان به عنوان خوانده شده علامت‌گذاری شد');
     },
     onError: () => {
       toast.error('خطا در به‌روزرسانی وضعیت اعلان');
@@ -141,7 +157,10 @@ export function AnnouncementsWidget({ className, variant = 'desktop' }: Announce
 
   const isMobile = variant === 'mobile';
   const safeAnnouncements = Array.isArray(announcements) ? announcements : [];
-  const unreadCount = safeAnnouncements.filter(announcement => !announcement.isRead).length;
+  
+  // Filter out read announcements for display
+  const unreadAnnouncements = safeAnnouncements.filter(announcement => !announcement.isRead);
+  const unreadCount = unreadAnnouncements.length;
 
   if (isLoading) {
     return (
@@ -184,18 +203,13 @@ export function AnnouncementsWidget({ className, variant = 'desktop' }: Announce
         'bg-gradient-to-br from-orange-50 to-red-50',
         className
       )}
-    >
-      <div className="space-y-4">
-        {/* Header with unread count */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <h3 className="font-semibold text-gray-900 font-vazirmatn">اعلانات اخیر</h3>
-            {unreadCount > 0 && (
-              <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full font-vazirmatn">
-                {unreadCount} جدید
-              </span>
-            )}
-          </div>
+      headerAction={
+        <div className="flex items-center gap-2">
+          {unreadCount > 0 && (
+            <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full font-vazirmatn">
+              {unreadCount} جدید
+            </span>
+          )}
           <Button
             variant="ghost"
             size="sm"
@@ -205,16 +219,19 @@ export function AnnouncementsWidget({ className, variant = 'desktop' }: Announce
             همه
           </Button>
         </div>
+      }
+    >
+      <div className="space-y-4">
 
         {/* Announcements List */}
         <div className="space-y-3">
-          {safeAnnouncements.length === 0 ? (
+          {unreadAnnouncements.length === 0 ? (
             <div className="text-center py-6">
               <Megaphone className="h-12 w-12 text-gray-400 mx-auto mb-3" />
-              <p className="text-gray-500 font-vazirmatn">هیچ اعلانی وجود ندارد</p>
+              <p className="text-gray-500 font-vazirmatn">هیچ اعلان جدیدی وجود ندارد</p>
             </div>
           ) : (
-            safeAnnouncements.slice(0, isMobile ? 3 : 5).map((announcement, index) => (
+            unreadAnnouncements.slice(0, isMobile ? 3 : 5).map((announcement, index) => (
               <OptimizedMotion
                 key={announcement.id}
                 initial={{ opacity: 0, y: 10 }}
@@ -316,7 +333,7 @@ export function AnnouncementsWidget({ className, variant = 'desktop' }: Announce
         </div>
 
         {/* View All Button */}
-        {safeAnnouncements.length > (isMobile ? 3 : 5) && (
+        {unreadAnnouncements.length > (isMobile ? 3 : 5) && (
           <div className="text-center pt-2">
             <Button
               variant="outline"

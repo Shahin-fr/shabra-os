@@ -18,22 +18,19 @@ export async function PATCH(
   try {
     const { taskId } = await params;
     const body = await request.json();
-    const { status } = body;
+    const { 
+      title, 
+      description, 
+      assignedTo, 
+      projectId, 
+      dueDate, 
+      status 
+    } = body;
 
-    // Validate required fields
-    if (!status || typeof status !== 'string') {
-      const errorResponse = createValidationErrorResponse(
-        'وضعیت وظیفه الزامی است'
-      );
-      return NextResponse.json(errorResponse, {
-        status: getHttpStatusForErrorCode(errorResponse.error.code),
-      });
-    }
-
-    // Validate status values
-    const validStatuses = ['Todo', 'InProgress', 'Done'];
-    if (!validStatuses.includes(status)) {
-      const errorResponse = createValidationErrorResponse('وضعیت نامعتبر است');
+    // Get current user session
+    const session = await auth();
+    if (!session?.user?.id) {
+      const errorResponse = createValidationErrorResponse('Unauthorized');
       return NextResponse.json(errorResponse, {
         status: getHttpStatusForErrorCode(errorResponse.error.code),
       });
@@ -55,12 +52,77 @@ export async function PATCH(
       });
     }
 
-    // Update the task status
+    // Check if user has permission to edit this task
+    const userRoles = session.user.roles || [];
+    const isCreator = existingTask.createdBy === session.user.id;
+    const isManagerOrAdmin = userRoles.includes('MANAGER') || userRoles.includes('ADMIN');
+    const isAssignee = existingTask.assignedTo === session.user.id;
+
+    if (!isCreator && !isManagerOrAdmin && !isAssignee) {
+      const errorResponse = createValidationErrorResponse(
+        'شما مجاز به ویرایش این وظیفه نیستید'
+      );
+      return NextResponse.json(errorResponse, {
+        status: getHttpStatusForErrorCode(errorResponse.error.code),
+      });
+    }
+
+    // Prepare update data
+    const updateData: any = {};
+
+    if (title !== undefined) {
+      if (!title || typeof title !== 'string' || !title.trim()) {
+        const errorResponse = createValidationErrorResponse('عنوان وظیفه الزامی است');
+        return NextResponse.json(errorResponse, {
+          status: getHttpStatusForErrorCode(errorResponse.error.code),
+        });
+      }
+      updateData.title = title.trim();
+    }
+
+    if (description !== undefined) {
+      updateData.description = description || null;
+    }
+
+    if (assignedTo !== undefined) {
+      updateData.assignedTo = assignedTo || null;
+    }
+
+    if (projectId !== undefined) {
+      updateData.projectId = projectId || null;
+    }
+
+    if (dueDate !== undefined) {
+      updateData.dueDate = dueDate ? new Date(dueDate) : null;
+    }
+
+    if (status !== undefined) {
+      if (!status || typeof status !== 'string') {
+        const errorResponse = createValidationErrorResponse('وضعیت وظیفه الزامی است');
+        return NextResponse.json(errorResponse, {
+          status: getHttpStatusForErrorCode(errorResponse.error.code),
+        });
+      }
+
+      const validStatuses = ['Todo', 'InProgress', 'Done'];
+      if (!validStatuses.includes(status)) {
+        const errorResponse = createValidationErrorResponse('وضعیت نامعتبر است');
+        return NextResponse.json(errorResponse, {
+          status: getHttpStatusForErrorCode(errorResponse.error.code),
+        });
+      }
+      updateData.status = status as 'Todo' | 'InProgress' | 'Done';
+    }
+
+    // If no fields to update, return the existing task
+    if (Object.keys(updateData).length === 0) {
+      return NextResponse.json(existingTask);
+    }
+
+    // Update the task
     const updatedTask = await prisma.task.update({
       where: { id: taskId },
-      data: {
-        status: status as 'Todo' | 'InProgress' | 'Done',
-      },
+      data: updateData,
       include: {
         creator: {
           select: {

@@ -22,6 +22,16 @@ export function isAdminOrManager(session: Session | null): boolean {
 }
 
 /**
+ * Check if user has admin or manager role (works with user object directly)
+ */
+export function isAdminOrManagerUser(user: any): boolean {
+  if (!user?.roles) {
+    return false;
+  }
+  return user.roles.some((role: string) => ['ADMIN', 'MANAGER'].includes(role));
+}
+
+/**
  * Check if user is admin only
  */
 export function isAdmin(session: Session | null): boolean {
