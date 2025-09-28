@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { OptimizedMotion } from '@/components/ui/OptimizedMotion';
 import { CheckCircle, Clock, AlertCircle, Calendar, Plus } from 'lucide-react';
 

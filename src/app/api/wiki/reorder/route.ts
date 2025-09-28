@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
     if (!Array.isArray(items) || items.length === 0) {
       const errorResponse = createValidationErrorResponse('Items array is required and must not be empty');
       return NextResponse.json(errorResponse, {
-        status: getHttpStatusForErrorCode(errorResponse.error.code),
+        status: getHttpStatusForErrorCode(errorResponse.error?.code || 'VALIDATION_ERROR'),
       });
     }
 
@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
       if (!item.id || typeof item.order !== 'number' || item.order < 0) {
         const errorResponse = createValidationErrorResponse('Each item must have a valid id and non-negative order');
         return NextResponse.json(errorResponse, {
-          status: getHttpStatusForErrorCode(errorResponse.error.code),
+          status: getHttpStatusForErrorCode(errorResponse.error?.code || 'VALIDATION_ERROR'),
         });
       }
     }
@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
         `Some items not found: ${missingIds.join(', ')}`
       );
       return NextResponse.json(errorResponse, {
-        status: getHttpStatusForErrorCode(errorResponse.error.code),
+        status: getHttpStatusForErrorCode(errorResponse.error?.code || 'VALIDATION_ERROR'),
       });
     }
 
@@ -87,7 +87,7 @@ export async function POST(request: NextRequest) {
         `You can only reorder your own items. Unauthorized items: ${unauthorizedTitles.join(', ')}`
       );
       return NextResponse.json(errorResponse, {
-        status: getHttpStatusForErrorCode(errorResponse.error.code),
+        status: getHttpStatusForErrorCode(errorResponse.error?.code || 'VALIDATION_ERROR'),
       });
     }
 
@@ -117,15 +117,13 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    logger.error('Error reordering wiki items', {
-      error: error as Error,
+    logger.error('Error reordering wiki items', error as Error, {
       operation: 'POST /api/wiki/reorder',
-      source: 'api/wiki/reorder/route.ts',
-    });
+    }, 'api/wiki/reorder/route.ts');
     
     const errorResponse = createServerErrorResponse('Internal server error');
     return NextResponse.json(errorResponse, {
-      status: getHttpStatusForErrorCode(errorResponse.error.code),
+      status: getHttpStatusForErrorCode(errorResponse.error?.code || 'VALIDATION_ERROR'),
     });
   }
 }

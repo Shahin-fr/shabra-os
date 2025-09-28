@@ -266,11 +266,9 @@ export async function PUT(
     });
 
   } catch (error) {
-    logger.error('Error updating wiki item', {
-      error: error as Error,
+    logger.error('Error updating wiki item', error as Error, {
       operation: 'PUT /api/wiki/[documentId]',
-      source: 'api/wiki/[documentId]/route.ts',
-    });
+    }, 'api/wiki/[documentId]/route.ts');
     
     const errorResponse = createServerErrorResponse('Internal server error');
     return NextResponse.json(errorResponse, {
@@ -394,11 +392,9 @@ export async function DELETE(
     });
 
   } catch (error) {
-    logger.error('Error deleting wiki item', {
-      error: error as Error,
+    logger.error('Error deleting wiki item', error as Error, {
       operation: 'DELETE /api/wiki/[documentId]',
-      source: 'api/wiki/[documentId]/route.ts',
-    });
+    }, 'api/wiki/[documentId]/route.ts');
     
     const errorResponse = createServerErrorResponse('Internal server error');
     return NextResponse.json(errorResponse, {

@@ -128,8 +128,7 @@ export async function GET(request: NextRequest) {
     } catch (dbError) {
       console.error('[WIKI API] Database query failed:', dbError);
       
-      logger.error('Database query failed for wiki items', {
-        error: dbError as Error,
+      logger.error('Database query failed for wiki items', dbError as Error, {
         userId: userId || 'anonymous',
         operation: 'GET /api/wiki',
         source: 'api/wiki/route.ts',
@@ -152,11 +151,9 @@ export async function GET(request: NextRequest) {
         source: 'api/wiki/route.ts',
       });
     } catch (error) {
-      logger.error('Error loading markdown docs', {
-        error: error as Error,
+      logger.error('Error loading markdown docs', error as Error, {
         operation: 'GET /api/wiki',
-        source: 'api/wiki/route.ts',
-      });
+      }, 'api/wiki/route.ts');
       markdownDocs = [];
     }
 
@@ -238,11 +235,9 @@ export async function GET(request: NextRequest) {
       name: error instanceof Error ? error.name : 'Unknown',
     });
     
-    logger.error('Error fetching wiki items', {
-      error: error as Error,
+    logger.error('Error fetching wiki items', error as Error, {
       operation: 'GET /api/wiki',
-      source: 'api/wiki/route.ts',
-    });
+    }, 'api/wiki/route.ts');
     
     // Ensure we always return a proper JSON error response
     const errorResponse = createServerErrorResponse(
@@ -295,7 +290,7 @@ export async function POST(request: NextRequest) {
         'Title and type are required'
       );
       return NextResponse.json(errorResponse, {
-        status: getHttpStatusForErrorCode(errorResponse.error.code),
+        status: getHttpStatusForErrorCode(errorResponse.error?.code || 'VALIDATION_ERROR'),
       });
     }
 
@@ -305,7 +300,7 @@ export async function POST(request: NextRequest) {
         'Type must be either FOLDER or DOCUMENT'
       );
       return NextResponse.json(errorResponse, {
-        status: getHttpStatusForErrorCode(errorResponse.error.code),
+        status: getHttpStatusForErrorCode(errorResponse.error?.code || 'VALIDATION_ERROR'),
       });
     }
 
@@ -315,7 +310,7 @@ export async function POST(request: NextRequest) {
         'Title must be between 1 and 255 characters'
       );
       return NextResponse.json(errorResponse, {
-        status: getHttpStatusForErrorCode(errorResponse.error.code),
+        status: getHttpStatusForErrorCode(errorResponse.error?.code || 'VALIDATION_ERROR'),
       });
     }
 
@@ -341,7 +336,7 @@ export async function POST(request: NextRequest) {
             'Parent folder not found'
           );
           return NextResponse.json(errorResponse, {
-            status: getHttpStatusForErrorCode(errorResponse.error.code),
+            status: getHttpStatusForErrorCode(errorResponse.error?.code || 'VALIDATION_ERROR'),
           });
         }
 
@@ -350,7 +345,7 @@ export async function POST(request: NextRequest) {
             'Parent must be a folder'
           );
           return NextResponse.json(errorResponse, {
-            status: getHttpStatusForErrorCode(errorResponse.error.code),
+            status: getHttpStatusForErrorCode(errorResponse.error?.code || 'VALIDATION_ERROR'),
           });
         }
 
@@ -360,21 +355,19 @@ export async function POST(request: NextRequest) {
             'You do not have permission to create items in this folder'
           );
           return NextResponse.json(errorResponse, {
-            status: getHttpStatusForErrorCode(errorResponse.error.code),
+            status: getHttpStatusForErrorCode(errorResponse.error?.code || 'VALIDATION_ERROR'),
           });
         }
       } catch (dbError) {
-        logger.error('Error validating parent folder', {
-          error: dbError as Error,
+        logger.error('Error validating parent folder', dbError as Error, {
           parentId,
           userId: authResult.context.userId,
           operation: 'POST /api/wiki',
-          source: 'api/wiki/route.ts',
-        });
+        }, 'api/wiki/route.ts');
         
         const errorResponse = createServerErrorResponse('Failed to validate parent folder');
         return NextResponse.json(errorResponse, {
-          status: getHttpStatusForErrorCode(errorResponse.error.code),
+          status: getHttpStatusForErrorCode(errorResponse.error?.code || 'VALIDATION_ERROR'),
         });
       }
     }
@@ -406,15 +399,13 @@ export async function POST(request: NextRequest) {
       status: HTTP_STATUS_CODES.CREATED,
     });
   } catch (error) {
-    logger.error('Error creating wiki item', {
-      error: error as Error,
+    logger.error('Error creating wiki item', error as Error, {
       operation: 'POST /api/wiki',
-      source: 'api/wiki/route.ts',
-    });
+    }, 'api/wiki/route.ts');
     
     const errorResponse = createServerErrorResponse('Internal server error');
     return NextResponse.json(errorResponse, {
-      status: getHttpStatusForErrorCode(errorResponse.error.code),
+      status: getHttpStatusForErrorCode(errorResponse.error?.code || 'VALIDATION_ERROR'),
     });
   }
 }
