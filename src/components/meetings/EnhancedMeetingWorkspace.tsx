@@ -229,7 +229,11 @@ export function EnhancedMeetingWorkspace({ meeting }: EnhancedMeetingWorkspacePr
         icon: <ExternalLink className="h-4 w-4" />,
         action: {
           label: 'مشاهده تسک',
-          onClick: () => window.open(`/tasks/${data.data.task.id}`, '_blank'),
+          onClick: () => {
+            if (typeof window !== 'undefined') {
+              window.open(`/tasks/${data.data.task.id}`, '_blank');
+            }
+          },
         },
       });
     },

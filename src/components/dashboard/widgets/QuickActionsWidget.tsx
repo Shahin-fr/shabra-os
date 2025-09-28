@@ -248,7 +248,9 @@ export function QuickActionsWidget({ className, variant = 'desktop', priority = 
             className="w-full font-vazirmatn text-sm"
             onClick={() => {
               // Navigate to full quick actions page
-              window.location.href = '/quick-actions';
+              if (typeof window !== 'undefined') {
+                window.location.href = '/quick-actions';
+              }
             }}
           >
             مشاهده همه اقدامات

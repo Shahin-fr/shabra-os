@@ -371,7 +371,7 @@ export default function ContentCalendarPage() {
   };
 
   const handleDeleteContent = (id: string) => {
-    if (window.confirm('آیا از حذف این محتوا اطمینان دارید؟')) {
+    if (typeof window !== 'undefined' && window.confirm('آیا از حذف این محتوا اطمینان دارید؟')) {
       deleteMutation.mutate(id);
     }
   };
@@ -902,7 +902,7 @@ function ContentForm({
   const handleDelete = () => {
     if (!editingContent || !onDelete) return;
     
-    const confirmed = window.confirm('آیا از حذف این محتوا مطمئن هستید؟');
+    const confirmed = typeof window !== 'undefined' && window.confirm('آیا از حذف این محتوا مطمئن هستید؟');
     if (confirmed) {
       onDelete(editingContent.id);
     }

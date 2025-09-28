@@ -120,7 +120,9 @@ export function MeetingWorkspace({ meeting }: MeetingWorkspaceProps) {
       toast.success('نکته گفتگو اضافه شد');
       setNewTalkingPoint('');
       // Refetch meeting data
-      window.location.reload();
+      if (typeof window !== 'undefined') {
+        window.location.reload();
+      }
     } catch (error) {
       console.error('Error adding talking point:', error);
       toast.error('خطا در اضافه کردن نکته گفتگو');
@@ -150,7 +152,9 @@ export function MeetingWorkspace({ meeting }: MeetingWorkspaceProps) {
       setNewActionItem('');
       setSelectedAssignee('');
       // Refetch meeting data
-      window.location.reload();
+      if (typeof window !== 'undefined') {
+        window.location.reload();
+      }
     } catch (error) {
       console.error('Error adding action item:', error);
       toast.error('خطا در اضافه کردن مورد اقدام');
@@ -174,7 +178,9 @@ export function MeetingWorkspace({ meeting }: MeetingWorkspaceProps) {
       }
 
       // Refetch meeting data
-      window.location.reload();
+      if (typeof window !== 'undefined') {
+        window.location.reload();
+      }
     } catch (error) {
       console.error('Error updating talking point:', error);
       toast.error('خطا در به‌روزرسانی نکته گفتگو');
@@ -198,7 +204,9 @@ export function MeetingWorkspace({ meeting }: MeetingWorkspaceProps) {
       }
 
       // Refetch meeting data
-      window.location.reload();
+      if (typeof window !== 'undefined') {
+        window.location.reload();
+      }
     } catch (error) {
       console.error('Error updating action item:', error);
       toast.error('خطا در به‌روزرسانی مورد اقدام');
@@ -217,7 +225,9 @@ export function MeetingWorkspace({ meeting }: MeetingWorkspaceProps) {
 
       toast.success('تسک با موفقیت ایجاد شد');
       // Refetch meeting data
-      window.location.reload();
+      if (typeof window !== 'undefined') {
+        window.location.reload();
+      }
     } catch (error) {
       console.error('Error creating task:', error);
       toast.error('خطا در ایجاد تسک');

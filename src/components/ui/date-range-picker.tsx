@@ -79,8 +79,8 @@ export function DateRangePicker({
               Chevron: ({ className, orientation, ...props }) => {
                 if (orientation === 'left') {
                   return (
-                    <ChevronRight className="rtl:rotate-180"Icon
-                      className={cn('size-4', className)}
+                    <ChevronRightIcon
+                      className={cn('size-4 rtl:rotate-180', className)}
                       {...props}
                     />
                   );
@@ -88,16 +88,16 @@ export function DateRangePicker({
 
                 if (orientation === 'right') {
                   return (
-                    <ChevronLeft className="rtl:rotate-180"Icon
-                      className={cn('size-4', className)}
+                    <ChevronLeftIcon
+                      className={cn('size-4 rtl:rotate-180', className)}
                       {...props}
                     />
                   );
                 }
 
                 return (
-                  <ChevronRight className="rtl:rotate-180"Icon
-                    className={cn('size-4', className)}
+                  <ChevronRightIcon
+                    className={cn('size-4 rtl:rotate-180', className)}
                     {...props}
                   />
                 );

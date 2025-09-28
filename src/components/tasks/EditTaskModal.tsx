@@ -228,7 +228,7 @@ export function EditTaskModal({
   const handleDelete = () => {
     if (!task) return;
 
-    if (window.confirm('آیا مطمئن هستید که می‌خواهید این تسک را حذف کنید؟')) {
+    if (typeof window !== 'undefined' && window.confirm('آیا مطمئن هستید که می‌خواهید این تسک را حذف کنید؟')) {
       deleteTaskMutation.mutate(task.id);
     }
   };

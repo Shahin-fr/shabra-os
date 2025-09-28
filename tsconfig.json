@@ -67,8 +67,9 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/**/*"
-, "prisma.config.ts.backup"  ],
+    "src/**/*",
+    "prisma.config.ts.backup"
+  ],
 
   "exclude": [
     "node_modules",

@@ -230,19 +230,21 @@ export function ProfileDocuments({ userId }: ProfileDocumentsProps) {
   };
 
   const handleDelete = (documentId: string, documentName: string) => {
-    if (confirm(`آیا مطمئن هستید که می‌خواهید سند "${documentName}" را حذف کنید؟`)) {
+    if (typeof window !== 'undefined' && window.confirm(`آیا مطمئن هستید که می‌خواهید سند "${documentName}" را حذف کنید؟`)) {
       deleteMutation.mutate(documentId);
     }
   };
 
   const handleDownload = (url: string, name: string) => {
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = name;
-    link.target = '_blank';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    if (typeof document !== 'undefined') {
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = name;
+      link.target = '_blank';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
   };
 
   if (isLoading) {

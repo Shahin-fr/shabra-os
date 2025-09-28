@@ -66,7 +66,11 @@ function LoginForm() {
       if (result?.error) {
         setError('Invalid email or password.');
       } else if (result?.ok) {
-        window.location.href = callbackUrl;
+        if (typeof window !== 'undefined') {
+          window.location.href = callbackUrl;
+        } else {
+          router.push(callbackUrl);
+        }
       } else {
         setError('An unexpected error occurred during login.');
       }

@@ -138,21 +138,21 @@ function Calendar({
         Chevron: ({ className, orientation, ...props }) => {
           if (orientation === 'left') {
             return (
-              <ChevronLeft className="rtl:rotate-180"Icon className={cn('size-4', className)} {...props} />
+              <ChevronLeftIcon className={cn('size-4 rtl:rotate-180', className)} {...props} />
             );
           }
 
           if (orientation === 'right') {
             return (
-              <ChevronRight className="rtl:rotate-180"Icon
-                className={cn('size-4', className)}
+              <ChevronRightIcon
+                className={cn('size-4 rtl:rotate-180', className)}
                 {...props}
               />
             );
           }
 
           return (
-            <ChevronDown className="rtl:rotate-180"Icon className={cn('size-4', className)} {...props} />
+            <ChevronDownIcon className={cn('size-4 rtl:rotate-180', className)} {...props} />
           );
         },
         DayButton: CalendarDayButton,

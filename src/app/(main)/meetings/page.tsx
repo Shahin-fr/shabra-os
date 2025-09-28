@@ -86,7 +86,7 @@ export default function MeetingsPage() {
   const { user } = useAuth();
 
   // View change handler
-  const handleViewChange = (newView) => {
+  const handleViewChange = (newView: string) => {
     setView(newView);
   };
 
@@ -240,7 +240,11 @@ export default function MeetingsPage() {
                 <h3 className="text-lg font-semibold text-red-900 mb-2">خطا در بارگذاری جلسات</h3>
                 <p className="text-red-700 mb-6">متأسفانه در بارگذاری جلسات مشکلی پیش آمده است.</p>
                 <Button 
-                  onClick={() => window.location.reload()}
+                  onClick={() => {
+                    if (typeof window !== 'undefined') {
+                      window.location.reload();
+                    }
+                  }}
                   className="bg-red-600 hover:bg-red-700"
                 >
                   تلاش مجدد
@@ -320,7 +324,9 @@ export default function MeetingsPage() {
                     onSuccess={() => {
                       setIsCreateDialogOpen(false);
                       // Refetch meetings
-                      window.location.reload();
+                      if (typeof window !== 'undefined') {
+                        window.location.reload();
+                      }
                     }}
                     initialDate={selectedDate}
                   />

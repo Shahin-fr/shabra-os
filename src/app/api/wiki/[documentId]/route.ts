@@ -85,11 +85,9 @@ export async function GET(
     });
 
   } catch (error) {
-    logger.error('Error retrieving wiki item', {
-      error: (error as Error).message,
+    logger.error('Error retrieving wiki item', error as Error, {
       operation: 'GET /api/wiki/[documentId]',
-      source: 'api/wiki/[documentId]/route.ts',
-    });
+    }, 'api/wiki/[documentId]/route.ts');
     
     const errorResponse = createServerErrorResponse('Internal server error');
     return NextResponse.json(errorResponse, {
@@ -216,14 +214,12 @@ export async function PUT(
           });
         }
       } catch (dbError) {
-        logger.error('Error validating parent folder', {
-          error: dbError as Error,
+        logger.error('Error validating parent folder', dbError as Error, {
           parentId,
           documentId,
           userId: authResult.context.userId,
           operation: 'PUT /api/wiki/[documentId]',
-          source: 'api/wiki/[documentId]/route.ts',
-        });
+        }, 'api/wiki/[documentId]/route.ts');
         
         const errorResponse = createServerErrorResponse('Failed to validate parent folder');
         return NextResponse.json(errorResponse, {
