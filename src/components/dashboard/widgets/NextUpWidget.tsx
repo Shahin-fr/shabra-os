@@ -35,7 +35,7 @@ export function NextUpWidget({ className, variant = 'desktop' }: NextUpWidgetPro
       const data = await response.json();
       return data.data;
     },
-    refetchInterval: 300000, // Refetch every 5 minutes
+    // refetchInterval: 300000, // Refetch every 5 minutes - disabled for better performance
     retry: 3,
     retryDelay: 1000,
   });
@@ -110,7 +110,7 @@ export function NextUpWidget({ className, variant = 'desktop' }: NextUpWidgetPro
       loading={isLoading}
       error={error?.message}
       empty={!isLoading && !nextEvent}
-      emptyMessage="رویداد بعدی وجود ندارد"
+      emptyMessage="جلسه جدیدی تنظیم نشده"
       emptyIcon={<Calendar className="h-8 w-8 text-purple-400" />}
     >
       {nextEvent && (

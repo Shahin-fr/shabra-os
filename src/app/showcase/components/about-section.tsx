@@ -110,7 +110,7 @@ export default function AboutSection() {
             className="text-xl text-gray-400 mb-8"
             variants={itemVariants}
           >
-            Product Builder & Software Developer
+            Aspiring Product Builder
           </motion.p>
 
           {/* Profile Picture with Animated Ring */}
@@ -174,7 +174,7 @@ export default function AboutSection() {
             className="mt-8 max-w-xl text-center text-gray-300 leading-relaxed text-lg"
             variants={itemVariants}
           >
-            من به ساختن محصولاتی علاقه‌مندم که مسائل واقعی را حل می‌کنند. این پروژه، سفر من در تبدیل یک چالش روزمره به یک راه‌حل نرم‌افزاری بود.
+            من شاهینم و ایده سیستم عامل شبرا پاسخی بود به چالش‌هایی که هر روز در مدیریت یه کسب و کار کوچک (فروشگاه شبرا) باهاشون روبرو بودم. این پروژه داستان اون کنجکاوی و سفر شخصی من برای تبدیل یک مسئله واقعی به یه محصول نرم‌افزاری بود.
           </motion.p>
 
           {/* Final CTA Button */}
@@ -193,7 +193,7 @@ export default function AboutSection() {
                 rel="noopener noreferrer"
                 className="flex items-center gap-2"
               >
-                وب‌سایت شخصی من
+                وب‌سایت شخصی
                 <motion.span
                   animate={{ x: [0, 4, 0] }}
                   transition={{ duration: 1.5, repeat: Infinity }}

@@ -82,7 +82,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({
         success: true,
         data: null,
-        message: 'رویداد بعدی برای امروز وجود ندارد',
+        message: 'جلسه جدیدی تنظیم نشده',
       });
     }
 
@@ -93,7 +93,7 @@ export async function GET(request: NextRequest) {
     if (!event) {
       return NextResponse.json({
         success: false,
-        message: 'رویداد بعدی برای امروز وجود ندارد',
+        message: 'جلسه جدیدی تنظیم نشده',
       });
     }
     

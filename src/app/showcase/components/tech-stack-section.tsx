@@ -187,7 +187,7 @@ export default function TechStackSection() {
             تکنولوژی‌های استفاده شده
           </h2>
           <p className="text-lg sm:text-xl text-[#A1A1A1] max-w-3xl mx-auto leading-relaxed">
-            مجموعه‌ای از بهترین و مدرن‌ترین تکنولوژی‌ها برای ایجاد تجربه‌ای بی‌نظیر
+            مجموعه‌ای از ابزارهای مدرن و قابل اعتماد که سرعت توسعه و پایداری پروژه رو تضمین می‌کنن.
           </p>
         </motion.div>
 

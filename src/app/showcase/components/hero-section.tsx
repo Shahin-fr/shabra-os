@@ -222,23 +222,23 @@ export default function HeroSection() {
           className={`${isMobile ? 'text-3xl sm:text-4xl' : 'text-4xl sm:text-5xl lg:text-6xl'} font-bold text-[#F5F5F5] ${isMobile ? 'mb-4' : 'mb-6'} leading-tight`}
           variants={itemVariants}
         >
-          سیستم عامل داخلی برای مدیریت یکپارچه کسب‌وکار
+          Shabra OS
         </motion.h1>
 
-        {/* Subtitle */}
-        <motion.p 
-          className={`${isMobile ? 'text-base sm:text-lg' : 'text-lg sm:text-xl lg:text-2xl'} text-[#A1A1A1] ${isMobile ? 'mb-6' : 'mb-8'} max-w-4xl mx-auto leading-relaxed`}
+        {/* Secondary headline */}
+        <motion.h2 
+          className={`${isMobile ? 'text-lg sm:text-xl' : 'text-xl sm:text-2xl lg:text-3xl'} font-semibold text-[#E000A0] ${isMobile ? 'mb-4' : 'mb-6'} max-w-4xl mx-auto leading-relaxed`}
           variants={itemVariants}
         >
-          ابزاری قدرتمند و متمرکز که از دل چالش‌های واقعی برای افزایش بهره‌وری متولد شد.
-        </motion.p>
+          چند مشکل، چند ایده، و کلی کنجکاوی.
+        </motion.h2>
 
         {/* Description */}
         <motion.p 
           className={`${isMobile ? 'text-sm sm:text-base' : 'text-base sm:text-lg'} text-[#666666] ${isMobile ? 'mb-8' : 'mb-12'} max-w-3xl mx-auto leading-relaxed`}
           variants={itemVariants}
         >
-          {t('hero_subtitle')}
+          همه چیز از سردرگمی بین ابزارهای مختلف شروع شد. شبرا OS تلاش شخصی منه برای طراحی یک راه حل یکپارچه با کمک هوش مصنوعی و این شوکیس، داستان همین فرآینده.
         </motion.p>
 
         {/* Unified Showcase Container */}
@@ -250,7 +250,7 @@ export default function HeroSection() {
           <div className={`relative bg-gradient-to-br from-[#1A1A1A] to-[#0F0F0F] rounded-3xl border border-[#2A2A2A] ${isMobile ? 'p-4' : 'p-8'} shadow-2xl overflow-hidden`}>
             
             {/* Abstract Graphic Background - Always Present */}
-            <div className={`relative w-full ${isMobile ? 'h-48' : 'h-80'} bg-[#0A0A0A] rounded-2xl overflow-hidden`}>
+            <div className={`relative w-full ${isMobile ? 'h-64' : 'h-96'} bg-[#0A0A0A] rounded-2xl overflow-hidden`}>
                 {/* Animated grid background */}
                 <div className="absolute inset-0 opacity-20">
                   <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
@@ -371,8 +371,8 @@ export default function HeroSection() {
                     <Image
                       src={`/images/dashboard-${activeView}-desktop.svg`}
                       alt={`${activeView === 'admin' ? 'مدیر' : 'کارمند'} (دسکتاپ)`}
-                      width={400}
-                      height={300}
+                      width={420}
+                      height={320}
                       className="max-w-full max-h-full object-contain"
                     />
                   </div>
@@ -380,8 +380,8 @@ export default function HeroSection() {
                     <Image
                       src={`/images/dashboard-${activeView}-mobile.svg`}
                       alt={`${activeView === 'admin' ? 'مدیر' : 'کارمند'} (موبایل)`}
-                      width={150}
-                      height={300}
+                      width={160}
+                      height={320}
                       className="max-w-full max-h-full object-contain"
                     />
                   </div>
@@ -417,7 +417,7 @@ export default function HeroSection() {
                   className={`
                     px-4 py-2 text-xs font-medium rounded-lg transition-all duration-300
                     ${activeView === 'employee'
-                      ? 'bg-[#10B981] text-white shadow-lg shadow-[#10B981]/25'
+                      ? 'bg-white text-black shadow-lg shadow-white/25'
                       : 'bg-black/50 text-zinc-300 border border-zinc-600 hover:border-zinc-400 hover:text-zinc-100'
                     }
                   `}

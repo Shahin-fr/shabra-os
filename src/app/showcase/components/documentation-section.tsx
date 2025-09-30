@@ -514,10 +514,10 @@ interface TypingEvent {
           variants={itemVariants}
         >
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#F5F5F5] mb-6">
-            فراتر از کد: فرآیند طراحی و معماری محصول
+           اولین آزمایش عملی: ساخت ماژول اینستاپالس در ۱۶ ساعت
           </h2>
           <p className="text-lg sm:text-xl text-[#A1A1A1] max-w-4xl mx-auto leading-relaxed">
-            یک نگاه عمیق به مستندات طراحی ماژول InstaPulse، از تعریف مسئله تا طراحی API.
+            این ماژول، اولین پاسخ عملی به کنجکاوی اصلی پروژه بود. یک اسپرینت ۱۶ ساعته برای تبدیل یک ایده مشخص به یک ابزار کاربردی با مستندات کامل.
           </p>
         </motion.div>
 

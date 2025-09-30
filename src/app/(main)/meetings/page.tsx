@@ -4,7 +4,7 @@ import { useState, useMemo } from 'react';
 import { Calendar } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { jalaliLocalizer } from '@/lib/jalali-localizer';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Plus, Users, Clock, Calendar as CalendarIcon, Grid3X3, List, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -84,6 +84,7 @@ export default function MeetingsPage() {
     events: CalendarEvent[];
   }>({ isOpen: false, date: null, events: [] });
   const { user } = useAuth();
+  const queryClient = useQueryClient();
 
   // View change handler
   const handleViewChange = (newView: string) => {
@@ -101,7 +102,7 @@ export default function MeetingsPage() {
       const result = await response.json();
       return result.data || [];
     },
-    refetchInterval: 30000, // Refetch every 30 seconds
+    // refetchInterval: 30000, // Refetch every 30 seconds - disabled for better performance
   });
 
   // Convert meetings to calendar events
@@ -323,10 +324,9 @@ export default function MeetingsPage() {
                   <CreateMeetingForm
                     onSuccess={() => {
                       setIsCreateDialogOpen(false);
-                      // Refetch meetings
-                      if (typeof window !== 'undefined') {
-                        window.location.reload();
-                      }
+                      // Invalidate and refetch meetings
+                      queryClient.invalidateQueries({ queryKey: ['meetings'] });
+                      queryClient.invalidateQueries({ queryKey: ['calendar', 'next-event'] });
                     }}
                     initialDate={selectedDate}
                   />

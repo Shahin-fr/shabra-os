@@ -739,6 +739,96 @@ async function main() {
 
   console.log('✅ Created specific data for primary employee');
 
+  // Create sample meetings for testing the NextUpWidget
+  const now = new Date();
+  const todayForMeetings = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  
+  // Meeting 1: Today at 2:00 PM
+  const meeting1Start = new Date(todayForMeetings);
+  meeting1Start.setHours(14, 0, 0, 0);
+  const meeting1End = new Date(todayForMeetings);
+  meeting1End.setHours(15, 0, 0, 0);
+
+  const meeting1 = await prisma.meeting.create({
+    data: {
+      title: 'جلسه تیم توسعه',
+      creatorId: primaryEmployee.id,
+      startTime: meeting1Start,
+      endTime: meeting1End,
+      type: 'TEAM_MEETING',
+      status: 'SCHEDULED',
+      notes: 'بررسی پیشرفت پروژه و برنامه‌ریزی هفته آینده',
+    },
+  });
+
+  // Add attendees to meeting 1
+  await prisma.meetingAttendee.createMany({
+    data: [
+      { meetingId: meeting1.id, userId: primaryEmployee.id },
+      { meetingId: meeting1.id, userId: employees[0].id },
+      { meetingId: meeting1.id, userId: employees[1].id },
+    ],
+  });
+
+  // Meeting 2: Tomorrow at 10:00 AM
+  const tomorrow = new Date(todayForMeetings);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const meeting2Start = new Date(tomorrow);
+  meeting2Start.setHours(10, 0, 0, 0);
+  const meeting2End = new Date(tomorrow);
+  meeting2End.setHours(11, 0, 0, 0);
+
+  const meeting2 = await prisma.meeting.create({
+    data: {
+      title: 'جلسه یک به یک با مدیر',
+      creatorId: primaryEmployee.id,
+      startTime: meeting2Start,
+      endTime: meeting2End,
+      type: 'ONE_ON_ONE',
+      status: 'SCHEDULED',
+      notes: 'بررسی عملکرد و اهداف فردی',
+    },
+  });
+
+  // Add attendees to meeting 2
+  await prisma.meetingAttendee.createMany({
+    data: [
+      { meetingId: meeting2.id, userId: primaryEmployee.id },
+      { meetingId: meeting2.id, userId: manager1.id },
+    ],
+  });
+
+  // Meeting 3: Next week
+  const nextWeek = new Date(todayForMeetings);
+  nextWeek.setDate(nextWeek.getDate() + 7);
+  const meeting3Start = new Date(nextWeek);
+  meeting3Start.setHours(9, 0, 0, 0);
+  const meeting3End = new Date(nextWeek);
+  meeting3End.setHours(10, 30, 0, 0);
+
+  const meeting3 = await prisma.meeting.create({
+    data: {
+      title: 'جلسه بررسی پروژه',
+      creatorId: primaryEmployee.id,
+      startTime: meeting3Start,
+      endTime: meeting3End,
+      type: 'TEAM_MEETING',
+      status: 'SCHEDULED',
+      notes: 'بررسی وضعیت پروژه و تعیین اهداف جدید',
+    },
+  });
+
+  // Add attendees to meeting 3
+  await prisma.meetingAttendee.createMany({
+    data: [
+      { meetingId: meeting3.id, userId: primaryEmployee.id },
+      { meetingId: meeting3.id, userId: employees[2].id },
+      { meetingId: meeting3.id, userId: employees[3].id },
+    ],
+  });
+
+  console.log('✅ Created sample meetings for testing');
+
   console.log('🎉 Database seeding completed successfully!');
   console.log('✅ Database has been successfully seeded with realistic demo data.');
   console.log('');
@@ -752,6 +842,7 @@ async function main() {
   console.log(`  📢 Announcements: ${announcementTitles.length}`);
   console.log(`  📅 Content Slots: 10 calendar events`);
   console.log(`  📋 Checklist Templates: 2 (onboarding/offboarding)`);
+  console.log(`  🤝 Meetings: 3 sample meetings (today, tomorrow, next week)`);
   console.log('');
   console.log('🚀 Your dashboards are now ready with realistic demo data!');
 }

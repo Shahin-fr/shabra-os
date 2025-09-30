@@ -8,9 +8,9 @@ import { cn } from '@/lib/utils';
 
 interface Request {
   id: string;
-  type: string;
+  type: 'LEAVE' | 'OVERTIME' | 'EXPENSE_CLAIM' | 'GENERAL';
   reason: string;
-  status: 'PENDING' | 'APPROVED' | 'REJECTED';
+  status: 'PENDING' | 'APPROVED' | 'REJECTED' | 'CANCELLED';
   createdAt: string;
   updatedAt: string;
 }
@@ -45,6 +45,8 @@ export function MyRequestsWidget({ className, variant = 'desktop' }: MyRequestsW
         return 'text-green-600 bg-green-100';
       case 'REJECTED':
         return 'text-red-600 bg-red-100';
+      case 'CANCELLED':
+        return 'text-gray-600 bg-gray-100';
       default:
         return 'text-gray-600 bg-gray-100';
     }
@@ -58,6 +60,8 @@ export function MyRequestsWidget({ className, variant = 'desktop' }: MyRequestsW
         return <CheckCircle className="h-4 w-4" />;
       case 'REJECTED':
         return <XCircle className="h-4 w-4" />;
+      case 'CANCELLED':
+        return <AlertCircle className="h-4 w-4" />;
       default:
         return <AlertCircle className="h-4 w-4" />;
     }
@@ -71,6 +75,8 @@ export function MyRequestsWidget({ className, variant = 'desktop' }: MyRequestsW
         return 'تأیید شده';
       case 'REJECTED':
         return 'رد شده';
+      case 'CANCELLED':
+        return 'لغو شده';
       default:
         return 'نامشخص';
     }
@@ -78,14 +84,14 @@ export function MyRequestsWidget({ className, variant = 'desktop' }: MyRequestsW
 
   const getTypeText = (type: string) => {
     switch (type) {
-      case 'LEAVE_REQUEST':
+      case 'LEAVE':
         return 'درخواست مرخصی';
-      case 'EXPENSE_REQUEST':
+      case 'OVERTIME':
+        return 'درخواست اضافه کار';
+      case 'EXPENSE_CLAIM':
         return 'درخواست هزینه';
-      case 'EQUIPMENT_REQUEST':
-        return 'درخواست تجهیزات';
-      case 'TRAINING_REQUEST':
-        return 'درخواست آموزش';
+      case 'GENERAL':
+        return 'درخواست عمومی';
       default:
         return 'درخواست عمومی';
     }

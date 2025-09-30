@@ -1,9 +1,10 @@
 'use client';
 
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { useIsMobile } from '../../../hooks/useMediaQuery';
+import { ChevronDown } from 'lucide-react';
 
 /**
  * StatusAndV1RoadmapSection Component - Project Status & V1.0 Roadmap
@@ -18,6 +19,23 @@ export default function StatusAndV1RoadmapSection() {
     threshold: 0.1
   });
 
+  // State for managing expanded columns
+  const [expandedColumns, setExpandedColumns] = useState<{
+    [key: string]: boolean;
+  }>({
+    'todo': false,
+    'in-progress': false,
+    'done': false
+  });
+
+  // Function to toggle column expansion
+  const toggleColumn = (columnStatus: string) => {
+    setExpandedColumns(prev => ({
+      ...prev,
+      [columnStatus]: !prev[columnStatus]
+    }));
+  };
+
   // Task data for each column
   const columns = [
     {
@@ -26,12 +44,14 @@ export default function StatusAndV1RoadmapSection() {
       color: 'from-red-500/20 to-red-600/20',
       borderColor: 'border-red-500/30',
       tasks: [
-        'رفع آسیب‌پذیری امنیتی XSS در ماژول ویکی',
-        'پیاده‌سازی Rate Limiting برای API Endpoints',
-        'یکپارچه‌سازی کامل Design System و حذف استایل‌های متناقض',
-        'بهینه‌سازی کوئری‌های دیتابیس برای رفع مشکل N+1',
-        'اضافه شدن بخش جامع تنظیمات مدیر و کارمند',
-        'بازسازی ماژول ویکی با سیستم انتشار محتوای جدید'
+        'بهینه‌سازی جامع عملکرد (کوئری‌های دیتابیس، حجم Bundle، Caching)',
+        'پیاده‌سازی تجربه Real-time در ماژول‌های کلیدی',
+        'پیاده‌سازی قابلیت استفاده آفلاین (PWA)',
+        'بازسازی پایگاه دانش (ShabraLog v2) با قابلیت‌های همکاری پیشرفته',
+        'ساخت تقویم همه‌جانبه برای نمایش تمام رویدادها',
+        'توسعه پنل تنظیمات پیشرفته برای مدیران و کارمندان',
+        'ساخت ماژول یادگیری برای تیم',
+        'نوشتن مستندات کامل و انجام تست‌های End-to-End (آماده‌سازی برای v2.0)'
       ]
     },
     {
@@ -40,21 +60,26 @@ export default function StatusAndV1RoadmapSection() {
       color: 'from-yellow-500/20 to-orange-500/20',
       borderColor: 'border-yellow-500/30',
       tasks: [
-        'بازطراحی کامل UI/UX وب‌اپلیکیشن موبایل',
-        'پیاده‌سازی کنترل خطای پیشرفته برای موبایل',
-        'افزایش سرعت کلی اپلیکیشن و بهینه‌سازی Bundle Size',
-        'تحقیق و توسعه برای پیاده‌سازی وب‌اپ آفلاین'
+        'استحکام‌بخشی امنیتی جامع (رفع XSS، Rate Limiting، اعتبارسنجی Zod)',
+        'ایجاد Design System و یکپارچه‌سازی کامل UI/UX',
+        'بازطراحی و بهینه‌سازی کامل تجربه کاربری برای موبایل',
+        'شروع توسعه ماژول مدیریت جلسات',
+        'حسابرسی وابستگی‌ها (npm audit) و به‌روزرسانی پکیج‌های کلیدی'
       ]
     },
     {
-      title: 'انجام شده - نمونه',
+      title: 'انجام شده',
       status: 'done',
       color: 'from-green-500/20 to-emerald-500/20',
       borderColor: 'border-green-500/30',
       tasks: [
-        'معماری اولیه و انتخاب Tech Stack',
-        'ساخت ماژول‌های اصلی (پروژه، استوری‌بورد، ...)',
-        'پیاده‌سازی سیستم احراز هویت (Authentication)'
+        'پیاده‌سازی ساختار اولیه و قابلیت‌های پایه ماژول مدیریت وظایف',
+        'پیاده‌سازی ساختار اولیه و قابلیت‌های پایه ماژول استوری‌بورد',
+        'پیاده‌سازی ماژول InstaPulse به عنوان Proof-of-Concept',
+        'پیاده‌سازی ماژول پایگاه دانش (Wiki)',
+        'پیاده‌سازی ساختار اولیه و قابلیت‌های پایه ماژول منابع انسانی',
+        'طراحی و پیاده‌سازی معماری پروژه (مبتنی بر Next.js App Router)',
+        'ایجاد زیرساخت دیتابیس و مدیریت اسکیمای آن با Prisma'
       ]
     }
   ];
@@ -126,10 +151,10 @@ export default function StatusAndV1RoadmapSection() {
           variants={itemVariants}
         >
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#F5F5F5] mb-6">
-            وضعیت پروژه و نقشه راه V1.0
+            وضعیت فعلی و قدم‌های بعدی
           </h2>
           <p className="text-lg sm:text-xl text-[#A1A1A1] max-w-4xl mx-auto leading-relaxed">
-            تمرکز بر پایداری، امنیت و تجربه کاربری برای ساخت یک فونداسیون مستحکم.
+            این پروژه یک کار در حال پیشرفته. بورد زیر، نمای کلی از وضعیت فعلی و نقشه راه رسیدن به نسخه پایدار (v1.0) رو نشون می‌ده.
           </p>
         </motion.div>
 
@@ -157,7 +182,8 @@ export default function StatusAndV1RoadmapSection() {
 
               {/* Task Cards */}
               <div className="space-y-3 flex-1">
-                {column.tasks.map((task, taskIndex) => (
+                {/* Always show first 5 tasks */}
+                {column.tasks.slice(0, 5).map((task, taskIndex) => (
                   <motion.div
                     key={`${column.status}-${taskIndex}`}
                     className="bg-gradient-to-br from-[#1A1A1A] to-[#0F0F0F] rounded-xl border border-[#2A2A2A] p-4 shadow-lg hover:shadow-xl transition-all duration-300 hover:border-[#E000A0]/30"
@@ -184,6 +210,83 @@ export default function StatusAndV1RoadmapSection() {
                     </div>
                   </motion.div>
                 ))}
+
+                {/* Animated container for additional tasks */}
+                <AnimatePresence mode="wait">
+                  {expandedColumns[column.status] && column.tasks.length > 5 && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ 
+                        duration: 0.3,
+                        ease: "easeInOut"
+                      }}
+                      className="overflow-hidden"
+                    >
+                      <div className="space-y-3">
+                        {column.tasks.slice(5).map((task, taskIndex) => (
+                          <motion.div
+                            key={`${column.status}-extra-${taskIndex}`}
+                            initial={{ opacity: 0, y: -5 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -5 }}
+                            transition={{ 
+                              delay: taskIndex * 0.05,
+                              duration: 0.2,
+                              ease: "easeOut"
+                            }}
+                            className="bg-gradient-to-br from-[#1A1A1A] to-[#0F0F0F] rounded-xl border border-[#2A2A2A] p-4 shadow-lg hover:shadow-xl transition-all duration-300 hover:border-[#E000A0]/30"
+                            whileHover={{ 
+                              scale: 1.02,
+                              y: -2,
+                              transition: { duration: 0.2 }
+                            }}
+                          >
+                            <div className="flex items-start space-x-3 rtl:space-x-reverse">
+                              {/* Task Status Indicator */}
+                              <div className={`w-3 h-3 rounded-full flex-shrink-0 mt-1 ${
+                                column.status === 'todo' ? 'bg-red-500' :
+                                column.status === 'in-progress' ? 'bg-yellow-500' :
+                                'bg-green-500'
+                              }`} />
+                              
+                              {/* Task Text */}
+                              <p className="text-sm text-[#A1A1A1] leading-relaxed">
+                                {task}
+                              </p>
+                            </div>
+                          </motion.div>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {/* Show More/Less Button */}
+                {column.tasks.length > 5 && (
+                  <motion.button
+                    onClick={() => toggleColumn(column.status)}
+                    className="w-full mt-4 px-4 py-3 bg-transparent border border-[#2A2A2A] rounded-lg text-gray-400 hover:bg-white/10 hover:border-[#E000A0]/30 transition-all duration-300 flex items-center justify-center space-x-2 rtl:space-x-reverse group"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    variants={cardVariants}
+                    transition={{ delay: (columnIndex * 0.2) + 0.5 }}
+                  >
+                    <span className="text-sm font-medium">
+                      {expandedColumns[column.status] ? 'نمایش کمتر' : 'نمایش بیشتر'}
+                    </span>
+                    <motion.div
+                      animate={{ rotate: expandedColumns[column.status] ? 180 : 0 }}
+                      transition={{ 
+                        duration: 0.3,
+                        ease: "easeInOut"
+                      }}
+                    >
+                      <ChevronDown size={16} className="text-gray-400 group-hover:text-[#E000A0] transition-colors duration-300" />
+                    </motion.div>
+                  </motion.button>
+                )}
               </div>
             </motion.div>
           ))}
@@ -200,21 +303,20 @@ export default function StatusAndV1RoadmapSection() {
             </h3>
             <div className="flex items-center justify-center space-x-4 rtl:space-x-reverse mb-6">
               <div className="text-center">
-                <div className="text-2xl font-bold text-red-500">6</div>
+                <div className="text-2xl font-bold text-red-500">8</div>
                 <div className="text-sm text-[#A1A1A1]">باید انجام شود</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-yellow-500">4</div>
+                <div className="text-2xl font-bold text-yellow-500">5</div>
                 <div className="text-sm text-[#A1A1A1]">در حال انجام</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-green-500">3</div>
+                <div className="text-2xl font-bold text-green-500">7</div>
                 <div className="text-sm text-[#A1A1A1]">انجام شده</div>
               </div>
             </div>
             <p className="text-[#A1A1A1] leading-relaxed">
-              هدف ما رسیدن به نسخه 1.0 پایدار و قابل اعتماد تا پایان فصل آینده است. 
-              تمرکز اصلی بر امنیت، عملکرد و تجربه کاربری بهینه خواهد بود.
+              این پروژه همچنان در حال توسعه است. هدف اصلی، رسیدن به یک نسخه پایدار و قابل استفاده است.
             </p>
           </div>
         </motion.div>

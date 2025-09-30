@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Calendar, Clock, Users, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -42,6 +42,7 @@ interface CreateMeetingFormProps {
 
 export function CreateMeetingForm({ onSuccess, initialDate }: CreateMeetingFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const queryClient = useQueryClient();
 
   const form = useForm<CreateMeetingFormData>({
     resolver: zodResolver(createMeetingSchema),
@@ -91,6 +92,11 @@ export function CreateMeetingForm({ onSuccess, initialDate }: CreateMeetingFormP
       }
 
       toast.success('جلسه با موفقیت ایجاد شد');
+      
+      // Invalidate and refetch related queries
+      queryClient.invalidateQueries({ queryKey: ['meetings'] });
+      queryClient.invalidateQueries({ queryKey: ['calendar', 'next-event'] });
+      
       onSuccess();
     } catch (error) {
       console.error('Error creating meeting:', error);

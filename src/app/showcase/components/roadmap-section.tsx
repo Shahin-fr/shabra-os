@@ -100,7 +100,7 @@ export default function RoadmapSection() {
             {t('roadmap_title')}
           </h2>
           <p className="text-lg text-[#A1A1A1] max-w-3xl mx-auto">
-            A clear, forward-thinking vision for the future of Shabra OS
+            طراحی این چشم‌انداز، تمرینی برای تفکر استراتژیک و درک مسیر پیچیده تبدیل یک ایده به یک محصول در کلاس جهانی بود.
           </p>
         </motion.div>
 
@@ -200,7 +200,7 @@ export default function RoadmapSection() {
                     <div className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold text-[#E000A0] border-[#E000A0] bg-[#E000A0]/10">
                       Current Phase
                     </div>
-                    <span className="text-sm text-gray-400">(v1.0 - v1.3)</span>
+                    <span className="text-sm text-gray-400">(v1.0 - v2.0)</span>
                   </div>
                   <h3 className="text-2xl font-bold text-[#F5F5F5] mb-4 text-left" dir="ltr">
                     {phases[0]?.title}
@@ -297,7 +297,7 @@ export default function RoadmapSection() {
                     <div className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold text-[#3B82F6] border-[#3B82F6] bg-[#3B82F6]/10">
                       Upcoming
                     </div>
-                    <span className="text-sm text-gray-400">(v1.4 - v1.7)</span>
+                    <span className="text-sm text-gray-400">(v2.0 - v3.0)</span>
                   </div>
                   <h3 className="text-2xl font-bold text-[#F5F5F5] mb-4 text-left" dir="ltr">
                     {phases[1]?.title}
@@ -394,7 +394,7 @@ export default function RoadmapSection() {
                     <div className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold text-[#8B5CF6] border-[#8B5CF6] bg-[#8B5CF6]/10">
                       Future Vision
                     </div>
-                    <span className="text-sm text-gray-400">(v1.8 - v2.0)</span>
+                    <span className="text-sm text-gray-400">(v3.0+)</span>
                   </div>
                   <h3 className="text-2xl font-bold text-[#F5F5F5] mb-4 text-left" dir="ltr">
                     {phases[2]?.title}

@@ -11,18 +11,35 @@ import Link from 'next/link';
 
 interface PendingRequest {
   id: string;
-  type: string;
+  type: 'LEAVE' | 'OVERTIME' | 'EXPENSE_CLAIM' | 'GENERAL';
+  details?: any;
+  reason: string;
+  status: 'PENDING' | 'APPROVED' | 'REJECTED' | 'CANCELLED';
+  createdAt: string;
+  updatedAt: string;
+  user: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    avatar?: string;
+    roles: string;
+  };
+  reviewer?: {
+    id: string;
+    firstName: string;
+    lastName: string;
+  };
+  // Legacy fields for backward compatibility
   requestType?: string;
-  title: string;
+  title?: string;
   description?: string;
-  reason?: string;
-  requester: {
+  requester?: {
     id: string;
     name: string;
     avatar?: string;
   };
-  createdAt: string;
-  priority: number;
+  priority?: number;
   // Leave request specific
   leaveType?: string;
   startDate?: string;
@@ -163,14 +180,14 @@ export const ActionCenterWidget = React.memo(function ActionCenterWidget({ class
 
   const getRequestTypeText = (type: string) => {
     switch (type) {
-      case 'LEAVE_REQUEST':
+      case 'LEAVE':
         return 'درخواست مرخصی';
-      case 'EXPENSE_REQUEST':
+      case 'OVERTIME':
+        return 'درخواست اضافه کار';
+      case 'EXPENSE_CLAIM':
         return 'درخواست هزینه';
-      case 'EQUIPMENT_REQUEST':
-        return 'درخواست تجهیزات';
-      case 'TRAINING_REQUEST':
-        return 'درخواست آموزش';
+      case 'GENERAL':
+        return 'درخواست عمومی';
       default:
         return 'درخواست عمومی';
     }
@@ -178,9 +195,13 @@ export const ActionCenterWidget = React.memo(function ActionCenterWidget({ class
 
   const getRequestTypeIcon = (type: string) => {
     switch (type) {
-      case 'LEAVE_REQUEST':
+      case 'LEAVE':
         return <Clock className="h-4 w-4" />;
-      case 'EXPENSE_REQUEST':
+      case 'OVERTIME':
+        return <Clock className="h-4 w-4" />;
+      case 'EXPENSE_CLAIM':
+        return <FileText className="h-4 w-4" />;
+      case 'GENERAL':
         return <FileText className="h-4 w-4" />;
       default:
         return <FileText className="h-4 w-4" />;
@@ -234,10 +255,10 @@ export const ActionCenterWidget = React.memo(function ActionCenterWidget({ class
               <div className="flex items-start rtl:items-start gap-3">
                 {/* User Avatar */}
                 <div className="flex-shrink-0">
-                  {request.requester?.avatar ? (
+                  {request.user?.avatar ? (
                     <img
-                      src={request.requester.avatar}
-                      alt={request.requester.name || 'User'}
+                      src={request.user.avatar}
+                      alt={`${request.user.firstName} ${request.user.lastName}` || 'User'}
                       className="w-10 h-10 rounded-full object-cover"
                     />
                   ) : (
@@ -260,7 +281,7 @@ export const ActionCenterWidget = React.memo(function ActionCenterWidget({ class
                     'font-vazirmatn font-semibold text-gray-900 leading-tight',
                     isMobile ? 'text-sm' : 'text-base'
                   )}>
-                    {request.requester?.name || 'نامشخص'}
+                    {request.user ? `${request.user.firstName} ${request.user.lastName}` : (request.requester?.name || 'نامشخص')}
                   </h4>
                   
                   <p className={cn(
@@ -329,7 +350,7 @@ export const ActionCenterWidget = React.memo(function ActionCenterWidget({ class
                   {getRequestTypeText(selectedRequest.type)}
                 </h4>
                 <p className="text-sm text-gray-600 font-vazirmatn">
-                  از: {selectedRequest.requester?.name || 'نامشخص'}
+                  از: {selectedRequest.user ? `${selectedRequest.user.firstName} ${selectedRequest.user.lastName}` : (selectedRequest.requester?.name || 'نامشخص')}
                 </p>
               </div>
 

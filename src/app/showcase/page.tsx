@@ -37,6 +37,9 @@ export default function ShowcasePage() {
         {/* Philosophy Section - Core principles and approach */}
         <PhilosophySection />
         
+        {/* Documentation Section - Professional design process showcase */}
+        <DocumentationSection />
+        
         {/* Ecosystem Section - Introducing the structured, powerful modules */}
         <EcosystemSection />
         
@@ -48,9 +51,6 @@ export default function ShowcasePage() {
         
         {/* Roadmap Section - A clear, forward-thinking vision for the future */}
         <RoadmapSection />
-        
-        {/* Documentation Section - Professional design process showcase */}
-        <DocumentationSection />
         
         {/* About Section - The creator */}
         <AboutSection />

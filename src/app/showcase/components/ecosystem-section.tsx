@@ -184,6 +184,9 @@ export default function EcosystemSection() {
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#F5F5F5] mb-6">
             {t('ecosystem_title')}
           </h2>
+          <p className="text-lg sm:text-xl text-[#A1A1A1] max-w-4xl mx-auto leading-relaxed mb-16">
+            شبرا OS مجموعه‌ای از ماژول‌های متصل به همه. هر کدوم از این‌ها به عنوان پاسخی به یک نیاز مشخص شروع شد و در کنار هم، اساس اون چشم‌انداز بزرگتر رو تشکیل می‌دن.
+          </p>
         </motion.div>
 
         {/* Responsive layout - Desktop: Side by side, Mobile: Accordion */}
