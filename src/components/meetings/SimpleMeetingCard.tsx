@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { Calendar, Clock, Users, FileText, MoreHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -55,7 +54,6 @@ export function SimpleMeetingCard({
   onDelete,
   className
 }: SimpleMeetingCardProps) {
-  const [isLoading, setIsLoading] = useState(false);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -95,11 +93,10 @@ export function SimpleMeetingCard({
   };
 
   const handleAction = async (action: () => void) => {
-    setIsLoading(true);
     try {
       await action();
-    } finally {
-      setIsLoading(false);
+    } catch (error) {
+      console.error('Action failed:', error);
     }
   };
 

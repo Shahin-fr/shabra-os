@@ -142,7 +142,7 @@ export const SquircleCard = React.forwardRef<HTMLDivElement, SquircleCardProps>(
         className={baseClasses}
         style={cardStyle}
         {...motionProps}
-        {...props}
+        {...(props as any)}
       >
         {children}
       </motion.div>

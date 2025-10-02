@@ -4,12 +4,12 @@ import React from 'react';
 import { ReactNode } from 'react';
 import { cn } from '@/lib/utils';
 import { SquircleCard } from './SquircleCard';
-import { widgetVariants, colors, typography } from '@/lib/design-system';
+import { widgetVariants, typography } from '@/lib/design-system';
 import { motion } from 'framer-motion';
-import { AlertCircle, RefreshCw, CheckCircle, XCircle, Loader2 } from 'lucide-react';
+import { AlertCircle, RefreshCw, CheckCircle, XCircle } from 'lucide-react';
 import { Button } from './button';
 
-interface PerfectWidgetProps {
+interface PerfectWidgetProps extends React.HTMLAttributes<HTMLDivElement> {
   title: string;
   children: ReactNode;
   className?: string;
@@ -26,7 +26,7 @@ interface PerfectWidgetProps {
   size?: 'sm' | 'md' | 'lg' | 'xl';
 }
 
-export function PerfectWidget({
+export const PerfectWidget = React.forwardRef<HTMLDivElement, PerfectWidgetProps>(({
   title,
   children,
   className,
@@ -41,7 +41,8 @@ export function PerfectWidget({
   priority = 'medium',
   animated = true,
   size = 'lg',
-}: PerfectWidgetProps) {
+  ...props
+}, ref) => {
   const widgetStyle = widgetVariants[variant];
   const priorityStyle = priority === 'high' ? 'ring-2 ring-red-200 ring-opacity-50' : '';
   
@@ -56,8 +57,7 @@ export function PerfectWidget({
     hidden: { opacity: 0, y: 10 },
     visible: { 
       opacity: 1, 
-      y: 0,
-      transition: { duration: 0.3, ease: 'easeOut' }
+      y: 0
     }
   };
 
@@ -105,6 +105,7 @@ export function PerfectWidget({
   if (loading) {
     return (
       <SquircleCard
+        ref={ref}
         variant="default"
         size={size}
         padding="lg"
@@ -118,6 +119,7 @@ export function PerfectWidget({
           background: widgetStyle.background,
           borderColor: widgetStyle.border,
         }}
+        {...props}
       >
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
@@ -172,6 +174,7 @@ export function PerfectWidget({
           variants={animated ? contentVariants : undefined}
           initial={animated ? "hidden" : false}
           animate={animated ? "visible" : false}
+          transition={{ duration: 0.3, ease: "easeOut" }}
         >
           <div className="text-red-500 text-4xl mb-4">
             <XCircle className="h-12 w-12 mx-auto" />
@@ -201,6 +204,7 @@ export function PerfectWidget({
   if (empty) {
     return (
       <SquircleCard
+        ref={ref}
         variant="default"
         size={size}
         padding="lg"
@@ -214,6 +218,7 @@ export function PerfectWidget({
           background: widgetStyle.background,
           borderColor: widgetStyle.border,
         }}
+        {...props}
       >
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
@@ -266,7 +271,9 @@ export function PerfectWidget({
   }
 
   return <WidgetContent />;
-}
+});
+
+PerfectWidget.displayName = 'PerfectWidget';
 
 // Specialized widget variants
 export const ManagerWidget = React.forwardRef<HTMLDivElement, Omit<PerfectWidgetProps, 'variant'>>(

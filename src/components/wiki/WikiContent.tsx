@@ -2,8 +2,6 @@
 
 import { FileText, BookOpen, Edit, Trash2, MoreVertical, AlertCircle } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -27,7 +25,6 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { formatJalaliDate } from '@/lib/date-utils';
-import { sanitizeHtml } from '@/lib/security/html-sanitizer';
 import { useWikiItem, useDeleteWikiItem } from '@/stores/wiki.store';
 import { useToast } from '@/components/ui/toast';
 import { EditWikiItem } from './EditWikiItem';
@@ -305,9 +302,9 @@ export function WikiContent({ documentId, onRefresh }: WikiContentProps) {
                       size='sm'
                       className='text-red-600 border-red-200 hover:bg-red-50'
                       onClick={() => {
-                        if (confirm(`آیا مطمئن هستید که می‌خواهید تمام ${document.children.length} آیتم داخل این پوشه را حذف کنید؟ این عمل قابل بازگشت نیست.`)) {
+                        if (confirm(`آیا مطمئن هستید که می‌خواهید تمام ${document.children?.length || 0} آیتم داخل این پوشه را حذف کنید؟ این عمل قابل بازگشت نیست.`)) {
                           // Delete all children
-                          const deletePromises = document.children.map(child => 
+                          const deletePromises = document.children?.map(child => 
                             fetch(`/api/wiki/${child.id}`, { method: 'DELETE' })
                               .then(response => {
                                 if (!response.ok) {
@@ -317,18 +314,18 @@ export function WikiContent({ documentId, onRefresh }: WikiContentProps) {
                               })
                           );
                           
-                          Promise.all(deletePromises)
+                          Promise.all(deletePromises || [])
                             .then(() => {
                               addToast({
                                 title: 'موفقیت',
-                                description: `تمام ${document.children.length} آیتم با موفقیت حذف شد`,
+                                description: `تمام ${document.children?.length || 0} آیتم با موفقیت حذف شد`,
                                 variant: 'success',
                               });
                               if (onRefresh) {
                                 onRefresh();
                               }
                             })
-                            .catch((error) => {
+                            .catch(() => {
                               addToast({
                                 title: 'خطا',
                                 description: 'خطا در حذف برخی از آیتم‌ها',
@@ -474,7 +471,7 @@ export function WikiContent({ documentId, onRefresh }: WikiContentProps) {
             <AlertDialogTitle>حذف {(document?.type as string) === 'FOLDER' ? 'پوشه' : 'مستند'}</AlertDialogTitle>
             <AlertDialogDescription>
               آیا مطمئن هستید که می‌خواهید "{document?.title}" را حذف کنید؟ این عمل قابل بازگشت نیست.
-              {document?.type === 'FOLDER' && (
+              {(document?.type as string) === 'FOLDER' && (
                 <div className='mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded text-yellow-800 text-sm'>
                   ⚠️ اگر این پوشه شامل آیتم‌هایی باشد، ابتدا باید آن‌ها را حذف کنید یا به جای دیگری منتقل کنید.
                 </div>

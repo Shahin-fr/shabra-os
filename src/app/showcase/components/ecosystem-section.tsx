@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { useIsMobile } from '../../../hooks/useMediaQuery';
 import { t } from '../utils/i18n';
 import { LayoutGrid, Clapperboard, Zap, BookOpen, Users } from 'lucide-react';
 import Image from 'next/image';

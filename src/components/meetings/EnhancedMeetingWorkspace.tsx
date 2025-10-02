@@ -11,7 +11,6 @@ import {
   ExternalLink,
   CheckCircle,
   Circle,
-  User,
   Sparkles,
   Loader2
 } from 'lucide-react';
@@ -73,7 +72,7 @@ interface Meeting {
   }>;
 }
 
-interface User {
+interface MeetingUser {
   id: string;
   firstName: string;
   lastName: string;
@@ -98,7 +97,7 @@ export function EnhancedMeetingWorkspace({ meeting }: EnhancedMeetingWorkspacePr
   // Fetch users for action item assignment
   const { data: users } = useQuery({
     queryKey: ['users', 'assignable'],
-    queryFn: async (): Promise<User[]> => {
+    queryFn: async (): Promise<MeetingUser[]> => {
       const response = await fetch('/api/users/assignable');
       if (!response.ok) {
         throw new Error('Failed to fetch users');

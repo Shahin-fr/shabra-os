@@ -73,10 +73,6 @@ export default function RoadmapSection() {
   const milestone3Glow = useTransform(milestone3Progress, [0.4, 0.8], [0, 1]);
   const card3Visible = useTransform(milestone3Progress, [0.2, 0.6], [0, 1]);
 
-  const isRTL = (text: string) => {
-    return /[\u0600-\u06FF]/.test(text);
-  };
-
   return (
     <section 
       ref={sectionRef}

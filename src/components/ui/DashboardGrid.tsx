@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { cn } from '@/lib/utils';
-import { grid, spacing } from '@/lib/design-system';
+import { grid } from '@/lib/design-system';
 
 interface DashboardGridProps {
   children: React.ReactNode;
@@ -17,8 +17,6 @@ export const DashboardGrid: React.FC<DashboardGridProps> = ({
   variant = 'manager',
   gap = 'lg',
 }) => {
-  const gapClass = grid.gaps[gap];
-  
   const getGridLayout = () => {
     switch (variant) {
       case 'manager':

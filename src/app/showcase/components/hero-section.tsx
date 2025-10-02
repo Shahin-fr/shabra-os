@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import { motion, useMotionValue, useSpring, useTransform, useAnimation, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { useIsMobile } from '../../../hooks/useMediaQuery';
-import { t } from '../utils/i18n';
 
 /**
  * HeroSection Component - Completely Re-architected

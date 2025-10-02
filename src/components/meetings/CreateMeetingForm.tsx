@@ -23,7 +23,7 @@ const createMeetingSchema = z.object({
     .refine((date) => date > new Date(), 'زمان شروع باید در آینده باشد'),
   endTime: z.date({ required_error: 'زمان پایان الزامی است' }),
   type: z.enum(['ONE_ON_ONE', 'TEAM_MEETING']),
-  attendeeIds: z.array(z.string()).optional().default([]),
+  attendeeIds: z.array(z.string()).min(0),
   notes: z.string().optional(),
 }).refine((data) => data.endTime > data.startTime, {
   message: 'زمان پایان باید بعد از زمان شروع باشد',
@@ -47,7 +47,7 @@ interface CreateMeetingFormProps {
 export function CreateMeetingForm({ onSuccess, initialDate }: CreateMeetingFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const queryClient = useQueryClient();
-  const { handleApiError, handleValidationError } = useMeetingsErrorHandler();
+  const { handleApiError } = useMeetingsErrorHandler();
 
   const form = useForm<CreateMeetingFormData>({
     resolver: zodResolver(createMeetingSchema),
@@ -147,7 +147,7 @@ export function CreateMeetingForm({ onSuccess, initialDate }: CreateMeetingFormP
 
   return (
     <div className="max-h-[70vh] overflow-y-auto">
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit as any)} className="space-y-6">
         {/* Basic Information */}
         <Card>
           <CardHeader className="pb-3">

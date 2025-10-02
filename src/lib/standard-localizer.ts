@@ -1,4 +1,4 @@
-import { format, parse, startOfWeek, endOfWeek, getDay, addDays, addWeeks, addMonths, addYears, subDays, subWeeks, subMonths, subYears, startOfMonth, endOfMonth, startOfYear, endOfYear, isSameDay, isSameMonth, isSameYear, isToday, isWeekend, getWeek, getMonth, getYear, getDate, getHours, getMinutes, getSeconds, setHours, setMinutes, setSeconds, setDate, setMonth, setYear, addHours, subHours, isEqual, isAfter, isBefore, addMinutes, subMinutes, differenceInDays, differenceInHours, differenceInMinutes, differenceInSeconds, differenceInWeeks, differenceInMonths, differenceInYears } from 'date-fns';
+import { format, parse, startOfWeek, endOfWeek, getDay, addDays, addWeeks, addMonths, addYears, subDays, subWeeks, subMonths, subYears, startOfMonth, endOfMonth, startOfYear, endOfYear, isSameDay, isSameMonth, isSameYear, isToday, isWeekend, getWeek, getMonth, getYear, getDate, getHours, getMinutes, getSeconds, setHours, setMinutes, setSeconds, setDate, setMonth, setYear, addHours, subHours, isEqual, isAfter, isBefore, addMinutes, subMinutes, differenceInDays, differenceInHours, differenceInMinutes, differenceInSeconds, differenceInWeeks, differenceInMonths, differenceInYears, startOfDay, endOfDay, getDayOfYear, getISOWeek, parseISO } from 'date-fns';
 import { enUS } from 'date-fns/locale';
 
 // Standard localizer for react-big-calendar using date-fns
@@ -197,8 +197,6 @@ export const standardLocalizer = {
     return merged;
   },
 
-  // Week calculation
-  week: (date: Date) => getWeek(date, { weekStartsOn: 0 }),
 
   // Month calculation
   month: (date: Date) => getMonth(date),
@@ -219,7 +217,7 @@ export const standardLocalizer = {
   second: (date: Date) => getSeconds(date),
 
   // Required method for react-big-calendar
-  visibleDays: (date: Date, view: string) => {
+  visibleDays: (date: Date) => {
     const start = startOfWeek(date, { weekStartsOn: 0 });
     const end = endOfWeek(date, { weekStartsOn: 0 });
     
@@ -351,11 +349,11 @@ export const standardLocalizer = {
   
   // Locale methods
   getLocale: () => 'en',
-  setLocale: (locale: string) => {}, // No-op for now
+  setLocale: () => {}, // No-op for now
   
   // Format methods
-  formatDate: (date: Date, format: string) => format(date, format),
-  parseDate: (dateString: string, format: string) => parseISO(dateString),
+  formatDate: (date: Date, formatStr: string) => format(date, formatStr),
+  parseDate: (dateString: string) => parseISO(dateString),
 
   // Event range methods
   inEventRange: (event: any, date: Date) => {
@@ -382,7 +380,7 @@ export const standardLocalizer = {
   },
 
   // Event positioning methods
-  getEventStyle: (event: any, start: Date, end: Date, isRtl: boolean) => {
+  getEventStyle: (event: any, start: Date, end: Date) => {
     if (!event || !event.start || !event.end) return {};
     
     const eventStart = new Date(event.start);
@@ -419,7 +417,7 @@ export const standardLocalizer = {
       events.forEach((otherEvent, otherIndex) => {
         if (otherIndex === index || processed.has(otherIndex)) return;
         
-        if (this.eventsOverlap(event, otherEvent)) {
+        if (standardLocalizer.eventsOverlap(event, otherEvent)) {
           group.push(otherEvent);
           processed.add(otherIndex);
         }
@@ -433,7 +431,7 @@ export const standardLocalizer = {
 
   // Event positioning for overlapping events
   positionEvents: (events: any[]) => {
-    const groups = this.getCollisionGroups(events);
+    const groups = standardLocalizer.getCollisionGroups(events);
     
     groups.forEach(group => {
       if (group.length === 1) {
@@ -492,7 +490,7 @@ export const standardLocalizer = {
   filterEventsByDate: (events: any[], date: Date) => {
     return events.filter(event => {
       if (!event || !event.start || !event.end) return false;
-      return this.inEventRange(event, date);
+      return standardLocalizer.inEventRange(event, date);
     });
   },
 
@@ -527,7 +525,7 @@ export const standardLocalizer = {
     
     return events.some(event => {
       if (!event || !event.start || !event.end) return false;
-      return this.eventsOverlap(event, newEvent);
+      return standardLocalizer.eventsOverlap(event, newEvent);
     });
   },
 

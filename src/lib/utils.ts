@@ -14,6 +14,9 @@ export function isAdmin(role: string | string[]): boolean {
 
 // Function to show status messages in the header
 export function showStatusMessage(message: string, duration: number = 3000) {
+  // Check if we're in the browser environment
+  if (typeof window === 'undefined') return;
+  
   const event = new CustomEvent('showStatusMessage', {
     detail: { message, duration },
   });

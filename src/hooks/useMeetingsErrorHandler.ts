@@ -59,11 +59,12 @@ export function useMeetingsErrorHandler() {
     }
 
     handleError(error, { operation }, showToast);
+    console.error(`[${operation}] Error:`, errorMessage);
   }, [handleError]);
 
   const handleValidationError = useCallback((
     errors: any[],
-    operation: string
+    _operation: string
   ) => {
     const errorMessages = errors.map(err => err.message).join(', ');
     toast.error(`خطا در اعتبارسنجی: ${errorMessages}`, {
@@ -72,8 +73,8 @@ export function useMeetingsErrorHandler() {
   }, []);
 
   const handleNetworkError = useCallback((
-    error: any,
-    operation: string
+    _error: any,
+    _operation: string
   ) => {
     toast.error('خطا در اتصال به اینترنت. لطفاً اتصال خود را بررسی کنید.', {
       duration: 5000,
@@ -92,7 +93,7 @@ export function useMeetingsErrorHandler() {
   };
 }
 
-function getUserFriendlyMessage(operation: string, errorMessage: string): string {
+function getUserFriendlyMessage(operation: string, _errorMessage: string): string {
   const operationMessages: Record<string, string> = {
     'fetch-meetings': 'خطا در بارگذاری جلسات',
     'create-meeting': 'خطا در ایجاد جلسه',

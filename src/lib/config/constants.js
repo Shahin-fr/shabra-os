@@ -1,10 +1,10 @@
 /**
  * Default Admin Credentials
- * 
+ *
  * This file serves as the single source of truth for default admin credentials
  * across the entire application. All seeding scripts, API routes, and configuration
  * files should import and use these constants instead of hardcoded strings.
- * 
+ *
  * IMPORTANT: These are DEFAULT credentials for development and seeding only.
  * In production, always use environment variables or secure credential management.
  */
@@ -74,4 +74,3 @@ module.exports = {
   DEFAULT_EMPLOYEE_USER,
   DEFAULT_TEST_USER,
 };
-
