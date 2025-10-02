@@ -78,7 +78,7 @@ export function TeamActivityWidget({ className, variant = 'desktop' }: TeamActiv
       error={error?.message}
       empty={!isLoading && safeTeamActivity.length === 0}
       emptyMessage="هیچ کاری امروز تکمیل نشده است"
-      emptyIcon={<Users className="h-8 w-8 text-blue-400" />}
+      emptyIcon={<Users className="h-8 w-8 text-brand-pink" />}
     >
 
       {/* Completed Tasks List */}
@@ -113,7 +113,7 @@ export function TeamActivityWidget({ className, variant = 'desktop' }: TeamActiv
                   )}>
                     {member.name}
                   </h4>
-                  <div className="flex items-center gap-1 text-green-600">
+                  <div className="flex items-center gap-1 text-status-success-text">
                     <CheckCircle className="h-4 w-4" />
                     <span className="text-sm font-vazirmatn font-medium">
                       {member.completedTasksCount} کار تکمیل شده
@@ -133,7 +133,7 @@ export function TeamActivityWidget({ className, variant = 'desktop' }: TeamActiv
                     </div>
                     
                     {member.lastActivity.projectName && (
-                      <div className="text-xs text-blue-600 font-vazirmatn">
+                      <div className="text-xs text-brand-pink-text font-vazirmatn">
                         پروژه: {member.lastActivity.projectName}
                       </div>
                     )}

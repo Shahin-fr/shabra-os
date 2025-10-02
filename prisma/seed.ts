@@ -762,12 +762,19 @@ async function main() {
   });
 
   // Add attendees to meeting 1
+  const meeting1Attendees = [
+    { meetingId: meeting1.id, userId: primaryEmployee.id },
+  ];
+  
+  if (employees.length > 0) {
+    meeting1Attendees.push({ meetingId: meeting1.id, userId: employees[0]!.id });
+  }
+  if (employees.length > 1) {
+    meeting1Attendees.push({ meetingId: meeting1.id, userId: employees[1]!.id });
+  }
+  
   await prisma.meetingAttendee.createMany({
-    data: [
-      { meetingId: meeting1.id, userId: primaryEmployee.id },
-      { meetingId: meeting1.id, userId: employees[0].id },
-      { meetingId: meeting1.id, userId: employees[1].id },
-    ],
+    data: meeting1Attendees,
   });
 
   // Meeting 2: Tomorrow at 10:00 AM
@@ -819,12 +826,19 @@ async function main() {
   });
 
   // Add attendees to meeting 3
+  const meeting3Attendees = [
+    { meetingId: meeting3.id, userId: primaryEmployee.id },
+  ];
+  
+  if (employees.length > 2) {
+    meeting3Attendees.push({ meetingId: meeting3.id, userId: employees[2]!.id });
+  }
+  if (employees.length > 3) {
+    meeting3Attendees.push({ meetingId: meeting3.id, userId: employees[3]!.id });
+  }
+  
   await prisma.meetingAttendee.createMany({
-    data: [
-      { meetingId: meeting3.id, userId: primaryEmployee.id },
-      { meetingId: meeting3.id, userId: employees[2].id },
-      { meetingId: meeting3.id, userId: employees[3].id },
-    ],
+    data: meeting3Attendees,
   });
 
   console.log('✅ Created sample meetings for testing');

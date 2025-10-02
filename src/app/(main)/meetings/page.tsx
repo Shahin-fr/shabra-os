@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Calendar } from 'react-big-calendar';
+import { Calendar, momentLocalizer } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import { jalaliLocalizer } from '@/lib/jalali-localizer';
+import moment from 'moment';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Plus, Users, Clock, Calendar as CalendarIcon, Grid3X3, List, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -11,11 +11,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { CreateMeetingForm } from '@/components/meetings/CreateMeetingForm';
 import { MeetingDetails } from '@/components/meetings/MeetingDetails';
+import { MeetingsErrorBoundary } from '@/components/meetings/MeetingsErrorBoundary';
 import { useAuth } from '@/hooks/useAuth';
 import { isAdminOrManagerUser } from '@/lib/auth-utils';
+import { useMeetingsErrorHandler } from '@/hooks/useMeetingsErrorHandler';
 
-// Use Jalali localizer for Persian calendar
-const localizer = jalaliLocalizer;
+// Use moment localizer for Gregorian calendar
+const localizer = momentLocalizer(moment);
 
 interface Meeting {
   id: string;
@@ -76,7 +78,7 @@ export default function MeetingsPage() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedMeeting, setSelectedMeeting] = useState<Meeting | null>(null);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
-  const [view, setView] = useState('month');
+  const [view, setView] = useState<'month' | 'week' | 'day' | 'agenda'>('month');
   const [currentDate, setCurrentDate] = useState(new Date());
   const [overflowPopover, setOverflowPopover] = useState<{
     isOpen: boolean;
@@ -85,37 +87,57 @@ export default function MeetingsPage() {
   }>({ isOpen: false, date: null, events: [] });
   const { user } = useAuth();
   const queryClient = useQueryClient();
+  const { handleError, handleApiError } = useMeetingsErrorHandler();
 
   // View change handler
   const handleViewChange = (newView: string) => {
-    setView(newView);
+    setView(newView as 'month' | 'week' | 'day' | 'agenda');
   };
 
   // Fetch meetings
-  const { data: meetings, isLoading, error } = useQuery({
+  const { data: meetings, isLoading, error, refetch } = useQuery({
     queryKey: ['meetings'],
     queryFn: async (): Promise<Meeting[]> => {
-      const response = await fetch('/api/meetings');
-      if (!response.ok) {
-        throw new Error('Failed to fetch meetings');
+      try {
+        const response = await fetch('/api/meetings');
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        const result = await response.json();
+        return result.data || [];
+      } catch (error) {
+        handleApiError(error, 'fetch-meetings');
+        throw error;
       }
-      const result = await response.json();
-      return result.data || [];
     },
+    retry: 2,
+    retryDelay: 1000,
     // refetchInterval: 30000, // Refetch every 30 seconds - disabled for better performance
   });
 
   // Convert meetings to calendar events
   const events: CalendarEvent[] = useMemo(() => {
-    if (!meetings) return [];
+    if (!meetings || !Array.isArray(meetings)) return [];
 
-    return meetings.map((meeting) => ({
-      id: meeting.id,
-      title: meeting.title,
-      start: new Date(meeting.startTime),
-      end: new Date(meeting.endTime),
-      resource: meeting,
-    }));
+    try {
+      return meetings.map((meeting) => {
+        if (!meeting || !meeting.startTime || !meeting.endTime) {
+          console.warn('Invalid meeting data:', meeting);
+          return null;
+        }
+        
+        return {
+          id: meeting.id,
+          title: meeting.title || 'بدون عنوان',
+          start: new Date(meeting.startTime),
+          end: new Date(meeting.endTime),
+          resource: meeting,
+        };
+      }).filter(Boolean) as CalendarEvent[];
+    } catch (error) {
+      handleError(error, { operation: 'calendar-render', component: 'MeetingsPage' });
+      return [];
+    }
   }, [meetings]);
 
   const handleSelectEvent = (event: CalendarEvent) => {
@@ -136,43 +158,6 @@ export default function MeetingsPage() {
     });
   };
 
-  const getEventStyle = (event: CalendarEvent) => {
-    const meeting = event.resource;
-    const baseStyle = {
-      borderRadius: '0.5rem',
-      border: 'none',
-      color: 'white',
-      padding: '6px 10px',
-      fontSize: '12px',
-      fontWeight: '500',
-      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-      cursor: 'pointer',
-      transition: 'all 0.2s ease',
-      position: 'relative',
-      overflow: 'hidden',
-    };
-
-    switch (meeting.type) {
-      case 'ONE_ON_ONE':
-        return {
-          ...baseStyle,
-          background: 'linear-gradient(135deg, #ff0a54 0%, #e5094f 100%)',
-          boxShadow: '0 2px 8px rgba(255, 10, 84, 0.3)',
-        };
-      case 'TEAM_MEETING':
-        return {
-          ...baseStyle,
-          background: 'linear-gradient(135deg, #00d4ff 0%, #0099cc 100%)',
-          boxShadow: '0 2px 8px rgba(0, 212, 255, 0.3)',
-        };
-      default:
-        return {
-          ...baseStyle,
-          background: 'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)',
-          boxShadow: '0 2px 8px rgba(107, 114, 128, 0.3)',
-        };
-    }
-  };
 
   const getEventTypeIcon = (type: string) => {
     switch (type) {
@@ -186,6 +171,10 @@ export default function MeetingsPage() {
   };
 
   const EventComponent = ({ event }: { event: CalendarEvent }) => {
+    if (!event || !event.resource) {
+      return null;
+    }
+    
     const meeting = event.resource;
     return (
       <div className="flex items-center gap-2 w-full">
@@ -194,16 +183,12 @@ export default function MeetingsPage() {
         </div>
         <div className="flex-1 min-w-0">
           <div className="truncate font-medium text-sm rbc-event-title">
-            {event.title}
+            {event.title || 'بدون عنوان'}
           </div>
           <div className="text-xs opacity-90 truncate rbc-event-time">
-            {new Date(event.start).toLocaleTimeString('fa-IR', { 
-              hour: '2-digit', 
-              minute: '2-digit' 
-            })} - {new Date(event.end).toLocaleTimeString('fa-IR', { 
-              hour: '2-digit', 
-              minute: '2-digit' 
-            })}
+            {event.start && event.end ? 
+              `${event.start.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' })} - ${event.end.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' })}` : ''
+            }
           </div>
         </div>
       </div>
@@ -240,16 +225,25 @@ export default function MeetingsPage() {
                 </div>
                 <h3 className="text-lg font-semibold text-red-900 mb-2">خطا در بارگذاری جلسات</h3>
                 <p className="text-red-700 mb-6">متأسفانه در بارگذاری جلسات مشکلی پیش آمده است.</p>
-                <Button 
-                  onClick={() => {
-                    if (typeof window !== 'undefined') {
-                      window.location.reload();
-                    }
-                  }}
-                  className="bg-red-600 hover:bg-red-700"
-                >
-                  تلاش مجدد
-                </Button>
+                <div className="flex gap-3 justify-center">
+                  <Button 
+                    onClick={() => refetch()}
+                    className="bg-red-600 hover:bg-red-700"
+                  >
+                    تلاش مجدد
+                  </Button>
+                  <Button 
+                    onClick={() => {
+                      if (typeof window !== 'undefined') {
+                        window.location.reload();
+                      }
+                    }}
+                    variant="outline"
+                    className="border-red-300 text-red-700 hover:bg-red-50"
+                  >
+                    بارگذاری مجدد صفحه
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -259,7 +253,8 @@ export default function MeetingsPage() {
   }
 
   return (
-    <div className="min-h-screen p-6">
+    <MeetingsErrorBoundary>
+      <div className="min-h-screen p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
@@ -327,6 +322,7 @@ export default function MeetingsPage() {
                       // Invalidate and refetch meetings
                       queryClient.invalidateQueries({ queryKey: ['meetings'] });
                       queryClient.invalidateQueries({ queryKey: ['calendar', 'next-event'] });
+                      refetch();
                     }}
                     initialDate={selectedDate}
                   />
@@ -380,7 +376,8 @@ export default function MeetingsPage() {
             </div>
           </CardHeader>
           <CardContent className="p-6">
-            {events.length === 0 ? (
+            <MeetingsErrorBoundary>
+            {!events || events.length === 0 ? (
               <div className="text-center py-20">
                 <div className="w-32 h-32 bg-gradient-to-br from-[#ff0a54]/10 to-[#ff6b9d]/10 rounded-full flex items-center justify-center mx-auto mb-8">
                   <CalendarIcon className="h-16 w-16 text-[#ff0a54]" />
@@ -414,35 +411,51 @@ export default function MeetingsPage() {
                   onView={handleViewChange}
                   onNavigate={setCurrentDate}
                   popup
-                  eventPropGetter={getEventStyle}
                   components={{
                     event: EventComponent,
-                    toolbar: () => null, // Remove internal toolbar
                   }}
                   step={60}
                   timeslots={1}
-                  min={new Date(2024, 0, 1, 8, 0)}
-                  max={new Date(2024, 0, 1, 20, 0)}
+                  views={['month', 'week', 'day', 'agenda']}
+                  onShowMore={(events, date) => {
+                    setOverflowPopover({
+                      isOpen: true,
+                      date,
+                      events: events as CalendarEvent[],
+                    });
+                  }}
+                  eventPropGetter={(event) => ({
+                    style: {
+                      backgroundColor: event.resource?.type === 'ONE_ON_ONE' ? '#3b82f6' : '#10b981',
+                      border: 'none',
+                      borderRadius: '4px',
+                      color: 'white',
+                      fontSize: '12px',
+                      padding: '2px 4px',
+                    },
+                  })}
                   formats={{
                     // Time formats (using 24-hour format compatible with date-fns-jalali)
                     timeGutterFormat: 'HH:mm',
-                    eventTimeRangeFormat: ({ start, end }: { start: Date; end: Date }) => 
-                      `${jalaliLocalizer.format(start, 'HH:mm')} - ${jalaliLocalizer.format(end, 'HH:mm')}`,
+                    eventTimeRangeFormat: ({ start, end }: { start: Date; end: Date }) =>
+                      `${start.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' })} - ${end.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' })}`,
                     agendaTimeFormat: 'HH:mm',
-                    agendaTimeRangeFormat: ({ start, end }: { start: Date; end: Date }) => 
-                      `${jalaliLocalizer.format(start, 'HH:mm')} - ${jalaliLocalizer.format(end, 'HH:mm')}`,
+                    agendaTimeRangeFormat: ({ start, end }: { start: Date; end: Date }) =>
+                      `${start.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' })} - ${end.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' })}`,
                     
                     // Day formats (using Persian day names)
                     dayFormat: 'dddd',
                     weekdayFormat: 'dddd',
                     workWeekFormat: 'dddd',
-                    dayHeaderFormat: 'dddd، d MMMM',
+                    dayHeaderFormat: (date: Date) =>
+                      date.toLocaleDateString('fa-IR', { day: 'numeric', month: 'short' }),
                     dayRangeFormat: ({ start, end }: { start: Date; end: Date }) =>
-                      `${jalaliLocalizer.format(start, 'd MMMM')} - ${jalaliLocalizer.format(end, 'd MMMM')}`,
+                      `${start.toLocaleDateString('fa-IR', { day: 'numeric', month: 'short' })} - ${end.toLocaleDateString('fa-IR', { day: 'numeric', month: 'short' })}`,
                     
                     // Month formats (using Persian month names)
                     monthFormat: 'MMMM',
-                    monthHeaderFormat: 'MMMM yyyy',
+                    monthHeaderFormat: (date: Date) => 
+                      date.toLocaleDateString('fa-IR', { year: 'numeric', month: 'long' }),
                     
                     // Year format
                     yearFormat: 'yyyy',
@@ -454,7 +467,7 @@ export default function MeetingsPage() {
                     // Agenda formats
                     agendaDateFormat: 'dddd، d MMMM',
                     agendaDateRangeFormat: ({ start, end }: { start: Date; end: Date }) =>
-                      `${jalaliLocalizer.format(start, 'd MMMM')} - ${jalaliLocalizer.format(end, 'd MMMM')}`,
+                      `${start.toLocaleDateString('fa-IR')} - ${end.toLocaleDateString('fa-IR')}`,
                   }}
                   messages={{
                     next: 'بعدی',
@@ -476,6 +489,7 @@ export default function MeetingsPage() {
                 />
               </div>
             )}
+            </MeetingsErrorBoundary>
           </CardContent>
         </Card>
 
@@ -489,6 +503,10 @@ export default function MeetingsPage() {
               <MeetingDetails
                 meeting={selectedMeeting}
                 onClose={() => setSelectedMeeting(null)}
+                onMeetingUpdate={() => {
+                  refetch();
+                  queryClient.invalidateQueries({ queryKey: ['meetings'] });
+                }}
               />
             </DialogContent>
           </Dialog>
@@ -1172,6 +1190,7 @@ export default function MeetingsPage() {
           }
         }
       `}</style>
-    </div>
+      </div>
+    </MeetingsErrorBoundary>
   );
 }

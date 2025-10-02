@@ -2,7 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { Users, UserCheck, UserX, Calendar, ChevronDown, ChevronUp } from 'lucide-react';
-import { WidgetCard } from './WidgetCard';
+import { ManagerWidget } from '@/components/ui/PerfectWidget';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
@@ -102,38 +102,38 @@ export function TeamPresenceWidget({ className, variant = 'desktop' }: TeamPrese
   const isMobile = variant === 'mobile';
 
   return (
-    <WidgetCard
+    <ManagerWidget
       title="حضور تیم"
       className={cn(
-        'bg-gradient-to-br from-green-50 to-emerald-50',
+        'bg-gradient-to-br from-green-50/50 to-emerald-50/50',
         className
       )}
       loading={isLoading}
       error={error?.message}
       empty={!isLoading && !presenceStats}
       emptyMessage="اطلاعات حضور در دسترس نیست"
-      emptyIcon={<Users className="h-8 w-8 text-green-400" />}
+      emptyIcon={<Users className="h-8 w-8 text-status-success" />}
     >
-      {/* Overall Stats */}
+      {/* Overall Stats - Perfect Typography Hierarchy */}
       {presenceStats && (
-        <div className={cn("mb-6", isMobile && "mb-4")}>
-          <div className="text-center">
+        <div className="text-center mb-8">
+          <div className="relative inline-block">
             <div className={cn(
-              "font-bold text-gray-900 font-vazirmatn mb-1",
-              isMobile ? "text-2xl" : "text-3xl"
+              "font-bold text-gray-900 font-vazirmatn mb-2",
+              isMobile ? "text-3xl" : "text-4xl"
             )}>
               {presenceStats.clockedIn}
             </div>
             <div className={cn(
               "font-semibold font-vazirmatn mb-1",
-              isMobile ? "text-base" : "text-lg",
-              presenceStats.clockedIn >= 3 ? "text-green-600" :
+              isMobile ? "text-lg" : "text-xl",
+              presenceStats.clockedIn >= 3 ? "text-status-success-text" :
               presenceStats.clockedIn === 2 ? "text-yellow-600" :
-              presenceStats.clockedIn === 1 ? "text-orange-600" : "text-red-600"
+              presenceStats.clockedIn === 1 ? "text-status-warning-text" : "text-status-danger-text"
             )}>
               {getPresenceRate()}% حضور
             </div>
-            <div className="text-sm text-gray-600 font-vazirmatn">
+            <div className="text-sm text-gray-500 font-vazirmatn">
               از {presenceStats.total} نفر اعضای تیم
             </div>
           </div>
@@ -158,140 +158,107 @@ export function TeamPresenceWidget({ className, variant = 'desktop' }: TeamPrese
         </div>
       )}
 
-      {/* Presence Breakdown - Always show on desktop, collapsible on mobile */}
+      {/* Presence Breakdown - Beautiful Stat Blocks */}
       {(!isMobile || isExpanded) && (
-        <div className={cn("space-y-3 mb-4", isMobile && "space-y-2")}>
-          {/* Clocked In */}
-          <div className={cn(
-            "flex items-center justify-between rounded-xl bg-white/60 border border-white/40",
-            isMobile ? "p-2" : "p-3"
-          )}>
-            <div className="flex items-center gap-3">
-              <div className={cn(
-                "rounded-full bg-green-100",
-                isMobile ? "p-1.5" : "p-2"
-              )}>
-                <UserCheck className={cn(
-                  "text-green-600",
-                  isMobile ? "h-4 w-4" : "h-5 w-5"
-                )} />
-              </div>
-              <div>
-                <div className={cn(
-                  "font-vazirmatn font-medium text-gray-900",
-                  isMobile && "text-sm"
-                )}>
-                  {getPresenceText('clockedIn')}
+        <div className="space-y-4 mb-6">
+          {/* Clocked In - Stat Block */}
+          <div className="group relative p-6 rounded-2xl bg-white border border-gray-200 hover:border-gray-300 transition-all duration-300 hover:shadow-lg hover:shadow-gray-200/50" dir="rtl">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-5">
+                <div className="relative">
+                  <div className="p-4 rounded-xl bg-status-success border border-status-success shadow-sm">
+                    <UserCheck className="h-7 w-7 text-status-success-text" />
+                  </div>
+                  <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-status-success border-2 border-white shadow-sm">
+                    <div className="w-full h-full rounded-full bg-status-success animate-pulse"></div>
+                  </div>
                 </div>
-                <div className={cn(
-                  "text-gray-600 font-vazirmatn",
-                  isMobile ? "text-xs" : "text-sm"
-                )}>
-                  {getPresenceRate()}% از تیم
+                <div>
+                  <div className="font-bold text-gray-900 font-vazirmatn text-lg text-right">
+                    {getPresenceText('clockedIn')}
+                  </div>
+                  <div className="text-sm text-gray-500 font-vazirmatn text-right">
+                    {getPresenceRate()}% از تیم
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className={cn(
-              "font-bold text-green-600 font-vazirmatn",
-              isMobile ? "text-lg" : "text-2xl"
-            )}>
-              {presenceStats?.clockedIn || 0}
+              <div className="text-4xl font-bold text-status-success-text font-vazirmatn">
+                {presenceStats?.clockedIn || 0}
+              </div>
             </div>
           </div>
 
-          {/* On Leave */}
-          <div className={cn(
-            "flex items-center justify-between rounded-xl bg-white/60 border border-white/40",
-            isMobile ? "p-2" : "p-3"
-          )}>
-            <div className="flex items-center gap-3">
-              <div className={cn(
-                "rounded-full bg-blue-100",
-                isMobile ? "p-1.5" : "p-2"
-              )}>
-                <Calendar className={cn(
-                  "text-blue-600",
-                  isMobile ? "h-4 w-4" : "h-5 w-5"
-                )} />
-              </div>
-              <div>
-                <div className={cn(
-                  "font-vazirmatn font-medium text-gray-900",
-                  isMobile && "text-sm"
-                )}>
-                  {getPresenceText('onLeave')}
+          {/* On Leave - Stat Block */}
+          <div className="group relative p-6 rounded-2xl bg-white border border-gray-200 hover:border-gray-300 transition-all duration-300 hover:shadow-lg hover:shadow-gray-200/50" dir="rtl">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-5">
+                <div className="relative">
+                  <div className="p-4 rounded-xl bg-brand-pink border border-brand-pink shadow-sm">
+                    <Calendar className="h-7 w-7 text-brand-pink-text" />
+                  </div>
+                  <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-brand-pink border-2 border-white shadow-sm">
+                    <div className="w-full h-full rounded-full bg-brand-pink animate-pulse"></div>
+                  </div>
                 </div>
-                <div className={cn(
-                  "text-gray-600 font-vazirmatn",
-                  isMobile ? "text-xs" : "text-sm"
-                )}>
-                  {presenceStats?.total ? Math.round(((presenceStats?.onLeave || 0) / presenceStats.total) * 100) : 0}% از تیم
+                <div>
+                  <div className="font-bold text-gray-900 font-vazirmatn text-lg text-right">
+                    {getPresenceText('onLeave')}
+                  </div>
+                  <div className="text-sm text-gray-500 font-vazirmatn text-right">
+                    {presenceStats?.total ? Math.round(((presenceStats?.onLeave || 0) / presenceStats.total) * 100) : 0}% از تیم
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className={cn(
-              "font-bold text-blue-600 font-vazirmatn",
-              isMobile ? "text-lg" : "text-2xl"
-            )}>
-              {presenceStats?.onLeave || 0}
+              <div className="text-4xl font-bold text-brand-pink-text font-vazirmatn">
+                {presenceStats?.onLeave || 0}
+              </div>
             </div>
           </div>
 
-          {/* Absent */}
-          <div className={cn(
-            "flex items-center justify-between rounded-xl bg-white/60 border border-white/40",
-            isMobile ? "p-2" : "p-3"
-          )}>
-            <div className="flex items-center gap-3">
-              <div className={cn(
-                "rounded-full bg-red-100",
-                isMobile ? "p-1.5" : "p-2"
-              )}>
-                <UserX className={cn(
-                  "text-red-600",
-                  isMobile ? "h-4 w-4" : "h-5 w-5"
-                )} />
-              </div>
-              <div>
-                <div className={cn(
-                  "font-vazirmatn font-medium text-gray-900",
-                  isMobile && "text-sm"
-                )}>
-                  {getPresenceText('absent')}
+          {/* Absent - Stat Block */}
+          <div className="group relative p-6 rounded-2xl bg-white border border-gray-200 hover:border-gray-300 transition-all duration-300 hover:shadow-lg hover:shadow-gray-200/50" dir="rtl">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-5">
+                <div className="relative">
+                  <div className="p-4 rounded-xl bg-status-danger border border-status-danger shadow-sm">
+                    <UserX className="h-7 w-7 text-status-danger-text" />
+                  </div>
+                  <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-status-danger border-2 border-white shadow-sm">
+                    <div className="w-full h-full rounded-full bg-status-danger animate-pulse"></div>
+                  </div>
                 </div>
-                <div className={cn(
-                  "text-gray-600 font-vazirmatn",
-                  isMobile ? "text-xs" : "text-sm"
-                )}>
-                  {presenceStats?.total ? Math.round(((presenceStats?.absent || 0) / presenceStats.total) * 100) : 0}% از تیم
+                <div>
+                  <div className="font-bold text-gray-900 font-vazirmatn text-lg text-right">
+                    {getPresenceText('absent')}
+                  </div>
+                  <div className="text-sm text-gray-500 font-vazirmatn text-right">
+                    {presenceStats?.total ? Math.round(((presenceStats?.absent || 0) / presenceStats.total) * 100) : 0}% از تیم
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className={cn(
-              "font-bold text-red-600 font-vazirmatn",
-              isMobile ? "text-lg" : "text-2xl"
-            )}>
-              {presenceStats?.absent || 0}
+              <div className="text-4xl font-bold text-status-danger-text font-vazirmatn">
+                {presenceStats?.absent || 0}
+              </div>
             </div>
           </div>
         </div>
       )}
 
-      {/* Progress Bar */}
+      {/* Progress Bar - Perfect Visual Feedback */}
       {presenceStats && (
-        <div className="mt-4">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-vazirmatn text-gray-600">
+        <div className="mb-6">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-sm font-medium text-gray-700 font-vazirmatn">
               نرخ حضور
             </span>
-            <span className="text-sm font-vazirmatn text-gray-600">
+            <span className="text-sm font-medium text-gray-700 font-vazirmatn">
               {presenceStats.clockedIn} نفر
             </span>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-2">
+          <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
             <div
               className={cn(
-                "h-2 rounded-full transition-all duration-300",
+                "h-3 rounded-full transition-all duration-500 ease-out",
                 `bg-gradient-to-r ${getProgressBarColor(presenceStats.clockedIn)}`
               )}
               style={{ width: `${getProgressBarWidth(presenceStats.clockedIn)}%` }}
@@ -300,11 +267,11 @@ export function TeamPresenceWidget({ className, variant = 'desktop' }: TeamPrese
         </div>
       )}
 
-      {/* Action Button */}
-      <div className="pt-4 border-t border-white/40">
+      {/* Action Button - Perfect Call-to-Action */}
+      <div className="pt-6 border-t border-gray-200/50">
         <Button
           variant="outline"
-          className="w-full font-vazirmatn text-sm"
+          className="w-full font-vazirmatn text-sm bg-white/50 hover:bg-white/80 border-gray-300/50 hover:border-gray-400/50 transition-all duration-200"
           onClick={() => {
             // Navigate to attendance report
             window.location.href = '/admin/attendance';
@@ -313,6 +280,6 @@ export function TeamPresenceWidget({ className, variant = 'desktop' }: TeamPrese
           گزارش حضور و غیاب
         </Button>
       </div>
-    </WidgetCard>
+    </ManagerWidget>
   );
 }

@@ -40,11 +40,11 @@ export function MyActiveProjectsWidget({ className, variant = 'desktop' }: MyAct
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'ACTIVE':
-        return 'text-green-600 bg-green-100';
+        return 'text-status-success-text bg-status-success';
       case 'ON_HOLD':
         return 'text-yellow-600 bg-yellow-100';
       case 'COMPLETED':
-        return 'text-blue-600 bg-blue-100';
+        return 'text-brand-pink-text bg-brand-pink';
       default:
         return 'text-gray-600 bg-gray-100';
     }
@@ -85,7 +85,7 @@ export function MyActiveProjectsWidget({ className, variant = 'desktop' }: MyAct
       error={error?.message}
       empty={!isLoading && safeProjects.length === 0}
       emptyMessage="هیچ پروژه فعالی یافت نشد"
-      emptyIcon={<FolderOpen className="h-8 w-8 text-purple-400" />}
+      emptyIcon={<FolderOpen className="h-8 w-8 text-brand-plum" />}
     >
       {/* Projects List */}
       <div className="space-y-4">

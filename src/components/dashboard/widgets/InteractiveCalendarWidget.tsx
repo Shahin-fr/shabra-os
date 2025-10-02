@@ -79,9 +79,9 @@ export function InteractiveCalendarWidget() {
       case 'meeting':
         return 'bg-[#ff0a54]';
       case 'deadline':
-        return 'bg-orange-500';
+        return 'bg-status-warning';
       case 'alert':
-        return 'bg-red-500';
+        return 'bg-status-danger';
       default:
         return 'bg-gray-400';
     }

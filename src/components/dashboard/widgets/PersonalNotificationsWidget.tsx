@@ -69,26 +69,26 @@ export function PersonalNotificationsWidget() {
     const baseInfo = {
       announcement: {
         icon: Megaphone,
-        color: 'text-blue-500',
-        bgColor: 'bg-blue-50',
+        color: 'text-brand-pink-text',
+        bgColor: 'bg-brand-pink',
         borderColor: 'border-blue-200',
       },
       task: {
         icon: CheckCircle,
-        color: 'text-green-500',
-        bgColor: 'bg-green-50',
+        color: 'text-status-success-text',
+        bgColor: 'bg-status-success',
         borderColor: 'border-green-200',
       },
       reminder: {
         icon: AlertTriangle,
-        color: 'text-orange-500',
-        bgColor: 'bg-orange-50',
+        color: 'text-status-warning-text',
+        bgColor: 'bg-status-warning',
         borderColor: 'border-orange-200',
       },
       system: {
         icon: Bell,
-        color: 'text-purple-500',
-        bgColor: 'bg-purple-50',
+        color: 'text-brand-plum-text',
+        bgColor: 'bg-brand-plum',
         borderColor: 'border-purple-200',
       },
       approval: {
@@ -105,8 +105,8 @@ export function PersonalNotificationsWidget() {
     if (priority === 'high') {
       return {
         ...info,
-        color: 'text-red-500',
-        bgColor: 'bg-red-50',
+        color: 'text-status-danger-text',
+        bgColor: 'bg-status-danger',
         borderColor: 'border-red-200',
       };
     }
@@ -118,11 +118,11 @@ export function PersonalNotificationsWidget() {
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case 'high':
-        return 'bg-red-100 text-red-700 border-red-200';
+        return 'bg-status-danger text-status-danger-text border-status-danger';
       case 'medium':
         return 'bg-yellow-100 text-yellow-700 border-yellow-200';
       case 'low':
-        return 'bg-green-100 text-green-700 border-green-200';
+        return 'bg-status-success text-status-success-text border-status-success';
       default:
         return 'bg-gray-100 text-gray-700 border-gray-200';
     }
@@ -196,13 +196,13 @@ export function PersonalNotificationsWidget() {
               <div className='text-xs text-gray-500'>خوانده نشده</div>
             </div>
             <div className='text-center'>
-              <div className='text-2xl font-bold text-green-500'>
+              <div className='text-2xl font-bold text-status-success-text'>
                 {mockNotifications.length - unreadCount}
               </div>
               <div className='text-xs text-gray-500'>خوانده شده</div>
             </div>
             <div className='text-center'>
-              <div className='text-2xl font-bold text-blue-500'>
+              <div className='text-2xl font-bold text-brand-pink-text'>
                 {mockNotifications.length}
               </div>
               <div className='text-xs text-gray-500'>کل اعلان‌ها</div>

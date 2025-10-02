@@ -14,16 +14,20 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { JalaliDateTimePicker } from '@/components/ui/jalali-datetime-picker';
 import { toast } from 'sonner';
+import { useMeetingsErrorHandler } from '@/hooks/useMeetingsErrorHandler';
 
 const createMeetingSchema = z.object({
   title: z.string().min(1, 'عنوان جلسه الزامی است'),
-  startTime: z.date({ required_error: 'زمان شروع الزامی است' }),
+  startTime: z.date({ required_error: 'زمان شروع الزامی است' })
+    .refine((date) => date > new Date(), 'زمان شروع باید در آینده باشد'),
   endTime: z.date({ required_error: 'زمان پایان الزامی است' }),
   type: z.enum(['ONE_ON_ONE', 'TEAM_MEETING']),
-  attendeeIds: z.array(z.string()).min(1, 'حداقل یک شرکت‌کننده الزامی است'),
+  attendeeIds: z.array(z.string()).optional().default([]),
   notes: z.string().optional(),
+}).refine((data) => data.endTime > data.startTime, {
+  message: 'زمان پایان باید بعد از زمان شروع باشد',
+  path: ['endTime'],
 });
 
 type CreateMeetingFormData = z.infer<typeof createMeetingSchema>;
@@ -43,6 +47,7 @@ interface CreateMeetingFormProps {
 export function CreateMeetingForm({ onSuccess, initialDate }: CreateMeetingFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const queryClient = useQueryClient();
+  const { handleApiError, handleValidationError } = useMeetingsErrorHandler();
 
   const form = useForm<CreateMeetingFormData>({
     resolver: zodResolver(createMeetingSchema),
@@ -60,13 +65,20 @@ export function CreateMeetingForm({ onSuccess, initialDate }: CreateMeetingFormP
   const { data: users, isLoading: usersLoading } = useQuery({
     queryKey: ['users', 'assignable'],
     queryFn: async (): Promise<User[]> => {
-      const response = await fetch('/api/users/assignable');
-      if (!response.ok) {
-        throw new Error('Failed to fetch users');
+      try {
+        const response = await fetch('/api/users/assignable');
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        const result = await response.json();
+        return result.data || [];
+      } catch (error) {
+        handleApiError(error, 'fetch-assignable-users', false);
+        throw error;
       }
-      const result = await response.json();
-      return result.data || [];
     },
+    retry: 2,
+    retryDelay: 1000,
   });
 
   const onSubmit = async (data: CreateMeetingFormData) => {
@@ -91,16 +103,19 @@ export function CreateMeetingForm({ onSuccess, initialDate }: CreateMeetingFormP
         throw new Error(result.error || 'خطا در ایجاد جلسه');
       }
 
+      console.log('Meeting created successfully:', result);
       toast.success('جلسه با موفقیت ایجاد شد');
       
       // Invalidate and refetch related queries
       queryClient.invalidateQueries({ queryKey: ['meetings'] });
       queryClient.invalidateQueries({ queryKey: ['calendar', 'next-event'] });
       
+      // Reset form
+      form.reset();
+      
       onSuccess();
     } catch (error) {
-      console.error('Error creating meeting:', error);
-      toast.error(error instanceof Error ? error.message : 'خطا در ایجاد جلسه');
+      handleApiError(error, 'create-meeting');
     } finally {
       setIsSubmitting(false);
     }
@@ -187,12 +202,13 @@ export function CreateMeetingForm({ onSuccess, initialDate }: CreateMeetingFormP
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="startTime">زمان شروع *</Label>
-              <JalaliDateTimePicker
-                value={form.watch('startTime')}
-                onChange={(date) => {
-                  form.setValue('startTime', date || new Date(), { shouldValidate: true });
+              <Input
+                type="datetime-local"
+                value={form.watch('startTime') ? new Date(form.watch('startTime')).toISOString().slice(0, 16) : ''}
+                onChange={(e) => {
+                  const date = e.target.value ? new Date(e.target.value) : new Date();
+                  form.setValue('startTime', date, { shouldValidate: true });
                 }}
-                placeholder="انتخاب زمان شروع"
                 className="mt-1"
               />
               {form.formState.errors.startTime && (
@@ -204,12 +220,13 @@ export function CreateMeetingForm({ onSuccess, initialDate }: CreateMeetingFormP
 
             <div>
               <Label htmlFor="endTime">زمان پایان *</Label>
-              <JalaliDateTimePicker
-                value={form.watch('endTime')}
-                onChange={(date) => {
-                  form.setValue('endTime', date || new Date(), { shouldValidate: true });
+              <Input
+                type="datetime-local"
+                value={form.watch('endTime') ? new Date(form.watch('endTime')).toISOString().slice(0, 16) : ''}
+                onChange={(e) => {
+                  const date = e.target.value ? new Date(e.target.value) : new Date();
+                  form.setValue('endTime', date, { shouldValidate: true });
                 }}
-                placeholder="انتخاب زمان پایان"
                 className="mt-1"
               />
               {form.formState.errors.endTime && (

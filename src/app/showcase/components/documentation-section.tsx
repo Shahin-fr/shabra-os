@@ -12,7 +12,7 @@ import { useIsMobile } from '../../../hooks/useMediaQuery';
  * markdown rendering, and smooth animations for the InstaPulse module.
  */
 export default function DocumentationSection() {
-  const isMobile = useIsMobile();
+  const isMobile = useIsMobile() ?? false;
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1

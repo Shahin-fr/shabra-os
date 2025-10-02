@@ -2,7 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { Calendar, Clock, MapPin, Users } from 'lucide-react';
-import { WidgetCard } from './WidgetCard';
+import { EmployeeWidget } from '@/components/ui/PerfectWidget';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -60,6 +60,11 @@ export function NextUpWidget({ className, variant = 'desktop' }: NextUpWidgetPro
     const now = new Date();
     const eventDate = new Date(startDate);
     const diffMs = eventDate.getTime() - now.getTime();
+    
+    if (diffMs <= 0) {
+      return 'همین الان';
+    }
+    
     const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
     const diffMinutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
 
@@ -75,11 +80,12 @@ export function NextUpWidget({ className, variant = 'desktop' }: NextUpWidgetPro
   const getEventTypeColor = (type: string) => {
     switch (type.toLowerCase()) {
       case 'meeting':
-        return 'bg-blue-100 text-blue-700';
+      case 'team-meeting':
+        return 'bg-brand-pink text-brand-pink-text';
       case 'event':
-        return 'bg-green-100 text-green-700';
+        return 'bg-status-success text-status-success-text';
       case 'deadline':
-        return 'bg-red-100 text-red-700';
+        return 'bg-status-danger text-status-danger-text';
       default:
         return 'bg-gray-100 text-gray-700';
     }
@@ -88,6 +94,7 @@ export function NextUpWidget({ className, variant = 'desktop' }: NextUpWidgetPro
   const getEventTypeIcon = (type: string) => {
     switch (type.toLowerCase()) {
       case 'meeting':
+      case 'team-meeting':
         return <Users className="h-4 w-4" />;
       case 'event':
         return <Calendar className="h-4 w-4" />;
@@ -101,17 +108,17 @@ export function NextUpWidget({ className, variant = 'desktop' }: NextUpWidgetPro
   const isMobile = variant === 'mobile';
 
   return (
-    <WidgetCard
+    <EmployeeWidget
       title="جلسه بعدی"
       className={cn(
-        'bg-gradient-to-br from-purple-50 to-pink-50',
+        'bg-gradient-to-br from-purple-50/50 to-pink-50/50',
         className
       )}
       loading={isLoading}
       error={error?.message}
-      empty={!isLoading && !nextEvent}
+      empty={!isLoading && !nextEvent && !error}
       emptyMessage="جلسه جدیدی تنظیم نشده"
-      emptyIcon={<Calendar className="h-8 w-8 text-purple-400" />}
+      emptyIcon={<Calendar className="h-8 w-8 text-brand-plum" />}
     >
       {nextEvent && (
         <div className="space-y-4">
@@ -122,7 +129,10 @@ export function NextUpWidget({ className, variant = 'desktop' }: NextUpWidgetPro
               getEventTypeColor(nextEvent.type)
             )}>
               {getEventTypeIcon(nextEvent.type)}
-              {nextEvent.type}
+              {nextEvent.type === 'meeting' ? 'جلسه' : 
+               nextEvent.type === 'team-meeting' ? 'جلسه تیمی' : 
+               nextEvent.type === 'event' ? 'رویداد' : 
+               nextEvent.type === 'deadline' ? 'مهلت' : nextEvent.type}
             </div>
           </div>
 
@@ -152,6 +162,9 @@ export function NextUpWidget({ className, variant = 'desktop' }: NextUpWidgetPro
               <div className="flex-1">
                 <div className="font-vazirmatn text-sm">
                   {formatDate(nextEvent.startDate)} - {formatTime(nextEvent.startDate)}
+                  {nextEvent.endDate && nextEvent.endDate !== nextEvent.startDate && (
+                    <span> تا {formatTime(nextEvent.endDate)}</span>
+                  )}
                 </div>
                 <div className="text-xs text-gray-500 font-vazirmatn">
                   {getTimeUntilEvent(nextEvent.startDate)}
@@ -168,7 +181,7 @@ export function NextUpWidget({ className, variant = 'desktop' }: NextUpWidgetPro
             )}
 
             {/* Attendees */}
-            {nextEvent.attendees && (
+            {nextEvent.attendees && nextEvent.attendees > 0 && (
               <div className="flex items-center gap-3 text-gray-600">
                 <Users className="h-4 w-4 text-gray-400" />
                 <span className="font-vazirmatn text-sm">
@@ -197,6 +210,6 @@ export function NextUpWidget({ className, variant = 'desktop' }: NextUpWidgetPro
           </div>
         </div>
       )}
-    </WidgetCard>
+    </EmployeeWidget>
   );
 }

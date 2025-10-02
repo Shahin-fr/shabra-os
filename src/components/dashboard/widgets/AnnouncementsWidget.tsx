@@ -2,7 +2,7 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Megaphone, User, AlertCircle, Eye, Clock, ChevronUp } from 'lucide-react';
-import { WidgetCard } from './WidgetCard';
+import { EmployeeWidget } from '@/components/ui/PerfectWidget';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
@@ -88,11 +88,11 @@ export function AnnouncementsWidget({ className, variant = 'desktop' }: Announce
   const getTypeColor = (type: string) => {
     switch (type) {
       case 'URGENT':
-        return 'text-red-600 bg-red-100 border-red-200';
+        return 'text-status-danger-text bg-status-danger border-status-danger';
       case 'TEAM':
-        return 'text-blue-600 bg-blue-100 border-blue-200';
+        return 'text-brand-pink-text bg-brand-pink border-brand-pink';
       case 'COMPANY':
-        return 'text-purple-600 bg-purple-100 border-purple-200';
+        return 'text-brand-plum-text bg-brand-plum border-brand-plum';
       case 'GENERAL':
       default:
         return 'text-gray-600 bg-gray-100 border-gray-200';
@@ -164,10 +164,10 @@ export function AnnouncementsWidget({ className, variant = 'desktop' }: Announce
 
   if (isLoading) {
     return (
-      <WidgetCard
+      <EmployeeWidget
         title="اعلانات"
         className={cn(
-          'bg-gradient-to-br from-orange-50 to-red-50',
+          'bg-gradient-to-br from-orange-50/50 to-red-50/50',
           className
         )}
         loading={true}
@@ -175,38 +175,38 @@ export function AnnouncementsWidget({ className, variant = 'desktop' }: Announce
         <div className="flex items-center justify-center h-32">
           <div className="text-sm text-gray-500">در حال بارگذاری...</div>
         </div>
-      </WidgetCard>
+      </EmployeeWidget>
     );
   }
 
   if (error) {
     return (
-      <WidgetCard
+      <EmployeeWidget
         title="اعلانات"
         className={cn(
-          'bg-gradient-to-br from-red-50 to-pink-50',
+          'bg-gradient-to-br from-red-50/50 to-pink-50/50',
           className
         )}
       >
         <div className="text-center py-4">
-          <AlertCircle className="h-8 w-8 text-red-500 mx-auto mb-2" />
-          <p className="text-red-600 text-sm">خطا در بارگذاری اعلانات</p>
+          <AlertCircle className="h-8 w-8 text-status-danger mx-auto mb-2" />
+          <p className="text-status-danger-text text-sm">خطا در بارگذاری اعلانات</p>
         </div>
-      </WidgetCard>
+      </EmployeeWidget>
     );
   }
 
   return (
-    <WidgetCard
+    <EmployeeWidget
       title="اعلانات"
       className={cn(
-        'bg-gradient-to-br from-orange-50 to-red-50',
+        'bg-gradient-to-br from-orange-50/50 to-red-50/50',
         className
       )}
       headerAction={
         <div className="flex items-center gap-2">
           {unreadCount > 0 && (
-            <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full font-vazirmatn">
+            <span className="bg-status-danger text-white text-xs px-2 py-1 rounded-full font-vazirmatn">
               {unreadCount} جدید
             </span>
           )}
@@ -239,7 +239,7 @@ export function AnnouncementsWidget({ className, variant = 'desktop' }: Announce
                 transition={{ delay: index * 0.1 }}
                 className={cn(
                   "bg-white rounded-xl p-4 shadow-sm border transition-all duration-200 hover:shadow-md",
-                  !announcement.isRead ? "border-s-4 border-s-blue-500" : "border-gray-200"
+                  !announcement.isRead ? "border-s-4 border-s-brand-pink" : "border-gray-200"
                 )}
               >
                 <div className="space-y-3">
@@ -255,7 +255,7 @@ export function AnnouncementsWidget({ className, variant = 'desktop' }: Announce
                           {getTypeText(announcement.type)}
                         </span>
                         {!announcement.isRead && (
-                          <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                          <span className="w-2 h-2 bg-brand-pink rounded-full"></span>
                         )}
                       </div>
                       <h4 className="font-semibold text-gray-900 font-vazirmatn mb-1">
@@ -319,7 +319,7 @@ export function AnnouncementsWidget({ className, variant = 'desktop' }: Announce
                         size="sm"
                         onClick={() => handleMarkAsRead(announcement.id)}
                         disabled={markAsReadMutation.isPending}
-                        className="bg-blue-500 hover:bg-blue-600 text-white text-xs px-3 py-1 h-7"
+                        className="bg-brand-pink hover:bg-brand-pink text-brand-pink-text text-xs px-3 py-1 h-7"
                       >
                         <Eye className="h-3 w-3 ms-1" />
                         خواندم
@@ -339,13 +339,13 @@ export function AnnouncementsWidget({ className, variant = 'desktop' }: Announce
               variant="outline"
               size="sm"
               onClick={() => window.location.href = '/announcements'}
-              className="text-xs font-vazirmatn"
+              className="text-xs font-vazirmatn border-brand-pink text-brand-pink hover:bg-brand-pink hover:text-white"
             >
               مشاهده همه اعلانات
             </Button>
           </div>
         )}
       </div>
-    </WidgetCard>
+    </EmployeeWidget>
   );
 }

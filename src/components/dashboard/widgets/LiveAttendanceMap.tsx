@@ -55,13 +55,13 @@ const attendanceData = [
 const getStatusColor = (status: string) => {
   switch (status) {
     case 'excellent':
-      return 'text-green-500 bg-green-500/20';
+      return 'text-status-success-text bg-status-success/20';
     case 'good':
       return 'text-[#ff0a54] bg-[#ff0a54]/20';
     case 'warning':
       return 'text-yellow-500 bg-yellow-500/20';
     case 'critical':
-      return 'text-red-500 bg-red-500/20';
+      return 'text-status-danger-text bg-status-danger/20';
     default:
       return 'text-gray-500 bg-gray-500/20';
   }
@@ -189,12 +189,12 @@ export function LiveAttendanceMap() {
                     <OptimizedMotion
                       className={`h-2 rounded-full ${
                         dept.status === 'excellent'
-                          ? 'bg-green-500'
+                          ? 'bg-status-success'
                           : dept.status === 'good'
                             ? 'bg-[#ff0a54]'
                             : dept.status === 'warning'
                               ? 'bg-yellow-500'
-                              : 'bg-red-500'
+                              : 'bg-status-danger'
                       }`}
                       initial={{ scaleX: 0 }}
                       animate={{ scaleX: dept.percentage / 100 }}

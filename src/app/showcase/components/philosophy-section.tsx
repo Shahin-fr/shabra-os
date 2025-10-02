@@ -13,7 +13,7 @@ import { Link2, Feather, Zap } from 'lucide-react';
  * Integration, Simplicity, and Efficiency.
  */
 export default function PhilosophySection() {
-  const isMobile = useIsMobile();
+  const isMobile = useIsMobile() ?? false;
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1

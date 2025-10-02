@@ -142,7 +142,7 @@ export function AttendanceClockWidget() {
               size='lg'
               className={`w-full h-16 text-xl font-bold transition-all duration-300 ${
                 isClockedIn
-                  ? 'bg-red-500 hover:bg-red-600 text-white'
+                  ? 'bg-status-danger hover:bg-status-danger text-white'
                   : 'bg-[#ff0a54] hover:bg-[#ff0a54]/90 text-white'
               }`}
             >
@@ -158,23 +158,23 @@ export function AttendanceClockWidget() {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5 }}
             >
-              <div className='bg-green-50 border border-green-200 rounded-lg p-4'>
-                <div className='flex items-center justify-center gap-2 text-green-700 mb-2'>
+              <div className='bg-status-success border border-status-success rounded-lg p-4'>
+                <div className='flex items-center justify-center gap-2 text-status-success-text mb-2'>
                   <Sun className='h-5 w-5' />
                   <span className='font-semibold'>در حال کار</span>
                 </div>
                 <div className='text-center'>
-                  <div className='text-sm text-green-600 mb-1'>زمان ورود:</div>
-                  <div className='text-lg font-mono font-bold text-green-700'>
+                  <div className='text-sm text-status-success-text mb-1'>زمان ورود:</div>
+                  <div className='text-lg font-mono font-bold text-status-success-text'>
                     {clockInTime}
                   </div>
                 </div>
               </div>
 
-              <div className='bg-blue-50 border border-blue-200 rounded-lg p-4'>
+              <div className='bg-brand-pink border border-brand-pink rounded-lg p-4'>
                 <div className='text-center'>
-                  <div className='text-sm text-blue-600 mb-1'>مدت کار:</div>
-                  <div className='text-2xl font-mono font-bold text-blue-700'>
+                  <div className='text-sm text-brand-pink-text mb-1'>مدت کار:</div>
+                  <div className='text-2xl font-mono font-bold text-brand-pink-text'>
                     {getWorkDuration()}
                   </div>
                 </div>
@@ -194,7 +194,7 @@ export function AttendanceClockWidget() {
               <div className='text-xs text-gray-500'>ساعت کار امروز</div>
             </div>
             <div className='text-center'>
-              <div className='text-2xl font-bold text-green-500'>92%</div>
+              <div className='text-2xl font-bold text-status-success-text'>92%</div>
               <div className='text-xs text-gray-500'>نرخ حضور</div>
             </div>
           </OptimizedMotion>

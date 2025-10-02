@@ -26,26 +26,32 @@ export function PDDEmployeeDashboard() {
           </div>
         </div>
       ) : (
-        /* Desktop Layout - Three Columns */
-        <div className="min-h-screen p-6">
-          <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-12 gap-6">
-              {/* Left Column - Status Card */}
-              <div className="col-span-12 lg:col-span-3 space-y-6">
-                <SmartStatusCard variant="desktop" />
-              </div>
+        /* Desktop Layout - True CSS Grid System */
+        <div className="min-h-screen bg-white" dir="rtl">
+          {/* Master Grid Container */}
+          <div className="grid grid-cols-12 gap-6 p-6 w-full">
+            
+            {/* Left Column - Status Card (3 columns) */}
+            <div className="col-span-12 md:col-span-3">
+              <SmartStatusCard variant="desktop" />
+            </div>
 
-              {/* Center Column - Main Content */}
-              <div className="col-span-12 lg:col-span-6 space-y-6">
-                <TodaysFocusWidget />
-                <AnnouncementsWidget variant="desktop" />
-              </div>
+            {/* Center Column - Main Content (6 columns) */}
+            <div className="col-span-12 md:col-span-6 flex flex-col gap-6">
+              {/* Today's Focus - Primary Widget */}
+              <TodaysFocusWidget />
+              
+              {/* Announcements - Below Today's Focus */}
+              <AnnouncementsWidget variant="desktop" />
+            </div>
 
-              {/* Right Column - Information */}
-              <div className="col-span-12 lg:col-span-3 space-y-6">
-                <NextUpWidget variant="desktop" />
-                <MyRequestsWidget variant="desktop" />
-              </div>
+            {/* Right Column - Information Panel (3 columns) */}
+            <div className="col-span-12 md:col-span-3 flex flex-col gap-6">
+              {/* Next Up Widget */}
+              <NextUpWidget variant="desktop" />
+              
+              {/* My Requests Widget */}
+              <MyRequestsWidget variant="desktop" />
             </div>
           </div>
         </div>

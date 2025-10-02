@@ -47,11 +47,11 @@ export function TasksAtRiskWidget({ className, variant = 'desktop' }: TasksAtRis
     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
     if (diffDays < 0) {
-      return { level: 'overdue', text: 'تأخیر', color: 'text-red-600 bg-red-100' };
+      return { level: 'overdue', text: 'تأخیر', color: 'text-status-danger-text bg-status-danger' };
     } else if (diffDays === 0) {
-      return { level: 'due-today', text: 'امروز', color: 'text-orange-600 bg-orange-100' };
+      return { level: 'due-today', text: 'امروز', color: 'text-status-warning-text bg-status-warning' };
     } else {
-      return { level: 'due-soon', text: 'به زودی', color: 'text-blue-600 bg-blue-100' };
+      return { level: 'due-soon', text: 'به زودی', color: 'text-brand-pink-text bg-brand-pink' };
     }
   };
 
@@ -62,11 +62,11 @@ export function TasksAtRiskWidget({ className, variant = 'desktop' }: TasksAtRis
     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
     if (diffDays < 0) {
-      return <AlertTriangle className="h-4 w-4 text-red-500" />;
+      return <AlertTriangle className="h-4 w-4 text-status-danger" />;
     } else if (diffDays <= 1) {
-      return <Clock className="h-4 w-4 text-orange-500" />;
+      return <Clock className="h-4 w-4 text-status-warning" />;
     } else {
-      return <Calendar className="h-4 w-4 text-blue-500" />;
+      return <Calendar className="h-4 w-4 text-brand-pink" />;
     }
   };
 
@@ -121,18 +121,18 @@ export function TasksAtRiskWidget({ className, variant = 'desktop' }: TasksAtRis
       error={error?.message}
       empty={!isLoading && safeTasksAtRisk.length === 0}
       emptyMessage="هیچ کاری در معرض خطر نیست"
-      emptyIcon={<AlertTriangle className="h-8 w-8 text-green-400" />}
+      emptyIcon={<AlertTriangle className="h-8 w-8 text-status-success" />}
         headerAction={
           safeTasksAtRisk.length > 0 && (
           <div className="flex items-center gap-2">
             {overdueCount > 0 && (
-              <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-red-100 text-red-700 text-xs font-vazirmatn font-medium">
+              <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-status-danger text-status-danger-text text-xs font-vazirmatn font-medium">
                 <AlertTriangle className="h-3 w-3" />
                 {overdueCount} تأخیر
               </div>
             )}
             {dueTodayCount > 0 && (
-              <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-orange-100 text-orange-700 text-xs font-vazirmatn font-medium">
+              <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-status-warning text-status-warning-text text-xs font-vazirmatn font-medium">
                 <Clock className="h-3 w-3" />
                 {dueTodayCount} امروز
               </div>
@@ -147,7 +147,7 @@ export function TasksAtRiskWidget({ className, variant = 'desktop' }: TasksAtRis
         {/* Overdue Tasks Section */}
         {overdueTasks.length > 0 && (
           <div>
-            <h3 className="text-sm font-semibold text-red-700 font-vazirmatn mb-3 flex items-center gap-2">
+            <h3 className="text-sm font-semibold text-status-danger-text font-vazirmatn mb-3 flex items-center gap-2">
               <AlertTriangle className="h-4 w-4" />
               با تاخیر ({overdueCount})
             </h3>
@@ -157,7 +157,7 @@ export function TasksAtRiskWidget({ className, variant = 'desktop' }: TasksAtRis
                 return (
                   <div
                     key={task.id}
-                    className="p-3 rounded-xl bg-red-50 border border-red-200 hover:bg-red-100 transition-all duration-200"
+                    className="p-3 rounded-xl bg-status-danger border border-status-danger hover:bg-status-danger transition-all duration-200"
                   >
                     <div className="flex items-start rtl:items-start gap-3">
                       {/* Risk Icon */}
@@ -221,7 +221,7 @@ export function TasksAtRiskWidget({ className, variant = 'desktop' }: TasksAtRis
         {/* Today Tasks Section */}
         {todayTasks.length > 0 && (
           <div>
-            <h3 className="text-sm font-semibold text-orange-700 font-vazirmatn mb-3 flex items-center gap-2">
+            <h3 className="text-sm font-semibold text-status-warning-text font-vazirmatn mb-3 flex items-center gap-2">
               <Clock className="h-4 w-4" />
               امروز ({dueTodayCount})
             </h3>
@@ -231,7 +231,7 @@ export function TasksAtRiskWidget({ className, variant = 'desktop' }: TasksAtRis
                 return (
                   <div
                     key={task.id}
-                    className="p-3 rounded-xl bg-orange-50 border border-orange-200 hover:bg-orange-100 transition-all duration-200"
+                    className="p-3 rounded-xl bg-status-warning border border-status-warning hover:bg-status-warning transition-all duration-200"
                   >
                     <div className="flex items-start rtl:items-start gap-3">
                       {/* Risk Icon */}

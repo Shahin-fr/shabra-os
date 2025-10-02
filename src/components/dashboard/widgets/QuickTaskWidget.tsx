@@ -91,8 +91,8 @@ export function QuickTaskWidget({ priority = 'medium' }: QuickTaskWidgetProps) {
           transition={{ duration: 0.3 }}
         >
           <div className="mb-4">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-blue-100 flex items-center justify-center">
-              <Plus className="h-8 w-8 text-blue-600" />
+            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-brand-pink flex items-center justify-center">
+              <Plus className="h-8 w-8 text-brand-pink-text" />
             </div>
             <h3 className="text-lg font-semibold text-gray-900 font-vazirmatn mb-2">
               کار جدید ایجاد کنید
@@ -104,7 +104,7 @@ export function QuickTaskWidget({ priority = 'medium' }: QuickTaskWidgetProps) {
           
           <Button
             onClick={() => setIsCreating(true)}
-            className="w-full font-vazirmatn bg-blue-500 hover:bg-blue-600 text-white"
+            className="w-full font-vazirmatn bg-brand-pink hover:bg-brand-pink text-white"
           >
             <Plus className="h-4 w-4 ms-2" />
             شروع کار جدید
@@ -144,7 +144,7 @@ export function QuickTaskWidget({ priority = 'medium' }: QuickTaskWidgetProps) {
                   className={cn(
                     'p-2 rounded-lg border text-sm font-vazirmatn transition-all duration-200',
                     taskPriority === priority
-                      ? 'border-blue-500 bg-blue-50 text-blue-700'
+                      ? 'border-brand-pink bg-brand-pink text-brand-pink-text'
                       : 'border-gray-200 hover:border-gray-300'
                   )}
                 >
@@ -166,7 +166,7 @@ export function QuickTaskWidget({ priority = 'medium' }: QuickTaskWidgetProps) {
             <Button
               onClick={handleCreateTask}
               disabled={!taskTitle.trim() || createTaskMutation.isPending}
-              className="flex-1 font-vazirmatn bg-blue-500 hover:bg-blue-600 text-white"
+              className="flex-1 font-vazirmatn bg-brand-pink hover:bg-brand-pink text-white"
             >
               {createTaskMutation.isPending ? (
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
@@ -203,7 +203,7 @@ export function QuickTaskWidget({ priority = 'medium' }: QuickTaskWidgetProps) {
             </div>
           </div>
           <div>
-            <div className="text-2xl font-bold text-green-600 font-vazirmatn">
+            <div className="text-2xl font-bold text-status-success-text font-vazirmatn">
               8
             </div>
             <div className="text-xs text-gray-600 font-vazirmatn">

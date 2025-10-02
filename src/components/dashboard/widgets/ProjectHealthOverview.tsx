@@ -67,9 +67,9 @@ const projectData = [
 const getStatusColor = (status: string) => {
   switch (status) {
     case 'on_track':
-      return 'text-green-500 bg-green-500/20';
+      return 'text-status-success-text bg-status-success/20';
     case 'delayed':
-      return 'text-red-500 bg-red-500/20';
+      return 'text-status-danger-text bg-status-danger/20';
     case 'at_risk':
       return 'text-[#ff0a54] bg-[#ff0a54]/20';
     default:
@@ -93,11 +93,11 @@ const getStatusIcon = (status: string) => {
 const getPriorityColor = (priority: string) => {
   switch (priority) {
     case 'high':
-      return 'bg-red-100 text-red-800 border-red-200';
+      return 'bg-status-danger text-status-danger-text border-status-danger';
     case 'medium':
       return 'bg-yellow-100 text-yellow-800 border-yellow-200';
     case 'low':
-      return 'bg-green-100 text-green-800 border-green-200';
+      return 'bg-status-success text-status-success-text border-status-success';
     default:
       return 'bg-gray-100 text-gray-800 border-gray-200';
   }
@@ -150,13 +150,13 @@ export function ProjectHealthOverview() {
               </div>
             </div>
             <div className='text-center p-3 rounded-xl bg-white/5'>
-              <div className='text-2xl font-bold text-green-500'>
+              <div className='text-2xl font-bold text-status-success-text'>
                 {onTrackProjects}
               </div>
               <div className='text-sm text-muted-foreground'>طبق برنامه</div>
             </div>
             <div className='text-center p-3 rounded-xl bg-white/5'>
-              <div className='text-2xl font-bold text-red-500'>
+              <div className='text-2xl font-bold text-status-danger-text'>
                 {delayedProjects}
               </div>
               <div className='text-sm text-muted-foreground'>تأخیر</div>
@@ -221,9 +221,9 @@ export function ProjectHealthOverview() {
                     <OptimizedMotion
                       className={`h-3 rounded-full ${
                         project.status === 'on_track'
-                          ? 'bg-green-500'
+                          ? 'bg-status-success'
                           : project.status === 'delayed'
-                            ? 'bg-red-500'
+                            ? 'bg-status-danger'
                             : project.status === 'at_risk'
                               ? 'bg-[#ff0a54]'
                               : 'bg-gray-500'
@@ -243,10 +243,10 @@ export function ProjectHealthOverview() {
                     <span
                       className={`${
                         project.status === 'delayed'
-                          ? 'text-red-500'
+                          ? 'text-status-danger-text'
                           : project.status === 'at_risk'
                             ? 'text-yellow-500'
-                            : 'text-green-500'
+                            : 'text-status-success-text'
                       }`}
                     >
                       {project.status === 'on_track'

@@ -36,25 +36,25 @@ export function TeamWorkloadWidget({ className, variant = 'desktop' }: TeamWorkl
 
   const getWorkloadLevel = (taskCount: number) => {
     if (taskCount === 0) {
-      return { level: 'light', text: 'سبک', color: 'text-green-600 bg-green-100' };
+      return { level: 'light', text: 'سبک', color: 'text-status-success-text bg-status-success' };
     } else if (taskCount <= 2) {
-      return { level: 'moderate', text: 'متوسط', color: 'text-blue-600 bg-blue-100' };
+      return { level: 'moderate', text: 'متوسط', color: 'text-brand-pink-text bg-brand-pink' };
     } else if (taskCount <= 4) {
-      return { level: 'heavy', text: 'سنگین', color: 'text-orange-600 bg-orange-100' };
+      return { level: 'heavy', text: 'سنگین', color: 'text-status-warning-text bg-status-warning' };
     } else {
-      return { level: 'overloaded', text: 'بیش از حد', color: 'text-red-600 bg-red-100' };
+      return { level: 'overloaded', text: 'بیش از حد', color: 'text-status-danger-text bg-status-danger' };
     }
   };
 
   const getWorkloadBarColor = (taskCount: number) => {
     if (taskCount === 0) {
-      return 'bg-green-500';
+      return 'bg-status-success';
     } else if (taskCount <= 2) {
-      return 'bg-blue-500';
+      return 'bg-brand-pink';
     } else if (taskCount <= 4) {
-      return 'bg-orange-500';
+      return 'bg-status-warning';
     } else {
-      return 'bg-red-500';
+      return 'bg-status-danger';
     }
   };
 
@@ -90,7 +90,7 @@ export function TeamWorkloadWidget({ className, variant = 'desktop' }: TeamWorkl
       error={error?.message}
       empty={!isLoading && safeTeamWorkload.length === 0}
       emptyMessage="هیچ عضو تیمی یافت نشد"
-      emptyIcon={<Users className="h-8 w-8 text-purple-400" />}
+      emptyIcon={<Users className="h-8 w-8 text-brand-plum" />}
     >
       {/* Workload Summary */}
       {safeTeamWorkload.length > 0 && (
@@ -105,7 +105,7 @@ export function TeamWorkloadWidget({ className, variant = 'desktop' }: TeamWorkl
               </div>
             </div>
             <div className="text-center p-3 rounded-xl bg-white/60">
-              <div className="text-2xl font-bold text-purple-600 font-vazirmatn">
+              <div className="text-2xl font-bold text-brand-plum-text font-vazirmatn">
                 {safeTeamWorkload.length}
               </div>
               <div className="text-sm text-gray-600 font-vazirmatn">
@@ -118,13 +118,13 @@ export function TeamWorkloadWidget({ className, variant = 'desktop' }: TeamWorkl
           {(overloadedMembers > 0 || underutilizedMembers > 0) && (
             <div className="mt-4 space-y-2">
               {overloadedMembers > 0 && (
-                <div className="flex items-center gap-2 p-2 rounded-lg bg-red-100 text-red-700 text-sm font-vazirmatn">
+                <div className="flex items-center gap-2 p-2 rounded-lg bg-status-danger text-status-danger-text text-sm font-vazirmatn">
                   <AlertCircle className="h-4 w-4" />
                   {overloadedMembers} نفر بیش از حد کار دارند
                 </div>
               )}
               {underutilizedMembers > 0 && (
-                <div className="flex items-center gap-2 p-2 rounded-lg bg-green-100 text-green-700 text-sm font-vazirmatn">
+                <div className="flex items-center gap-2 p-2 rounded-lg bg-status-success text-status-success-text text-sm font-vazirmatn">
                   <Users className="h-4 w-4" />
                   {underutilizedMembers} نفر کار ندارند
                 </div>

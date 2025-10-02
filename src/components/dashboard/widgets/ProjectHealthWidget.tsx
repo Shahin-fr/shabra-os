@@ -67,13 +67,13 @@ export function ProjectHealthWidget({ className, variant = 'desktop', priority =
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'on-track':
-        return 'text-green-600 bg-green-100';
+        return 'text-status-success-text bg-status-success';
       case 'at-risk':
         return 'text-yellow-600 bg-yellow-100';
       case 'delayed':
-        return 'text-red-600 bg-red-100';
+        return 'text-status-danger-text bg-status-danger';
       case 'completed':
-        return 'text-blue-600 bg-blue-100';
+        return 'text-brand-pink-text bg-brand-pink';
       default:
         return 'text-gray-600 bg-gray-100';
     }
@@ -136,17 +136,17 @@ export function ProjectHealthWidget({ className, variant = 'desktop', priority =
       error={error?.message}
       empty={!isLoading && safeProjects.length === 0}
       emptyMessage="هیچ پروژه‌ای یافت نشد"
-      emptyIcon={<TrendingUp className="h-8 w-8 text-blue-400" />}
+      emptyIcon={<TrendingUp className="h-8 w-8 text-brand-pink" />}
     >
       {/* Health Summary */}
       {safeProjects.length > 0 && (
         <div className="mb-6">
           <div className="grid grid-cols-3 gap-3 mb-4">
-            <div className="text-center p-3 rounded-xl bg-green-50">
-              <div className="text-2xl font-bold text-green-600 font-vazirmatn">
+            <div className="text-center p-3 rounded-xl bg-status-success">
+              <div className="text-2xl font-bold text-status-success-text font-vazirmatn">
                 {onTrackCount}
               </div>
-              <div className="text-xs text-green-600 font-vazirmatn">
+              <div className="text-xs text-status-success-text font-vazirmatn">
                 در مسیر
               </div>
             </div>
@@ -158,11 +158,11 @@ export function ProjectHealthWidget({ className, variant = 'desktop', priority =
                 در خطر
               </div>
             </div>
-            <div className="text-center p-3 rounded-xl bg-red-50">
-              <div className="text-2xl font-bold text-red-600 font-vazirmatn">
+            <div className="text-center p-3 rounded-xl bg-status-danger">
+              <div className="text-2xl font-bold text-status-danger-text font-vazirmatn">
                 {delayedCount}
               </div>
-              <div className="text-xs text-red-600 font-vazirmatn">
+              <div className="text-xs text-status-danger-text font-vazirmatn">
                 تأخیر
               </div>
             </div>
@@ -249,7 +249,7 @@ export function ProjectHealthWidget({ className, variant = 'desktop', priority =
       {safeProjects.length > 0 && (
         <div className="pt-4 border-t border-white/40">
           <motion.button
-            className="w-full text-center text-sm text-blue-600 font-vazirmatn hover:text-blue-800 transition-colors duration-200"
+            className="w-full text-center text-sm text-brand-pink-text font-vazirmatn hover:text-brand-pink-text transition-colors duration-200"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => {

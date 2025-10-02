@@ -57,13 +57,13 @@ const workloadData = [
 const getWorkloadColor = (status: string) => {
   switch (status) {
     case 'low':
-      return 'bg-green-500';
+      return 'bg-status-success';
     case 'medium':
       return 'bg-[#ff0a54]';
     case 'high':
-      return 'bg-orange-500';
+      return 'bg-status-warning';
     case 'critical':
-      return 'bg-red-500';
+      return 'bg-status-danger';
     default:
       return 'bg-gray-500';
   }
@@ -113,13 +113,13 @@ export function TeamWorkloadAnalysis() {
               </div>
             </div>
             <div className='text-center p-3 rounded-xl bg-white/5'>
-              <div className='text-2xl font-bold text-red-500'>
+              <div className='text-2xl font-bold text-status-danger-text'>
                 {criticalCount}
               </div>
               <div className='text-sm text-muted-foreground'>نیاز به توجه</div>
             </div>
             <div className='text-center p-3 rounded-xl bg-white/5'>
-              <div className='text-2xl font-bold text-green-500'>
+              <div className='text-2xl font-bold text-status-success-text'>
                 {workloadData.filter(emp => emp.status === 'low').length}
               </div>
               <div className='text-sm text-muted-foreground'>
@@ -161,12 +161,12 @@ export function TeamWorkloadAnalysis() {
                       variant='outline'
                       className={`text-xs ${
                         employee.status === 'critical'
-                          ? 'bg-red-100 text-red-800 border-red-200'
+                          ? 'bg-status-danger text-status-danger-text border-status-danger'
                           : employee.status === 'high'
-                            ? 'bg-orange-100 text-orange-800 border-orange-200'
+                            ? 'bg-status-warning text-status-warning-text border-status-warning'
                             : employee.status === 'medium'
                               ? 'bg-yellow-100 text-yellow-800 border-yellow-200'
-                              : 'bg-green-100 text-green-800 border-green-200'
+                              : 'bg-status-success text-status-success-text border-status-success'
                       }`}
                     >
                       {employee.status === 'critical'
@@ -203,7 +203,7 @@ export function TeamWorkloadAnalysis() {
                       تسک‌های باقی‌مانده: {employee.tasks - employee.completed}
                     </span>
                     {employee.overdue > 0 && (
-                      <span className='text-red-500 flex items-center gap-1'>
+                      <span className='text-status-danger-text flex items-center gap-1'>
                         <AlertTriangle className='h-3 w-3' />
                         {employee.overdue} تسک تأخیر
                       </span>

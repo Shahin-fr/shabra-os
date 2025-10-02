@@ -38,7 +38,7 @@ export function RecentActivityWidget({ className, variant = 'desktop', priority 
           description: 'کار "طراحی رابط کاربری" را تکمیل کرد',
           timestamp: '2024-01-15T10:30:00Z',
           icon: CheckCircle,
-          color: 'text-green-600 bg-green-100',
+          color: 'text-status-success-text bg-status-success',
         },
         {
           id: '2',
@@ -47,7 +47,7 @@ export function RecentActivityWidget({ className, variant = 'desktop', priority 
           description: 'کار جدید "تست عملکرد" ایجاد کرد',
           timestamp: '2024-01-15T09:15:00Z',
           icon: Plus,
-          color: 'text-blue-600 bg-blue-100',
+          color: 'text-brand-pink-text bg-brand-pink',
         },
         {
           id: '3',
@@ -56,7 +56,7 @@ export function RecentActivityWidget({ className, variant = 'desktop', priority 
           description: 'نظری روی پروژه "سیستم مدیریت" اضافه کرد',
           timestamp: '2024-01-15T08:45:00Z',
           icon: MessageSquare,
-          color: 'text-purple-600 bg-purple-100',
+          color: 'text-brand-plum-text bg-brand-plum',
         },
         {
           id: '4',
@@ -65,7 +65,7 @@ export function RecentActivityWidget({ className, variant = 'desktop', priority 
           description: 'جلسه "بررسی هفتگی" را برنامه‌ریزی کرد',
           timestamp: '2024-01-15T08:00:00Z',
           icon: Calendar,
-          color: 'text-orange-600 bg-orange-100',
+          color: 'text-status-warning-text bg-status-warning',
         },
         {
           id: '5',
@@ -114,7 +114,7 @@ export function RecentActivityWidget({ className, variant = 'desktop', priority 
       error={error?.message}
       empty={!isLoading && safeActivities.length === 0}
       emptyMessage="هیچ فعالیتی یافت نشد"
-      emptyIcon={<Activity className="h-8 w-8 text-blue-400" />}
+      emptyIcon={<Activity className="h-8 w-8 text-brand-pink" />}
     >
       {/* Activity Feed */}
       <div className="space-y-3">
@@ -143,7 +143,7 @@ export function RecentActivityWidget({ className, variant = 'desktop', priority 
                     'text-gray-900 font-vazirmatn leading-tight',
                     isMobile ? 'text-sm' : 'text-base'
                   )}>
-                    <span className="font-semibold text-blue-600">
+                    <span className="font-semibold text-brand-pink-text">
                       {activity.user.name}
                     </span>
                     {' '}
@@ -165,12 +165,12 @@ export function RecentActivityWidget({ className, variant = 'desktop', priority 
       {/* Live Indicator */}
       {safeActivities.length > 0 && (
         <motion.div
-          className="mt-4 flex items-center gap-2 text-sm text-green-600 font-vazirmatn"
+          className="mt-4 flex items-center gap-2 text-sm text-status-success-text font-vazirmatn"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
         >
-          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+          <div className="w-2 h-2 bg-status-success rounded-full animate-pulse" />
           <span>فعالیت‌ها به صورت زنده به‌روزرسانی می‌شوند</span>
         </motion.div>
       )}
@@ -179,7 +179,7 @@ export function RecentActivityWidget({ className, variant = 'desktop', priority 
       {safeActivities.length > 0 && (
         <div className="pt-4 border-t border-white/40">
           <motion.button
-            className="w-full text-center text-sm text-blue-600 font-vazirmatn hover:text-blue-800 transition-colors duration-200"
+            className="w-full text-center text-sm text-brand-pink-text font-vazirmatn hover:text-brand-pink-text transition-colors duration-200"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => {

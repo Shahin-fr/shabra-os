@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { Plus, Users, FileText, Megaphone } from 'lucide-react';
-import { EnhancedWidgetCard } from '@/components/ui/EnhancedWidgetCard';
+import { ManagerWidget } from '@/components/ui/PerfectWidget';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
@@ -120,7 +120,7 @@ const quickActions: QuickAction[] = [
     label: 'تسک جدید',
     icon: Plus,
     href: '/tasks/new',
-    color: 'bg-blue-500 hover:bg-blue-600',
+    color: 'bg-brand-pink hover:bg-brand-pink',
     description: 'کار جدید به تیم اختصاص دهید',
     modalContent: AddTaskModal
   },
@@ -129,7 +129,7 @@ const quickActions: QuickAction[] = [
     label: 'پروژه جدید',
     icon: FileText,
     href: '/projects/new',
-    color: 'bg-green-500 hover:bg-green-600',
+    color: 'bg-status-success hover:bg-status-success',
     description: 'پروژه جدید ایجاد کنید',
     modalContent: CreateProjectModalWrapper
   },
@@ -138,7 +138,7 @@ const quickActions: QuickAction[] = [
     label: 'برنامه‌ریزی جلسه',
     icon: Users,
     href: '/meetings/new',
-    color: 'bg-purple-500 hover:bg-purple-600',
+    color: 'bg-brand-plum hover:bg-brand-plum',
     description: 'جلسه جدید برنامه‌ریزی کنید',
     modalContent: ScheduleMeetingModalWrapper
   },
@@ -147,11 +147,27 @@ const quickActions: QuickAction[] = [
     label: 'اعلان',
     icon: Megaphone,
     href: '/announcements/new',
-    color: 'bg-orange-500 hover:bg-orange-600',
+    color: 'bg-status-warning hover:bg-status-warning',
     description: 'اعلان جدید ارسال کنید',
     modalContent: CreateAnnouncementModalWrapper
   },
 ];
+
+// Helper function to get text color for each button
+export function getButtonTextColor(actionId: string): string {
+  switch (actionId) {
+    case 'assign-task':
+      return 'text-brand-pink-text hover:text-brand-pink-text';
+    case 'create-project':
+      return 'text-status-success-text hover:text-status-success-text';
+    case 'schedule-meeting':
+      return 'text-brand-plum-text hover:text-brand-plum-text';
+    case 'announcement':
+      return 'text-status-warning-text hover:text-status-warning-text';
+    default:
+      return 'text-gray-700 hover:text-gray-700';
+  }
+}
 
 export function QuickActionsWidget({ className, variant = 'desktop', priority = 'medium' }: QuickActionsWidgetProps) {
   const { user } = useAuth();
@@ -188,9 +204,8 @@ export function QuickActionsWidget({ className, variant = 'desktop', priority = 
   };
 
   return (
-    <EnhancedWidgetCard
+    <ManagerWidget
       title="دسترسی سریع"
-      variant="manager"
       priority={priority}
       className={className}
     >
@@ -208,27 +223,26 @@ export function QuickActionsWidget({ className, variant = 'desktop', priority = 
             <Button
               onClick={() => setSelectedModal(action.id)}
               className={cn(
-                'w-full flex items-center h-auto p-4 font-vazirmatn transition-all duration-200 hover:scale-105',
-                {
-                  // This is the fix for DESKTOP view
-                  'justify-between': !isMobile,
-                  // This reverts the MOBILE view to its original state
-                  'justify-start gap-3': isMobile,
-                },
+                'w-full h-auto p-4 font-vazirmatn transition-all duration-200 hover:scale-105',
                 action.color,
-                'text-white hover:text-white'
+                getButtonTextColor(action.id)
               )}
             >
-              <action.icon className="h-5 w-5 flex-shrink-0" />
-              <div className="flex-1 text-end">
-                <div className="font-medium text-sm">
-                  {action.label}
-                </div>
-                {!isMobile && (
-                  <div className="text-xs opacity-90 mt-1">
-                    {action.description}
+              <div className="flex items-center justify-between w-full">
+                {/* TEXT BLOCK (First child) */}
+                <div className="text-right">
+                  <div className="font-medium text-sm">
+                    {action.label}
                   </div>
-                )}
+                  {!isMobile && (
+                    <div className="text-xs opacity-90 mt-1">
+                      {action.description}
+                    </div>
+                  )}
+                </div>
+                
+                {/* ICON (Second child) */}
+                <action.icon className="h-5 w-5 flex-shrink-0" />
               </div>
             </Button>
           </motion.div>
@@ -266,6 +280,6 @@ export function QuickActionsWidget({ className, variant = 'desktop', priority = 
           <ModalComponent onClose={() => setSelectedModal(null)} />
         );
       })()}
-    </EnhancedWidgetCard>
+    </ManagerWidget>
   );
 }

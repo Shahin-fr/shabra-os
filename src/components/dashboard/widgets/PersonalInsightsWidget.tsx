@@ -37,7 +37,7 @@ export function PersonalInsightsWidget({ className, variant = 'desktop', priorit
           value: 85,
           trend: 'up',
           icon: TrendingUp,
-          color: 'text-green-600 bg-green-100',
+          color: 'text-status-success-text bg-status-success',
         },
         {
           id: '2',
@@ -47,7 +47,7 @@ export function PersonalInsightsWidget({ className, variant = 'desktop', priorit
           value: 200,
           trend: 'up',
           icon: Target,
-          color: 'text-blue-600 bg-blue-100',
+          color: 'text-brand-pink-text bg-brand-pink',
         },
         {
           id: '3',
@@ -57,7 +57,7 @@ export function PersonalInsightsWidget({ className, variant = 'desktop', priorit
           value: 5,
           trend: 'stable',
           icon: Clock,
-          color: 'text-purple-600 bg-purple-100',
+          color: 'text-brand-plum-text bg-brand-plum',
         },
         {
           id: '4',
@@ -67,7 +67,7 @@ export function PersonalInsightsWidget({ className, variant = 'desktop', priorit
           value: 3,
           trend: 'up',
           icon: Award,
-          color: 'text-orange-600 bg-orange-100',
+          color: 'text-status-warning-text bg-status-warning',
         },
       ];
     },
@@ -77,9 +77,9 @@ export function PersonalInsightsWidget({ className, variant = 'desktop', priorit
   const getTrendIcon = (trend: string) => {
     switch (trend) {
       case 'up':
-        return <TrendingUp className="h-4 w-4 text-green-500" />;
+        return <TrendingUp className="h-4 w-4 text-status-success" />;
       case 'down':
-        return <TrendingUp className="h-4 w-4 text-red-500 rotate-180" />;
+        return <TrendingUp className="h-4 w-4 text-status-danger rotate-180" />;
       default:
         return <div className="h-4 w-4 rounded-full bg-gray-400" />;
     }
@@ -88,9 +88,9 @@ export function PersonalInsightsWidget({ className, variant = 'desktop', priorit
   const getTrendColor = (trend: string) => {
     switch (trend) {
       case 'up':
-        return 'text-green-600';
+        return 'text-status-success-text';
       case 'down':
-        return 'text-red-600';
+        return 'text-status-danger-text';
       default:
         return 'text-gray-600';
     }
@@ -110,7 +110,7 @@ export function PersonalInsightsWidget({ className, variant = 'desktop', priorit
       error={error?.message}
       empty={!isLoading && safeInsights.length === 0}
       emptyMessage="در حال تحلیل الگوهای کاری شما..."
-      emptyIcon={<Zap className="h-8 w-8 text-blue-400" />}
+      emptyIcon={<Zap className="h-8 w-8 text-brand-pink" />}
     >
       {/* Insights Grid */}
       <div className={cn(
@@ -178,8 +178,8 @@ export function PersonalInsightsWidget({ className, variant = 'desktop', priorit
           transition={{ delay: 0.5 }}
         >
           <div className="flex items-center gap-2">
-            <Zap className="h-4 w-4 text-blue-500" />
-            <p className="text-sm text-blue-700 font-vazirmatn">
+            <Zap className="h-4 w-4 text-brand-pink" />
+            <p className="text-sm text-brand-pink-text font-vazirmatn">
               عالی! امروز عملکرد بهتری نسبت به دیروز داشته‌اید. ادامه دهید! 🚀
             </p>
           </div>
@@ -190,7 +190,7 @@ export function PersonalInsightsWidget({ className, variant = 'desktop', priorit
       {safeInsights.length > 0 && (
         <div className="pt-4 border-t border-white/40">
           <motion.button
-            className="w-full text-center text-sm text-blue-600 font-vazirmatn hover:text-blue-800 transition-colors duration-200"
+            className="w-full text-center text-sm text-brand-pink-text font-vazirmatn hover:text-brand-pink-text transition-colors duration-200"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => {

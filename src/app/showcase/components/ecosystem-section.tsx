@@ -6,6 +6,7 @@ import { useInView } from 'react-intersection-observer';
 import { useIsMobile } from '../../../hooks/useMediaQuery';
 import { t } from '../utils/i18n';
 import { LayoutGrid, Clapperboard, Zap, BookOpen, Users } from 'lucide-react';
+import Image from 'next/image';
 
 /**
  * EcosystemSection Component - Completely Re-architected
@@ -14,7 +15,7 @@ import { LayoutGrid, Clapperboard, Zap, BookOpen, Users } from 'lucide-react';
  * the modular ecosystem with seamless transitions and RTL/LTR support.
  */
 export default function EcosystemSection() {
-  const isMobile = useIsMobile();
+  const isMobile = useIsMobile() ?? false;
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1
@@ -35,7 +36,7 @@ export default function EcosystemSection() {
         title: t('modal_task_management_title'),
         description: t('modal_task_management_description'),
         features: t('modal_task_management_features').split(','),
-        screenshot: '/api/placeholder/600/400'
+        screenshot: '/images/task-management.gif'
       }
     },
     {
@@ -49,7 +50,7 @@ export default function EcosystemSection() {
         title: t('modal_storyboard_title'),
         description: t('modal_storyboard_description'),
         features: t('modal_storyboard_features').split(','),
-        screenshot: '/api/placeholder/600/400'
+        screenshot: '/images/storyboard.gif'
       }
     },
     {
@@ -63,7 +64,7 @@ export default function EcosystemSection() {
         title: t('modal_instapulse_title'),
         description: t('modal_instapulse_description'),
         features: t('modal_instapulse_features').split(','),
-        screenshot: '/api/placeholder/600/400'
+        screenshot: '/images/instapulse.gif'
       }
     },
     {
@@ -77,7 +78,7 @@ export default function EcosystemSection() {
         title: t('modal_wiki_title'),
         description: t('modal_wiki_description'),
         features: t('modal_wiki_features').split(','),
-        screenshot: '/api/placeholder/600/400'
+        screenshot: '/images/wiki.gif'
       }
     },
     {
@@ -91,7 +92,7 @@ export default function EcosystemSection() {
         title: t('modal_hr_title'),
         description: t('modal_hr_description'),
         features: t('modal_hr_features').split(','),
-        screenshot: '/api/placeholder/600/400'
+        screenshot: '/images/hr.gif'
       }
     }
   ];
@@ -149,6 +150,7 @@ export default function EcosystemSection() {
     return /[\u0600-\u06FF]/.test(text);
   };
 
+  /*
   const renderMixedText = (text: string) => {
     // Check if text contains both Persian and English
     const hasPersian = /[\u0600-\u06FF]/.test(text);
@@ -166,6 +168,7 @@ export default function EcosystemSection() {
     // For pure Persian or pure English text
     return { persian: text, english: '', isMixed: false };
   };
+  */
 
   return (
     <section className="relative min-h-screen bg-transparent overflow-hidden">
@@ -190,7 +193,7 @@ export default function EcosystemSection() {
         </motion.div>
 
         {/* Responsive layout - Desktop: Side by side, Mobile: Accordion */}
-        {isMobile ? (
+        {false ? (
           /* Mobile Accordion Layout */
           <div className="space-y-4">
             {modules.map((module) => (
@@ -290,20 +293,55 @@ export default function EcosystemSection() {
                               </ul>
                             </div>
 
-                            {/* جایگاه تصویر */}
+                            {/* تصویر ماژول */}
                             <div className="relative bg-[#0A0A0A] rounded-2xl border border-[#2A2A2A] overflow-hidden">
-                              <div className="aspect-video bg-gradient-to-br from-[#1A1A1A] to-[#0F0F0F] flex items-center justify-center">
-                                <div className="text-center">
-                                  <div 
-                                    className="w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-3"
-                                    style={{ backgroundColor: module.color }}
-                                  >
-                                    <module.icon size={20} />
+                              <div className="w-full h-64 flex items-center justify-center p-4 relative">
+                                {/* Display actual image if available, otherwise show placeholder */}
+                                {module.details.screenshot ? (
+                                  <div className="relative w-full h-full">
+                            <Image 
+                              src={module.details.screenshot}
+                              alt={`نمایی از ${module.details.title}`}
+                              fill
+                              className="object-cover rounded-xl"
+                              unoptimized={true}
+                                      onError={(e) => {
+                                        console.log('Image error:', module.details.screenshot);
+                                        e.currentTarget.style.display = 'none';
+                                        // Show fallback content
+                                        const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+                                        if (fallback) fallback.style.display = 'block';
+                                      }}
+                                      onLoad={() => console.log('Image loaded:', module.details.screenshot)}
+                                    />
+                                    {/* Fallback content - hidden by default */}
+                                    <div className="absolute inset-0 flex items-center justify-center" style={{ display: 'none' }}>
+                                      <div className="text-center">
+                                        <div 
+                                          className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
+                                          style={{ backgroundColor: module.color }}
+                                        >
+                                          <module.icon size={32} style={{ color: "#FFFFFF" }} />
+                                        </div>
+                                        <p className="text-[#666666] text-sm text-right" dir="rtl">
+                                          نمایی از {module.details.title}
+                                        </p>
+                                      </div>
+                                    </div>
                                   </div>
-                                  <p className="text-[#666666] text-xs">
-                                    نمایی از {module.details.title}
-                                  </p>
-                                </div>
+                                ) : (
+                                  <div className="text-center">
+                                    <div 
+                                      className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
+                                      style={{ backgroundColor: module.color }}
+                                    >
+                                      <module.icon size={32} style={{ color: "#FFFFFF" }} />
+                                    </div>
+                                    <p className="text-[#666666] text-sm text-right" dir="rtl">
+                                      نمایی از {module.details.title}
+                                    </p>
+                                  </div>
+                                )}
                               </div>
                             </div>
                           </div>
@@ -426,18 +464,53 @@ export default function EcosystemSection() {
                   {/* جایگاه تصویر */}
                   <div className="p-8 pt-0">
                     <div className="relative bg-[#0A0A0A] rounded-2xl border border-[#2A2A2A] overflow-hidden">
-                      <div className="aspect-video bg-gradient-to-br from-[#1A1A1A] to-[#0F0F0F] flex items-center justify-center">
-                        <div className="text-center">
-                          <div 
-                            className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
-                            style={{ backgroundColor: selectedModuleData.color }}
-                          >
-                            <selectedModuleData.icon size={32} style={{ color: "#FFFFFF" }} />
+                      <div className="aspect-video bg-gradient-to-br from-[#1A1A1A] to-[#0F0F0F] flex items-center justify-center relative">
+                        {/* Display actual image if available, otherwise show placeholder */}
+                        {selectedModuleData.details.screenshot ? (
+                          <div className="relative w-full h-full">
+                            <Image 
+                              src={selectedModuleData.details.screenshot}
+                              alt={`نمایی از ${selectedModuleData.details.title}`}
+                              fill
+                              className="object-cover rounded-xl"
+                              unoptimized={true}
+                              onError={(e) => {
+                                console.log('Image error:', selectedModuleData.details.screenshot);
+                                e.currentTarget.style.display = 'none';
+                                // Show fallback content
+                                const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+                                if (fallback) fallback.style.display = 'block';
+                              }}
+                              onLoad={() => console.log('Image loaded:', selectedModuleData.details.screenshot)}
+                            />
+                            {/* Fallback content - hidden by default */}
+                            <div className="absolute inset-0 flex items-center justify-center" style={{ display: 'none' }}>
+                              <div className="text-center">
+                                <div 
+                                  className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
+                                  style={{ backgroundColor: selectedModuleData.color }}
+                                >
+                                  <selectedModuleData.icon size={32} style={{ color: "#FFFFFF" }} />
+                                </div>
+                                <p className="text-[#666666] text-sm text-right" dir="rtl">
+                                  نمایی از {selectedModuleData.details.title}
+                                </p>
+                              </div>
+                            </div>
                           </div>
-                          <p className="text-[#666666] text-sm text-right" dir="rtl">
-                            نمایی از {selectedModuleData.details.title}
-                          </p>
-                        </div>
+                        ) : (
+                          <div className="text-center">
+                            <div 
+                              className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
+                              style={{ backgroundColor: selectedModuleData.color }}
+                            >
+                              <selectedModuleData.icon size={32} style={{ color: "#FFFFFF" }} />
+                            </div>
+                            <p className="text-[#666666] text-sm text-right" dir="rtl">
+                              نمایی از {selectedModuleData.details.title}
+                            </p>
+                          </div>
+                        )}
                       </div>
                       
                       {/* Subtle animation overlay */}

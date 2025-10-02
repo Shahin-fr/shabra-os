@@ -16,8 +16,8 @@ const quarterlyGoals = [
     status: 'on_track',
     deadline: '2024-03-31',
     icon: DollarSign,
-    color: 'text-green-500',
-    bgColor: 'bg-green-500/20',
+    color: 'text-status-success-text',
+    bgColor: 'bg-status-success/20',
     description: 'افزایش درآمد از طریق پروژه‌های جدید',
     keyResults: [
       { title: 'تکمیل 5 پروژه بزرگ', completed: 4, total: 5 },
@@ -70,8 +70,8 @@ const quarterlyGoals = [
     status: 'excellent',
     deadline: '2024-03-31',
     icon: TrendingUp,
-    color: 'text-green-500',
-    bgColor: 'bg-green-500/20',
+    color: 'text-status-success-text',
+    bgColor: 'bg-status-success/20',
     description: 'افزایش 20% کارایی تیم',
     keyResults: [
       { title: 'استخدام 3 متخصص', completed: 3, total: 3 },
@@ -195,12 +195,12 @@ export function QuarterlyGoals() {
                       variant='outline'
                       className={`text-xs ${
                         goal.status === 'excellent'
-                          ? 'bg-green-100 text-green-800 border-green-200'
+                          ? 'bg-status-success text-status-success-text border-status-success'
                           : goal.status === 'on_track'
                             ? 'bg-[#ff0a54]/10 text-[#ff0a54] border-[#ff0a54]/20'
                             : goal.status === 'at_risk'
                               ? 'bg-yellow-100 text-yellow-800 border-yellow-200'
-                              : 'bg-red-100 text-red-800 border-red-200'
+                              : 'bg-status-danger text-status-danger-text border-status-danger'
                       }`}
                     >
                       {getStatusText(goal.status)}
@@ -214,12 +214,12 @@ export function QuarterlyGoals() {
                     <OptimizedMotion
                       className={`h-2 rounded-full ${
                         goal.status === 'excellent'
-                          ? 'bg-green-500'
+                          ? 'bg-status-success'
                           : goal.status === 'on_track'
                             ? 'bg-[#ff0a54]'
                             : goal.status === 'at_risk'
                               ? 'bg-yellow-500'
-                              : 'bg-red-500'
+                              : 'bg-status-danger'
                       }`}
                       initial={{ scaleX: 0 }}
                       animate={{ scaleX: goal.progress / 100 }}

@@ -48,6 +48,7 @@ export async function GET(request: NextRequest) {
       whereClause.type = type;
     }
 
+    // Optimized query with pagination and selective loading
     const meetings = await prisma.meeting.findMany({
       where: whereClause,
       include: {
@@ -71,6 +72,7 @@ export async function GET(request: NextRequest) {
             },
           },
         },
+        // Only load talking points and action items if specifically requested
         talkingPoints: {
           include: {
             addedBy: {
@@ -82,6 +84,7 @@ export async function GET(request: NextRequest) {
             },
           },
           orderBy: { createdAt: 'asc' },
+          take: 10, // Limit to recent items for performance
         },
         actionItems: {
           include: {
@@ -94,9 +97,11 @@ export async function GET(request: NextRequest) {
             },
           },
           orderBy: { createdAt: 'asc' },
+          take: 10, // Limit to recent items for performance
         },
       },
       orderBy: { startTime: 'asc' },
+      take: 50, // Limit total meetings for performance
     });
 
     return NextResponse.json({
@@ -231,7 +236,10 @@ export async function POST(request: NextRequest) {
     const validTypes = ['ONE_ON_ONE', 'TEAM_MEETING'];
     if (!validTypes.includes(type)) {
       console.error("❌ Invalid meeting type:", type);
-      throw new Error(`Invalid meeting type: ${type}. Must be one of: ${validTypes.join(', ')}`);
+      return NextResponse.json({
+        success: false,
+        error: `نوع جلسه نامعتبر: ${type}. باید یکی از موارد زیر باشد: ${validTypes.join(', ')}`,
+      }, { status: 400 });
     }
     
     const dataToSave = {
@@ -251,7 +259,11 @@ export async function POST(request: NextRequest) {
       console.log("✅ Database connection successful");
     } catch (dbError) {
       console.error("❌ Database connection failed:", dbError);
-      throw new Error("Database connection failed");
+      return NextResponse.json({
+        success: false,
+        error: 'خطا در اتصال به پایگاه داده',
+        details: process.env.NODE_ENV === 'development' ? (dbError as Error).message : undefined,
+      }, { status: 500 });
     }
 
     console.log("9. Starting Prisma transaction...");

@@ -68,11 +68,11 @@ const getTypeIcon = (type: ActionableInboxItem['type']) => {
 const getPriorityColor = (priority: ActionableInboxItem['priority']) => {
   switch (priority) {
     case 'high':
-      return 'bg-red-100 text-red-800 border-red-200';
+      return 'bg-status-danger text-status-danger-text border-status-danger';
     case 'medium':
       return 'bg-yellow-100 text-yellow-800 border-yellow-200';
     case 'low':
-      return 'bg-green-100 text-green-800 border-green-200';
+      return 'bg-status-success text-status-success-text border-status-success';
     default:
       return 'bg-gray-100 text-gray-800 border-gray-200';
   }
@@ -115,8 +115,8 @@ const InboxItemSkeleton = () => (
 // Error state component
 const ErrorState = ({ onRetry }: { onRetry: () => void }) => (
   <div className='text-center py-8 space-y-4'>
-    <div className='w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto'>
-      <AlertCircle className='h-8 w-8 text-red-600' />
+    <div className='w-16 h-16 bg-status-danger rounded-full flex items-center justify-center mx-auto'>
+      <AlertCircle className='h-8 w-8 text-status-danger-text' />
     </div>
     <div className='space-y-2'>
       <h3 className='text-lg font-semibold text-gray-900'>خطا در بارگذاری</h3>
@@ -131,8 +131,8 @@ const ErrorState = ({ onRetry }: { onRetry: () => void }) => (
 // Empty state component
 const EmptyState = () => (
   <div className='text-center py-8 space-y-4'>
-    <div className='w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto'>
-      <PartyPopper className='h-8 w-8 text-green-600' />
+    <div className='w-16 h-16 bg-status-success rounded-full flex items-center justify-center mx-auto'>
+      <PartyPopper className='h-8 w-8 text-status-success-text' />
     </div>
     <div className='space-y-2'>
       <h3 className='text-lg font-semibold text-gray-900'>همه چیز مرتب است!</h3>
@@ -302,7 +302,7 @@ export function ActionableInbox() {
                         {/* Action Buttons */}
                         <Button
                           size='sm'
-                          className='w-6 h-6 p-0 bg-green-500 hover:bg-green-600 text-white rounded-full'
+                          className='w-6 h-6 p-0 bg-status-success hover:bg-status-success text-white rounded-full'
                           onClick={e => {
                             e.stopPropagation();
                             handleApprove(item.id);

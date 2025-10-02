@@ -107,7 +107,7 @@ export function NewUsersVsTasksChart() {
             </div>
             <div className='text-center p-4 bg-gray-50 rounded-lg'>
               <div className='flex items-center justify-center gap-2 mb-2'>
-                <CheckCircle className='h-4 w-4 text-green-500' />
+                <CheckCircle className='h-4 w-4 text-status-success' />
                 <span className='text-sm font-medium text-gray-700'>
                   تسک‌های تکمیل شده
                 </span>
@@ -248,7 +248,7 @@ export function NewUsersVsTasksChart() {
               <span className='text-sm text-gray-600'>کاربران جدید</span>
             </div>
             <div className='flex items-center gap-2'>
-              <div className='w-4 h-0.5 bg-green-500'></div>
+              <div className='w-4 h-0.5 bg-status-success'></div>
               <span className='text-sm text-gray-600'>تسک‌های تکمیل شده</span>
             </div>
           </div>

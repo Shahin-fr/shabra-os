@@ -25,33 +25,29 @@ export function PDDManagerDashboard() {
           </div>
         </div>
       ) : (
-        /* Desktop Layout - Three Columns as per PDD */
-        <div className="min-h-screen p-6">
-          <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-12 gap-6">
-              {/* Left Column - Navigation Sidebar (handled by global navigation) */}
-              <div className="col-span-12 lg:col-span-3 space-y-6">
-                {/* Team Presence Widget - TOP PRIORITY in sidebar */}
-                <TeamPresenceWidget variant="desktop" />
-              </div>
+        /* Desktop Layout - True CSS Grid System */
+        <div className="min-h-screen bg-white" dir="rtl">
+          {/* Master Grid Container - Full Width */}
+          <div className="grid grid-cols-12 gap-8 p-8 w-full max-w-none">
+            
+            {/* Left Column - Team Presence (3 columns) */}
+            <div className="col-span-12 md:col-span-3">
+              <TeamPresenceWidget variant="desktop" />
+            </div>
 
-              {/* Center Column - Main Content (Command Center) */}
-              <div className="col-span-12 lg:col-span-6 space-y-6">
-                {/* Action Center Widget - TOP PRIORITY */}
-                <ActionCenterWidget variant="desktop" priority="high" />
-                
-                {/* فعالیت امروز تیم Widget */}
-                <TodaysTeamActivityWidget variant="desktop" />
-                
-                {/* تسک های فوری Widget */}
-                <TasksAtRiskWidget variant="desktop" />
-              </div>
+            {/* Center Column - Main Content (6 columns) */}
+            <div className="col-span-12 md:col-span-6 flex flex-col gap-6">
+              {/* Action Center - Primary Widget */}
+              <ActionCenterWidget variant="desktop" priority="high" />
 
-              {/* Right Column - Information Sidebar */}
-              <div className="col-span-12 lg:col-span-3 space-y-6">
-                {/* Quick Links Widget */}
-                <QuickLinksWidget variant="desktop" priority="high" />
-              </div>
+              {/* Team Activity - Below Action Center */}
+              <TodaysTeamActivityWidget variant="desktop" />
+            </div>
+
+            {/* Right Column - Quick Actions & Tasks at Risk (3 columns) */}
+            <div className="col-span-12 md:col-span-3 flex flex-col gap-6">
+              <QuickLinksWidget variant="desktop" priority="high" />
+              <TasksAtRiskWidget variant="desktop" />
             </div>
           </div>
         </div>

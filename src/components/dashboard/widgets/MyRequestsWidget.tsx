@@ -2,7 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { FileText, Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
-import { WidgetCard } from './WidgetCard';
+import { EmployeeWidget } from '@/components/ui/PerfectWidget';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -42,9 +42,9 @@ export function MyRequestsWidget({ className, variant = 'desktop' }: MyRequestsW
       case 'PENDING':
         return 'text-yellow-600 bg-yellow-100';
       case 'APPROVED':
-        return 'text-green-600 bg-green-100';
+        return 'text-status-success-text bg-status-success';
       case 'REJECTED':
-        return 'text-red-600 bg-red-100';
+        return 'text-status-danger-text bg-status-danger';
       case 'CANCELLED':
         return 'text-gray-600 bg-gray-100';
       default:
@@ -111,17 +111,17 @@ export function MyRequestsWidget({ className, variant = 'desktop' }: MyRequestsW
   const isMobile = variant === 'mobile';
 
   return (
-    <WidgetCard
+    <EmployeeWidget
       title="درخواست‌های من"
       className={cn(
-        'bg-gradient-to-br from-orange-50 to-amber-50',
+        'bg-gradient-to-br from-orange-50/50 to-amber-50/50',
         className
       )}
       loading={isLoading}
       error={error?.message}
       empty={!isLoading && requests?.length === 0}
       emptyMessage="هیچ درخواستی ارسال نکرده‌اید"
-      emptyIcon={<FileText className="h-8 w-8 text-orange-400" />}
+      emptyIcon={<FileText className="h-8 w-8 text-status-warning" />}
     >
       {/* Pending Count Badge */}
       {pendingCount > 0 && (
@@ -194,7 +194,7 @@ export function MyRequestsWidget({ className, variant = 'desktop' }: MyRequestsW
       {/* Quick Action */}
       <div className="pt-2">
         <Button
-          className="w-full font-vazirmatn text-sm bg-orange-500 hover:bg-orange-600 text-white"
+          className="w-full font-vazirmatn text-sm bg-status-warning hover:bg-status-warning text-white"
           onClick={() => {
             // Navigate to create request page
             window.location.href = '/requests/new';
@@ -203,6 +203,6 @@ export function MyRequestsWidget({ className, variant = 'desktop' }: MyRequestsW
           درخواست جدید
         </Button>
       </div>
-    </WidgetCard>
+    </EmployeeWidget>
   );
 }

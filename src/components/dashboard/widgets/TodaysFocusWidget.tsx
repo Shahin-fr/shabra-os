@@ -2,7 +2,7 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { CheckCircle, Circle, Clock, Calendar, Play, Pause, Eye, Edit3, AlertCircle } from 'lucide-react';
-import { WidgetCard } from './WidgetCard';
+import { EmployeeWidget } from '@/components/ui/PerfectWidget';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
@@ -113,11 +113,11 @@ export function TodaysFocusWidget({ className }: TodaysFocusWidgetProps) {
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case 'HIGH':
-        return 'text-red-600 bg-red-100';
+        return 'text-status-danger-text bg-status-danger';
       case 'MEDIUM':
         return 'text-yellow-600 bg-yellow-100';
       case 'LOW':
-        return 'text-green-600 bg-green-100';
+        return 'text-status-success-text bg-status-success';
       default:
         return 'text-gray-600 bg-gray-100';
     }
@@ -139,9 +139,9 @@ export function TodaysFocusWidget({ className }: TodaysFocusWidgetProps) {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'Done':
-        return 'text-green-600 bg-green-100';
+        return 'text-status-success-text bg-status-success';
       case 'InProgress':
-        return 'text-blue-600 bg-blue-100';
+        return 'text-brand-pink-text bg-brand-pink';
       case 'Todo':
         return 'text-gray-600 bg-gray-100';
       default:
@@ -189,32 +189,32 @@ export function TodaysFocusWidget({ className }: TodaysFocusWidgetProps) {
 
   if (isLoading) {
     return (
-      <WidgetCard
+      <EmployeeWidget
         title="تسک های من"
         className={cn(
-          'bg-gradient-to-br from-blue-50 to-indigo-50',
+          'bg-gradient-to-br from-brand-pink/50 to-brand-pink/50',
           className
         )}
         loading={true}
       >
         <div></div>
-      </WidgetCard>
+      </EmployeeWidget>
     );
   }
 
   if (error) {
     return (
-      <WidgetCard
+      <EmployeeWidget
         title="تسک های من"
         className={cn(
-          'bg-gradient-to-br from-red-50 to-pink-50',
+          'bg-gradient-to-br from-red-50/50 to-pink-50/50',
           className
         )}
       >
         <div className="text-center py-4">
-          <p className="text-red-600 text-sm">خطا در بارگذاری تسک‌ها</p>
+          <p className="text-status-danger-text text-sm">خطا در بارگذاری تسک‌ها</p>
         </div>
-      </WidgetCard>
+      </EmployeeWidget>
     );
   }
 
@@ -239,13 +239,13 @@ export function TodaysFocusWidget({ className }: TodaysFocusWidgetProps) {
             transition={{ delay: index * 0.1 }}
             className={cn(
               "bg-white rounded-xl p-4 shadow-sm border hover:shadow-md transition-all duration-200",
-              task.dueDate && isOverdue(task.dueDate) ? "border-red-200 bg-red-50" : "border-gray-200"
+              task.dueDate && isOverdue(task.dueDate) ? "border-status-danger bg-status-danger" : "border-gray-200"
             )}
           >
-            <div className="space-y-3">
+            <div className="space-y-3" dir="rtl">
               {/* Task Header */}
-              <div className="flex items-start rtl:items-start justify-between">
-                <div className="flex-1">
+              <div className="flex items-start justify-between">
+                <div className="flex-1 text-right">
                   <h3 className="font-semibold text-gray-900 font-vazirmatn mb-1">
                     {task.title}
                   </h3>
@@ -273,7 +273,7 @@ export function TodaysFocusWidget({ className }: TodaysFocusWidgetProps) {
                   </span>
                   {/* Overdue Badge */}
                   {task.dueDate && isOverdue(task.dueDate) && (
-                    <span className="px-2 py-1 rounded-full text-xs font-medium font-vazirmatn bg-red-100 text-red-700 flex items-center gap-1">
+                    <span className="px-2 py-1 rounded-full text-xs font-medium font-vazirmatn bg-status-danger text-status-danger-text flex items-center gap-1">
                       <AlertCircle className="h-3 w-3" />
                       با تاخیر
                     </span>
@@ -283,27 +283,23 @@ export function TodaysFocusWidget({ className }: TodaysFocusWidgetProps) {
 
               {/* Task Description */}
               {task.description && (
-                <div className="text-sm text-gray-600 font-vazirmatn">
+                <div className="text-sm text-gray-600 font-vazirmatn text-right">
                   {expandedTask === task.id ? (
-                    <div className="space-y-2">
+                    <div className="space-y-2 text-right">
                       <p>{task.description}</p>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setExpandedTask(null)}
-                        className="text-xs p-1 h-auto"
-                      >
-                        بستن
-                      </Button>
+                      <div className="text-left">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setExpandedTask(null)}
+                          className="text-xs p-1 h-auto"
+                        >
+                          بستن
+                        </Button>
+                      </div>
                     </div>
                   ) : (
                     <div className="flex items-center gap-2">
-                      <p className="line-clamp-2 flex-1">
-                        {task.description.length > 100 
-                          ? `${task.description.substring(0, 100)}...` 
-                          : task.description
-                        }
-                      </p>
                       {task.description.length > 100 && (
                         <Button
                           variant="ghost"
@@ -314,6 +310,12 @@ export function TodaysFocusWidget({ className }: TodaysFocusWidgetProps) {
                           <Eye className="h-3 w-3" />
                         </Button>
                       )}
+                      <p className="line-clamp-2 flex-1 text-right">
+                        {task.description.length > 100 
+                          ? `${task.description.substring(0, 100)}...` 
+                          : task.description
+                        }
+                      </p>
                     </div>
                   )}
                 </div>
@@ -321,11 +323,11 @@ export function TodaysFocusWidget({ className }: TodaysFocusWidgetProps) {
 
               {/* Task Actions */}
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 text-right">
                   {task.dueDate && (
                     <div className={cn(
                       "flex items-center gap-1 text-xs font-vazirmatn",
-                      isOverdue(task.dueDate) ? "text-red-500" : "text-gray-500"
+                      isOverdue(task.dueDate) ? "text-status-danger-text" : "text-gray-500"
                     )}>
                       <Clock className="h-3 w-3" />
                       {formatTime(task.dueDate)}
@@ -340,7 +342,7 @@ export function TodaysFocusWidget({ className }: TodaysFocusWidgetProps) {
                       size="sm"
                       onClick={() => handleStatusChange(task.id, 'InProgress')}
                       disabled={updateTaskMutation.isPending}
-                      className="bg-blue-500 hover:bg-blue-600 text-white text-xs px-3 py-1 h-7"
+                      className="bg-brand-pink hover:bg-brand-pink text-brand-pink-text text-xs px-3 py-1 h-7"
                     >
                       <Play className="h-3 w-3 ms-1" />
                       شروع
@@ -353,7 +355,7 @@ export function TodaysFocusWidget({ className }: TodaysFocusWidgetProps) {
                         size="sm"
                         onClick={() => handleStatusChange(task.id, 'Done')}
                         disabled={updateTaskMutation.isPending}
-                        className="bg-green-500 hover:bg-green-600 text-white text-xs px-3 py-1 h-7"
+                        className="bg-status-success hover:bg-status-success text-white text-xs px-3 py-1 h-7"
                       >
                         <CheckCircle className="h-3 w-3 ms-1" />
                         تکمیل
@@ -393,10 +395,10 @@ export function TodaysFocusWidget({ className }: TodaysFocusWidgetProps) {
   };
 
   return (
-    <WidgetCard
+    <EmployeeWidget
       title="تسک های من"
       className={cn(
-        'bg-gradient-to-br from-blue-50 to-indigo-50',
+        'bg-gradient-to-br from-blue-50/50 to-indigo-50/50',
         className
       )}
     >
@@ -409,7 +411,7 @@ export function TodaysFocusWidget({ className }: TodaysFocusWidgetProps) {
           <div className="text-sm text-gray-600 font-vazirmatn">تسک امروز انجام شده</div>
           <div className="w-full bg-gray-200 rounded-full h-2">
             <div
-              className="bg-gradient-to-r from-blue-500 to-indigo-500 h-2 rounded-full transition-all duration-500"
+              className="bg-gradient-to-r from-brand-pink to-brand-pink h-2 rounded-full transition-all duration-500"
               style={{ width: `${todayProgressPercentage}%` }}
             />
           </div>
@@ -461,6 +463,6 @@ export function TodaysFocusWidget({ className }: TodaysFocusWidgetProps) {
           </div>
         )}
       </div>
-    </WidgetCard>
+    </EmployeeWidget>
   );
 }

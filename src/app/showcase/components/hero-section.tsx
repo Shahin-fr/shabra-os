@@ -13,7 +13,7 @@ import { t } from '../utils/i18n';
  * refined typography, and narrative-driven design.
  */
 export default function HeroSection() {
-  const isMobile = useIsMobile();
+  const isMobile = useIsMobile() ?? false;
   const [, setMousePosition] = useState({ x: 0, y: 0 });
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -57,7 +57,7 @@ export default function HeroSection() {
     const checkImages = async () => {
       try {
         // Check if at least one image exists
-        const response = await fetch('/images/dashboard-admin-desktop.svg');
+        const response = await fetch('/images/dashboard-admin-desktop.png');
         setImagesLoaded(response.ok);
       } catch {
         setImagesLoaded(false);
@@ -360,29 +360,29 @@ export default function HeroSection() {
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeView}
-                  className="absolute inset-0 flex items-center justify-center p-2"
+                  className="absolute inset-0 flex items-center justify-center px-2 py-8 w-full"
                   variants={imageVariants}
                   initial="hidden"
                   animate="visible"
                   exit="exit"
                   transition={{ duration: 0.5, ease: "easeInOut" }}
                 >
-                  <div className="w-2/3 h-full flex items-center justify-center">
+                  <div className="w-3/4 h-full flex items-center justify-center">
                     <Image
-                      src={`/images/dashboard-${activeView}-desktop.svg`}
+                      src={`/images/dashboard-${activeView}-desktop.png`}
                       alt={`${activeView === 'admin' ? 'مدیر' : 'کارمند'} (دسکتاپ)`}
-                      width={420}
+                      width={600}
                       height={320}
-                      className="max-w-full max-h-full object-contain"
+                      className="max-w-full max-h-full object-contain rounded-2xl shadow-2xl border border-white/10"
                     />
                   </div>
-                  <div className="w-1/3 h-full flex items-center justify-center">
+                  <div className="w-1/4 h-full flex items-center justify-center">
                     <Image
-                      src={`/images/dashboard-${activeView}-mobile.svg`}
+                      src={`/images/dashboard-${activeView}-mobile.png`}
                       alt={`${activeView === 'admin' ? 'مدیر' : 'کارمند'} (موبایل)`}
                       width={160}
                       height={320}
-                      className="max-w-full max-h-full object-contain"
+                      className="max-w-full max-h-full object-contain rounded-2xl shadow-2xl border border-white/10"
                     />
                   </div>
                 </motion.div>

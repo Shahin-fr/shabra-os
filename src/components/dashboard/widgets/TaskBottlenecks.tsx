@@ -59,13 +59,13 @@ const bottleneckData = [
 const getPriorityColor = (priority: string) => {
   switch (priority) {
     case 'critical':
-      return 'bg-red-100 text-red-800 border-red-200';
+      return 'bg-status-danger text-status-danger-text border-status-danger';
     case 'high':
-      return 'bg-orange-100 text-orange-800 border-orange-200';
+      return 'bg-status-warning text-status-warning-text border-status-warning';
     case 'medium':
       return 'bg-yellow-100 text-yellow-800 border-yellow-200';
     case 'low':
-      return 'bg-green-100 text-green-800 border-green-200';
+      return 'bg-status-success text-status-success-text border-status-success';
     default:
       return 'bg-gray-100 text-gray-800 border-gray-200';
   }
@@ -74,11 +74,11 @@ const getPriorityColor = (priority: string) => {
 const getStatusColor = (status: string) => {
   switch (status) {
     case 'blocked':
-      return 'text-red-500 bg-red-500/20';
+      return 'text-status-danger-text bg-status-danger/20';
     case 'waiting':
       return 'text-yellow-500 bg-yellow-500/20';
     case 'in_progress':
-      return 'text-purple-500 bg-purple-500/20';
+      return 'text-brand-plum-text bg-brand-plum/20';
     default:
       return 'text-gray-500 bg-gray-500/20';
   }
@@ -139,7 +139,7 @@ export function TaskBottlenecks() {
               <div className='text-sm text-muted-foreground'>کل گلوگاه‌ها</div>
             </div>
             <div className='text-center p-3 rounded-xl bg-white/5'>
-              <div className='text-2xl font-bold text-red-500'>
+              <div className='text-2xl font-bold text-status-danger-text'>
                 {blockedTasks}
               </div>
               <div className='text-sm text-muted-foreground'>مسدود شده</div>
@@ -213,7 +213,7 @@ export function TaskBottlenecks() {
 
                   <div className='flex items-center justify-between text-sm'>
                     <span className='text-muted-foreground'>زمان انتظار:</span>
-                    <span className='font-medium text-red-500 flex items-center gap-1'>
+                    <span className='font-medium text-status-danger-text flex items-center gap-1'>
                       <Clock className='h-3 w-3' />
                       {bottleneck.waitingTime}
                     </span>

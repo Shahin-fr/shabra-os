@@ -51,14 +51,14 @@ export function WeeklySalesChart() {
               </div>
               <div className='text-xs text-gray-500'>تومان</div>
             </div>
-            <div className='text-center p-4 bg-green-50 rounded-xl'>
+            <div className='text-center p-4 bg-status-success rounded-xl'>
               <div className='flex items-center justify-center gap-2 mb-2'>
-                <TrendingUp className='h-5 w-5 text-green-500' />
+                <TrendingUp className='h-5 w-5 text-status-success' />
                 <span className='text-sm font-medium text-gray-700'>
                   نرخ دستیابی
                 </span>
               </div>
-              <div className='text-2xl font-bold text-green-500'>
+              <div className='text-2xl font-bold text-status-success-text'>
                 {achievementRate}%
               </div>
               <div className='text-xs text-gray-500'>به هدف</div>
@@ -473,13 +473,13 @@ export function WeeklySalesChart() {
                 <div className='text-sm text-gray-600'>کل فروش</div>
               </div>
               <div className='text-center p-4 bg-gradient-to-br from-green-500/10 to-green-500/5 rounded-2xl border border-green-500/20'>
-                <div className='text-2xl font-bold text-green-600 mb-1'>
+                <div className='text-2xl font-bold text-status-success-text mb-1'>
                   {achievementRate}%
                 </div>
                 <div className='text-sm text-gray-600'>دستیابی به هدف</div>
               </div>
               <div className='text-center p-4 bg-gradient-to-br from-blue-500/10 to-blue-500/5 rounded-2xl border border-blue-500/20'>
-                <div className='text-2xl font-bold text-blue-600 mb-1'>
+                <div className='text-2xl font-bold text-brand-pink-text mb-1'>
                   {Math.round(totalSales / 7).toLocaleString()}
                 </div>
                 <div className='text-sm text-gray-600'>میانگین روزانه</div>

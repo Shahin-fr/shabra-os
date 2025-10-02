@@ -105,8 +105,8 @@ export function AttendanceDashboardWidget() {
         return {
           icon: LogIn,
           label: 'در حال کار',
-          color: 'text-green-600',
-          bgColor: 'bg-green-100',
+          color: 'text-status-success-text',
+          bgColor: 'bg-status-success',
           buttonText: 'ثبت خروج',
           buttonVariant: 'destructive' as const,
         };
@@ -114,8 +114,8 @@ export function AttendanceDashboardWidget() {
         return {
           icon: Clock,
           label: 'در حال استراحت',
-          color: 'text-orange-600',
-          bgColor: 'bg-orange-100',
+          color: 'text-status-warning-text',
+          bgColor: 'bg-status-warning',
           buttonText: 'بازگشت از استراحت',
           buttonVariant: 'default' as const,
         };
@@ -123,8 +123,8 @@ export function AttendanceDashboardWidget() {
         return {
           icon: CheckCircle,
           label: 'روز کاری تمام شده',
-          color: 'text-blue-600',
-          bgColor: 'bg-blue-100',
+          color: 'text-brand-pink-text',
+          bgColor: 'bg-brand-pink',
           buttonText: 'شروع روز جدید',
           buttonVariant: 'default' as const,
         };
@@ -200,12 +200,12 @@ export function AttendanceDashboardWidget() {
             <OptimizedMotion
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className='p-4 bg-green-50 rounded-lg border border-green-200'
+              className='p-4 bg-status-success rounded-lg border border-status-success'
             >
               <div className='flex items-center justify-center gap-2'>
-                <Timer className='h-5 w-5 text-green-600' />
-                <span className='text-green-700 font-medium'>مدت کار:</span>
-                <span className='text-2xl font-mono font-bold text-green-800'>
+                <Timer className='h-5 w-5 text-status-success-text' />
+                <span className='text-status-success-text font-medium'>مدت کار:</span>
+                <span className='text-2xl font-mono font-bold text-status-success-text'>
                   {getWorkDuration()}
                 </span>
               </div>
@@ -224,7 +224,7 @@ export function AttendanceDashboardWidget() {
               disabled={clockInOutMutation.isPending}
               className={`w-full h-16 text-xl font-bold transition-all duration-300 ${
                 statusInfo?.buttonVariant === 'destructive'
-                  ? 'bg-red-500 hover:bg-red-600 text-white'
+                  ? 'bg-status-danger hover:bg-status-danger text-white'
                   : 'bg-[#ff0a54] hover:bg-[#ff0a54]/90 text-white'
               }`}
             >

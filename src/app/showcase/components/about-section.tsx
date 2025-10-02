@@ -37,11 +37,7 @@ export default function AboutSection() {
     visible: { 
       opacity: 1, 
       y: 0,
-      scale: 1,
-      transition: {
-        duration: 0.8,
-        ease: "easeOut"
-      }
+      scale: 1
     }
   };
 
@@ -54,11 +50,7 @@ export default function AboutSection() {
     visible: { 
       opacity: 1, 
       scale: 1,
-      rotateY: 0,
-      transition: {
-        duration: 1,
-        ease: "easeOut"
-      }
+      rotateY: 0
     }
   };
 
@@ -67,7 +59,8 @@ export default function AboutSection() {
       ref={ref}
       className="relative py-32 px-4 sm:px-6 lg:px-8 overflow-hidden"
       style={{
-        background: 'radial-gradient(circle at center, #1a1a1a 0%, #0a0a0a 50%, #000000 100%)'
+        background: 'radial-gradient(circle at center, rgba(26, 26, 26, 0.3) 0%, rgba(10, 10, 10, 0.5) 50%, rgba(0, 0, 0, 0.7) 100%)',
+        paddingBottom: '20vh'
       }}
     >
       {/* Subtle background decoration */}

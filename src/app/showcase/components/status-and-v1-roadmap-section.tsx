@@ -13,7 +13,7 @@ import { ChevronDown } from 'lucide-react';
  * critical tasks, and detailed roadmap to achieve stable Version 1.0.
  */
 export default function StatusAndV1RoadmapSection() {
-  const isMobile = useIsMobile();
+  const isMobile = useIsMobile() ?? false;
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1

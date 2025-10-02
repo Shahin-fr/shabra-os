@@ -38,7 +38,7 @@ const achievements: Achievement[] = [
     title: 'همکار نمونه',
     description: 'در ۱۰ جلسه تیمی شرکت کنید',
     icon: Target,
-    color: 'text-blue-600 bg-blue-100',
+    color: 'text-brand-pink-text bg-brand-pink',
     progress: 7,
     maxProgress: 10,
     unlocked: false,
@@ -48,7 +48,7 @@ const achievements: Achievement[] = [
     title: 'مداوم‌کار',
     description: '۷ روز متوالی کار کنید',
     icon: TrendingUp,
-    color: 'text-green-600 bg-green-100',
+    color: 'text-status-success-text bg-status-success',
     progress: 5,
     maxProgress: 7,
     unlocked: false,
@@ -58,7 +58,7 @@ const achievements: Achievement[] = [
     title: 'ستاره تیم',
     description: '۱۰ امتیاز مثبت دریافت کنید',
     icon: Star,
-    color: 'text-purple-600 bg-purple-100',
+    color: 'text-brand-plum-text bg-brand-plum',
     progress: 10,
     maxProgress: 10,
     unlocked: true,
@@ -111,7 +111,7 @@ export function MotivationWidget({ className, variant = 'desktop', priority = 'm
             className={cn(
               'p-3 rounded-xl border transition-all duration-200',
               achievement.unlocked
-                ? 'bg-green-50 border-green-200'
+                ? 'bg-status-success border-status-success'
                 : 'bg-white/60 border-white/40 hover:bg-white/80'
             )}
             initial={{ opacity: 0, y: 20 }}
@@ -124,11 +124,11 @@ export function MotivationWidget({ className, variant = 'desktop', priority = 'm
               {/* Icon */}
               <div className={cn(
                 'p-2 rounded-lg flex-shrink-0',
-                achievement.unlocked ? 'bg-green-100' : achievement.color
+                achievement.unlocked ? 'bg-status-success' : achievement.color
               )}>
                 <achievement.icon className={cn(
                   'h-5 w-5',
-                  achievement.unlocked ? 'text-green-600' : 'text-gray-600'
+                  achievement.unlocked ? 'text-status-success-text' : 'text-gray-600'
                 )} />
               </div>
 
@@ -137,7 +137,7 @@ export function MotivationWidget({ className, variant = 'desktop', priority = 'm
                 <div className="flex items-center gap-2 mb-1">
                   <h4 className={cn(
                     'font-vazirmatn font-semibold leading-tight',
-                    achievement.unlocked ? 'text-green-800' : 'text-gray-900',
+                    achievement.unlocked ? 'text-status-success-text' : 'text-gray-900',
                     isMobile ? 'text-sm' : 'text-base'
                   )}>
                     {achievement.title}
@@ -202,7 +202,7 @@ export function MotivationWidget({ className, variant = 'desktop', priority = 'm
       {/* Action Button */}
       <div className="pt-4 border-t border-white/40">
         <motion.button
-          className="w-full text-center text-sm text-blue-600 font-vazirmatn hover:text-blue-800 transition-colors duration-200"
+          className="w-full text-center text-sm text-brand-pink-text font-vazirmatn hover:text-brand-pink-text transition-colors duration-200"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           onClick={() => {

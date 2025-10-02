@@ -4,7 +4,8 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { AlertCircle, CheckCircle, XCircle, Clock, User, FileText, ChevronRight } from 'lucide-react';
 import { toast } from 'sonner';
-import { EnhancedWidgetCard } from '@/components/ui/EnhancedWidgetCard';
+import { motion } from 'framer-motion';
+import { ManagerWidget } from '@/components/ui/PerfectWidget';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
@@ -225,100 +226,117 @@ export const ActionCenterWidget = React.memo(function ActionCenterWidget({ class
 
   return (
     <>
-      <EnhancedWidgetCard
+      <ManagerWidget
         title="مرکز اقدامات"
-        variant="manager"
         priority={priority}
         className={className}
         loading={isLoading}
         error={error?.message}
         empty={!isLoading && safeRequests.length === 0}
         emptyMessage="هیچ درخواست در انتظاری وجود ندارد"
-        emptyIcon={<CheckCircle className="h-8 w-8 text-green-400" />}
+        emptyIcon={<CheckCircle className="h-8 w-8 text-status-success" />}
         headerAction={
           safeRequests.length > 0 && (
-            <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-red-100 text-red-700 text-xs font-vazirmatn font-medium">
-              <AlertCircle className="h-3 w-3" />
+            <div className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-status-danger border border-status-danger text-status-danger-text text-sm font-vazirmatn font-medium">
+              <AlertCircle className="h-4 w-4" />
               {safeRequests.length}
             </div>
           )
         }
       >
-        {/* Requests List */}
+        {/* Requests List - Perfect Internal Composition */}
         <div className="space-y-3">
-          {safeRequests.slice(0, isMobile ? 3 : 6).map((request) => (
-            <button
+          {safeRequests.slice(0, isMobile ? 3 : 6).map((request, index) => (
+            <motion.button
               key={request.id}
               onClick={() => handleRequestClick(request)}
-              className="w-full p-3 rounded-xl bg-white/60 border border-white/40 hover:bg-white/80 transition-all duration-200 text-end"
+              className="w-full group"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1, duration: 0.3 }}
+              whileHover={{ y: -2 }}
+              whileTap={{ scale: 0.98 }}
             >
-              <div className="flex items-start rtl:items-start gap-3">
-                {/* User Avatar */}
-                <div className="flex-shrink-0">
-                  {request.user?.avatar ? (
-                    <img
-                      src={request.user.avatar}
-                      alt={`${request.user.firstName} ${request.user.lastName}` || 'User'}
-                      className="w-10 h-10 rounded-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
-                      <User className="h-5 w-5 text-gray-500" />
+              <div className="relative p-6 rounded-2xl bg-white border border-gray-200 hover:border-gray-300 transition-all duration-300 group-hover:shadow-lg group-hover:shadow-gray-200/50" dir="rtl">
+                <div className="flex items-start gap-5">
+                  {/* User Avatar - Perfect Circle with Status */}
+                  <div className="flex-shrink-0">
+                    <div className="relative">
+                      {request.user?.avatar ? (
+                        <img
+                          src={request.user.avatar}
+                          alt={`${request.user.firstName} ${request.user.lastName}` || 'User'}
+                          className="w-16 h-16 rounded-full object-cover ring-2 ring-gray-100 shadow-sm"
+                        />
+                      ) : (
+                        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center ring-2 ring-gray-100 shadow-sm">
+                          <User className="h-8 w-8 text-gray-500" />
+                        </div>
+                      )}
+                      {/* Status Indicator */}
+                      <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-yellow-400 border-3 border-white shadow-sm">
+                        <div className="w-full h-full rounded-full bg-yellow-300 animate-pulse"></div>
+                      </div>
                     </div>
-                  )}
-                </div>
-
-                {/* Request Info */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    {getRequestTypeIcon(request.requestType || request.type)}
-                    <span className="font-vazirmatn font-medium text-gray-900 text-sm">
-                      {getRequestTypeText(request.requestType || request.type)}
-                    </span>
                   </div>
-                  
-                  <h4 className={cn(
-                    'font-vazirmatn font-semibold text-gray-900 leading-tight',
-                    isMobile ? 'text-sm' : 'text-base'
-                  )}>
-                    {request.user ? `${request.user.firstName} ${request.user.lastName}` : (request.requester?.name || 'نامشخص')}
-                  </h4>
-                  
-                  <p className={cn(
-                    'text-gray-600 font-vazirmatn mt-1 line-clamp-2',
-                    isMobile ? 'text-xs' : 'text-sm'
-                  )}>
-                    {request.reason || request.description || 'بدون توضیح'}
-                  </p>
 
-                  <div className="flex items-center gap-2 mt-2">
-                    <span className="text-xs text-gray-500 font-vazirmatn">
-                      {formatDate(request.createdAt)}
-                    </span>
-                    {request.leaveType && (
-                      <span className="text-xs text-blue-600 font-vazirmatn">
-                        {request.leaveType}
+                  {/* Request Content - Perfect Typography Hierarchy */}
+                  <div className="flex-1 min-w-0 space-y-4">
+                    {/* Request Type & Date */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <div className="p-3 rounded-xl bg-brand-pink border border-brand-pink shadow-sm">
+                          {getRequestTypeIcon(request.requestType || request.type)}
+                        </div>
+                        <span className="text-base font-bold text-brand-pink-text font-vazirmatn text-right">
+                          {getRequestTypeText(request.requestType || request.type)}
+                        </span>
+                      </div>
+                      <div className="text-sm text-gray-500 font-vazirmatn bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-200 text-right">
+                        {formatDate(request.createdAt)}
+                      </div>
+                    </div>
+                    
+                    {/* User Name */}
+                    <h4 className="font-bold text-gray-900 font-vazirmatn text-xl leading-tight text-right">
+                      {request.user ? `${request.user.firstName} ${request.user.lastName}` : (request.requester?.name || 'نامشخص')}
+                    </h4>
+                    
+                    {/* Request Description */}
+                    <p className="text-base text-gray-600 font-vazirmatn line-clamp-2 leading-relaxed text-right">
+                      {request.reason || request.description || 'بدون توضیح'}
+                    </p>
+
+                    {/* Metadata */}
+                    <div className="flex items-center gap-4 pt-2">
+                      {request.leaveType && (
+                        <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-brand-pink text-brand-pink-text border border-brand-pink font-vazirmatn text-right">
+                          {request.leaveType}
+                        </span>
+                      )}
+                      <span className="text-sm text-gray-500 font-vazirmatn bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-200 text-right">
+                        در انتظار بررسی
                       </span>
-                    )}
+                    </div>
                   </div>
-                </div>
 
-                {/* Action Indicator */}
-                <div className="flex-shrink-0">
-                  <div className="w-2 h-2 rounded-full bg-yellow-500"></div>
+                  {/* Action Arrow */}
+                  <div className="flex-shrink-0 flex items-center justify-center w-12 h-12 rounded-full bg-gray-100 group-hover:bg-brand-pink transition-all duration-200 group-hover:scale-110">
+                    <ChevronRight className="h-6 w-6 text-gray-500 group-hover:text-brand-pink-text transition-colors duration-200" />
+                  </div>
                 </div>
               </div>
-            </button>
+            </motion.button>
           ))}
         </div>
 
-        {/* Action Button - Only show if more than max items */}
+        {/* Action Button - Perfect Call-to-Action */}
         {safeRequests.length > (isMobile ? 3 : 6) && (
-          <div className="pt-4 border-t border-white/40">
+          <div className="pt-6 border-t border-gray-200/50">
             <Link href="/admin/action-center">
               <Button
                 variant="outline"
-                className="w-full font-vazirmatn text-sm hover:bg-white/80"
+                className="w-full font-vazirmatn text-sm bg-white/50 hover:bg-white/80 border-gray-300/50 hover:border-gray-400/50 transition-all duration-200"
               >
                 <span>مشاهده همه درخواست‌ها</span>
                 <ChevronRight className="rtl:rotate-180 h-4 w-4 me-2" />
@@ -326,7 +344,7 @@ export const ActionCenterWidget = React.memo(function ActionCenterWidget({ class
             </Link>
           </div>
         )}
-      </EnhancedWidgetCard>
+      </ManagerWidget>
 
       {/* Modal */}
       {isModalOpen && selectedRequest && (
@@ -389,7 +407,7 @@ export const ActionCenterWidget = React.memo(function ActionCenterWidget({ class
                 <Button
                   onClick={handleApprove}
                   disabled={approveMutation.isPending}
-                  className="flex-1 bg-green-500 hover:bg-green-600 text-white font-vazirmatn"
+                  className="flex-1 bg-status-success hover:bg-status-success text-white font-vazirmatn"
                 >
                   {approveMutation.isPending ? (
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
@@ -404,7 +422,7 @@ export const ActionCenterWidget = React.memo(function ActionCenterWidget({ class
                   onClick={handleReject}
                   disabled={rejectMutation.isPending}
                   variant="outline"
-                  className="flex-1 border-red-500 text-red-500 hover:bg-red-50 font-vazirmatn"
+                  className="flex-1 border-status-danger text-status-danger-text hover:bg-status-danger font-vazirmatn"
                 >
                   {rejectMutation.isPending ? (
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-500"></div>
@@ -435,7 +453,7 @@ export const ActionCenterWidget = React.memo(function ActionCenterWidget({ class
               <Button
                 onClick={handleConfirmApprove}
                 disabled={approveMutation.isPending}
-                className="flex-1 bg-green-500 hover:bg-green-600 text-white font-vazirmatn"
+                className="flex-1 bg-status-success hover:bg-status-success text-white font-vazirmatn"
               >
                 {approveMutation.isPending ? (
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
@@ -476,7 +494,7 @@ export const ActionCenterWidget = React.memo(function ActionCenterWidget({ class
               <Button
                 onClick={handleConfirmReject}
                 disabled={!rejectionReason.trim() || rejectMutation.isPending}
-                className="flex-1 bg-red-500 hover:bg-red-600 text-white font-vazirmatn"
+                className="flex-1 bg-status-danger hover:bg-status-danger text-white font-vazirmatn"
               >
                 {rejectMutation.isPending ? (
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>

@@ -26,7 +26,7 @@ import {
  * Features high-quality SVG icons, varying sizes, and elegant micro-interactions.
  */
 export default function TechStackSection() {
-  const isMobile = useIsMobile();
+  const isMobile = useIsMobile() ?? false;
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1

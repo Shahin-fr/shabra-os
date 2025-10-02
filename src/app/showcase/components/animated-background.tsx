@@ -26,7 +26,7 @@ export default function AnimatedBackground() {
 
   useEffect(() => {
     // Create initial particles
-    const initialParticles: Particle[] = Array.from({ length: 25 }, (_, i) => ({
+    const initialParticles: Particle[] = Array.from({ length: 70 }, (_, i) => ({
       id: i,
       x: Math.random() * 100,
       y: Math.random() * 100,

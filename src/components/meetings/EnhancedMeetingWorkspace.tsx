@@ -67,6 +67,7 @@ interface Meeting {
       id: string;
       firstName: string;
       lastName: string;
+      avatar?: string;
     };
     createdAt: string;
   }>;
@@ -669,7 +670,7 @@ export function EnhancedMeetingWorkspace({ meeting }: EnhancedMeetingWorkspacePr
                         <div className="flex items-center justify-between mt-3">
                           <div className="flex items-center gap-2">
                             <Avatar className="h-6 w-6">
-                              <AvatarImage src={(item.assignee as any).avatar} />
+                              <AvatarImage src={item.assignee.avatar} />
                               <AvatarFallback className="text-xs">
                                 {item.assignee.firstName.charAt(0)}{item.assignee.lastName.charAt(0)}
                               </AvatarFallback>

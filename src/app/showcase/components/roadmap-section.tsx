@@ -13,7 +13,7 @@ import { t } from '../utils/i18n';
  * circle animations at each milestone with perfect synchronization.
  */
 export default function RoadmapSection() {
-  const isMobile = useIsMobile();
+  const isMobile = useIsMobile() ?? false;
   const containerRef = React.useRef<HTMLDivElement>(null);
   const sectionRef = React.useRef<HTMLDivElement>(null);
 

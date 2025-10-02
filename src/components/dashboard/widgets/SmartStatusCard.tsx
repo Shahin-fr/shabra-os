@@ -151,8 +151,8 @@ export const SmartStatusCard = React.memo(function SmartStatusCard({ className, 
       return {
         label: 'در حال کار',
         icon: CheckCircle,
-        color: 'text-green-600',
-        bgColor: 'bg-green-100',
+        color: 'text-status-success-text',
+        bgColor: 'bg-status-success',
         buttonText: 'ثبت خروج',
         buttonVariant: 'destructive' as const
       };
@@ -199,8 +199,8 @@ export const SmartStatusCard = React.memo(function SmartStatusCard({ className, 
         )}
       >
         <div className="text-center py-4">
-          <AlertCircle className="h-8 w-8 text-red-500 mx-auto mb-2" />
-          <p className="text-red-600 text-sm">خطا در بارگذاری اطلاعات</p>
+          <AlertCircle className="h-8 w-8 text-status-danger mx-auto mb-2" />
+          <p className="text-status-danger-text text-sm">خطا در بارگذاری اطلاعات</p>
         </div>
       </WidgetCard>
     );

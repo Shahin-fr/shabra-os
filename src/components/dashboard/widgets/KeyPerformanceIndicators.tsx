@@ -22,8 +22,8 @@ const kpiData = [
     trend: '+5%',
     trendType: 'positive',
     icon: Target,
-    color: 'text-green-500',
-    bgColor: 'bg-green-500/20',
+    color: 'text-status-success-text',
+    bgColor: 'bg-status-success/20',
     description: 'در مقایسه با ماه گذشته',
   },
   {
@@ -55,8 +55,8 @@ const kpiData = [
     trend: '+20%',
     trendType: 'positive',
     icon: DollarSign,
-    color: 'text-green-500',
-    bgColor: 'bg-green-500/20',
+    color: 'text-status-success-text',
+    bgColor: 'bg-status-success/20',
     description: 'تومان',
   },
   {
@@ -88,7 +88,7 @@ const getTrendIcon = (trendType: string) => {
 };
 
 const getTrendColor = (trendType: string) => {
-  return trendType === 'positive' ? 'text-green-500' : 'text-red-500';
+  return trendType === 'positive' ? 'text-status-success-text' : 'text-status-danger-text';
 };
 
 export function KeyPerformanceIndicators() {
@@ -175,8 +175,8 @@ export function KeyPerformanceIndicators() {
                     variant='outline'
                     className={`text-xs ${
                       kpi.trendType === 'positive'
-                        ? 'bg-green-100 text-green-800 border-green-200'
-                        : 'bg-red-100 text-red-800 border-red-200'
+                        ? 'bg-status-success text-status-success-text border-status-success'
+                        : 'bg-status-danger text-status-danger-text border-status-danger'
                     }`}
                   >
                     {kpi.trendType === 'positive' ? 'مثبت' : 'منفی'}

@@ -66,7 +66,7 @@ function ClientOnly({ children }: { children: React.ReactNode }) {
  * Zero overlaps, continuous flow, maximum diversity, perfect fade effects.
  */
 export default function ProblemSection() {
-  const isMobile = useIsMobile();
+  const isMobile = useIsMobile() ?? false;
   const { ref, inView } = useInView({
     triggerOnce: true,
     threshold: 0.2

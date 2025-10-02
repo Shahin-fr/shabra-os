@@ -21,7 +21,6 @@ export async function GET(request: NextRequest) {
       where: {
         startTime: {
           gte: now,
-          lte: endOfDay,
         },
         status: 'SCHEDULED',
         OR: [
@@ -61,7 +60,6 @@ export async function GET(request: NextRequest) {
         where: {
           startDate: {
             gte: now,
-            lte: endOfDay,
           },
         },
         include: {
@@ -92,13 +90,15 @@ export async function GET(request: NextRequest) {
     
     if (!event) {
       return NextResponse.json({
-        success: false,
+        success: true,
+        data: null,
         message: 'جلسه جدیدی تنظیم نشده',
       });
     }
     
-    const timeUntilEvent = Math.ceil((isMeeting ? (event as any).startTime : (event as any).startDate).getTime() - now.getTime()) / (1000 * 60);
-    const isUpcoming = timeUntilEvent <= 60; // Within next hour
+    const eventStartTime = isMeeting ? (event as any).startTime : (event as any).startDate;
+    const timeUntilEvent = Math.max(0, Math.ceil((eventStartTime.getTime() - now.getTime()) / (1000 * 60)));
+    const isUpcoming = timeUntilEvent <= 60 && timeUntilEvent >= 0; // Within next hour and not past
 
     return NextResponse.json({
       success: true,
@@ -106,11 +106,11 @@ export async function GET(request: NextRequest) {
         id: event.id,
         title: event.title,
         description: isMeeting ? (event as any).notes : (event as any).description,
-        type: isMeeting ? ((event as any).type === 'ONE_ON_ONE' ? 'meeting' : 'team-meeting') : (event as any).type,
+        type: isMeeting ? ((event as any).type === 'ONE_ON_ONE' ? 'meeting' : 'team-meeting') : (event as any).type || 'event',
         startDate: (event as any).startTime || (event as any).startDate,
         endDate: (event as any).endTime || (event as any).endDate,
         location: isMeeting ? null : ((event as any).project ? (event as any).project.name : null),
-        attendees: isMeeting ? (event as any).attendees.length : null,
+        attendees: isMeeting ? (event as any).attendees?.length || 0 : null,
         project: !isMeeting && (event as any).project ? {
           id: (event as any).project.id,
           name: (event as any).project.name,

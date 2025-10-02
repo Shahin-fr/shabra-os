@@ -59,17 +59,17 @@ export function WhosOutWidget({ className, variant = 'desktop' }: WhosOutWidgetP
   const getLeaveTypeColor = (leaveType: string) => {
     switch (leaveType) {
       case 'ANNUAL':
-        return 'bg-blue-100 text-blue-700';
+        return 'bg-brand-pink text-brand-pink-text';
       case 'SICK':
-        return 'bg-red-100 text-red-700';
+        return 'bg-status-danger text-status-danger-text';
       case 'PERSONAL':
-        return 'bg-green-100 text-green-700';
+        return 'bg-status-success text-status-success-text';
       case 'MATERNITY':
         return 'bg-pink-100 text-pink-700';
       case 'PATERNITY':
-        return 'bg-purple-100 text-purple-700';
+        return 'bg-brand-plum text-brand-plum-text';
       case 'EMERGENCY':
-        return 'bg-orange-100 text-orange-700';
+        return 'bg-status-warning text-status-warning-text';
       default:
         return 'bg-gray-100 text-gray-700';
     }

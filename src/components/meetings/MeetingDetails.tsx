@@ -79,9 +79,10 @@ interface User {
 interface MeetingDetailsProps {
   meeting: Meeting;
   onClose: () => void;
+  onMeetingUpdate?: () => void;
 }
 
-export function MeetingDetails({ meeting, onClose }: MeetingDetailsProps) {
+export function MeetingDetails({ meeting, onClose, onMeetingUpdate }: MeetingDetailsProps) {
   const [newTalkingPoint, setNewTalkingPoint] = useState('');
   const [newActionItem, setNewActionItem] = useState('');
   const [selectedAssignee, setSelectedAssignee] = useState('');
@@ -162,9 +163,9 @@ export function MeetingDetails({ meeting, onClose }: MeetingDetailsProps) {
 
       toast.success('نکته گفتگو اضافه شد');
       setNewTalkingPoint('');
-      // Refetch meeting data
-      if (typeof window !== 'undefined') {
-        window.location.reload();
+      // Trigger parent component to refetch data
+      if (onMeetingUpdate) {
+        onMeetingUpdate();
       }
     } catch (error) {
       console.error('Error adding talking point:', error);
@@ -194,9 +195,9 @@ export function MeetingDetails({ meeting, onClose }: MeetingDetailsProps) {
       toast.success('مورد اقدام اضافه شد');
       setNewActionItem('');
       setSelectedAssignee('');
-      // Refetch meeting data
-      if (typeof window !== 'undefined') {
-        window.location.reload();
+      // Trigger parent component to refetch data
+      if (onMeetingUpdate) {
+        onMeetingUpdate();
       }
     } catch (error) {
       console.error('Error adding action item:', error);
@@ -220,9 +221,9 @@ export function MeetingDetails({ meeting, onClose }: MeetingDetailsProps) {
         throw new Error('Failed to update talking point');
       }
 
-      // Refetch meeting data
-      if (typeof window !== 'undefined') {
-        window.location.reload();
+      // Trigger parent component to refetch data
+      if (onMeetingUpdate) {
+        onMeetingUpdate();
       }
     } catch (error) {
       console.error('Error updating talking point:', error);
@@ -246,9 +247,9 @@ export function MeetingDetails({ meeting, onClose }: MeetingDetailsProps) {
         throw new Error('Failed to update action item');
       }
 
-      // Refetch meeting data
-      if (typeof window !== 'undefined') {
-        window.location.reload();
+      // Trigger parent component to refetch data
+      if (onMeetingUpdate) {
+        onMeetingUpdate();
       }
     } catch (error) {
       console.error('Error updating action item:', error);
@@ -267,9 +268,9 @@ export function MeetingDetails({ meeting, onClose }: MeetingDetailsProps) {
       }
 
       toast.success('تسک با موفقیت ایجاد شد');
-      // Refetch meeting data
-      if (typeof window !== 'undefined') {
-        window.location.reload();
+      // Trigger parent component to refetch data
+      if (onMeetingUpdate) {
+        onMeetingUpdate();
       }
     } catch (error) {
       console.error('Error creating task:', error);

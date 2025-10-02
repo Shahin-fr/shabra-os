@@ -37,7 +37,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           isMobile && 'w-full me-0 pb-20'
         )}
       >
-        <div className='relative z-5 max-w-7xl mx-auto'>{children}</div>
+        <div className='relative z-5 w-full max-w-[85%] mx-auto'>{children}</div>
       </main>
 
       {/* Mobile Navigation Components */}

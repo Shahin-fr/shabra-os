@@ -66,12 +66,12 @@ export function WeeklyPerformanceChart() {
                       <div
                         className={`flex items-center gap-1 text-xs ${
                           day.efficiency >= 90
-                            ? 'text-green-500'
+                            ? 'text-status-success-text'
                             : day.efficiency >= 80
                               ? 'text-[#ff0a54]'
                               : day.efficiency >= 70
                                 ? 'text-yellow-500'
-                                : 'text-red-500'
+                                : 'text-status-danger-text'
                         }`}
                       >
                         {day.efficiency >= 90 ? (
@@ -104,12 +104,12 @@ export function WeeklyPerformanceChart() {
                   <div
                     className={`w-16 h-3 rounded-full ${
                       day.efficiency >= 90
-                        ? 'bg-green-500'
+                        ? 'bg-status-success'
                         : day.efficiency >= 80
                           ? 'bg-[#ff0a54]'
                           : day.efficiency >= 70
                             ? 'bg-yellow-500'
-                            : 'bg-red-500'
+                            : 'bg-status-danger'
                     }`}
                   />
                 </div>

@@ -67,8 +67,8 @@ export function WidgetCard({
           {headerAction}
         </div>
         <div className="text-center py-8">
-          <div className="text-red-500 text-4xl mb-3">⚠️</div>
-          <p className="text-red-600 font-vazirmatn">{error}</p>
+          <div className="text-status-danger text-4xl mb-3">⚠️</div>
+          <p className="text-status-danger-text font-vazirmatn">{error}</p>
         </div>
       </div>
     );

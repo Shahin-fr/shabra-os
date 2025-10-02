@@ -127,8 +127,8 @@ export function RecentTeamActivityFeed() {
         </CardHeader>
         <CardContent className='flex flex-col items-center justify-center text-center py-8'>
           <div className='space-y-4'>
-            <div className='p-4 rounded-full bg-red-100'>
-              <RefreshCw className='h-8 w-8 text-red-500' />
+            <div className='p-4 rounded-full bg-status-danger'>
+              <RefreshCw className='h-8 w-8 text-status-danger' />
             </div>
             <div>
               <h3 className='text-lg font-semibold text-gray-900 mb-2'>
