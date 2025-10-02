@@ -66,10 +66,10 @@ export default function StoryboardPage() {
   const isError = storyTypesError || storiesError;
 
   return (
-    <div className='bg-gradient-to-br from-pink-50 via-white to-purple-50'>
+    <div className='bg-white'>
       {/* Header */}
       <OptimizedMotion
-        className='bg-white/80 backdrop-blur-md border-b border-pink-200/50 px-6 py-6'
+        className='bg-white/80 backdrop-blur-md border-b border-gray-200 px-6 py-6'
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}

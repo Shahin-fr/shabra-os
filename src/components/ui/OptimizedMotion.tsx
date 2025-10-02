@@ -34,6 +34,8 @@ interface OptimizedMotionProps {
   onDragEnd?: any;
   onAnimationComplete?: () => void;
   onAnimationStart?: () => void;
+  onHoverStart?: any;
+  onHoverEnd?: any;
   [key: string]: any;
 }
 
@@ -71,6 +73,8 @@ export const OptimizedMotion = forwardRef<HTMLDivElement, OptimizedMotionProps>(
       onDragEnd,
       onAnimationComplete,
       onAnimationStart,
+      onHoverStart,
+      onHoverEnd,
       ...props
     },
     ref
@@ -84,12 +88,20 @@ export const OptimizedMotion = forwardRef<HTMLDivElement, OptimizedMotionProps>(
     // If animations are disabled, return a regular element
     if (!shouldAnimate || !enableAnimations) {
       const Component = as as any;
+      
+      // Filter out motion-specific props that shouldn't be passed to regular HTML elements
+      const {
+        onHoverStart,
+        onHoverEnd,
+        ...htmlProps
+      } = props;
+      
       return (
         <Component
           ref={ref}
           className={className}
           style={style}
-          {...props}
+          {...htmlProps}
         >
           {children}
         </Component>
@@ -152,6 +164,8 @@ export const OptimizedMotion = forwardRef<HTMLDivElement, OptimizedMotionProps>(
         onDragEnd={onDragEnd}
         onAnimationComplete={onAnimationComplete}
         onAnimationStart={onAnimationStart}
+        onHoverStart={onHoverStart}
+        onHoverEnd={onHoverEnd}
         {...props}
       >
         {children}

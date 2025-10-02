@@ -15,7 +15,6 @@ import Image from 'next/image';
  * the modular ecosystem with seamless transitions and RTL/LTR support.
  */
 export default function EcosystemSection() {
-  const isMobile = useIsMobile() ?? false;
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1

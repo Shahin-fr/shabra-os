@@ -1,7 +1,7 @@
 'use client';
 
-import { ChevronRight, ChevronDown, Folder, FileText, Plus, Upload, Search, AlertCircle } from 'lucide-react';
-import { useState, useMemo } from 'react';
+import { ChevronRight, ChevronDown, Folder, FileText, Plus, Upload, Search, AlertCircle, MoreVertical, Edit, Trash2 } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
 import {
   DndContext,
   closestCenter,
@@ -26,11 +26,28 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { cn } from '@/lib/utils';
-import { useWikiItems, useReorderWikiItems, type WikiItem } from '@/stores/wiki.store';
+import { useWikiItems, useReorderWikiItems, useDeleteWikiItem, useUpdateWikiItem, type WikiItem } from '@/stores/wiki.store';
 import { useToast } from '@/components/ui/toast';
 import { CreateWikiItem } from './CreateWikiItem';
 import { WikiFileUpload } from './WikiFileUpload';
+import { EditWikiItem } from './EditWikiItem';
 
 interface WikiSidebarProps {
   onDocumentSelect: (documentId: string | null) => void;
@@ -45,7 +62,10 @@ function SortableWikiItem({
   onSelect, 
   selectedDocument, 
   expandedFolders, 
-  onToggleFolder 
+  onToggleFolder,
+  onEdit,
+  onDelete,
+  currentUserId
 }: {
   item: WikiItem;
   level: number;
@@ -53,6 +73,9 @@ function SortableWikiItem({
   selectedDocument: string | null;
   expandedFolders: Set<string>;
   onToggleFolder: (id: string) => void;
+  onEdit: (item: WikiItem) => void;
+  onDelete: (item: WikiItem) => void;
+  currentUserId: string | null;
 }) {
   const {
     attributes,
@@ -71,6 +94,8 @@ function SortableWikiItem({
   const isExpanded = expandedFolders.has(item.id);
   const hasChildren = item.children && item.children.length > 0;
   const isSelected = selectedDocument === item.id;
+  const canEdit = currentUserId && item.authorId === currentUserId && !item.id?.startsWith('doc-');
+  const isSystemDocument = item.id?.startsWith('doc-') || item.id === 'markdown-docs-folder';
 
   return (
     <div
@@ -127,6 +152,35 @@ function SortableWikiItem({
 
         <span className='truncate flex-1'>{item.title}</span>
         </div>
+
+        {/* Edit/Delete Menu */}
+        {canEdit && !isSystemDocument && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <MoreVertical className="h-3 w-3" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => onEdit(item)}>
+                <Edit className="h-4 w-4 me-2" />
+                ویرایش
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                onClick={() => onDelete(item)}
+                className="text-red-600 focus:text-red-600"
+              >
+                <Trash2 className="h-4 w-4 me-2" />
+                حذف
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
       </div>
 
       {item.type === 'FOLDER' && isExpanded && hasChildren && (
@@ -140,6 +194,9 @@ function SortableWikiItem({
               selectedDocument={selectedDocument}
               expandedFolders={expandedFolders}
               onToggleFolder={onToggleFolder}
+              onEdit={onEdit}
+              onDelete={onDelete}
+              currentUserId={currentUserId}
             />
           ))}
         </div>
@@ -156,12 +213,31 @@ export function WikiSidebar({
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set());
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showUploadDialog, setShowUploadDialog] = useState(false);
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [editingItem, setEditingItem] = useState<WikiItem | null>(null);
+  const [deletingItem, setDeletingItem] = useState<WikiItem | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   
   const { addToast } = useToast();
   const { data: wikiItems = [], isLoading, error, refetch } = useWikiItems();
   const reorderMutation = useReorderWikiItems();
+  const deleteMutation = useDeleteWikiItem();
 
+  // Get current user ID
+  React.useEffect(() => {
+    fetch('/api/auth/session')
+      .then(res => res.json())
+      .then(data => {
+        if (data?.user?.id) {
+          setCurrentUserId(data.user.id);
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching current user:', error);
+      });
+  }, []);
 
   // Drag and drop sensors
   const sensors = useSensors(
@@ -270,6 +346,60 @@ export function WikiSidebar({
     addToast({
       title: 'موفقیت',
       description: 'فایل با موفقیت آپلود شد',
+      variant: 'success',
+    });
+    handleRefresh();
+  };
+
+  const handleEdit = (item: WikiItem) => {
+    setEditingItem(item);
+    setShowEditDialog(true);
+  };
+
+  const handleDelete = (item: WikiItem) => {
+    setDeletingItem(item);
+    setShowDeleteDialog(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!deletingItem) return;
+
+    deleteMutation.mutate(deletingItem.id, {
+      onSuccess: () => {
+        addToast({
+          title: 'موفقیت',
+          description: 'آیتم با موفقیت حذف شد',
+          variant: 'success',
+        });
+        setShowDeleteDialog(false);
+        setDeletingItem(null);
+        handleRefresh();
+      },
+      onError: (error) => {
+        // Check if it's a folder with children error
+        if (error.message && error.message.includes('Cannot delete folder that contains')) {
+          addToast({
+            title: 'نمی‌توان پوشه را حذف کرد',
+            description: 'ابتدا تمام آیتم‌های داخل این پوشه را حذف کنید یا آن‌ها را به جای دیگری منتقل کنید.',
+            variant: 'destructive',
+          });
+        } else {
+          addToast({
+            title: 'خطا',
+            description: error.message || 'خطا در حذف آیتم',
+            variant: 'destructive',
+          });
+        }
+      },
+    });
+  };
+
+  const handleEditSuccess = () => {
+    setShowEditDialog(false);
+    setEditingItem(null);
+    addToast({
+      title: 'موفقیت',
+      description: 'آیتم با موفقیت به‌روزرسانی شد',
       variant: 'success',
     });
     handleRefresh();
@@ -409,6 +539,9 @@ export function WikiSidebar({
                       selectedDocument={selectedDocument}
                       expandedFolders={expandedFolders}
                       onToggleFolder={toggleFolder}
+                      onEdit={handleEdit}
+                      onDelete={handleDelete}
+                      currentUserId={currentUserId}
                     />
                   ))}
                 </div>
@@ -417,6 +550,56 @@ export function WikiSidebar({
           )}
         </div>
       </div>
+
+      {/* Edit Dialog */}
+      {showEditDialog && editingItem && (
+        <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>
+                ویرایش {editingItem.type === 'FOLDER' ? 'پوشه' : 'مستند'}
+              </DialogTitle>
+            </DialogHeader>
+            <EditWikiItem
+              document={editingItem}
+              onClose={() => {
+                setShowEditDialog(false);
+                setEditingItem(null);
+              }}
+              onSuccess={handleEditSuccess}
+            />
+          </DialogContent>
+        </Dialog>
+      )}
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              حذف {deletingItem?.type === 'FOLDER' ? 'پوشه' : 'مستند'}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              آیا مطمئن هستید که می‌خواهید "{deletingItem?.title}" را حذف کنید؟ این عمل قابل بازگشت نیست.
+              {deletingItem?.type === 'FOLDER' && (
+                <div className='mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded text-yellow-800 text-sm'>
+                  ⚠️ اگر این پوشه شامل آیتم‌هایی باشد، ابتدا باید آن‌ها را حذف کنید یا به جای دیگری منتقل کنید.
+                </div>
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>انصراف</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteConfirm}
+              disabled={deleteMutation.isPending}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              {deleteMutation.isPending ? 'در حال حذف...' : 'حذف'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

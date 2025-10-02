@@ -1,19 +1,11 @@
 'use client';
 
 import { OptimizedMotion } from '@/components/ui/OptimizedMotion';
-import {
-  Sunrise,
-  Package,
-  MessageCircle,
-  BookOpen,
-  Camera,
-  Tag,
-  Smile,
-  Newspaper,
-} from 'lucide-react';
+import { Package } from 'lucide-react';
 import { useState } from 'react';
 
 import { Card, CardContent } from '@/components/ui/card';
+import { DynamicLucideIcon } from '@/components/ui/DynamicLucideIcon';
 import { cn } from '@/lib/utils';
 
 interface StoryType {
@@ -30,16 +22,7 @@ interface StoryTypePaletteProps {
   isLoading?: boolean;
 }
 
-const iconMap = {
-  Sunrise,
-  Package,
-  MessageCircle,
-  BookOpen,
-  Camera,
-  Tag,
-  Smile,
-  Newspaper,
-};
+// Remove iconMap since we're using DynamicLucideIcon now
 
 export function StoryTypePalette({
   storyTypes,
@@ -86,8 +69,6 @@ export function StoryTypePalette({
         {storyTypes
           .filter(type => type.isActive)
           .map(storyType => {
-            const IconComponent =
-              iconMap[storyType.icon as keyof typeof iconMap] || Package;
             const isSelected = selectedSlotIndex !== null;
             const isHovered = hoveredType === storyType.id;
 
@@ -99,8 +80,6 @@ export function StoryTypePalette({
                 transition={{ duration: 0.3 }}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                onHoverStart={() => setHoveredType(storyType.id)}
-                onHoverEnd={() => setHoveredType(null)}
               >
                 <Card
                   className={cn(
@@ -111,6 +90,8 @@ export function StoryTypePalette({
                     !isSelected && 'opacity-50 cursor-not-allowed'
                   )}
                   onClick={() => handleTypeClick(storyType)}
+                  onMouseEnter={() => setHoveredType(storyType.id)}
+                  onMouseLeave={() => setHoveredType(null)}
                 >
                   <CardContent className='p-4 text-center'>
                     <div className='flex flex-col items-center gap-3'>
@@ -122,13 +103,15 @@ export function StoryTypePalette({
                             : 'bg-gray-100'
                         )}
                       >
-                        <IconComponent
+                        <DynamicLucideIcon
+                          iconName={storyType.icon}
                           className={cn(
                             'h-6 w-6 transition-colors',
                             isSelected || isHovered
                               ? 'text-[#ff0a54]'
                               : 'text-gray-600'
                           )}
+                          fallbackIcon={Package}
                         />
                       </div>
                       <div className='space-y-1'>

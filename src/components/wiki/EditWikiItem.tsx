@@ -1,6 +1,6 @@
 'use client';
 
-import { Folder, Save, X } from 'lucide-react';
+import { Folder, Save, X, Eye, Edit3 } from 'lucide-react';
 import React, { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -14,8 +14,11 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useUpdateWikiItem, useWikiItems, type WikiItem } from '@/stores/wiki.store';
 import { useToast } from '@/components/ui/toast';
+import { MarkdownRenderer } from './MarkdownRenderer';
+import { MarkdownGuide } from './MarkdownGuide';
 
 interface WikiFolder {
   id: string;
@@ -119,14 +122,40 @@ export function EditWikiItem({ document, onClose, onSuccess }: EditWikiItemProps
 
       {document.type === 'DOCUMENT' && (
         <div className='space-y-2'>
-          <Label htmlFor='content'>محتوای مستند</Label>
-          <Textarea
-            id='content'
-            value={content}
-            onChange={e => setContent(e.target.value)}
-            placeholder='محتوای مستند را اینجا بنویسید...'
-            rows={6}
-          />
+          <div className="flex items-center justify-between">
+            <Label htmlFor='content'>محتوای مستند (Markdown)</Label>
+            <MarkdownGuide />
+          </div>
+          <Tabs defaultValue="edit" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="edit" className="flex items-center gap-2">
+                <Edit3 className="h-4 w-4" />
+                ویرایش
+              </TabsTrigger>
+              <TabsTrigger value="preview" className="flex items-center gap-2">
+                <Eye className="h-4 w-4" />
+                پیش‌نمایش
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent value="edit" className="mt-2">
+              <Textarea
+                id='content'
+                value={content}
+                onChange={e => setContent(e.target.value)}
+                placeholder='محتوای مستند را اینجا بنویسید... (از Markdown استفاده کنید)'
+                rows={12}
+                className="font-mono text-sm"
+              />
+              <div className="mt-2 text-xs text-gray-500">
+                💡 از Markdown استفاده کنید: **متن پررنگ**, *متن کج*, `کد`, # عنوان
+              </div>
+            </TabsContent>
+            <TabsContent value="preview" className="mt-2">
+              <div className="border rounded-lg p-4 min-h-[200px] bg-white">
+                <MarkdownRenderer content={content} />
+              </div>
+            </TabsContent>
+          </Tabs>
         </div>
       )}
 

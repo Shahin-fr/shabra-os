@@ -32,6 +32,7 @@ import { useWikiItem, useDeleteWikiItem } from '@/stores/wiki.store';
 import { useToast } from '@/components/ui/toast';
 import { EditWikiItem } from './EditWikiItem';
 import { PDFViewer } from './PDFViewer';
+import { MarkdownRenderer } from './MarkdownRenderer';
 
 interface WikiContentProps {
   documentId: string | null;
@@ -78,11 +79,20 @@ export function WikiContent({ documentId, onRefresh }: WikiContentProps) {
         }
       },
       onError: (error) => {
-        addToast({
-          title: 'خطا',
-          description: error.message || 'خطا در حذف آیتم',
-          variant: 'destructive',
-        });
+        // Check if it's a folder with children error
+        if (error.message && error.message.includes('Cannot delete folder that contains')) {
+          addToast({
+            title: 'نمی‌توان پوشه را حذف کرد',
+            description: 'ابتدا تمام آیتم‌های داخل این پوشه را حذف کنید یا آن‌ها را به جای دیگری منتقل کنید.',
+            variant: 'destructive',
+          });
+        } else {
+          addToast({
+            title: 'خطا',
+            description: error.message || 'خطا در حذف آیتم',
+            variant: 'destructive',
+          });
+        }
       },
     });
   };
@@ -187,21 +197,154 @@ export function WikiContent({ documentId, onRefresh }: WikiContentProps) {
         <div className='max-w-5xl mx-auto'>
           <Card className='mb-8'>
             <CardHeader>
-              <CardTitle className='text-4xl font-bold text-gray-800'>
-                {document?.title}
-              </CardTitle>
-              <p className='text-lg text-gray-600'>
-                پوشه‌ای برای سازماندهی محتوا
-              </p>
+              <div className='flex items-start rtl:items-start justify-between gap-4'>
+                <div>
+                  <CardTitle className='text-4xl font-bold text-gray-800'>
+                    {document?.title}
+                  </CardTitle>
+                  <p className='text-lg text-gray-600'>
+                    پوشه‌ای برای سازماندهی محتوا
+                  </p>
+                </div>
+                {canEdit && !isSystemDocument && (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant='outline' size='sm' className='flex-shrink-0'>
+                        <MoreVertical className='h-4 w-4' />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align='end'>
+                      <DropdownMenuItem onClick={() => setShowEditDialog(true)}>
+                        <Edit className='h-4 w-4 me-2' />
+                        ویرایش
+                      </DropdownMenuItem>
+                      <DropdownMenuItem 
+                        onClick={() => setShowDeleteDialog(true)}
+                        className='text-red-600 focus:text-red-600'
+                      >
+                        <Trash2 className='h-4 w-4 me-2' />
+                        حذف
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )}
+              </div>
             </CardHeader>
           </Card>
 
           <div className='bg-gradient-to-br from-gray-50 to-gray-100/50 rounded-xl p-12 text-center border border-gray-200/50'>
             <FileText className='h-20 w-20 mx-auto mb-6 text-pink-300' />
-            <p className='text-lg text-gray-600 max-w-md mx-auto leading-relaxed'>
+            <p className='text-lg text-gray-600 max-w-md mx-auto leading-relaxed mb-6'>
               این یک پوشه است. برای مشاهده محتوا، آیتم‌های داخل آن را از نوار
               کناری انتخاب کنید.
             </p>
+            {document.children && document.children.length > 0 && (
+              <div className='mt-6'>
+                <p className='text-sm text-gray-500 mb-3'>
+                  این پوشه شامل {document.children.length} آیتم است:
+                </p>
+                <div className='flex flex-wrap justify-center gap-2'>
+                  {document.children.map((child) => (
+                    <div key={child.id} className='relative group'>
+                      <Badge
+                        variant='secondary'
+                        className='bg-blue-50 text-blue-700 border-blue-200 pr-8'
+                      >
+                        {child.type === 'FOLDER' ? '📁' : '📄'} {child.title}
+                      </Badge>
+                      {canEdit && !child.id?.startsWith('doc-') && (
+                        <Button
+                          variant='ghost'
+                          size='sm'
+                          className='absolute right-0 top-0 h-5 w-5 p-0 opacity-0 group-hover:opacity-100 transition-opacity bg-red-100 hover:bg-red-200 text-red-600'
+                          onClick={() => {
+                            if (confirm(`آیا مطمئن هستید که می‌خواهید "${child.title}" را حذف کنید؟`)) {
+                              deleteMutation.mutate(child.id, {
+                                onSuccess: () => {
+                                  addToast({
+                                    title: 'موفقیت',
+                                    description: 'آیتم با موفقیت حذف شد',
+                                    variant: 'success',
+                                  });
+                                  if (onRefresh) {
+                                    onRefresh();
+                                  }
+                                },
+                                onError: (error) => {
+                                  if (error.message && error.message.includes('Cannot delete folder that contains')) {
+                                    addToast({
+                                      title: 'نمی‌توان پوشه را حذف کرد',
+                                      description: 'ابتدا تمام آیتم‌های داخل این پوشه را حذف کنید.',
+                                      variant: 'destructive',
+                                    });
+                                  } else {
+                                    addToast({
+                                      title: 'خطا',
+                                      description: error.message || 'خطا در حذف آیتم',
+                                      variant: 'destructive',
+                                    });
+                                  }
+                                },
+                              });
+                            }
+                          }}
+                        >
+                          <Trash2 className='h-3 w-3' />
+                        </Button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                <div className='mt-3 flex flex-col items-center gap-2'>
+                  <p className='text-xs text-gray-400'>
+                    برای حذف این پوشه، ابتدا تمام آیتم‌های بالا را حذف کنید
+                  </p>
+                  {canEdit && (
+                    <Button
+                      variant='outline'
+                      size='sm'
+                      className='text-red-600 border-red-200 hover:bg-red-50'
+                      onClick={() => {
+                        if (confirm(`آیا مطمئن هستید که می‌خواهید تمام ${document.children.length} آیتم داخل این پوشه را حذف کنید؟ این عمل قابل بازگشت نیست.`)) {
+                          // Delete all children
+                          const deletePromises = document.children.map(child => 
+                            fetch(`/api/wiki/${child.id}`, { method: 'DELETE' })
+                              .then(response => {
+                                if (!response.ok) {
+                                  throw new Error(`Failed to delete ${child.title}`);
+                                }
+                                return response.json();
+                              })
+                          );
+                          
+                          Promise.all(deletePromises)
+                            .then(() => {
+                              addToast({
+                                title: 'موفقیت',
+                                description: `تمام ${document.children.length} آیتم با موفقیت حذف شد`,
+                                variant: 'success',
+                              });
+                              if (onRefresh) {
+                                onRefresh();
+                              }
+                            })
+                            .catch((error) => {
+                              addToast({
+                                title: 'خطا',
+                                description: 'خطا در حذف برخی از آیتم‌ها',
+                                variant: 'destructive',
+                              });
+                            });
+                        }
+                      }}
+                    >
+                      <Trash2 className='h-4 w-4 me-2' />
+                      حذف همه فرزندان
+                    </Button>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -297,15 +440,7 @@ export function WikiContent({ documentId, onRefresh }: WikiContentProps) {
               />
             ) : (
               /* Markdown/Text Content */
-              <div className='prose prose-lg max-w-none prose-headings:text-gray-800 prose-p:text-gray-700 prose-strong:text-gray-800 prose-code:text-gray-800 prose-pre:bg-gray-50 prose-pre:text-gray-800'>
-                {document?.content ? (
-                  <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(document?.content) }} />
-                ) : (
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                    {document?.content}
-                  </ReactMarkdown>
-                )}
-              </div>
+              <MarkdownRenderer content={document?.content || ''} />
             )}
           </CardContent>
         </Card>
@@ -339,6 +474,11 @@ export function WikiContent({ documentId, onRefresh }: WikiContentProps) {
             <AlertDialogTitle>حذف {(document?.type as string) === 'FOLDER' ? 'پوشه' : 'مستند'}</AlertDialogTitle>
             <AlertDialogDescription>
               آیا مطمئن هستید که می‌خواهید "{document?.title}" را حذف کنید؟ این عمل قابل بازگشت نیست.
+              {document?.type === 'FOLDER' && (
+                <div className='mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded text-yellow-800 text-sm'>
+                  ⚠️ اگر این پوشه شامل آیتم‌هایی باشد، ابتدا باید آن‌ها را حذف کنید یا به جای دیگری منتقل کنید.
+                </div>
+              )}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

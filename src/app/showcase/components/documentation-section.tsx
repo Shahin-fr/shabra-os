@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { useIsMobile } from '../../../hooks/useMediaQuery';
 
 /**
  * DocumentationSection Component - Professional IDE-like Interface
@@ -12,7 +11,6 @@ import { useIsMobile } from '../../../hooks/useMediaQuery';
  * markdown rendering, and smooth animations for the InstaPulse module.
  */
 export default function DocumentationSection() {
-  const isMobile = useIsMobile() ?? false;
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1

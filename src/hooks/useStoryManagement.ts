@@ -196,13 +196,28 @@ export function useStoryManagement({
 
       setState(prev => ({ ...prev, isCreating: true }));
       try {
+        // Get the first available project ID
+        let projectId = 'cmf5o9m110001u35cldria860'; // Default fallback
+        
+        try {
+          const projectsResponse = await fetch('/api/projects');
+          if (projectsResponse.ok) {
+            const projectsData = await projectsResponse.json();
+            if (projectsData.data?.projects?.length > 0) {
+              projectId = projectsData.data.projects[0].id;
+            }
+          }
+        } catch (error) {
+          console.warn('Failed to fetch projects, using default project ID:', error);
+        }
+
         const storyData: StoryData = {
           title: storyType.name,
           day: format(selectedDate, 'yyyy-MM-dd'),
           order: selectedSlotIndex + 1,
           type: storyType.name,
           customTitle: storyType.name,
-          projectId: 'cmf5o9m110001u35cldria860', // Default project ID
+          projectId: projectId,
           storyTypeId: storyType.id,
         };
 

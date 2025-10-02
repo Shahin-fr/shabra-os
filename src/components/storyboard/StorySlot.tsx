@@ -103,7 +103,7 @@ export function StorySlot({
         {...attributes}
         className={cn(
           'relative cursor-pointer transition-all duration-300',
-          'aspect-[9/16] min-h-[300px] max-h-[450px]',
+          'aspect-[9/16] min-h-[468px] max-h-[702px]',
           'border-2 border-dashed border-gray-400 hover:border-[#ff0a54]/70',
           'bg-gray-50 hover:bg-gray-100',
           'shadow-lg hover:shadow-xl',
@@ -135,7 +135,7 @@ export function StorySlot({
         onClick={onClick}
         onDoubleClick={onDoubleClick}
       >
-        <CardContent className='p-6 h-full flex flex-col'>
+        <CardContent className='p-10 h-full flex flex-col'>
           {story ? (
             // Story content - Refined layout
             <div className='flex flex-col h-full'>
@@ -176,7 +176,7 @@ export function StorySlot({
                   </OptimizedMotion>
                   <OptimizedMotion
                     {...listeners}
-                    className='w-8 h-8 bg-[#ff0a54]/30 rounded-full flex items-center justify-center text-sm font-medium text-[#ff0a54] cursor-grab active:cursor-grabbing'
+                    className='w-12 h-12 bg-[#ff0a54]/30 rounded-full flex items-center justify-center text-lg font-medium text-[#ff0a54] cursor-grab active:cursor-grabbing'
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
@@ -189,7 +189,7 @@ export function StorySlot({
               <div className='flex-1 flex flex-col items-center justify-center text-center'>
                 <OptimizedMotion
                   className={cn(
-                    'w-20 h-20 rounded-full flex items-center justify-center mb-6',
+                    'w-28 h-28 rounded-full flex items-center justify-center mb-10',
                     'bg-gradient-to-br from-[#ff0a54]/40 to-[#ff0a54]/60',
                     'border-2 border-[#ff0a54]/50'
                   )}
@@ -204,19 +204,19 @@ export function StorySlot({
                 >
                   <DynamicLucideIcon
                     iconName={story.storyType?.icon}
-                    className='h-10 w-10 text-white'
+                    className='h-14 w-14 text-white'
                     fallbackIcon={FileText}
                   />
                 </OptimizedMotion>
 
                 {/* Story type name - Most prominent text */}
-                <h3 className='text-lg font-bold text-gray-900 mb-3 leading-tight line-clamp-2'>
+                <h3 className='text-2xl font-bold text-gray-900 mb-5 leading-tight line-clamp-2'>
                   {story.storyType?.name || story.title}
                 </h3>
 
                 {/* Story title (if different from type name) - Smaller and muted */}
                 {story.storyType && story.title !== story.storyType.name && (
-                  <p className='text-sm text-gray-700 leading-tight line-clamp-2'>
+                  <p className='text-lg text-gray-700 leading-tight line-clamp-2'>
                     {story.title}
                   </p>
                 )}
@@ -239,7 +239,7 @@ export function StorySlot({
               <div className='absolute top-3 end-3'>
                 <OptimizedMotion
                   {...listeners}
-                  className='w-8 h-8 bg-[#ff0a54]/30 rounded-full flex items-center justify-center text-sm font-medium text-[#ff0a54] cursor-grab active:cursor-grabbing'
+                  className='w-12 h-12 bg-[#ff0a54]/30 rounded-full flex items-center justify-center text-lg font-medium text-[#ff0a54] cursor-grab active:cursor-grabbing'
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                 >
@@ -251,7 +251,7 @@ export function StorySlot({
               <div className='flex flex-col items-center'>
                 <OptimizedMotion
                   className={cn(
-                    'w-20 h-20 rounded-full flex items-center justify-center mb-6',
+                    'w-28 h-28 rounded-full flex items-center justify-center mb-10',
                     'bg-gradient-to-br from-[#ff0a54]/30 to-[#ff0a54]/40',
                     'border-2 border-dashed border-[#ff0a54]/50'
                   )}
@@ -264,12 +264,12 @@ export function StorySlot({
                   whileHover={{ scale: 1.02 }}
                   transition={{ duration: 0.2, ease: 'easeOut' }}
                 >
-                  <Plus className='h-10 w-10 text-[#ff0a54]' />
+                  <Plus className='h-14 w-14 text-[#ff0a54]' />
                 </OptimizedMotion>
-                <p className='text-base text-center font-medium text-gray-800 mb-2'>
+                <p className='text-xl text-center font-medium text-gray-800 mb-4'>
                   اسلات خالی
                 </p>
-                <p className='text-sm text-center text-gray-600'>
+                <p className='text-lg text-center text-gray-600'>
                   کلیک برای انتخاب
                 </p>
               </div>
