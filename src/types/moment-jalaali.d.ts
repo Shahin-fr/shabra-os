@@ -47,3 +47,4 @@ declare module 'moment-jalaali' {
   const momentJalaali: MomentJalaaliStatic;
   export = momentJalaali;
 }
+
