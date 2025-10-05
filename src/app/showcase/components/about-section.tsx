@@ -181,7 +181,7 @@ export default function AboutSection() {
               className="bg-transparent border-[#E000A0] text-[#E000A0] hover:bg-[#E000A0] hover:text-white transition-all duration-300 px-8 py-3 text-base font-semibold shadow-lg hover:shadow-xl hover:shadow-[#E000A0]/25"
             >
               <a 
-                href="https://shahinfarhadi.dev" 
+                href="https://shahinfarahmand.vercel.app" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="flex items-center gap-2"
