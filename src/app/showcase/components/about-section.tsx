@@ -103,7 +103,7 @@ export default function AboutSection() {
             className="text-xl text-gray-400 mb-8"
             variants={itemVariants}
           >
-            Aspiring Product Builder
+            Junior Product Builder
           </motion.p>
 
           {/* Profile Picture with Animated Ring */}
