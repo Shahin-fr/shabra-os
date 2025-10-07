@@ -110,6 +110,7 @@ const authConfig = {
     strategy: 'jwt' as const,
     maxAge: 30 * 24 * 60 * 60, // 30 days in seconds
     updateAge: 24 * 60 * 60, // 24 hours in seconds - how often to update the session
+    rolling: true, // Extend session on activity
   },
   callbacks: {
     async jwt({ token, user }: { token: JWT; user?: any }) {
@@ -162,6 +163,7 @@ const authConfig = {
         path: '/',
         secure: process.env.NODE_ENV === 'production',
         maxAge: 30 * 24 * 60 * 60, // 30 days
+        domain: process.env.NODE_ENV === 'production' ? undefined : 'localhost',
       },
     },
     callbackUrl: {
@@ -175,6 +177,7 @@ const authConfig = {
         path: '/',
         secure: process.env.NODE_ENV === 'production',
         maxAge: 30 * 24 * 60 * 60, // 30 days
+        domain: process.env.NODE_ENV === 'production' ? undefined : 'localhost',
       },
     },
     csrfToken: {
@@ -187,7 +190,8 @@ const authConfig = {
         sameSite: 'lax' as const,
         path: '/',
         secure: process.env.NODE_ENV === 'production',
-        maxAge: 30 * 24 * 60 * 60, // 30 days
+        maxAge: 60 * 60, // 1 hour for CSRF token
+        domain: process.env.NODE_ENV === 'production' ? undefined : 'localhost',
       },
     },
     pkceCodeVerifier: {
@@ -201,6 +205,7 @@ const authConfig = {
         path: '/',
         secure: process.env.NODE_ENV === 'production',
         maxAge: 15 * 60, // 15 minutes
+        domain: process.env.NODE_ENV === 'production' ? undefined : 'localhost',
       },
     },
   },

@@ -707,3 +707,22 @@ enum MeetingStatus {
   COMPLETED
   CANCELLED
 }
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  eventType String
+  details   String   // JSON string of event details
+  riskLevel String   @default("LOW")
+  userId    String?
+  ip        String?
+  userAgent String?
+  sessionId String?
+  timestamp DateTime @default(now())
+
+  @@index([eventType])
+  @@index([riskLevel])
+  @@index([userId])
+  @@index([ip])
+  @@index([timestamp])
+  @@map("audit_logs")
+}
