@@ -13,7 +13,7 @@ import {
 import { prisma } from '@/lib/prisma';
 import { handleApiError } from '@/lib/utils/error-handler';
 import { parsePaginationParams, executePaginatedQuery } from '@/lib/database/pagination';
-import { TaskQueryOptimizer, DatabasePerformanceMonitor } from '@/lib/database/query-optimizer';
+import { CommonSelects, createSearchConditions } from '@/lib/database/query-optimizer';
 
 export async function GET(request: NextRequest) {
   try {
@@ -71,51 +71,43 @@ export async function GET(request: NextRequest) {
       where.assignedTo = session.user.id;
     }
 
-    // Execute optimized paginated query
-    const result = await DatabasePerformanceMonitor.monitorQueryPerformance(
-      'GET /api/tasks',
-      () => executePaginatedQuery(
-        prisma.task,
-        paginationParams,
-        where,
-        {
-          creator: {
-            select: {
-              id: true,
-              firstName: true,
-              lastName: true,
-              email: true,
-              avatar: true,
-            },
-          },
-          assignee: {
-            select: {
-              id: true,
-              firstName: true,
-              lastName: true,
-              email: true,
-              avatar: true,
-            },
-          },
-          project: {
-            select: {
-              id: true,
-              name: true,
-              status: true,
-            },
-          },
-        }
-      )
+    // Add search functionality
+    if (paginationParams.search) {
+      const searchConditions = createSearchConditions(
+        paginationParams.search,
+        ['title', 'description']
+      );
+      if (searchConditions) {
+        where = { ...where, ...searchConditions };
+      }
+    }
+
+    // Execute paginated query
+    const result = await executePaginatedQuery(
+      prisma.task,
+      paginationParams,
+      where,
+      {
+        creator: {
+          select: CommonSelects.userMinimal,
+        },
+        assignee: {
+          select: CommonSelects.userMinimal,
+        },
+        project: {
+          select: CommonSelects.project,
+        },
+      }
     );
 
     // Transform entities to DTOs
-    const taskDTOs: TaskDTO[] = result.result.data.map(task => 
+    const taskDTOs: TaskDTO[] = result.data.map(task => 
       entityToDTO(task as TaskEntity) as unknown as TaskDTO
     );
 
     return ApiResponseBuilder.success({
       data: taskDTOs,
-      pagination: result.result.pagination,
+      pagination: result.pagination,
     }, 'Tasks retrieved successfully');
   } catch (error) {
     return handleApiError(error, {

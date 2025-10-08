@@ -11,7 +11,7 @@ import {
   CreateMeetingDTOSchema
 } from '@/types';
 import { parsePaginationParams, executePaginatedQuery } from '@/lib/database/pagination';
-import { MeetingQueryOptimizer, DatabasePerformanceMonitor } from '@/lib/database/query-optimizer';
+import { CommonSelects, createSearchConditions, createDateRangeFilter } from '@/lib/database/query-optimizer';
 
 
 // GET /api/meetings - Get meetings for the logged-in user
@@ -56,73 +56,44 @@ export async function GET(request: NextRequest) {
       whereClause.status = status;
     }
 
-    // Execute optimized paginated query
-    const result = await DatabasePerformanceMonitor.monitorQueryPerformance(
-      'GET /api/meetings',
-      () => executePaginatedQuery(
-        prisma.meeting,
-        paginationParams,
-        whereClause,
-        {
-          creator: {
-            select: {
-              id: true,
-              firstName: true,
-              lastName: true,
-              avatar: true,
+    // Add search functionality
+    if (paginationParams.search) {
+      const searchConditions = createSearchConditions(
+        paginationParams.search,
+        ['title', 'notes']
+      );
+      if (searchConditions) {
+        whereClause = { ...whereClause, ...searchConditions };
+      }
+    }
+
+    // Execute paginated query
+    const result = await executePaginatedQuery(
+      prisma.meeting,
+      paginationParams,
+      whereClause,
+      {
+        creator: {
+          select: CommonSelects.userMinimal,
+        },
+        attendees: {
+          include: {
+            user: {
+              select: CommonSelects.userMinimal,
             },
           },
-          attendees: {
-            include: {
-              user: {
-                select: {
-                  id: true,
-                  firstName: true,
-                  lastName: true,
-                  avatar: true,
-                },
-              },
-            },
-          },
-          // Only load talking points and action items if specifically requested
-          talkingPoints: {
-            include: {
-              addedBy: {
-                select: {
-                  id: true,
-                  firstName: true,
-                  lastName: true,
-                },
-              },
-            },
-            orderBy: { createdAt: 'asc' },
-            take: 10, // Limit to recent items for performance
-          },
-          actionItems: {
-            include: {
-              assignee: {
-                select: {
-                  id: true,
-                  firstName: true,
-                  lastName: true,
-                },
-              },
-            },
-            orderBy: { createdAt: 'asc' },
-            take: 10, // Limit to recent items for performance
-          },
-        }
-      )
+        },
+      }
     );
 
     // Transform entities to DTOs
-    const meetingDTOs: MeetingDTO[] = result.result.data.map(meeting => 
+    const meetingDTOs: MeetingDTO[] = result.data.map(meeting => 
       entityToDTO(meeting as MeetingEntity) as unknown as MeetingDTO
     );
 
     return ApiResponseBuilder.success({
       data: meetingDTOs,
-      pagination: result.result.pagination,
+      pagination: result.pagination,
     }, 'Meetings retrieved successfully');
   } catch (error) {
     console.error('Error fetching meetings:', error);
