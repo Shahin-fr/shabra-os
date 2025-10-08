@@ -4,6 +4,11 @@
 
 import { ClientError } from '@/contexts/ErrorContext';
 
+// Declare gtag function for Google Analytics
+declare global {
+  function gtag(command: string, action: string, parameters?: any): void;
+}
+
 export interface ErrorReport {
   id: string;
   message: string;
@@ -276,6 +281,7 @@ export class GoogleAnalytics4 implements ErrorAnalytics {
       gtag('event', 'error', {
         event_category: 'error',
         event_label: error.type,
+        measurement_id: this.measurementId,
         custom_map: {
           error_id: error.id,
           error_message: error.message,

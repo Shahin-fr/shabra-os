@@ -50,7 +50,12 @@ export const RATE_LIMIT_CONFIG = {
   maxRequests: 100, // per window for pages
   apiMaxRequests: 50, // per window for API routes
   authMaxRequests: 10, // per window for auth endpoints
-} as const;
+} as const satisfies {
+  windowMs: number;
+  maxRequests: number;
+  apiMaxRequests: number;
+  authMaxRequests: number;
+};
 
 // Session security configuration
 export const SESSION_CONFIG = {
@@ -178,7 +183,7 @@ export class SecurityMiddleware {
     const now = Date.now();
     const windowMs = RATE_LIMIT_CONFIG.windowMs;
     
-    let maxRequests = RATE_LIMIT_CONFIG.maxRequests;
+    let maxRequests: number = RATE_LIMIT_CONFIG.maxRequests;
     if (isAuthRoute) {
       maxRequests = RATE_LIMIT_CONFIG.authMaxRequests;
     } else if (isApiRoute) {

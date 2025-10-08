@@ -1,20 +1,17 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { auth } from '@/auth';
 import { prisma } from '@/lib/prisma';
 import { withAuthorization } from '@/lib/auth/authorization';
 import { z } from 'zod';
-
-// Validation schemas
-const CreateAnnouncementSchema = z.object({
-  title: z.string().min(1, 'عنوان الزامی است').max(200, 'عنوان باید کمتر از 200 کاراکتر باشد'),
-  content: z.string().min(1, 'محتوای اعلان الزامی است'),
-  category: z.enum(['GENERAL', 'TECHNICAL', 'EVENT', 'IMPORTANT'], {
-    errorMap: () => ({ message: 'دسته‌بندی نامعتبر است' })
-  }),
-  isPinned: z.boolean().default(false),
-});
-
-// const UpdateAnnouncementSchema = CreateAnnouncementSchema.partial();
+import { 
+  ApiResponseBuilder,
+  AnnouncementDTO,
+  CreateAnnouncementDTO,
+  AnnouncementEntity,
+  entityToDTO,
+  validateCreateDTO,
+  CreateAnnouncementDTOSchema
+} from '@/types';
 
 // POST /api/admin/announcements - Create new announcement
 export async function POST(request: NextRequest) {
@@ -25,19 +22,16 @@ export async function POST(request: NextRequest) {
     const authResult = await withAuthorization(['ADMIN', 'MANAGER'])(session);
 
     if (!authResult.authorized) {
-      return NextResponse.json(
-        { error: authResult.message },
-        { status: authResult.statusCode }
-      );
+      return ApiResponseBuilder.unauthorized(authResult.message);
     }
 
     const body = await request.json();
-    const validatedData = CreateAnnouncementSchema.parse(body);
+    const createAnnouncementData = validateCreateDTO(body, CreateAnnouncementDTOSchema) as CreateAnnouncementDTO;
 
     // Create announcement
     const announcement = await prisma.announcement.create({
       data: {
-        ...validatedData,
+        ...createAnnouncementData,
         authorId: session?.user?.id || '',
       },
       include: {
@@ -53,30 +47,20 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    return NextResponse.json({
-      success: true,
-      data: announcement,
-      message: 'اعلان با موفقیت ایجاد شد',
-    });
+    // Transform entity to DTO
+    const announcementDTO = entityToDTO(announcement as AnnouncementEntity);
+
+    return ApiResponseBuilder.created(announcementDTO, 'Announcement created successfully');
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { 
-          error: 'داده‌های ورودی نامعتبر است',
-          details: error.errors.map(err => ({
-            field: err.path.join('.'),
-            message: err.message,
-          })),
-        },
-        { status: 400 }
-      );
+      return ApiResponseBuilder.validationError('Invalid input data', error.errors.map(err => ({
+        field: err.path.join('.'),
+        message: err.message
+      })));
     }
 
     console.error('Error creating announcement:', error);
-    return NextResponse.json(
-      { error: 'خطا در ایجاد اعلان' },
-      { status: 500 }
-    );
+    return ApiResponseBuilder.internalError('Failed to create announcement');
   }
 }
 
@@ -89,10 +73,7 @@ export async function GET(request: NextRequest) {
     const authResult = await withAuthorization(['ADMIN', 'MANAGER'])(session);
 
     if (!authResult.authorized) {
-      return NextResponse.json(
-        { error: authResult.message },
-        { status: authResult.statusCode }
-      );
+      return ApiResponseBuilder.unauthorized(authResult.message);
     }
 
     const { searchParams } = new URL(request.url);
@@ -151,21 +132,19 @@ export async function GET(request: NextRequest) {
       prisma.announcement.count({ where }),
     ]);
 
-    return NextResponse.json({
-      success: true,
-      data: announcements,
-      pagination: {
-        page,
-        limit,
-        total: totalCount,
-        pages: Math.ceil(totalCount / limit),
-      },
-    });
+    // Transform entities to DTOs
+    const announcementDTOs: AnnouncementDTO[] = announcements.map(announcement => entityToDTO(announcement as AnnouncementEntity));
+
+    const pagination = {
+      page,
+      limit,
+      total: totalCount,
+      pages: Math.ceil(totalCount / limit),
+    };
+
+    return ApiResponseBuilder.success(announcementDTOs, 'Announcements retrieved successfully', pagination);
   } catch (error) {
     console.error('Error fetching announcements:', error);
-    return NextResponse.json(
-      { error: 'خطا در دریافت لیست اعلان‌ها' },
-      { status: 500 }
-    );
+    return ApiResponseBuilder.internalError('Failed to fetch announcements');
   }
 }

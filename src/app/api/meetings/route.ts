@@ -1,16 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { withAuth } from '@/lib/middleware/auth-middleware';
 import { prisma } from '@/lib/prisma';
-import { z } from 'zod';
-
-const createMeetingSchema = z.object({
-  title: z.string().min(1, 'Title is required'),
-  startTime: z.string().datetime('Invalid start time format'),
-  endTime: z.string().datetime('Invalid end time format'),
-  type: z.enum(['ONE_ON_ONE', 'TEAM_MEETING']).default('ONE_ON_ONE'),
-  attendeeIds: z.array(z.string()).optional().default([]),
-  notes: z.string().optional(),
-});
+import { 
+  ApiResponseBuilder,
+  MeetingDTO,
+  CreateMeetingDTO,
+  MeetingEntity,
+  entityToDTO,
+  validateCreateDTO,
+  CreateMeetingDTOSchema
+} from '@/types';
+import { parsePaginationParams, executePaginatedQuery } from '@/lib/database/pagination';
+import { MeetingQueryOptimizer, DatabasePerformanceMonitor } from '@/lib/database/query-optimizer';
 
 
 // GET /api/meetings - Get meetings for the logged-in user
@@ -24,10 +25,13 @@ export async function GET(request: NextRequest) {
       return response;
     }
 
+    // Parse pagination and filter parameters
     const { searchParams } = new URL(request.url);
+    const paginationParams = parsePaginationParams(searchParams);
     const startDate = searchParams.get('startDate');
     const endDate = searchParams.get('endDate');
     const type = searchParams.get('type');
+    const status = searchParams.get('status');
 
     // Build where clause
     const whereClause: any = {
@@ -48,75 +52,81 @@ export async function GET(request: NextRequest) {
       whereClause.type = type;
     }
 
-    // Optimized query with pagination and selective loading
-    const meetings = await prisma.meeting.findMany({
-      where: whereClause,
-      include: {
-        creator: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            avatar: true,
-          },
-        },
-        attendees: {
-          include: {
-            user: {
-              select: {
-                id: true,
-                firstName: true,
-                lastName: true,
-                avatar: true,
-              },
-            },
-          },
-        },
-        // Only load talking points and action items if specifically requested
-        talkingPoints: {
-          include: {
-            addedBy: {
-              select: {
-                id: true,
-                firstName: true,
-                lastName: true,
-              },
-            },
-          },
-          orderBy: { createdAt: 'asc' },
-          take: 10, // Limit to recent items for performance
-        },
-        actionItems: {
-          include: {
-            assignee: {
-              select: {
-                id: true,
-                firstName: true,
-                lastName: true,
-              },
-            },
-          },
-          orderBy: { createdAt: 'asc' },
-          take: 10, // Limit to recent items for performance
-        },
-      },
-      orderBy: { startTime: 'asc' },
-      take: 50, // Limit total meetings for performance
-    });
+    if (status) {
+      whereClause.status = status;
+    }
 
-    return NextResponse.json({
-      success: true,
-      data: meetings,
-    });
+    // Execute optimized paginated query
+    const result = await DatabasePerformanceMonitor.monitorQueryPerformance(
+      'GET /api/meetings',
+      () => executePaginatedQuery(
+        prisma.meeting,
+        paginationParams,
+        whereClause,
+        {
+          creator: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              avatar: true,
+            },
+          },
+          attendees: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  firstName: true,
+                  lastName: true,
+                  avatar: true,
+                },
+              },
+            },
+          },
+          // Only load talking points and action items if specifically requested
+          talkingPoints: {
+            include: {
+              addedBy: {
+                select: {
+                  id: true,
+                  firstName: true,
+                  lastName: true,
+                },
+              },
+            },
+            orderBy: { createdAt: 'asc' },
+            take: 10, // Limit to recent items for performance
+          },
+          actionItems: {
+            include: {
+              assignee: {
+                select: {
+                  id: true,
+                  firstName: true,
+                  lastName: true,
+                },
+              },
+            },
+            orderBy: { createdAt: 'asc' },
+            take: 10, // Limit to recent items for performance
+          },
+        }
+      )
+    );
+
+    // Transform entities to DTOs
+    const meetingDTOs: MeetingDTO[] = result.result.data.map(meeting => 
+      entityToDTO(meeting as MeetingEntity) as unknown as MeetingDTO
+    );
+
+    return ApiResponseBuilder.success({
+      data: meetingDTOs,
+      pagination: result.result.pagination,
+    }, 'Meetings retrieved successfully');
   } catch (error) {
     console.error('Error fetching meetings:', error);
-    return NextResponse.json(
-      {
-        success: false,
-        error: 'خطا در دریافت جلسات',
-      },
-      { status: 500 }
-    );
+    return ApiResponseBuilder.internalError('Failed to fetch meetings');
   }
 }
 
@@ -139,23 +149,14 @@ export async function POST(request: NextRequest) {
     
     console.log("2. Session data - User ID:", context.userId);
     
-    console.log("3. Validating request body with Zod schema...");
-    const validationResult = createMeetingSchema.safeParse(body);
+    console.log("3. Validating request body with new type system...");
+    const createMeetingData = validateCreateDTO(body, CreateMeetingDTOSchema) as CreateMeetingDTO;
 
-    if (!validationResult.success) {
-      console.log("❌ Zod validation failed:", validationResult.error.errors);
-      return NextResponse.json(
-        {
-          success: false,
-          error: 'Invalid input data',
-          details: validationResult.error.errors,
-        },
-        { status: 400 }
-      );
-    }
-
-    console.log("✅ Zod validation passed");
-    const { title, startTime, endTime, type, attendeeIds, notes } = validationResult.data;
+    console.log("✅ Validation passed");
+    const { title, startTime, endTime, type, notes } = createMeetingData;
+    
+    // Extract attendeeIds from the request body if provided
+    const { attendeeIds } = body;
     
     console.log("Validated data:", {
       title,
@@ -234,7 +235,7 @@ export async function POST(request: NextRequest) {
     
     // Validate enum values
     const validTypes = ['ONE_ON_ONE', 'TEAM_MEETING'];
-    if (!validTypes.includes(type)) {
+    if (type && !validTypes.includes(type)) {
       console.error("❌ Invalid meeting type:", type);
       return NextResponse.json({
         success: false,
@@ -279,7 +280,7 @@ export async function POST(request: NextRequest) {
       console.log("12. Adding attendees...");
       // Add attendees (only if attendeeIds is provided and not empty)
       if (attendeeIds && attendeeIds.length > 0) {
-        const attendeeData = attendeeIds.map((userId) => ({
+        const attendeeData = attendeeIds.map((userId: string) => ({
           meetingId: newMeeting.id,
           userId,
         }));
@@ -328,11 +329,11 @@ export async function POST(request: NextRequest) {
     });
 
     console.log("✅ Meeting created successfully:", completeMeeting?.id);
-    return NextResponse.json({
-      success: true,
-      data: completeMeeting,
-      message: 'جلسه با موفقیت ایجاد شد',
-    });
+    
+    // Transform entity to DTO
+    const meetingDTO = entityToDTO(completeMeeting as MeetingEntity);
+    
+    return ApiResponseBuilder.created(meetingDTO, 'Meeting created successfully');
   } catch (error) {
     console.error("!!! MEETING CREATION FAILED !!!", error);
     console.error("Error details:", {
@@ -341,13 +342,6 @@ export async function POST(request: NextRequest) {
       stack: (error as Error).stack,
     });
     
-    return NextResponse.json(
-      {
-        success: false,
-        error: 'خطا در ایجاد جلسه',
-        details: process.env.NODE_ENV === 'development' ? (error as Error).message : undefined,
-      },
-      { status: 500 }
-    );
+    return ApiResponseBuilder.internalError('Failed to create meeting');
   }
 }

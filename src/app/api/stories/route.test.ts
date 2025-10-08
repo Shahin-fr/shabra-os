@@ -110,10 +110,10 @@ describe('Stories API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(200);
-      // The global mock now includes 3 stories (including 'story-123'), so we expect all of them
-      expect(data).toHaveLength(3);
-      expect(data[0]).toEqual(mockStories[0]);
-      expect(data[1]).toEqual(mockStories[1]);
+      expect(data.success).toBe(true);
+      expect(data.data).toHaveLength(3);
+      expect(data.data[0]).toEqual(mockStories[0]);
+      expect(data.data[1]).toEqual(mockStories[1]);
       expect(StoryService.getStoriesByDay).toHaveBeenCalledWith('2024-01-01');
     });
 
@@ -124,7 +124,8 @@ describe('Stories API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(400);
-      expect(data.error.message).toBe('پارامتر روز الزامی است');
+      expect(data.success).toBe(false);
+      expect(data.error.message).toBe('Day parameter is required');
       expect(mockPrisma.story.findMany).not.toHaveBeenCalled();
     });
 
@@ -137,7 +138,8 @@ describe('Stories API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(400);
-      expect(data.error.message).toBe('فرمت تاریخ نامعتبر است. فرمت صحیح: YYYY-MM-DD');
+      expect(data.success).toBe(false);
+      expect(data.error.message).toBe('Invalid date format. Expected: YYYY-MM-DD');
       expect(mockPrisma.story.findMany).not.toHaveBeenCalled();
     });
 
@@ -152,7 +154,8 @@ describe('Stories API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(200);
-      expect(data).toEqual([]);
+      expect(data.success).toBe(true);
+      expect(data.data).toEqual([]);
       expect(StoryService.getStoriesByDay).toHaveBeenCalled();
     });
 
@@ -167,7 +170,8 @@ describe('Stories API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(500);
-      expect(data.error.message).toBe('Database error');
+      expect(data.success).toBe(false);
+      expect(data.error.message).toContain('Database error');
     });
 
     it('handles edge case dates correctly', async () => {
@@ -228,17 +232,18 @@ describe('Stories API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(201);
-      expect(data.id).toBe(mockCreatedStory.id);
-      expect(data.title).toBe(mockCreatedStory.title);
-      expect(data.notes).toBe(mockCreatedStory.notes);
-      expect(data.visualNotes).toBe(mockCreatedStory.visualNotes);
-      expect(data.link).toBe(mockCreatedStory.link);
-      expect(data.order).toBe(mockCreatedStory.order);
-      expect(data.status).toBe(mockCreatedStory.status);
-      expect(data.projectId).toBe(mockCreatedStory.projectId);
-      expect(data.storyTypeId).toBe(mockCreatedStory.storyTypeId);
-      expect(data.project).toEqual(mockCreatedStory.project);
-      expect(data.storyType).toEqual(mockCreatedStory.storyType);
+      expect(data.success).toBe(true);
+      expect(data.data.id).toBe(mockCreatedStory.id);
+      expect(data.data.title).toBe(mockCreatedStory.title);
+      expect(data.data.notes).toBe(mockCreatedStory.notes);
+      expect(data.data.visualNotes).toBe(mockCreatedStory.visualNotes);
+      expect(data.data.link).toBe(mockCreatedStory.link);
+      expect(data.data.order).toBe(mockCreatedStory.order);
+      expect(data.data.status).toBe(mockCreatedStory.status);
+      expect(data.data.projectId).toBe(mockCreatedStory.projectId);
+      expect(data.data.storyTypeId).toBe(mockCreatedStory.storyTypeId);
+      expect(data.data.project).toEqual(mockCreatedStory.project);
+      expect(data.data.storyType).toEqual(mockCreatedStory.storyType);
       expect(StoryService.createStory).toHaveBeenCalledWith({
         title: 'Test Story',
         notes: 'Test notes',
@@ -285,17 +290,18 @@ describe('Stories API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(201);
-      expect(data.id).toBe(mockCreatedStory.id);
-      expect(data.title).toBe(mockCreatedStory.title);
-      expect(data.notes).toBe(mockCreatedStory.notes);
-      expect(data.visualNotes).toBe(mockCreatedStory.visualNotes);
-      expect(data.link).toBe(mockCreatedStory.link);
-      expect(data.order).toBe(mockCreatedStory.order);
-      expect(data.status).toBe(mockCreatedStory.status);
-      expect(data.projectId).toBe(mockCreatedStory.projectId);
-      expect(data.storyTypeId).toBe(mockCreatedStory.storyTypeId);
-      expect(data.project).toEqual(mockCreatedStory.project);
-      expect(data.storyType).toEqual(mockCreatedStory.storyType);
+      expect(data.success).toBe(true);
+      expect(data.data.id).toBe(mockCreatedStory.id);
+      expect(data.data.title).toBe(mockCreatedStory.title);
+      expect(data.data.notes).toBe(mockCreatedStory.notes);
+      expect(data.data.visualNotes).toBe(mockCreatedStory.visualNotes);
+      expect(data.data.link).toBe(mockCreatedStory.link);
+      expect(data.data.order).toBe(mockCreatedStory.order);
+      expect(data.data.status).toBe(mockCreatedStory.status);
+      expect(data.data.projectId).toBe(mockCreatedStory.projectId);
+      expect(data.data.storyTypeId).toBe(mockCreatedStory.storyTypeId);
+      expect(data.data.project).toEqual(mockCreatedStory.project);
+      expect(data.data.storyType).toEqual(mockCreatedStory.storyType);
       expect(StoryService.createStory).toHaveBeenCalledWith({
         title: 'Minimal Story',
         day: '2024-01-01',
@@ -338,7 +344,8 @@ describe('Stories API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(201);
-      expect(data.order).toBe(0); // API defaults to 0 when order not provided
+      expect(data.success).toBe(true);
+      expect(data.data.order).toBe(0); // API defaults to 0 when order not provided
       expect(mockPrisma.story.aggregate).not.toHaveBeenCalled();
     });
 
@@ -357,6 +364,7 @@ describe('Stories API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(400);
+      expect(data.success).toBe(false);
       expect(data.error.message).toContain('Validation failed');
       expect(StoryService.createStory).not.toHaveBeenCalled();
     });
@@ -377,6 +385,7 @@ describe('Stories API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(400);
+      expect(data.success).toBe(false);
       expect(data.error.message).toContain('Validation failed');
       expect(StoryService.createStory).not.toHaveBeenCalled();
     });
@@ -397,6 +406,7 @@ describe('Stories API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(400);
+      expect(data.success).toBe(false);
       expect(data.error.message).toContain('Validation failed');
       expect(StoryService.createStory).not.toHaveBeenCalled();
     });
@@ -416,6 +426,7 @@ describe('Stories API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(400);
+      expect(data.success).toBe(false);
       expect(data.error.message).toContain('Validation failed');
       expect(StoryService.createStory).not.toHaveBeenCalled();
     });
@@ -436,6 +447,7 @@ describe('Stories API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(400);
+      expect(data.success).toBe(false);
       expect(data.error.message).toContain('Validation failed');
       expect(StoryService.createStory).not.toHaveBeenCalled();
     });
@@ -469,7 +481,8 @@ describe('Stories API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(201);
-      expect(data.id).toBe(mockCreatedStory.id);
+      expect(data.success).toBe(true);
+      expect(data.data.id).toBe(mockCreatedStory.id);
       expect(StoryService.createStory).toHaveBeenCalled();
     });
 
@@ -502,7 +515,8 @@ describe('Stories API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(201);
-      expect(data.id).toBe(mockCreatedStory.id);
+      expect(data.success).toBe(true);
+      expect(data.data.id).toBe(mockCreatedStory.id);
       expect(StoryService.createStory).toHaveBeenCalled();
     });
 
@@ -535,7 +549,8 @@ describe('Stories API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(201);
-      expect(data.id).toBe(mockCreatedStory.id);
+      expect(data.success).toBe(true);
+      expect(data.data.id).toBe(mockCreatedStory.id);
       expect(StoryService.createStory).toHaveBeenCalled();
     });
 
@@ -617,7 +632,8 @@ describe('Stories API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(201);
-      expect(data.id).toBe(mockCreatedStory.id);
+      expect(data.success).toBe(true);
+      expect(data.data.id).toBe(mockCreatedStory.id);
       expect(StoryService.createStory).toHaveBeenCalled();
     });
 

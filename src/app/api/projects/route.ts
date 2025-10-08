@@ -1,9 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 
-import {
-  createSuccessResponse,
-  HTTP_STATUS_CODES,
-} from '@/lib/api/response-utils';
+import { 
+  ApiResponseBuilder
+} from '@/types';
 import { logger } from '@/lib/logger';
 import { ProjectService } from '@/services/project.service';
 import { validate, validateQuery } from '@/lib/middleware/validation-middleware';
@@ -34,8 +33,7 @@ export async function GET(request: NextRequest) {
     // Use ProjectService to get projects
     const result = await ProjectService.getProjects(queryParams);
 
-    const successResponse = createSuccessResponse(result);
-    return NextResponse.json(successResponse, { status: HTTP_STATUS_CODES.OK });
+    return ApiResponseBuilder.success(result);
   } catch (error) {
     return handleApiError(error, {
       operation: 'GET /api/projects',
@@ -79,10 +77,7 @@ export async function POST(request: NextRequest) {
     // Use ProjectService to create project
     const project = await ProjectService.createProject(validatedData);
 
-    const successResponse = createSuccessResponse(project);
-    return NextResponse.json(successResponse, {
-      status: HTTP_STATUS_CODES.CREATED,
-    });
+    return ApiResponseBuilder.created(project);
   } catch (error) {
     return handleApiError(error, {
       operation: 'POST /api/projects',
@@ -122,13 +117,10 @@ export async function DELETE(request: NextRequest) {
     // Use ProjectService to delete project
     const result = await ProjectService.deleteProject(projectId);
 
-    const successResponse = createSuccessResponse(
+    return ApiResponseBuilder.success(
       { id: result.deletedId },
       'پروژه با موفقیت حذف شد'
     );
-    return NextResponse.json(successResponse, {
-      status: HTTP_STATUS_CODES.OK,
-    });
   } catch (error) {
     return handleApiError(error, {
       operation: 'DELETE /api/projects',

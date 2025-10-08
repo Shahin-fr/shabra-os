@@ -3,7 +3,7 @@
  * Establishes consistent patterns for type definitions across the application
  */
 
-import { BaseEntity, BaseDTO, BaseCreateDTO, BaseUpdateDTO } from './base';
+import { BaseEntity, BaseDTO } from './base';
 
 // Naming conventions
 export type EntityName = string; // PascalCase, e.g., "User", "Project"
@@ -29,7 +29,7 @@ export type DTOToEntity<T extends BaseDTO> = Omit<T, 'createdAt' | 'updatedAt'> 
 // Field naming conventions
 export type IDField = 'id';
 export type TimestampFields = 'createdAt' | 'updatedAt';
-export type AuditFields = 'createdBy' | 'updatedBy' | 'deletedAt' | 'deletedBy';
+// AuditFields is defined in base.ts
 
 // Common field patterns
 export interface Identifiable {
@@ -83,28 +83,8 @@ export type SingleResponse<T> = {
   message?: string;
 };
 
-export type ListResponse<T> = {
-  success: true;
-  data: T[];
-  meta: {
-    page: number;
-    limit: number;
-    total: number;
-    totalPages: number;
-    hasNextPage: boolean;
-    hasPrevPage: boolean;
-  };
-};
-
-export type ErrorResponse = {
-  success: false;
-  error: {
-    code: string;
-    message: string;
-    details?: any;
-    field?: string;
-  };
-};
+// ListResponse, ErrorResponse, and AuditFields are defined in base.ts
+// These types are re-exported from base.ts to maintain compatibility
 
 // Type transformation utilities
 export type DeepPartial<T> = {

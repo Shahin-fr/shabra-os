@@ -1,457 +1,566 @@
-import { logger } from '@/lib/logger';
-import { prisma } from '@/lib/prisma';
-
 /**
  * Database Query Optimizer
- * Eliminates N+1 queries and optimizes database operations
+ * Provides optimized query patterns and performance monitoring
  */
 
-export interface OptimizedProjectQuery {
-  id: string;
-  name: string;
-  description?: string;
-  status: string;
-  startDate?: Date;
-  endDate?: Date;
-  accessLevel: string;
-  createdAt: Date;
-  updatedAt: Date;
-  _count: {
-    stories: number;
-    tasks: number;
-  };
-  // Pre-fetched related data to avoid N+1 queries
-  recentStories?: Array<{
-    id: string;
-    title: string;
-    status: string;
-    day: Date;
-  }>;
-  recentTasks?: Array<{
-    id: string;
-    title: string;
-    status: string;
-    priority: string;
-  }>;
-}
+import { Prisma, PrismaClient } from '@prisma/client';
+import { logger } from '@/lib/logger';
 
-export interface OptimizedStoryQuery {
-  id: string;
-  title: string;
-  notes?: string;
-  visualNotes?: string;
-  link?: string;
-  day: Date;
-  order: number;
-  status: string;
-  projectId?: string;
-  storyTypeId?: string;
-  createdAt: Date;
-  updatedAt: Date;
-  // Pre-fetched related data
-  project?: {
-    id: string;
-    name: string;
-  };
-  storyType?: {
-    id: string;
-    name: string;
-    icon?: string;
-  };
-}
-
-export interface OptimizedUserQuery {
-  id: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  avatar?: string;
-  isActive: boolean;
-  roles: string[];
-  createdAt: Date;
-  updatedAt: Date;
-  // Pre-fetched related data
-  _count: {
-    tasks: number;
-    documents: number;
-    ideas: number;
-  };
-  recentActivity?: Array<{
-    type: 'task' | 'document' | 'idea';
-    id: string;
-    title: string;
-    timestamp: Date;
-  }>;
-}
+const prisma = new PrismaClient();
 
 /**
- * Optimized project queries with pre-fetched related data
+ * Query optimization utilities for common patterns
  */
-export class ProjectQueryOptimizer {
+export class QueryOptimizer {
   /**
-   * Get projects with pagination and optimized data fetching
+   * Optimize user queries with selective field loading
    */
-  static async getProjectsWithPagination(page: number = 1, limit: number = 20) {
-    const offset = (page - 1) * limit;
-
-    const [totalProjects, projects] = await Promise.all([
-      prisma.project.count(),
-      prisma.project.findMany({
-        orderBy: { createdAt: 'desc' },
-        skip: offset,
-        take: limit,
-        include: {
-          _count: {
-            select: {
-              stories: true,
-              tasks: true,
-            },
-          },
-        },
-      }),
-    ]);
-
-    const totalPages = Math.ceil(totalProjects / limit);
-
+  static getUserSelect() {
     return {
-      projects,
-      pagination: {
-        currentPage: page,
-        totalPages,
-        totalProjects,
-        hasNextPage: page < totalPages,
-        hasPreviousPage: page > 1,
-      },
+      id: true,
+      firstName: true,
+      lastName: true,
+      email: true,
+      avatar: true,
+      isActive: true,
+      roles: true,
+      createdAt: true,
     };
   }
 
   /**
-   * Get projects by status with optimized data fetching
+   * Optimize task queries with minimal relations
    */
-  static async getProjectsByStatus(status: string, limit: number = 20) {
-    return await prisma.project.findMany({
-      where: { status: status as any },
-      orderBy: { updatedAt: 'desc' },
-      take: limit,
-      include: {
-        _count: {
-          select: {
-            stories: true,
-            tasks: true,
-          },
-        },
-      },
-    });
+  static getTaskSelect() {
+    return {
+      id: true,
+      title: true,
+      description: true,
+      status: true,
+      priority: true,
+      dueDate: true,
+      createdAt: true,
+      updatedAt: true,
+      createdBy: true,
+      assignedTo: true,
+      projectId: true,
+    };
   }
 
   /**
-   * Get single project with all related data in one query
+   * Optimize story queries with minimal relations
    */
-  static async getProjectWithDetails(projectId: string) {
-    return await prisma.project.findUnique({
-      where: { id: projectId },
-      include: {
-        _count: {
-          select: {
-            stories: true,
-            tasks: true,
-          },
+  static getStorySelect() {
+    return {
+      id: true,
+      title: true,
+      content: true,
+      day: true,
+      status: true,
+      order: true,
+      createdAt: true,
+      updatedAt: true,
+      authorId: true,
+      projectId: true,
+      storyTypeId: true,
+    };
+  }
+
+  /**
+   * Optimize meeting queries with minimal relations
+   */
+  static getMeetingSelect() {
+    return {
+      id: true,
+      title: true,
+      startTime: true,
+      endTime: true,
+      type: true,
+      status: true,
+      notes: true,
+      createdAt: true,
+      creatorId: true,
+    };
+  }
+
+  /**
+   * Create optimized where clause for common filters
+   */
+  static createOptimizedWhere<T extends Record<string, any>>(
+    baseWhere: T,
+    filters: {
+      search?: string;
+      searchFields?: string[];
+      dateRange?: { startDate?: string; endDate?: string; field?: string };
+      status?: string;
+      validStatuses?: string[];
+      userId?: string;
+      projectId?: string;
+    }
+  ): T {
+    let where = { ...baseWhere };
+
+    // Add search conditions
+    if (filters.search && filters.searchFields) {
+      const searchConditions = this.createSearchConditions(
+        filters.search,
+        filters.searchFields
+      );
+      if (searchConditions) {
+        where = {
+          ...where,
+          ...searchConditions,
+        };
+      }
+    }
+
+    // Add date range filter
+    if (filters.dateRange) {
+      const dateFilter = this.createDateRangeFilter(
+        filters.dateRange.startDate,
+        filters.dateRange.endDate,
+        filters.dateRange.field
+      );
+      if (dateFilter) {
+        where = {
+          ...where,
+          [filters.dateRange.field || 'createdAt']: dateFilter,
+        };
+      }
+    }
+
+    // Add status filter
+    if (filters.status) {
+      const statusFilter = this.createStatusFilter(
+        filters.status,
+        filters.validStatuses
+      );
+      if (statusFilter) {
+        where = { ...where, ...statusFilter };
+      }
+    }
+
+    // Add user filter
+    if (filters.userId) {
+      where = { ...where, userId: filters.userId };
+    }
+
+    // Add project filter
+    if (filters.projectId) {
+      where = { ...where, projectId: filters.projectId };
+    }
+
+    return where;
+  }
+
+  /**
+   * Create search conditions for text fields
+   */
+  private static createSearchConditions(
+    search: string,
+    searchFields: string[]
+  ): Record<string, any> | undefined {
+    if (!search || search.length < 2) return undefined;
+
+    const sanitizedSearch = search.replace(/[<>"'%;()&+]/g, '');
+
+    return {
+      OR: searchFields.map(field => ({
+        [field]: {
+          contains: sanitizedSearch,
+          mode: 'insensitive' as const,
         },
-      },
-    });
+      })),
+    };
+  }
+
+  /**
+   * Create date range filter
+   */
+  private static createDateRangeFilter(
+    startDate?: string,
+    endDate?: string,
+    field: string = 'createdAt'
+  ): Prisma.DateTimeFilter | undefined {
+    if (!startDate && !endDate) return undefined;
+
+    const filter: Prisma.DateTimeFilter = {};
+    
+    if (startDate) {
+      filter.gte = new Date(startDate);
+    }
+    
+    if (endDate) {
+      filter.lte = new Date(endDate);
+    }
+
+    return filter;
+  }
+
+  /**
+   * Create status filter
+   */
+  private static createStatusFilter(
+    status?: string,
+    validStatuses?: string[]
+  ): Record<string, any> | undefined {
+    if (!status) return undefined;
+    
+    if (validStatuses && !validStatuses.includes(status)) {
+      return undefined;
+    }
+
+    return { status };
   }
 }
 
 /**
- * Optimized story queries with pre-fetched related data
+ * Optimized query patterns for specific entities
  */
-export class StoryQueryOptimizer {
+export class TaskQueryOptimizer {
   /**
-   * Get stories for a specific day with optimized data fetching
+   * Get tasks with optimized relations
    */
-  static async getStoriesByDay(day: string) {
-    // Use the day string directly since it's already in YYYY-MM-DD format
-    const dayString = day;
-
-    return await prisma.story.findMany({
-      where: {
-        day: dayString,
-      },
-      include: {
-        storyType: {
-          select: {
-            id: true,
-            name: true,
-            icon: true,
-          },
+  static async getTasksWithRelations(
+    where: Prisma.TaskWhereInput,
+    include?: Prisma.TaskInclude,
+    orderBy?: Prisma.TaskOrderByWithRelationInput,
+    skip?: number,
+    take?: number
+  ) {
+    return prisma.task.findMany({
+      where,
+      include: include || {
+        creator: {
+          select: QueryOptimizer.getUserSelect(),
+        },
+        assignee: {
+          select: QueryOptimizer.getUserSelect(),
         },
         project: {
           select: {
             id: true,
             name: true,
-          },
-        },
-        storyIdea: {
-          select: {
-            id: true,
-            title: true,
-            description: true,
-            category: true,
-            storyType: true,
-            template: true,
-            guidelines: true,
-            icon: true,
+            status: true,
           },
         },
       },
-      orderBy: { order: 'asc' },
+      orderBy: orderBy || { createdAt: 'desc' },
+      skip,
+      take,
     });
   }
 
   /**
-   * Get stories by project with pagination and optimized data fetching
+   * Get task count with same where conditions
    */
-  static async getStoriesByProject(
-    projectId: string,
-    page: number = 1,
-    limit: number = 50
-  ) {
-    const offset = (page - 1) * limit;
+  static async getTaskCount(where: Prisma.TaskWhereInput) {
+    return prisma.task.count({ where });
+  }
 
-    const [totalStories, stories] = await Promise.all([
-      prisma.story.count({
-        where: { projectId },
-      }),
-      prisma.story.findMany({
-        where: { projectId },
-        orderBy: { createdAt: 'desc' },
-        skip: offset,
-        take: limit,
-        include: {
-          storyType: {
-            select: {
-              id: true,
-              name: true,
-              icon: true,
-            },
+  /**
+   * Get tasks by project with pagination
+   */
+  static async getTasksByProject(
+    projectId: string,
+    filters: {
+      status?: string;
+      priority?: string;
+      assignedTo?: string;
+      search?: string;
+    },
+    pagination: {
+      page: number;
+      limit: number;
+      sortBy?: string;
+      sortOrder?: 'asc' | 'desc';
+    }
+  ) {
+    const where = QueryOptimizer.createOptimizedWhere(
+      { projectId },
+      {
+        search: filters.search,
+        searchFields: ['title', 'description'],
+        status: filters.status,
+        validStatuses: ['Todo', 'InProgress', 'Done'],
+        userId: filters.assignedTo,
+      }
+    );
+
+    if (filters.priority) {
+      where.priority = filters.priority as any;
+    }
+
+    const orderBy = pagination.sortBy 
+      ? { [pagination.sortBy]: pagination.sortOrder || 'desc' } as any
+      : { createdAt: 'desc' } as any;
+
+    const skip = (pagination.page - 1) * pagination.limit;
+
+    return this.getTasksWithRelations(where, undefined, orderBy, skip, pagination.limit);
+  }
+}
+
+export class StoryQueryOptimizer {
+  /**
+   * Get stories with optimized relations
+   */
+  static async getStoriesWithRelations(
+    where: Prisma.StoryWhereInput,
+    include?: Prisma.StoryInclude,
+    orderBy?: Prisma.StoryOrderByWithRelationInput,
+    skip?: number,
+    take?: number
+  ) {
+    return prisma.story.findMany({
+      where,
+      include: include || {
+        author: {
+          select: QueryOptimizer.getUserSelect(),
           },
           project: {
             select: {
               id: true,
               name: true,
-            },
-          },
-          storyIdea: {
-            select: {
-              id: true,
-              title: true,
-              description: true,
-              category: true,
-              storyType: true,
-            },
-          },
-          author: {
-            select: {
-              id: true,
-              firstName: true,
-              lastName: true,
-              email: true,
-            },
+            status: true,
           },
         },
-      }),
-    ]);
-
-    const totalPages = Math.ceil(totalStories / limit);
-
-    return {
-      stories,
-      pagination: {
-        currentPage: page,
-        totalPages,
-        totalStories,
-        hasNextPage: page < totalPages,
-        hasPreviousPage: page > 1,
+        storyType: {
+          select: {
+            id: true,
+            name: true,
+            icon: true,
+          },
+        },
       },
-    };
+      orderBy: orderBy || { day: 'desc' },
+      skip,
+      take,
+    });
   }
 
   /**
-   * Get stories by date range with optimized data fetching
+   * Get story count with same where conditions
    */
-  static async getStoriesByDateRange(projectId?: string) {
-    const whereClause: any = {};
+  static async getStoryCount(where: Prisma.StoryWhereInput) {
+    return prisma.story.count({ where });
+  }
 
-    if (projectId) {
-      whereClause.projectId = projectId;
+  /**
+   * Get stories by project with pagination
+   */
+  static async getStoriesByProject(
+    projectId: string,
+    filters: {
+      day?: string;
+      status?: string;
+      storyTypeId?: string;
+      search?: string;
+    },
+    pagination: {
+      page: number;
+      limit: number;
+      sortBy?: string;
+      sortOrder?: 'asc' | 'desc';
+    }
+  ) {
+    const where = QueryOptimizer.createOptimizedWhere(
+      { projectId },
+      {
+        search: filters.search,
+        searchFields: ['title', 'content'],
+        status: filters.status,
+        validStatuses: ['DRAFT', 'PUBLISHED', 'ARCHIVED'],
+      }
+    );
+
+    if (filters.day) {
+      (where as any).day = filters.day;
     }
 
-    return await prisma.story.findMany({
-      where: whereClause,
-      orderBy: { createdAt: 'desc' },
-      include: {
-        storyType: {
-          select: {
-            id: true,
-            name: true,
-            icon: true,
-          },
-        },
-        project: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        storyIdea: {
-          select: {
-            id: true,
-            title: true,
-            description: true,
-            category: true,
-            storyType: true,
-          },
-        },
-        author: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            email: true,
-          },
-        },
-      },
-    });
-  }
+    if (filters.storyTypeId) {
+      (where as any).storyTypeId = filters.storyTypeId;
+    }
 
-  /**
-   * Create a new story with optimized data validation and creation
-   */
-  static async createStory(storyData: {
-    title: string;
-    notes?: string | null;
-    visualNotes?: string | null;
-    link?: string | null;
-    day: string; // Changed from Date to string
-    projectId: string | null;
-    storyTypeId: string | null;
-    storyIdeaId?: string | null;
-    customTitle?: string | null;
-    type?: string | null;
-    ideaId?: string | null;
-    order: number;
-    status?: string;
-    authorId: string;
-  }) {
-    // Use the day string directly since it's already in YYYY-MM-DD format
-    const dayString = storyData.day;
+    const orderBy = pagination.sortBy 
+      ? { [pagination.sortBy]: pagination.sortOrder || 'desc' } as any
+      : { day: 'desc' } as any;
 
-    const story = await prisma.story.create({
-      data: {
-        title: storyData.title,
-        content:
-          storyData.notes || storyData.visualNotes || storyData.link || '',
-        notes: storyData.notes,
-        visualNotes: storyData.visualNotes,
-        link: storyData.link,
-        day: dayString,
-        order: storyData.order,
-        status: storyData.status || 'DRAFT',
-        projectId: storyData.projectId,
-        storyTypeId: storyData.storyTypeId,
-        storyIdeaId: storyData.storyIdeaId,
-        customTitle: storyData.customTitle,
-        type: storyData.type,
-        ideaId: storyData.ideaId,
-        authorId: storyData.authorId,
-      },
-      include: {
-        storyType: {
-          select: {
-            id: true,
-            name: true,
-            icon: true,
-          },
-        },
-        project: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        storyIdea: {
-          select: {
-            id: true,
-            title: true,
-            description: true,
-            category: true,
-            storyType: true,
-            template: true,
-            guidelines: true,
-            icon: true,
-          },
-        },
-      },
-    });
+    const skip = (pagination.page - 1) * pagination.limit;
 
-    return story;
+    return this.getStoriesWithRelations(where, undefined, orderBy, skip, pagination.limit);
   }
 }
 
-/**
- * Optimized user queries with pre-fetched related data
- */
-export class UserQueryOptimizer {
+export class MeetingQueryOptimizer {
   /**
-   * Get users with optimized data fetching
+   * Get meetings with optimized relations
    */
-  static async getUsersWithCounts(page: number = 1, limit: number = 20) {
-    const offset = (page - 1) * limit;
-
-    const [totalUsers, users] = await Promise.all([
-      prisma.user.count(),
-      prisma.user.findMany({
-        orderBy: { createdAt: 'desc' },
-        skip: offset,
-        take: limit,
-        include: {
-          _count: {
-            select: {
-              // ideas: true, // This field doesn't exist in the schema
+  static async getMeetingsWithRelations(
+    where: Prisma.MeetingWhereInput,
+    include?: Prisma.MeetingInclude,
+    orderBy?: Prisma.MeetingOrderByWithRelationInput,
+    skip?: number,
+    take?: number
+  ) {
+    return prisma.meeting.findMany({
+      where,
+      include: include || {
+        creator: {
+          select: QueryOptimizer.getUserSelect(),
+        },
+        attendees: {
+          include: {
+            user: {
+              select: QueryOptimizer.getUserSelect(),
             },
           },
         },
-      }),
-    ]);
-
-    const totalPages = Math.ceil(totalUsers / limit);
-
-    return {
-      users,
-      pagination: {
-        currentPage: page,
-        totalPages,
-        totalUsers,
-        hasNextPage: page < totalPages,
-        hasPreviousPage: page > 1,
       },
-    };
+      orderBy: orderBy || { startTime: 'asc' },
+      skip,
+      take,
+    });
   }
 
   /**
-   * Get single user with all related data in one query
+   * Get meeting count with same where conditions
    */
-  static async getUserWithDetails(userId: string) {
-    return await prisma.user.findUnique({
-      where: { id: userId },
-      include: {
-        _count: {
+  static async getMeetingCount(where: Prisma.MeetingWhereInput) {
+    return prisma.meeting.count({ where });
+  }
+
+  /**
+   * Get meetings by user with pagination
+   */
+  static async getMeetingsByUser(
+    userId: string,
+    filters: {
+      startDate?: string;
+      endDate?: string;
+      type?: string;
+    status?: string;
+      search?: string;
+    },
+    pagination: {
+      page: number;
+      limit: number;
+      sortBy?: string;
+      sortOrder?: 'asc' | 'desc';
+    }
+  ) {
+    const where = QueryOptimizer.createOptimizedWhere(
+      {
+        OR: [
+          { creatorId: userId },
+          { attendees: { some: { userId } } },
+        ],
+      },
+      {
+        search: filters.search,
+        searchFields: ['title', 'notes'],
+        dateRange: {
+          startDate: filters.startDate,
+          endDate: filters.endDate,
+          field: 'startTime',
+        },
+        status: filters.status,
+        validStatuses: ['SCHEDULED', 'COMPLETED', 'CANCELLED'],
+      }
+    );
+
+    if (filters.type) {
+      (where as any).type = filters.type;
+    }
+
+    const orderBy = pagination.sortBy 
+      ? { [pagination.sortBy]: pagination.sortOrder || 'asc' } as any
+      : { startTime: 'asc' } as any;
+
+    const skip = (pagination.page - 1) * pagination.limit;
+
+    return this.getMeetingsWithRelations(where, undefined, orderBy, skip, pagination.limit);
+  }
+}
+
+export class UserQueryOptimizer {
+  /**
+   * Get users with optimized relations
+   */
+  static async getUsersWithRelations(
+    where: Prisma.UserWhereInput,
+    include?: Prisma.UserInclude,
+    orderBy?: Prisma.UserOrderByWithRelationInput,
+    skip?: number,
+    take?: number
+  ) {
+    return prisma.user.findMany({
+      where,
+      include: include || {
+        profile: {
           select: {
-            // ideas: true, // This field doesn't exist in the schema
+            id: true,
+            jobTitle: true,
+            department: true,
+            startDate: true,
           },
         },
+        manager: {
+          select: QueryOptimizer.getUserSelect(),
+        },
       },
+      orderBy: orderBy || { createdAt: 'desc' },
+      skip,
+      take,
     });
+  }
+
+  /**
+   * Get user count with same where conditions
+   */
+  static async getUserCount(where: Prisma.UserWhereInput) {
+    return prisma.user.count({ where });
+  }
+
+  /**
+   * Get users by department with pagination
+   */
+  static async getUsersByDepartment(
+    department: string,
+    filters: {
+      isActive?: boolean;
+      search?: string;
+    },
+    pagination: {
+      page: number;
+      limit: number;
+      sortBy?: string;
+      sortOrder?: 'asc' | 'desc';
+    }
+  ) {
+    const where = QueryOptimizer.createOptimizedWhere(
+      {
+        profile: {
+          department: department,
+        },
+      },
+      {
+        search: filters.search,
+        searchFields: ['firstName', 'lastName', 'email'],
+      }
+    );
+
+    if (filters.isActive !== undefined) {
+      (where as any).isActive = filters.isActive;
+    }
+
+    const orderBy = pagination.sortBy 
+      ? { [pagination.sortBy]: pagination.sortOrder || 'asc' } as any
+      : { firstName: 'asc' } as any;
+
+    const skip = (pagination.page - 1) * pagination.limit;
+
+    return this.getUsersWithRelations(where, undefined, orderBy, skip, pagination.limit);
   }
 }
 

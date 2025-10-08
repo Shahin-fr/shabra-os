@@ -8,26 +8,20 @@ import { withApiRateLimit } from '@/lib/middleware/rate-limit-middleware';
 import { hasRequiredRole } from '@/lib/utils/auth-utils';
 import { 
   withApiErrorHandling, 
-  ApiResponse, 
-  ErrorUtils,
-  ValidationError,
   AuthenticationError,
   AuthorizationError,
   ConflictError 
 } from '@/lib/errors';
 import { 
   CreateUserDTOSchema, 
-  UpdateUserDTOSchema,
-  CreateUserDTO,
-  UpdateUserDTO,
   UserDTO,
   ApiResponseBuilder,
   validateCreateDTO,
-  validateUpdateDTO,
-  entityToDTO
+  entityToDTO,
+  CreateUserDTO
 } from '@/types';
 
-async function getUsers(request: NextRequest) {
+async function getUsers(request: NextRequest): Promise<NextResponse> {
   // Apply rate limiting
   const rateLimitResult = withApiRateLimit(request);
   if (!rateLimitResult.allowed) {
@@ -71,7 +65,7 @@ async function getUsers(request: NextRequest) {
 
 export const GET = withApiErrorHandling(getUsers);
 
-async function createUser(request: NextRequest) {
+async function createUser(request: NextRequest): Promise<NextResponse> {
   // Apply rate limiting
   const rateLimitResult = withApiRateLimit(request);
   if (!rateLimitResult.allowed) {
@@ -93,7 +87,7 @@ async function createUser(request: NextRequest) {
 
   // Parse and validate request body
   const body = await request.json();
-  const createUserData = validateCreateDTO(body, CreateUserDTOSchema);
+  const createUserData = validateCreateDTO(body, CreateUserDTOSchema) as CreateUserDTO;
 
   // Check if user already exists
   const existingUser = await prisma.user.findUnique({

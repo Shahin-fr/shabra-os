@@ -1,6 +1,12 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { auth } from '@/auth';
 import { prisma } from '@/lib/prisma';
+import { 
+  ApiResponseBuilder,
+  AnnouncementDTO,
+  AnnouncementEntity,
+  entityToDTO
+} from '@/types';
 
 // GET /api/announcements - Get announcements for employees
 export async function GET(request: NextRequest) {
@@ -9,10 +15,7 @@ export async function GET(request: NextRequest) {
 
     // Check if user is authenticated
     if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: 'احراز هویت الزامی است' },
-        { status: 401 }
-      );
+      return ApiResponseBuilder.unauthorized('Authentication required');
     }
 
     const { searchParams } = new URL(request.url);
@@ -58,9 +61,12 @@ export async function GET(request: NextRequest) {
       widget ? 0 : prisma.announcement.count({ where }), // No count for widget
     ]);
 
+    // Transform entities to DTOs
+    const announcementDTOs: AnnouncementDTO[] = announcements.map(announcement => entityToDTO(announcement as AnnouncementEntity));
+
     const response: any = {
       success: true,
-      data: announcements,
+      data: announcementDTOs,
     };
 
     // Add pagination info only if not widget
@@ -73,12 +79,9 @@ export async function GET(request: NextRequest) {
       };
     }
 
-    return NextResponse.json(response);
+    return ApiResponseBuilder.success(response.data, 'Announcements retrieved successfully', response.pagination);
   } catch (error) {
     console.error('Error fetching announcements:', error);
-    return NextResponse.json(
-      { error: 'خطا در دریافت اعلان‌ها' },
-      { status: 500 }
-    );
+    return ApiResponseBuilder.internalError('Failed to fetch announcements');
   }
 }

@@ -54,7 +54,7 @@ describe('Users API Route', () => {
       firstName: 'Alice',
       lastName: 'Johnson',
       email: 'alice@example.com',
-      roles: 'EMPLOYEE',
+      roles: ['EMPLOYEE'],
       isActive: true,
       createdAt: new Date('2024-01-01T00:00:00Z'),
       updatedAt: new Date('2024-01-01T00:00:00Z'),
@@ -64,7 +64,7 @@ describe('Users API Route', () => {
       firstName: 'Bob',
       lastName: 'Smith',
       email: 'bob@example.com',
-      roles: 'MANAGER',
+      roles: ['MANAGER'],
       isActive: true,
       createdAt: new Date('2024-01-02T00:00:00Z'),
       updatedAt: new Date('2024-01-02T00:00:00Z'),
@@ -76,7 +76,7 @@ describe('Users API Route', () => {
     firstName: 'Charlie',
     lastName: 'Brown',
     email: 'charlie@example.com',
-    roles: 'EMPLOYEE',
+    roles: ['EMPLOYEE'],
     isActive: true,
     createdAt: new Date('2024-01-03T00:00:00Z'),
     updatedAt: new Date('2024-01-03T00:00:00Z'),
@@ -115,7 +115,7 @@ describe('Users API Route', () => {
         firstName: 'Alice',
         lastName: 'Johnson',
         email: 'alice@example.com',
-        roles: 'EMPLOYEE',
+        roles: ['EMPLOYEE'],
         isActive: true,
       });
     });
@@ -178,7 +178,7 @@ describe('Users API Route', () => {
       password: 'password123',
       firstName: 'Charlie',
       lastName: 'Brown',
-      role: 'EMPLOYEE',
+      roles: ['EMPLOYEE'],
     };
 
     it('creates a new user successfully', async () => {
@@ -200,7 +200,7 @@ describe('Users API Route', () => {
         firstName: 'Charlie',
         lastName: 'Brown',
         email: 'charlie@example.com',
-        roles: 'EMPLOYEE',
+        roles: ['EMPLOYEE'],
         isActive: true,
       });
       expect(data.message).toBe('User created successfully');
@@ -212,7 +212,7 @@ describe('Users API Route', () => {
         password: '123', // Too short
         firstName: '', // Empty
         lastName: 'Brown',
-        role: 'INVALID_ROLE',
+        roles: 'INVALID_ROLE',
       };
 
       const request = new NextRequest('http://localhost:3000/api/users', {

@@ -27,8 +27,8 @@ export function useErrorHandling(options: UseErrorHandlingOptions = {}) {
     fallbackFn,
   } = options;
 
-  const { state, addError, removeError, updateError, retryError } = useErrorContext();
-  const { handleError, handleAsyncError } = useErrorHandler();
+  const { state, removeError, updateError } = useErrorContext();
+  const { handleError } = useErrorHandler();
   const retryTimeouts = useRef<Map<string, NodeJS.Timeout>>(new Map());
 
   // Cleanup timeouts on unmount
@@ -189,7 +189,7 @@ export function useErrorHandling(options: UseErrorHandlingOptions = {}) {
     retryTimeouts.current.clear();
     // This would need to be implemented in the context
     // clearErrors();
-  }, []);
+  }, [retryTimeouts]);
 
   // Get errors by type
   const getErrorsByType = useCallback((type: string) => {

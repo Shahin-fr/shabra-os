@@ -1,7 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { withApiErrorHandling, ApiResponse } from '@/lib/errors';
-import { AuditLogger } from '@/lib/advanced-security';
-import { AUDIT_EVENT_TYPES, SECURITY_RISK_LEVELS } from '@/lib/advanced-security';
+import { AuditLogger, AUDIT_EVENT_TYPES } from '@/lib/advanced-security';
 
 interface ErrorReport {
   id: string;
@@ -47,7 +46,7 @@ async function handleErrorReport(request: NextRequest) {
       // Log to audit system for security-related errors
       if (report.severity === 'critical' || report.severity === 'high') {
         await AuditLogger.logSecurityEvent(
-          AUDIT_EVENT_TYPES.CLIENT_ERROR,
+          AUDIT_EVENT_TYPES.SECURITY_SCAN,
           {
             errorId: report.id,
             message: report.message,
@@ -60,12 +59,8 @@ async function handleErrorReport(request: NextRequest) {
             sessionId: report.sessionId,
             retryCount: report.retryCount,
             context: report.context,
-          },
-          report.severity === 'critical' ? SECURITY_RISK_LEVELS.HIGH : SECURITY_RISK_LEVELS.MEDIUM,
-          report.userId,
-          request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown',
-          report.userAgent,
-          report.sessionId
+            ip: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown',
+          }
         );
       }
 
@@ -92,9 +87,8 @@ async function handleErrorReport(request: NextRequest) {
     processed: processedReports.length,
     total: reports.length,
     reports: processedReports,
-  }, {
     message: 'Error reports processed successfully',
-  });
+  }, 200);
 }
 
 export const POST = withApiErrorHandling(handleErrorReport);

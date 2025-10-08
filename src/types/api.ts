@@ -3,8 +3,7 @@
  * Provides standardized response types for all API endpoints
  */
 
-import { BaseEntity, BaseDTO, ListResponse, ApiResponse, ErrorResponse, SuccessResponse } from './base';
-import { z } from 'zod';
+import { NextResponse } from 'next/server';
 
 // HTTP status codes
 export const HTTP_STATUS = {
@@ -25,72 +24,80 @@ export const HTTP_STATUS = {
 
 export type HTTPStatusCode = typeof HTTP_STATUS[keyof typeof HTTP_STATUS];
 
-// API endpoint types
-export type ApiEndpoint = {
-  method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
-  path: string;
-  entity?: string;
-  requiresAuth: boolean;
-  requiredRoles?: string[];
-  rateLimit?: {
-    requests: number;
-    window: number;
+// Standard API response types
+export type SingleEntityResponse<T = any> = {
+  success: true;
+  data: T;
+  message?: string;
+};
+
+export type EntityListResponse<T = any> = {
+  success: true;
+  data: T[];
+  message?: string;
+  meta?: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPrevPage: boolean;
   };
 };
 
-// Standard API response types
-export type SingleEntityResponse<T extends BaseDTO> = SuccessResponse<T>;
-
-export type EntityListResponse<T extends BaseDTO> = SuccessResponse<ListResponse<T>>;
-
-export type EntityCreatedResponse<T extends BaseDTO> = SuccessResponse<T> & {
-  status: typeof HTTP_STATUS.CREATED;
+export type EntityCreatedResponse<T = any> = {
+  success: true;
+  data: T;
+  message?: string;
 };
 
-export type EntityUpdatedResponse<T extends BaseDTO> = SuccessResponse<T>;
-
-export type EntityDeletedResponse = SuccessResponse<null> & {
-  status: typeof HTTP_STATUS.NO_CONTENT;
+export type EntityUpdatedResponse<T = any> = {
+  success: true;
+  data: T;
+  message?: string;
 };
 
-export type EntityNotFoundResponse = ErrorResponse & {
-  status: typeof HTTP_STATUS.NOT_FOUND;
+export type EntityDeletedResponse = {
+  success: true;
+  data: null;
+  message?: string;
+};
+
+export type EntityNotFoundResponse = {
+  success: false;
   error: {
     code: 'ENTITY_NOT_FOUND';
     message: string;
   };
 };
 
-export type ValidationErrorResponse = ErrorResponse & {
-  status: typeof HTTP_STATUS.UNPROCESSABLE_ENTITY;
+export type ValidationErrorResponse = {
+  success: false;
   error: {
     code: 'VALIDATION_ERROR';
     message: string;
-    details: {
-      field: string;
-      message: string;
-    }[];
+    details?: { field: string; message: string }[];
   };
 };
 
-export type UnauthorizedResponse = ErrorResponse & {
-  status: typeof HTTP_STATUS.UNAUTHORIZED;
+export type UnauthorizedResponse = {
+  success: false;
   error: {
     code: 'UNAUTHORIZED';
     message: string;
   };
 };
 
-export type ForbiddenResponse = ErrorResponse & {
-  status: typeof HTTP_STATUS.FORBIDDEN;
+export type ForbiddenResponse = {
+  success: false;
   error: {
     code: 'FORBIDDEN';
     message: string;
   };
 };
 
-export type ConflictResponse = ErrorResponse & {
-  status: typeof HTTP_STATUS.CONFLICT;
+export type ConflictResponse = {
+  success: false;
   error: {
     code: 'CONFLICT';
     message: string;
@@ -98,8 +105,8 @@ export type ConflictResponse = ErrorResponse & {
   };
 };
 
-export type RateLimitResponse = ErrorResponse & {
-  status: typeof HTTP_STATUS.TOO_MANY_REQUESTS;
+export type RateLimitResponse = {
+  success: false;
   error: {
     code: 'RATE_LIMIT_EXCEEDED';
     message: string;
@@ -107,8 +114,8 @@ export type RateLimitResponse = ErrorResponse & {
   };
 };
 
-export type InternalServerErrorResponse = ErrorResponse & {
-  status: typeof HTTP_STATUS.INTERNAL_SERVER_ERROR;
+export type InternalServerErrorResponse = {
+  success: false;
   error: {
     code: 'INTERNAL_SERVER_ERROR';
     message: string;
@@ -116,7 +123,7 @@ export type InternalServerErrorResponse = ErrorResponse & {
 };
 
 // Union type for all possible API responses
-export type ApiResponseType<T extends BaseDTO = BaseDTO> =
+export type ApiResponseType<T = any> =
   | SingleEntityResponse<T>
   | EntityListResponse<T>
   | EntityCreatedResponse<T>
@@ -131,10 +138,10 @@ export type ApiResponseType<T extends BaseDTO = BaseDTO> =
   | InternalServerErrorResponse;
 
 // Request types
-export type CreateEntityRequest<T extends BaseDTO> = Omit<T, 'id' | 'createdAt' | 'updatedAt'>;
+export type CreateEntityRequest<T = any> = Omit<T, 'id' | 'createdAt' | 'updatedAt'>;
+export type UpdateEntityRequest<T = any> = Partial<Omit<T, 'id' | 'createdAt' | 'updatedAt'>>;
 
-export type UpdateEntityRequest<T extends BaseDTO> = Partial<Omit<T, 'id' | 'createdAt' | 'updatedAt'>>;
-
+// Query parameters
 export type QueryParams = {
   page?: number;
   limit?: number;
@@ -146,271 +153,207 @@ export type QueryParams = {
   select?: string[];
 };
 
-// API response schemas for validation
-export const SingleEntityResponseSchema = z.object({
-  success: z.literal(true),
-  data: z.any(),
-  message: z.string().optional(),
-  meta: z.record(z.any()).optional(),
-});
-
-export const EntityListResponseSchema = z.object({
-  success: z.literal(true),
-  data: z.object({
-    data: z.array(z.any()),
-    meta: z.object({
-      page: z.number(),
-      limit: z.number(),
-      total: z.number(),
-      totalPages: z.number(),
-      hasNextPage: z.boolean(),
-      hasPrevPage: z.boolean(),
-    }),
-  }),
-  message: z.string().optional(),
-  meta: z.record(z.any()).optional(),
-});
-
-export const ApiErrorResponseSchema = z.object({
-  success: z.literal(false),
-  error: z.object({
-    code: z.string(),
-    message: z.string(),
-    details: z.any().optional(),
-    field: z.string().optional(),
-  }),
-});
-
-export const ApiResponseTypeSchema = z.union([
-  SingleEntityResponseSchema,
-  EntityListResponseSchema,
-  ApiErrorResponseSchema,
-]);
-
-// API response builders
+// API response builders - simplified for NextResponse compatibility
 export class ApiResponseBuilder {
-  static success<T>(data: T, message?: string, meta?: Record<string, any>): SuccessResponse<T> {
-    return {
+  static success<T>(data: T, message?: string, meta?: Record<string, any>) {
+    return NextResponse.json({
       success: true,
       data,
       message,
       meta,
-    };
+    });
   }
 
-  static created<T>(data: T, message?: string): EntityCreatedResponse<T> {
-    return {
+  static created<T>(data: T, message?: string) {
+    return NextResponse.json({
       success: true,
       data,
       message: message || 'Entity created successfully',
-      status: HTTP_STATUS.CREATED,
-    };
+    }, { status: HTTP_STATUS.CREATED });
   }
 
-  static updated<T>(data: T, message?: string): EntityUpdatedResponse<T> {
-    return {
+  static updated<T>(data: T, message?: string) {
+    return NextResponse.json({
       success: true,
       data,
       message: message || 'Entity updated successfully',
-    };
+    });
   }
 
-  static deleted(message?: string): EntityDeletedResponse {
-    return {
+  static deleted(message?: string) {
+    return NextResponse.json({
       success: true,
       data: null,
       message: message || 'Entity deleted successfully',
-      status: HTTP_STATUS.NO_CONTENT,
-    };
+    }, { status: HTTP_STATUS.NO_CONTENT });
   }
 
-  static notFound(entity: string, id?: string): EntityNotFoundResponse {
-    return {
+  static notFound(entity: string, id?: string) {
+    return NextResponse.json({
       success: false,
       error: {
         code: 'ENTITY_NOT_FOUND',
-        message: id ? `${entity} with id ${id} not found` : `${entity} not found`,
+        message: `${entity}${id ? ` with ID ${id}` : ''} not found`,
       },
-      status: HTTP_STATUS.NOT_FOUND,
-    };
+    }, { status: HTTP_STATUS.NOT_FOUND });
   }
 
-  static validationError(errors: { field: string; message: string }[]): ValidationErrorResponse {
-    return {
+  static validationError(message: string, details?: { field: string; message: string }[]) {
+    return NextResponse.json({
       success: false,
       error: {
         code: 'VALIDATION_ERROR',
-        message: 'Validation failed',
-        details: errors,
+        message,
+        details,
       },
-      status: HTTP_STATUS.UNPROCESSABLE_ENTITY,
-    };
+    }, { status: HTTP_STATUS.UNPROCESSABLE_ENTITY });
   }
 
-  static unauthorized(message?: string): UnauthorizedResponse {
-    return {
+  static unauthorized(message?: string) {
+    return NextResponse.json({
       success: false,
       error: {
         code: 'UNAUTHORIZED',
         message: message || 'Authentication required',
       },
-      status: HTTP_STATUS.UNAUTHORIZED,
-    };
+    }, { status: HTTP_STATUS.UNAUTHORIZED });
   }
 
-  static forbidden(message?: string): ForbiddenResponse {
-    return {
+  static forbidden(message?: string) {
+    return NextResponse.json({
       success: false,
       error: {
         code: 'FORBIDDEN',
-        message: message || 'Access denied',
+        message: message || 'Insufficient permissions',
       },
-      status: HTTP_STATUS.FORBIDDEN,
-    };
+    }, { status: HTTP_STATUS.FORBIDDEN });
   }
 
-  static conflict(message: string, details?: any): ConflictResponse {
-    return {
+  static conflict(message: string, details?: any) {
+    return NextResponse.json({
       success: false,
       error: {
         code: 'CONFLICT',
         message,
         details,
       },
-      status: HTTP_STATUS.CONFLICT,
-    };
+    }, { status: HTTP_STATUS.CONFLICT });
   }
 
-  static rateLimit(retryAfter?: number): RateLimitResponse {
-    return {
+  static rateLimit(message?: string, retryAfter?: number) {
+    return NextResponse.json({
       success: false,
       error: {
         code: 'RATE_LIMIT_EXCEEDED',
-        message: 'Too many requests',
+        message: message || 'Too many requests',
         retryAfter,
       },
-      status: HTTP_STATUS.TOO_MANY_REQUESTS,
-    };
+    }, { status: HTTP_STATUS.TOO_MANY_REQUESTS });
   }
 
-  static internalError(message?: string): InternalServerErrorResponse {
-    return {
+  static internalError(message?: string) {
+    return NextResponse.json({
       success: false,
       error: {
         code: 'INTERNAL_SERVER_ERROR',
         message: message || 'Internal server error',
       },
-      status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
-    };
+    }, { status: HTTP_STATUS.INTERNAL_SERVER_ERROR });
   }
 }
 
-// Type guards for API responses
-export function isSuccessResponse<T>(response: ApiResponseType<T>): response is SuccessResponse<T> {
+// Type guards
+export function isSuccessResponse<T>(response: ApiResponseType<T>): response is SingleEntityResponse<T> | EntityListResponse<T> | EntityCreatedResponse<T> | EntityUpdatedResponse<T> | EntityDeletedResponse {
   return response.success === true;
 }
 
-export function isErrorResponse<T>(response: ApiResponseType<T>): response is ErrorResponse {
+export function isErrorResponse<T>(response: ApiResponseType<T>): response is EntityNotFoundResponse | ValidationErrorResponse | UnauthorizedResponse | ForbiddenResponse | ConflictResponse | RateLimitResponse | InternalServerErrorResponse {
   return response.success === false;
 }
 
 export function isSingleEntityResponse<T>(response: ApiResponseType<T>): response is SingleEntityResponse<T> {
-  return isSuccessResponse(response) && !Array.isArray(response.data);
+  return response.success === true && 'data' in response && !Array.isArray(response.data);
 }
 
 export function isEntityListResponse<T>(response: ApiResponseType<T>): response is EntityListResponse<T> {
-  return isSuccessResponse(response) && Array.isArray(response.data);
+  return response.success === true && 'data' in response && Array.isArray(response.data);
 }
 
 export function isEntityCreatedResponse<T>(response: ApiResponseType<T>): response is EntityCreatedResponse<T> {
-  return isSuccessResponse(response) && 'status' in response && response.status === HTTP_STATUS.CREATED;
+  return response.success === true && 'data' in response && !Array.isArray(response.data);
 }
 
 export function isEntityUpdatedResponse<T>(response: ApiResponseType<T>): response is EntityUpdatedResponse<T> {
-  return isSuccessResponse(response) && !('status' in response);
+  return response.success === true && 'data' in response && !Array.isArray(response.data);
 }
 
 export function isEntityDeletedResponse(response: ApiResponseType): response is EntityDeletedResponse {
-  return isSuccessResponse(response) && response.data === null;
+  return response.success === true && 'data' in response && response.data === null;
 }
 
 export function isEntityNotFoundResponse(response: ApiResponseType): response is EntityNotFoundResponse {
-  return isErrorResponse(response) && response.error.code === 'ENTITY_NOT_FOUND';
+  return response.success === false && 'error' in response && response.error.code === 'ENTITY_NOT_FOUND';
 }
 
 export function isValidationErrorResponse(response: ApiResponseType): response is ValidationErrorResponse {
-  return isErrorResponse(response) && response.error.code === 'VALIDATION_ERROR';
+  return response.success === false && 'error' in response && response.error.code === 'VALIDATION_ERROR';
 }
 
 export function isUnauthorizedResponse(response: ApiResponseType): response is UnauthorizedResponse {
-  return isErrorResponse(response) && response.error.code === 'UNAUTHORIZED';
+  return response.success === false && 'error' in response && response.error.code === 'UNAUTHORIZED';
 }
 
 export function isForbiddenResponse(response: ApiResponseType): response is ForbiddenResponse {
-  return isErrorResponse(response) && response.error.code === 'FORBIDDEN';
+  return response.success === false && 'error' in response && response.error.code === 'FORBIDDEN';
 }
 
 export function isConflictResponse(response: ApiResponseType): response is ConflictResponse {
-  return isErrorResponse(response) && response.error.code === 'CONFLICT';
+  return response.success === false && 'error' in response && response.error.code === 'CONFLICT';
 }
 
 export function isRateLimitResponse(response: ApiResponseType): response is RateLimitResponse {
-  return isErrorResponse(response) && response.error.code === 'RATE_LIMIT_EXCEEDED';
+  return response.success === false && 'error' in response && response.error.code === 'RATE_LIMIT_EXCEEDED';
 }
 
 export function isInternalServerErrorResponse(response: ApiResponseType): response is InternalServerErrorResponse {
-  return isErrorResponse(response) && response.error.code === 'INTERNAL_SERVER_ERROR';
+  return response.success === false && 'error' in response && response.error.code === 'INTERNAL_SERVER_ERROR';
 }
 
-// API response validation
-export function validateApiResponse<T>(response: unknown): ApiResponseType<T> {
-  const result = ApiResponseSchema.safeParse(response);
-  if (!result.success) {
-    throw new Error(`Invalid API response format: ${result.error.message}`);
-  }
-  return response as ApiResponseType<T>;
+// Utility functions
+export function validateApiResponse<T>(response: unknown): response is ApiResponseType<T> {
+  return typeof response === 'object' && response !== null && 'success' in response;
 }
 
-// API response transformation utilities
-export function transformApiResponse<T, U>(
-  response: ApiResponseType<T>,
-  transformer: (data: T) => U
-): ApiResponseType<U> {
-  if (isSuccessResponse(response)) {
+export function transformApiResponse<T, U>(response: ApiResponseType<T>, transformer: (data: T) => U): ApiResponseType<U> {
+  if (isSuccessResponse(response) && 'data' in response) {
     return {
       ...response,
-      data: transformer(response.data),
+      data: transformer(response.data as T),
     } as ApiResponseType<U>;
   }
   return response as ApiResponseType<U>;
 }
 
-// API response error handling
 export function handleApiResponse<T>(
   response: ApiResponseType<T>,
   onSuccess: (data: T) => void,
-  onError?: (error: ErrorResponse) => void
+  onError?: (error: { code: string; message: string }) => void
 ): void {
   if (isSuccessResponse(response)) {
-    onSuccess(response.data);
+    onSuccess((response as any).data);
   } else if (onError) {
-    onError(response);
-  } else {
-    throw new Error(`API Error: ${response.error.message}`);
+    onError(response.error);
   }
 }
 
-// API response async handling
 export async function handleApiResponseAsync<T>(
   response: ApiResponseType<T>,
   onSuccess: (data: T) => Promise<void>,
-  onError?: (error: ErrorResponse) => Promise<void>
+  onError?: (error: { code: string; message: string }) => Promise<void>
 ): Promise<void> {
   if (isSuccessResponse(response)) {
-    await onSuccess(response.data);
+    await onSuccess((response as any).data);
   } else if (onError) {
-    await onError(response);
-  } else {
-    throw new Error(`API Error: ${response.error.message}`);
+    await onError(response.error);
   }
 }

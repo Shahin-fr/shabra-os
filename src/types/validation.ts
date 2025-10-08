@@ -33,6 +33,8 @@ export const EmailSchema = z.string().email('Invalid email format');
 export const PhoneSchema = z.string().regex(/^\+?[\d\s\-\(\)]+$/, 'Invalid phone number format');
 export const URLSchema = z.string().url('Invalid URL format');
 export const SlugSchema = z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Invalid slug format');
+export const UuidSchema = z.string().uuid();
+export const CuidSchema = z.string().cuid();
 export const PasswordSchema = z.string().min(8, 'Password must be at least 8 characters');
 export const NameSchema = z.string().min(1, 'Name is required').max(100, 'Name must be less than 100 characters');
 
@@ -62,39 +64,11 @@ export const FileUploadSchema = z.object({
   uploadedAt: z.date(),
 });
 
-// Audit field schemas
-export const AuditFieldsSchema = z.object({
-  createdBy: z.string().cuid().optional(),
-  updatedBy: z.string().cuid().optional(),
-  deletedAt: z.date().optional(),
-  deletedBy: z.string().cuid().optional(),
-});
-
 // Soft delete schema
 export const SoftDeleteSchema = BaseEntitySchema.extend({
   deletedAt: z.date().optional(),
   deletedBy: z.string().cuid().optional(),
 });
-
-// API response schemas
-export const ErrorResponseSchema = z.object({
-  success: z.literal(false),
-  error: z.object({
-    code: z.string(),
-    message: z.string(),
-    details: z.any().optional(),
-    field: z.string().optional(),
-  }),
-});
-
-export const SuccessResponseSchema = z.object({
-  success: z.literal(true),
-  data: z.any(),
-  message: z.string().optional(),
-  meta: z.record(z.any()).optional(),
-});
-
-export const ApiResponseSchema = z.union([ErrorResponseSchema, SuccessResponseSchema]);
 
 // Validation utility functions
 export function validateEntity<T extends BaseEntity>(
@@ -268,7 +242,18 @@ export function validateArray<T>(
   itemSchema: z.ZodSchema<T>
 ): T[] {
   const schema = z.array(itemSchema);
-  return validateEntity(items, schema);
+  try {
+    return schema.parse(items);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      const fieldErrors = error.errors.map(err => ({
+        field: err.path.join('.'),
+        message: err.message,
+      }));
+      throw new ValidationError('Array validation failed', { fieldErrors, originalError: error });
+    }
+    throw error;
+  }
 }
 
 export function validateNonEmptyArray<T>(
@@ -276,33 +261,55 @@ export function validateNonEmptyArray<T>(
   itemSchema: z.ZodSchema<T>
 ): [T, ...T[]] {
   const schema = z.array(itemSchema).min(1);
-  const result = validateEntity(items, schema);
-  return result as [T, ...T[]];
+  try {
+    const result = schema.parse(items);
+    return result as [T, ...T[]];
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      const fieldErrors = error.errors.map(err => ({
+        field: err.path.join('.'),
+        message: err.message,
+      }));
+      throw new ValidationError('Non-empty array validation failed', { fieldErrors, originalError: error });
+    }
+    throw error;
+  }
 }
 
 // Object validation with partial fields
 export function validatePartialObject<T>(
   obj: unknown,
-  schema: z.ZodSchema<T>
-): Partial<T> {
+  schema: z.ZodObject<any, any, any, T, any>
+): any {
   const partialSchema = schema.partial();
-  return validateEntity(obj, partialSchema);
+  try {
+    return partialSchema.parse(obj);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      const fieldErrors = error.errors.map(err => ({
+        field: err.path.join('.'),
+        message: err.message,
+      }));
+      throw new ValidationError('Partial object validation failed', { fieldErrors, originalError: error });
+    }
+    throw error;
+  }
 }
 
 // Validation with custom error messages
 export function createCustomSchema<T>(
-  schema: z.ZodSchema<T>,
-  customErrorMap: (issue: z.ZodIssue, ctx: z.ErrorMapCtx) => z.ZodErrorMapReturn
-): z.ZodSchema<T> {
-  return schema.setErrorMap(customErrorMap);
+  schema: z.ZodObject<any, any, any, T, any>,
+  customErrorMap: (issue: z.ZodIssue, ctx: z.ErrorMapCtx) => { message: string }
+): any {
+  return (schema as any).setErrorMap(customErrorMap);
 }
 
 // Validation with transformation
 export function createTransformSchema<T, U>(
-  schema: z.ZodSchema<T>,
+  schema: z.ZodObject<any, any, any, T, any>,
   transform: (data: T) => U
-): z.ZodSchema<U> {
-  return schema.transform(transform);
+): any {
+  return (schema as any).transform(transform);
 }
 
 // Validation with refinement

@@ -9,15 +9,11 @@ import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
-  Shield, 
   AlertTriangle, 
-  Users, 
   Activity, 
   Lock, 
   Unlock, 
   Ban,
-  CheckCircle,
-  Clock,
   Eye
 } from 'lucide-react';
 

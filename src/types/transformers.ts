@@ -85,14 +85,14 @@ export function mergeUpdateDTO<T extends BaseEntity>(
 export function createPartialDTO<T extends BaseEntity, K extends keyof T>(
   entity: T,
   fields: K[]
-): Pick<EntityToDTO<T>, K> {
-  const result = {} as Pick<EntityToDTO<T>, K>;
+): Partial<EntityToDTO<T>> {
+  const result: any = {};
   
   for (const field of fields) {
     if (field === 'createdAt' || field === 'updatedAt') {
-      (result as any)[field] = entity[field].toISOString();
+      result[field] = (entity[field] as Date).toISOString();
     } else {
-      (result as any)[field] = entity[field];
+      result[field] = entity[field];
     }
   }
   
@@ -111,12 +111,12 @@ export function deepEntityToDTO<T extends BaseEntity>(entity: T): EntityToDTO<T>
     if (value && typeof value === 'object') {
       if (Array.isArray(value)) {
         // Handle arrays of entities
-        (dto as any)[key] = value.map(item => 
+        (dto as any)[key] = (value as any[]).map((item: any) => 
           item && typeof item === 'object' && 'id' in item && 'createdAt' in item && 'updatedAt' in item
             ? deepEntityToDTO(item as BaseEntity)
             : item
         );
-      } else if ('id' in value && 'createdAt' in value && 'updatedAt' in value) {
+      } else if (typeof value === 'object' && 'id' in value && 'createdAt' in value && 'updatedAt' in value) {
         // Handle single nested entity
         (dto as any)[key] = deepEntityToDTO(value as BaseEntity);
       }
@@ -138,12 +138,12 @@ export function deepDtoToEntity<T extends BaseDTO>(dto: T): DTOToEntity<T> {
     if (value && typeof value === 'object') {
       if (Array.isArray(value)) {
         // Handle arrays of DTOs
-        (entity as any)[key] = value.map(item => 
+        (entity as any)[key] = (value as any[]).map((item: any) => 
           item && typeof item === 'object' && 'id' in item && 'createdAt' in item && 'updatedAt' in item
             ? deepDtoToEntity(item as BaseDTO)
             : item
         );
-      } else if ('id' in value && 'createdAt' in value && 'updatedAt' in value) {
+      } else if (typeof value === 'object' && 'id' in value && 'createdAt' in value && 'updatedAt' in value) {
         // Handle single nested DTO
         (entity as any)[key] = deepDtoToEntity(value as BaseDTO);
       }
@@ -165,7 +165,7 @@ export function createSummaryDTO<T extends BaseEntity>(
   
   for (const field of summaryFields) {
     if (field === 'createdAt' || field === 'updatedAt') {
-      (summary as any)[field] = entity[field].toISOString();
+      (summary as any)[field] = (entity[field] as Date).toISOString();
     } else {
       (summary as any)[field] = entity[field];
     }
@@ -193,8 +193,10 @@ export function createPublicDTO<T extends BaseEntity>(
 
 /**
  * Validate that a DTO has all required fields for creation
+ * This function is deprecated - use the one from validation.ts instead
+ * @deprecated Use validateCreateDTO from validation.ts
  */
-export function validateCreateDTO<T extends BaseCreateDTO>(
+export function validateCreateDTOLegacy<T extends BaseCreateDTO>(
   dto: Partial<T>,
   requiredFields: (keyof T)[]
 ): T {
@@ -215,8 +217,10 @@ export function validateCreateDTO<T extends BaseCreateDTO>(
 
 /**
  * Validate that an update DTO has at least one field to update
+ * This function is deprecated - use the one from validation.ts instead
+ * @deprecated Use validateUpdateDTO from validation.ts
  */
-export function validateUpdateDTO<T extends BaseUpdateDTO>(
+export function validateUpdateDTOLegacy<T extends BaseUpdateDTO>(
   dto: Partial<T>
 ): T {
   const hasFields = Object.values(dto).some(value => value !== undefined && value !== null);
@@ -290,4 +294,32 @@ export function safeTransform<T extends BaseEntity, U extends BaseDTO>(
   }
   
   return dto;
+}
+
+/**
+ * @deprecated Use validateCreateDTO from validation.ts instead
+ */
+export function validateCreateDTO<T extends BaseCreateDTO>(
+  dto: T,
+  schema: any
+): T {
+  const result = schema.safeParse(dto);
+  if (!result.success) {
+    throw new Error('Validation failed');
+  }
+  return result.data;
+}
+
+/**
+ * @deprecated Use validateUpdateDTO from validation.ts instead
+ */
+export function validateUpdateDTO<T extends BaseUpdateDTO>(
+  dto: T,
+  schema: any
+): T {
+  const result = schema.safeParse(dto);
+  if (!result.success) {
+    throw new Error('Validation failed');
+  }
+  return result.data;
 }

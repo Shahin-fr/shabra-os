@@ -137,7 +137,7 @@ export const builtInStrategies: RecoveryStrategy[] = [
   {
     name: 'Network Retry',
     canHandle: (error) => error.type === 'network' && error.retryable,
-    execute: async (error) => {
+    execute: async (_error) => {
       // Simple network check
       if (navigator.onLine) {
         return true;
@@ -149,7 +149,7 @@ export const builtInStrategies: RecoveryStrategy[] = [
   {
     name: 'Authentication Refresh',
     canHandle: (error) => error.type === 'authentication',
-    execute: async (error) => {
+    execute: async (_error) => {
       try {
         // Attempt to refresh token
         const response = await fetch('/api/auth/refresh', {
@@ -166,7 +166,7 @@ export const builtInStrategies: RecoveryStrategy[] = [
   {
     name: 'Validation Retry',
     canHandle: (error) => error.type === 'validation' && error.retryable,
-    execute: async (error) => {
+    execute: async (_error) => {
       // For validation errors, we might want to retry after a short delay
       // This is useful for temporary validation issues
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -177,7 +177,7 @@ export const builtInStrategies: RecoveryStrategy[] = [
   {
     name: 'Component Reset',
     canHandle: (error) => error.component !== undefined,
-    execute: async (error) => {
+    execute: async (_error) => {
       // This would typically trigger a component re-render or reset
       // The actual implementation would depend on the component system
       return true;
@@ -238,7 +238,7 @@ export class ErrorRecoveryUtils {
       monitoringPeriod?: number;
     } = {}
   ) {
-    const { failureThreshold = 5, resetTimeout = 60000, monitoringPeriod = 10000 } = options;
+    const { failureThreshold = 5, resetTimeout = 60000, monitoringPeriod: _monitoringPeriod = 10000 } = options;
     
     let failures = 0;
     let lastFailureTime = 0;

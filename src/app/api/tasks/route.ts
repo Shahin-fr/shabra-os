@@ -1,17 +1,19 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 
 import { auth } from '@/auth';
 import {
-  createSuccessResponse,
-  createValidationErrorResponse,
-  createAuthErrorResponse,
-  createNotFoundErrorResponse,
-  HTTP_STATUS_CODES,
-  getHttpStatusForErrorCode,
-} from '@/lib/api/response-utils';
-// import { logger } from '@/lib/logger';
+  ApiResponseBuilder,
+  TaskDTO,
+  CreateTaskDTO,
+  TaskEntity,
+  entityToDTO,
+  validateCreateDTO,
+  CreateTaskDTOSchema
+} from '@/types';
 import { prisma } from '@/lib/prisma';
 import { handleApiError } from '@/lib/utils/error-handler';
+import { parsePaginationParams, executePaginatedQuery } from '@/lib/database/pagination';
+import { TaskQueryOptimizer, DatabasePerformanceMonitor } from '@/lib/database/query-optimizer';
 
 export async function GET(request: NextRequest) {
   try {
@@ -27,26 +29,30 @@ export async function GET(request: NextRequest) {
     // Get current user session
     const session = await auth();
     if (!session?.user?.id) {
-      const errorResponse = createAuthErrorResponse('Unauthorized');
-      return NextResponse.json(errorResponse, {
-        status: getHttpStatusForErrorCode(errorResponse.error.code),
-      });
+      return ApiResponseBuilder.unauthorized('Authentication required');
     }
 
-    // Validate query parameters
+    // Parse pagination and filter parameters
     const { searchParams } = new URL(request.url);
+    const paginationParams = parsePaginationParams(searchParams);
     const projectId = searchParams.get('projectId');
     const assignedTo = searchParams.get('assignedTo');
+    const status = searchParams.get('status');
+    const priority = searchParams.get('priority');
 
     // Build the where clause for filtering based on user role
-    const where: {
-      projectId?: string;
-      assignedTo?: string;
-      createdBy?: string;
-    } = {};
+    const where: any = {};
 
     if (projectId) {
       where.projectId = projectId;
+    }
+
+    if (status) {
+      where.status = status;
+    }
+
+    if (priority) {
+      where.priority = priority;
     }
 
     // Role-based task filtering
@@ -65,39 +71,52 @@ export async function GET(request: NextRequest) {
       where.assignedTo = session.user.id;
     }
 
-    // Fetch tasks with relations
-    const tasks = await prisma.task.findMany({
-      where,
-      include: {
-        creator: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            email: true,
+    // Execute optimized paginated query
+    const result = await DatabasePerformanceMonitor.monitorQueryPerformance(
+      'GET /api/tasks',
+      () => executePaginatedQuery(
+        prisma.task,
+        paginationParams,
+        where,
+        {
+          creator: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              email: true,
+              avatar: true,
+            },
           },
-        },
-        assignee: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            email: true,
+          assignee: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              email: true,
+              avatar: true,
+            },
           },
-        },
-        project: {
-          select: {
-            id: true,
-            name: true,
+          project: {
+            select: {
+              id: true,
+              name: true,
+              status: true,
+            },
           },
-        },
-      },
-      orderBy: {
-        createdAt: 'desc',
-      },
-    });
+        }
+      )
+    );
 
-    return NextResponse.json(tasks);
+    // Transform entities to DTOs
+    const taskDTOs: TaskDTO[] = result.result.data.map(task => 
+      entityToDTO(task as TaskEntity) as unknown as TaskDTO
+    );
+
+    return ApiResponseBuilder.success({
+      data: taskDTOs,
+      pagination: result.result.pagination,
+    }, 'Tasks retrieved successfully');
   } catch (error) {
     return handleApiError(error, {
       operation: 'GET /api/tasks',
@@ -123,50 +142,33 @@ export async function POST(request: NextRequest) {
     // Get current user session
     const session = await auth();
     if (!session?.user?.id) {
-      const errorResponse = createAuthErrorResponse('Unauthorized');
-      return NextResponse.json(errorResponse, {
-        status: getHttpStatusForErrorCode(errorResponse.error.code),
-      });
+      return ApiResponseBuilder.unauthorized('Authentication required');
     }
 
     const body = await request.json();
-    const { title, description, assignedTo, projectId, dueDate } = body;
-
-    // Validate required fields
-    if (!title || typeof title !== 'string' || title.trim().length === 0) {
-      const errorResponse = createValidationErrorResponse(
-        'عنوان وظیفه الزامی است'
-      );
-      return NextResponse.json(errorResponse, {
-        status: getHttpStatusForErrorCode(errorResponse.error.code),
-      });
-    }
+    
+    // Validate request body using new type system
+    const createTaskData = validateCreateDTO(body, CreateTaskDTOSchema) as CreateTaskDTO;
 
     // Verify project exists if provided
-    if (projectId) {
+    if (createTaskData.projectId) {
       const project = await prisma.project.findUnique({
-        where: { id: projectId },
+        where: { id: createTaskData.projectId },
       });
 
       if (!project) {
-        const errorResponse = createNotFoundErrorResponse();
-        return NextResponse.json(errorResponse, {
-          status: getHttpStatusForErrorCode(errorResponse.error.code),
-        });
+        return ApiResponseBuilder.notFound('Project not found');
       }
     }
 
     // Verify assignee exists if provided
-    if (assignedTo) {
+    if (createTaskData.assignedTo) {
       const assignee = await prisma.user.findUnique({
-        where: { id: assignedTo },
+        where: { id: createTaskData.assignedTo },
       });
 
       if (!assignee) {
-        const errorResponse = createNotFoundErrorResponse();
-        return NextResponse.json(errorResponse, {
-          status: getHttpStatusForErrorCode(errorResponse.error.code),
-        });
+        return ApiResponseBuilder.notFound('User not found');
       }
     }
 
@@ -174,13 +176,14 @@ export async function POST(request: NextRequest) {
     const task = await prisma.$transaction(async (tx) => {
       const newTask = await tx.task.create({
         data: {
-          title: title.trim(),
-          description: description?.trim() || null,
+          title: createTaskData.title.trim(),
+          description: createTaskData.description?.trim() || null,
           createdBy: session.user.id,
-          assignedTo: assignedTo || null,
-          projectId: projectId || null,
-          dueDate: dueDate ? new Date(dueDate) : null,
-          status: 'Todo', // Default status
+          assignedTo: createTaskData.assignedTo || null,
+          projectId: createTaskData.projectId || null,
+          dueDate: createTaskData.dueDate ? new Date(createTaskData.dueDate) : null,
+          status: createTaskData.status || 'Todo', // Default status
+          priority: createTaskData.priority || 'MEDIUM',
         },
         include: {
           creator: {
@@ -209,9 +212,9 @@ export async function POST(request: NextRequest) {
       });
 
       // Update project's last activity timestamp if projectId is provided
-      if (projectId) {
+      if (createTaskData.projectId) {
         await tx.project.update({
-          where: { id: projectId },
+          where: { id: createTaskData.projectId },
           data: { updatedAt: new Date() },
         });
       }
@@ -219,10 +222,10 @@ export async function POST(request: NextRequest) {
       return newTask;
     });
 
-    const successResponse = createSuccessResponse(task);
-    return NextResponse.json(successResponse, {
-      status: HTTP_STATUS_CODES.CREATED,
-    });
+    // Transform entity to DTO
+    const taskDTO = entityToDTO(task as TaskEntity);
+
+    return ApiResponseBuilder.created(taskDTO, 'Task created successfully');
   } catch (error) {
     return handleApiError(error, {
       operation: 'POST /api/tasks',

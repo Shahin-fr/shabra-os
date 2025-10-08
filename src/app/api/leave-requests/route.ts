@@ -1,34 +1,21 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { z } from 'zod';
+import { NextRequest } from 'next/server';
 
 import { auth } from '@/auth';
 import {
-  createSuccessResponse,
-  createAuthErrorResponse,
-  createValidationErrorResponse,
-  HTTP_STATUS_CODES,
-  getHttpStatusForErrorCode,
-} from '@/lib/api/response-utils';
+  ApiResponseBuilder,
+  RequestDTO,
+  CreateRequestDTO,
+  RequestEntity,
+  entityToDTO,
+  validateCreateDTO,
+  CreateRequestDTOSchema
+} from '@/types';
 import { logger } from '@/lib/logger';
 import { prisma } from '@/lib/prisma';
 import { handleApiError } from '@/lib/utils/error-handler';
 import { withApiRateLimit } from '@/lib/middleware/rate-limit-middleware';
 import { validateLeaveRequestPeriod } from '@/lib/work-schedule-utils';
 
-// Validation schema for creating leave request
-const CreateLeaveRequestSchema = z.object({
-  leaveType: z.enum(['ANNUAL', 'SICK', 'UNPAID', 'EMERGENCY', 'MATERNITY', 'PATERNITY', 'STUDY', 'OTHER']),
-  startDate: z.string().datetime('Invalid start date format'),
-  endDate: z.string().datetime('Invalid end date format'),
-  reason: z.string().min(10, 'Reason must be at least 10 characters').max(500, 'Reason cannot exceed 500 characters'),
-}).refine((data) => {
-  const startDate = new Date(data.startDate);
-  const endDate = new Date(data.endDate);
-  return endDate >= startDate;
-}, {
-  message: 'End date must be after start date',
-  path: ['endDate'],
-});
 
 export async function GET(request: NextRequest) {
   // Apply rate limiting
@@ -42,10 +29,7 @@ export async function GET(request: NextRequest) {
     const session = await auth();
 
     if (!session?.user?.id) {
-      const errorResponse = createAuthErrorResponse('Unauthorized');
-      return NextResponse.json(errorResponse, {
-        status: getHttpStatusForErrorCode(errorResponse.error.code),
-      });
+      return ApiResponseBuilder.unauthorized('Authentication required');
     }
 
     const userId = session.user.id;
@@ -61,8 +45,10 @@ export async function GET(request: NextRequest) {
 
     logger.info(`Leave requests fetched for user ${userId}`);
 
-    const successResponse = createSuccessResponse(leaveRequests);
-    return NextResponse.json(successResponse, { status: HTTP_STATUS_CODES.OK });
+    // Transform entities to DTOs
+    const requestDTOs: RequestDTO[] = leaveRequests.map(request => entityToDTO(request as RequestEntity) as unknown as RequestDTO);
+
+    return ApiResponseBuilder.success(requestDTOs, 'Leave requests retrieved successfully');
   } catch (error) {
     return handleApiError(error, {
       operation: 'GET /api/leave-requests',
@@ -83,30 +69,19 @@ export async function POST(request: NextRequest) {
     const session = await auth();
 
     if (!session?.user?.id) {
-      const errorResponse = createAuthErrorResponse('Unauthorized');
-      return NextResponse.json(errorResponse, {
-        status: getHttpStatusForErrorCode(errorResponse.error.code),
-      });
+      return ApiResponseBuilder.unauthorized('Authentication required');
     }
 
     const userId = session.user.id;
 
-    // Parse and validate request body
+    // Parse and validate request body using new type system
     const body = await request.json();
-    const validationResult = CreateLeaveRequestSchema.safeParse(body);
+    const createRequestData = validateCreateDTO(body, CreateRequestDTOSchema) as CreateRequestDTO;
 
-    if (!validationResult.success) {
-      const errorResponse = createValidationErrorResponse(
-        'Validation failed',
-        undefined,
-        validationResult.error.errors
-      );
-      return NextResponse.json(errorResponse, {
-        status: getHttpStatusForErrorCode(errorResponse.error.code),
-      });
-    }
-
-    const { leaveType, startDate, endDate, reason } = validationResult.data;
+    const { details, reason } = createRequestData;
+    
+    // Extract leave-specific details from the details object
+    const { leaveType, startDate, endDate } = details || {};
 
     // Validate against work schedule and holidays
     const workScheduleValidation = await validateLeaveRequestPeriod(
@@ -120,12 +95,7 @@ export async function POST(request: NextRequest) {
         `${conflict.reason} (${conflict.date.toLocaleDateString()})`
       ).join(', ');
 
-      const errorResponse = createValidationErrorResponse(
-        `Leave request conflicts with work schedule or holidays: ${conflictMessages}`
-      );
-      return NextResponse.json(errorResponse, {
-        status: HTTP_STATUS_CODES.CONFLICT,
-      });
+      return ApiResponseBuilder.conflict(`Leave request conflicts with work schedule or holidays: ${conflictMessages}`);
     }
 
     // Check for overlapping leave requests
@@ -144,12 +114,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (overlappingRequest) {
-      const errorResponse = createValidationErrorResponse(
-        'You already have a pending or approved leave request for this period'
-      );
-      return NextResponse.json(errorResponse, {
-        status: HTTP_STATUS_CODES.CONFLICT,
-      });
+      return ApiResponseBuilder.conflict('You already have a pending or approved leave request for this period');
     }
 
     // Create the leave request using the new Request model
@@ -179,8 +144,10 @@ export async function POST(request: NextRequest) {
 
     logger.info(`Leave request created: ${leaveRequest.id} for user ${userId}`);
 
-    const successResponse = createSuccessResponse(leaveRequest, 'Leave request created successfully');
-    return NextResponse.json(successResponse, { status: HTTP_STATUS_CODES.CREATED });
+    // Transform entity to DTO
+    const requestDTO = entityToDTO(leaveRequest as RequestEntity);
+
+    return ApiResponseBuilder.created(requestDTO, 'Leave request created successfully');
   } catch (error) {
     return handleApiError(error, {
       operation: 'POST /api/leave-requests',

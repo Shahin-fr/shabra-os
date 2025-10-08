@@ -15,7 +15,6 @@ import {
   BruteForceProtection,
   IPManagement,
   AuditLogger as AdvancedAuditLogger,
-  SecurityMonitoring,
   AUDIT_EVENT_TYPES,
   SECURITY_RISK_LEVELS,
 } from '@/lib/advanced-security';
@@ -189,7 +188,7 @@ async function middlewareHandler(request: NextRequest) {
         secret: process.env.NEXTAUTH_SECRET 
       });
       
-      if (!token || !isValidSessionToken(token.sub || '')) {
+      if (!token || !token.sub || !isValidSessionToken(token.sub)) {
         SecurityLogger.logAuthFailure(clientIP, 'INVALID_TOKEN');
         
         // Record failed attempt for auth endpoints
@@ -198,7 +197,7 @@ async function middlewareHandler(request: NextRequest) {
           
           await AdvancedAuditLogger.logAuthEvent(
             AUDIT_EVENT_TYPES.LOGIN_FAILURE,
-            token.sub || 'unknown',
+            token?.sub || 'unknown',
             clientIP,
             { 
               reason: 'INVALID_TOKEN',
@@ -264,7 +263,7 @@ async function middlewareHandler(request: NextRequest) {
       secret: process.env.NEXTAUTH_SECRET 
     });
     
-    if (!token || !isValidSessionToken(token.sub || '')) {
+    if (!token || !token.sub || !isValidSessionToken(token.sub)) {
       // Check brute force protection for login pages
       if (pathname === '/login' && !isWhitelisted) {
         const bruteForceResult = BruteForceProtection.recordFailedAttempt(clientIP);

@@ -11,6 +11,140 @@ vi.mock('next/server', () => ({
   },
 }));
 
+// Mock the security modules
+vi.mock('@/lib/security', () => ({
+  addSecurityHeaders: vi.fn((response) => response),
+  getClientIP: vi.fn(() => '127.0.0.1'),
+  SecurityMiddleware: {
+    cleanupRateLimit: vi.fn(),
+    checkRateLimit: vi.fn(() => true),
+  },
+  SecurityLogger: {
+    logSuspiciousActivity: vi.fn(),
+    logRateLimitExceeded: vi.fn(),
+    logAuthFailure: vi.fn(),
+  },
+  isValidSessionToken: vi.fn(() => true),
+  isTrustedOrigin: vi.fn(() => true),
+  createSecureResponse: vi.fn((message, options) => ({
+    status: options?.status || 403,
+    headers: options?.headers || {},
+    body: message,
+  })),
+}));
+
+// Mock advanced security
+vi.mock('@/lib/advanced-security', () => ({
+  BruteForceProtection: {
+    recordFailedAttempt: vi.fn(() => ({ isLocked: false, remainingAttempts: 5, delay: 0 })),
+    recordSuccessfulAttempt: vi.fn(),
+    getAttemptCount: vi.fn(() => 0),
+  },
+  IPManagement: {
+    isBlocked: vi.fn(() => false),
+    isWhitelisted: vi.fn(() => false),
+    blockIP: vi.fn(),
+  },
+  AuditLogger: {
+    logSecurityEvent: vi.fn(),
+    logAuthEvent: vi.fn(),
+  },
+  AUDIT_EVENT_TYPES: {
+    ACCESS_DENIED: 'ACCESS_DENIED',
+    SUSPICIOUS_ACTIVITY: 'SUSPICIOUS_ACTIVITY',
+    RATE_LIMIT_EXCEEDED: 'RATE_LIMIT_EXCEEDED',
+    BRUTE_FORCE_DETECTED: 'BRUTE_FORCE_DETECTED',
+    LOGIN_FAILURE: 'LOGIN_FAILURE',
+    LOGIN_SUCCESS: 'LOGIN_SUCCESS',
+    ACCESS_GRANTED: 'ACCESS_GRANTED',
+  },
+  SECURITY_RISK_LEVELS: {
+    LOW: 'LOW',
+    MEDIUM: 'MEDIUM',
+    HIGH: 'HIGH',
+    CRITICAL: 'CRITICAL',
+  },
+}));
+
+// Mock error handling
+vi.mock('@/lib/errors', () => ({
+  withErrorHandling: vi.fn((handler) => handler),
+  ErrorLogger: {
+    logError: vi.fn(),
+  },
+}));
+
+// Mock the security modules
+vi.mock('@/lib/security', () => ({
+  addSecurityHeaders: vi.fn((response) => response),
+  getClientIP: vi.fn(() => '127.0.0.1'),
+  SecurityMiddleware: {
+    cleanupRateLimit: vi.fn(),
+    checkRateLimit: vi.fn(() => true),
+  },
+  SecurityLogger: {
+    logSuspiciousActivity: vi.fn(),
+    logRateLimitExceeded: vi.fn(),
+    logAuthFailure: vi.fn(),
+  },
+  isValidSessionToken: vi.fn(() => true),
+  isTrustedOrigin: vi.fn(() => true),
+  createSecureResponse: vi.fn((message, options) => ({
+    status: options?.status || 200,
+    message,
+  })),
+}));
+
+// Mock advanced security
+vi.mock('@/lib/advanced-security', () => ({
+  BruteForceProtection: {
+    recordFailedAttempt: vi.fn(() => ({ isLocked: false })),
+    recordSuccessfulAttempt: vi.fn(),
+    getAttemptCount: vi.fn(() => 0),
+  },
+  IPManagement: {
+    isBlocked: vi.fn(() => false),
+    isWhitelisted: vi.fn(() => false),
+    blockIP: vi.fn(),
+  },
+  AuditLogger: {
+    logSecurityEvent: vi.fn(),
+    logAuthEvent: vi.fn(),
+  },
+  AUDIT_EVENT_TYPES: {
+    ACCESS_DENIED: 'ACCESS_DENIED',
+    SUSPICIOUS_ACTIVITY: 'SUSPICIOUS_ACTIVITY',
+    RATE_LIMIT_EXCEEDED: 'RATE_LIMIT_EXCEEDED',
+    BRUTE_FORCE_DETECTED: 'BRUTE_FORCE_DETECTED',
+    LOGIN_FAILURE: 'LOGIN_FAILURE',
+    LOGIN_SUCCESS: 'LOGIN_SUCCESS',
+    ACCESS_GRANTED: 'ACCESS_GRANTED',
+  },
+  SECURITY_RISK_LEVELS: {
+    LOW: 'LOW',
+    MEDIUM: 'MEDIUM',
+    HIGH: 'HIGH',
+    CRITICAL: 'CRITICAL',
+  },
+}));
+
+// Mock error handling
+vi.mock('@/lib/errors', () => ({
+  withErrorHandling: vi.fn((handler) => handler),
+  ErrorLogger: {
+    logError: vi.fn(),
+  },
+}));
+
+// Mock NextAuth
+vi.mock('next-auth/jwt', () => ({
+  getToken: vi.fn(() => Promise.resolve({
+    sub: 'user-123',
+    email: 'test@example.com',
+    roles: ['ADMIN'],
+  })),
+}));
+
 describe('Middleware', () => {
   let mockRequest: NextRequest;
   let mockUrl: URL;

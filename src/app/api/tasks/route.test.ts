@@ -62,10 +62,11 @@ describe('Tasks API Route', () => {
       id: 'task-1',
       title: 'Test Task 1',
       description: 'Test Description 1',
-      status: 'PENDING',
-      priority: 'medium',
+      status: 'Todo',
+      priority: 'MEDIUM',
       projectId: 'project-1',
       assignedTo: 'user-123',
+      createdBy: 'user-123',
       createdAt: new Date('2024-01-01'),
       updatedAt: new Date('2024-01-01'),
       project: {
@@ -89,10 +90,11 @@ describe('Tasks API Route', () => {
       id: 'task-2',
       title: 'Test Task 2',
       description: 'Test Description 2',
-      status: 'IN_PROGRESS',
-      priority: 'high',
+      status: 'InProgress',
+      priority: 'HIGH',
       projectId: 'project-2',
       assignedTo: 'user-456',
+      createdBy: 'user-123',
       createdAt: new Date('2024-01-02'),
       updatedAt: new Date('2024-01-02'),
       project: {
@@ -156,9 +158,10 @@ describe('Tasks API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(200);
-      expect(data).toHaveLength(2);
-      expect(data[0].title).toBe('Test Task 1');
-      expect(data[1].title).toBe('Test Task 2');
+      expect(data.success).toBe(true);
+      expect(data.data).toHaveLength(2);
+      expect(data.data[0].title).toBe('Test Task 1');
+      expect(data.data[1].title).toBe('Test Task 2');
     });
 
     it('filters tasks by projectId', async () => {
@@ -172,8 +175,9 @@ describe('Tasks API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(200);
-      expect(data).toHaveLength(1);
-      expect(data[0].projectId).toBe('project-1');
+      expect(data.success).toBe(true);
+      expect(data.data).toHaveLength(1);
+      expect(data.data[0].projectId).toBe('project-1');
       expect(prisma.task.findMany).toHaveBeenCalledWith({
         where: { 
           projectId: 'project-1',
@@ -220,8 +224,9 @@ describe('Tasks API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(200);
-      expect(data).toHaveLength(1);
-      expect(data[0].assignedTo).toBe('user-456');
+      expect(data.success).toBe(true);
+      expect(data.data).toHaveLength(1);
+      expect(data.data[0].assignedTo).toBe('user-456');
       expect(prisma.task.findMany).toHaveBeenCalledWith({
         where: { assignedTo: 'user-456' },
         include: {
@@ -265,8 +270,9 @@ describe('Tasks API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(200);
-      expect(data).toHaveLength(1);
-      expect(data[0].assignedTo).toBe('user-123');
+      expect(data.success).toBe(true);
+      expect(data.data).toHaveLength(1);
+      expect(data.data[0].assignedTo).toBe('user-123');
       expect(prisma.task.findMany).toHaveBeenCalledWith({
         where: { createdBy: 'user-123' },
         include: {
@@ -310,7 +316,8 @@ describe('Tasks API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(200);
-      expect(data).toHaveLength(1);
+      expect(data.success).toBe(true);
+      expect(data.data).toHaveLength(1);
       expect(prisma.task.findMany).toHaveBeenCalledWith({
         where: {
           projectId: 'project-1',
@@ -357,7 +364,8 @@ describe('Tasks API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(401);
-      expect(data.error.message).toBe('Unauthorized');
+      expect(data.success).toBe(false);
+      expect(data.error.message).toBe('Authentication required');
     });
 
     it('returns 401 when assignedTo=me and session has no user', async () => {
@@ -371,7 +379,8 @@ describe('Tasks API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(401);
-      expect(data.error.message).toBe('Unauthorized');
+      expect(data.success).toBe(false);
+      expect(data.error.message).toBe('Authentication required');
     });
 
     it('returns 401 when assignedTo=me and user has no ID', async () => {
@@ -387,7 +396,8 @@ describe('Tasks API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(401);
-      expect(data.error.message).toBe('Unauthorized');
+      expect(data.success).toBe(false);
+      expect(data.error.message).toBe('Authentication required');
     });
 
     it('handles empty results gracefully', async () => {
@@ -399,7 +409,8 @@ describe('Tasks API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(200);
-      expect(data).toHaveLength(0);
+      expect(data.success).toBe(true);
+      expect(data.data).toHaveLength(0);
     });
 
     it('handles database errors gracefully', async () => {
@@ -413,7 +424,8 @@ describe('Tasks API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(500);
-      expect(data.error.message).toBe('Database error');
+      expect(data.success).toBe(false);
+      expect(data.error.message).toContain('Database error');
     });
 
     it('includes correct project and user data in response', async () => {
@@ -421,16 +433,16 @@ describe('Tasks API Route', () => {
       const response = await GET(request);
       const data = await response.json();
 
-      expect(data[0].project).toBeDefined();
-      expect(data[0].project.id).toBe('project-1');
-      expect(data[0].project.name).toBe('Test Project 1');
-      expect(data[0].creator).toBeDefined();
-      expect(data[0].creator.id).toBe('user-123');
-      expect(data[0].creator.firstName).toBe('John');
-      expect(data[0].creator.lastName).toBe('Doe');
-      expect(data[0].creator.email).toBe('john@example.com');
-      expect(data[0].assignee).toBeDefined();
-      expect(data[0].assignee.id).toBe('user-123');
+      expect(data.data[0].project).toBeDefined();
+      expect(data.data[0].project.id).toBe('project-1');
+      expect(data.data[0].project.name).toBe('Test Project 1');
+      expect(data.data[0].creator).toBeDefined();
+      expect(data.data[0].creator.id).toBe('user-123');
+      expect(data.data[0].creator.firstName).toBe('John');
+      expect(data.data[0].creator.lastName).toBe('Doe');
+      expect(data.data[0].creator.email).toBe('john@example.com');
+      expect(data.data[0].assignee).toBeDefined();
+      expect(data.data[0].assignee.id).toBe('user-123');
     });
 
     it('orders tasks by creation date descending', async () => {
@@ -473,7 +485,7 @@ describe('Tasks API Route', () => {
       expect(data.data.projectId).toBe('project-1');
       expect(data.data.assignedTo).toBe('user-123');
       expect(data.data.status).toBe('Todo');
-      expect(data.data.priority).toBeUndefined();
+      expect(data.data.priority).toBe('MEDIUM');
     });
 
     it('creates task with minimal required data', async () => {
@@ -532,7 +544,8 @@ describe('Tasks API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(400);
-      expect(data.error.message).toBe('عنوان وظیفه الزامی است');
+      expect(data.success).toBe(false);
+      expect(data.error.message).toContain('Validation failed');
     });
 
     it('returns 400 when title is empty string', async () => {
@@ -550,7 +563,8 @@ describe('Tasks API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(400);
-      expect(data.error.message).toBe('عنوان وظیفه الزامی است');
+      expect(data.success).toBe(false);
+      expect(data.error.message).toContain('Validation failed');
     });
 
     it('returns 400 when title is only whitespace', async () => {
@@ -568,7 +582,8 @@ describe('Tasks API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(400);
-      expect(data.error.message).toBe('عنوان وظیفه الزامی است');
+      expect(data.success).toBe(false);
+      expect(data.error.message).toContain('Validation failed');
     });
 
     it('returns 400 when title is not a string', async () => {
@@ -586,7 +601,8 @@ describe('Tasks API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(400);
-      expect(data.error.message).toBe('عنوان وظیفه الزامی است');
+      expect(data.success).toBe(false);
+      expect(data.error.message).toContain('Validation failed');
     });
 
     it('returns 400 when title is null', async () => {
@@ -604,7 +620,8 @@ describe('Tasks API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(400);
-      expect(data.error.message).toBe('عنوان وظیفه الزامی است');
+      expect(data.success).toBe(false);
+      expect(data.error.message).toContain('Validation failed');
     });
 
     it('creates task without projectId when not provided', async () => {
@@ -685,7 +702,8 @@ describe('Tasks API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(404);
-      expect(data.error.message).toBe('Resource not found');
+      expect(data.success).toBe(false);
+      expect(data.error.message).toBe('Project not found');
     });
 
     it('creates task without assignee when assigneeId is not provided', async () => {
@@ -763,6 +781,7 @@ describe('Tasks API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(500);
+      expect(data.success).toBe(false);
       expect(data.error.message).toContain('Database error');
       
       // Reset the transaction mock to its original implementation
@@ -814,6 +833,7 @@ describe('Tasks API Route', () => {
       const data = await response.json();
 
       expect(response.status).toBe(500);
+      expect(data.success).toBe(false);
       expect(data.error.message).toContain('Unexpected token');
     });
 
@@ -833,7 +853,7 @@ describe('Tasks API Route', () => {
 
       expect(response.status).toBe(201);
       expect(data.data.status).toBe('Todo');
-      expect(data.data.priority).toBeUndefined();
+      expect(data.data.priority).toBe('MEDIUM');
     });
 
     it('verifies project exists before creating task', async () => {

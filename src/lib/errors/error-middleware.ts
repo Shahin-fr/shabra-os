@@ -5,19 +5,20 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { errorHandler, ErrorResponse } from './error-handler';
-import { BaseError } from './domain-errors';
+import { BaseError, InternalServerError } from './domain-errors';
 
 // Middleware error handler
-export async function withErrorHandling(
-  handler: (request: NextRequest) => Promise<NextResponse>,
-  request: NextRequest
-): Promise<NextResponse> {
-  try {
-    return await handler(request);
-  } catch (error) {
-    console.error('Middleware error:', error);
-    return await errorHandler.handleError(error as Error, request);
-  }
+export function withErrorHandling(
+  handler: (request: NextRequest) => Promise<NextResponse>
+) {
+  return async (request: NextRequest): Promise<NextResponse> => {
+    try {
+      return await handler(request);
+    } catch (error) {
+      console.error('Middleware error:', error);
+      return await errorHandler.handleError(error as Error, request);
+    }
+  };
 }
 
 // API route error handler
@@ -53,11 +54,8 @@ export class ErrorBoundary {
       errorBoundary?: string;
     }
   ): Promise<void> {
-    const baseError = new BaseError(
+    const baseError = new InternalServerError(
       error.message,
-      500,
-      'REACT_ERROR_BOUNDARY',
-      true,
       {
         componentStack: errorInfo?.componentStack,
         errorBoundary: errorInfo?.errorBoundary,
@@ -80,7 +78,7 @@ export class ErrorResponseUtils {
     message: string,
     code: string,
     details?: Record<string, any>
-  ): NextResponse<ErrorResponse> {
+  ): NextResponse {
     const response: ErrorResponse = {
       success: false,
       error: {
@@ -104,7 +102,7 @@ export class ErrorResponseUtils {
     message: string,
     field?: string,
     details?: Record<string, any>
-  ): NextResponse<ErrorResponse> {
+  ): NextResponse {
     return this.createErrorResponse(400, message, 'VALIDATION_FAILED', {
       field,
       ...details,
@@ -117,7 +115,7 @@ export class ErrorResponseUtils {
   static createAuthenticationErrorResponse(
     message: string = 'Authentication required',
     details?: Record<string, any>
-  ): NextResponse<ErrorResponse> {
+  ): NextResponse {
     return this.createErrorResponse(401, message, 'AUTHENTICATION_REQUIRED', details);
   }
 
@@ -127,7 +125,7 @@ export class ErrorResponseUtils {
   static createAuthorizationErrorResponse(
     message: string = 'Insufficient permissions',
     details?: Record<string, any>
-  ): NextResponse<ErrorResponse> {
+  ): NextResponse {
     return this.createErrorResponse(403, message, 'ACCESS_DENIED', details);
   }
 
@@ -137,7 +135,7 @@ export class ErrorResponseUtils {
   static createNotFoundErrorResponse(
     message: string = 'Resource not found',
     details?: Record<string, any>
-  ): NextResponse<ErrorResponse> {
+  ): NextResponse {
     return this.createErrorResponse(404, message, 'RESOURCE_NOT_FOUND', details);
   }
 
@@ -147,7 +145,7 @@ export class ErrorResponseUtils {
   static createConflictErrorResponse(
     message: string = 'Resource already exists',
     details?: Record<string, any>
-  ): NextResponse<ErrorResponse> {
+  ): NextResponse {
     return this.createErrorResponse(409, message, 'RESOURCE_CONFLICT', details);
   }
 
@@ -158,7 +156,7 @@ export class ErrorResponseUtils {
     message: string = 'Rate limit exceeded',
     retryAfter?: number,
     details?: Record<string, any>
-  ): NextResponse<ErrorResponse> {
+  ): NextResponse {
     const response = this.createErrorResponse(429, message, 'RATE_LIMIT_EXCEEDED', {
       retryAfter,
       ...details,
@@ -177,7 +175,7 @@ export class ErrorResponseUtils {
   static createInternalServerErrorResponse(
     message: string = 'Internal server error',
     details?: Record<string, any>
-  ): NextResponse<ErrorResponse> {
+  ): NextResponse {
     return this.createErrorResponse(500, message, 'INTERNAL_SERVER_ERROR', details);
   }
 }

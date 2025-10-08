@@ -1,30 +1,27 @@
-import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/auth';
 import { SecurityDashboard } from '@/lib/advanced-security';
+import { ApiResponseBuilder } from '@/types';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     // Check authentication
     const session = await auth();
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return ApiResponseBuilder.unauthorized('Authentication required');
     }
 
     // Check if user has admin role
     const userRoles = (session.user as any).roles || [];
     if (!userRoles.includes('ADMIN')) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      return ApiResponseBuilder.forbidden('Admin access required');
     }
 
     // Get security overview
     const overview = await SecurityDashboard.getSecurityOverview();
 
-    return NextResponse.json(overview);
+    return ApiResponseBuilder.success(overview, 'Security overview retrieved successfully');
   } catch (error) {
     console.error('Security overview error:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    return ApiResponseBuilder.internalError('Failed to retrieve security overview');
   }
 }

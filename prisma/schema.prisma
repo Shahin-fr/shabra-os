@@ -168,6 +168,13 @@ model Task {
   assignee    User?      @relation("TaskAssignee", fields: [assignedTo], references: [id], onDelete: SetNull)
   project     Project?   @relation(fields: [projectId], references: [id], onDelete: SetNull)
 
+  // Performance indexes
+  @@index([projectId, status, priority])
+  @@index([assignedTo, status])
+  @@index([dueDate, status])
+  @@index([createdBy, status])
+  @@index([status, priority, dueDate])
+  @@index([createdAt])
   @@map("tasks")
 }
 
@@ -245,6 +252,12 @@ model LeaveRequest {
   user             User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   reviewer         User?       @relation("LeaveRequestReviewer", fields: [reviewedBy], references: [id], onDelete: SetNull)
 
+  // Performance indexes
+  @@index([userId, status])
+  @@index([status, startDate])
+  @@index([reviewedBy, status])
+  @@index([leaveType, status])
+  @@index([createdAt])
   @@map("leave_requests")
 }
 
@@ -416,6 +429,13 @@ model Story {
   storyIdea   StoryIdea? @relation(fields: [storyIdeaId], references: [id], onDelete: SetNull)
   author      User       @relation(fields: [authorId], references: [id], onDelete: Cascade)
 
+  // Performance indexes
+  @@index([projectId, day, status])
+  @@index([storyTypeId, day])
+  @@index([authorId, day])
+  @@index([day, status])
+  @@index([status, createdAt])
+  @@index([createdAt])
   @@map("stories")
 }
 
@@ -635,11 +655,12 @@ model Meeting {
   talkingPoints TalkingPoint[]
   actionItems ActionItem[]
 
-  @@index([creatorId])
-  @@index([startTime])
-  @@index([endTime])
-  @@index([type])
-  @@index([status])
+  // Performance indexes
+  @@index([creatorId, startTime])
+  @@index([startTime, endTime])
+  @@index([type, status])
+  @@index([status, startTime])
+  @@index([createdAt])
   @@map("meetings")
 }
 

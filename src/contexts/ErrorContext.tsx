@@ -207,7 +207,7 @@ export function ErrorProvider({ children }: { children: ReactNode }) {
         dispatch({ type: 'RETRY_ERROR', payload: error.id });
       }
     });
-  }, [state.errors]);
+  }, [state.errors, dispatch]);
 
   // Set global error
   const setGlobalError = useCallback((error: ClientError | null) => {
@@ -278,7 +278,7 @@ export function useErrorContext() {
 
 // Hook for specific error operations
 export function useErrorHandler() {
-  const { addError, removeError, updateError, retryError } = useErrorContext();
+  const { addError, removeError, retryError } = useErrorContext();
 
   const handleError = useCallback((
     error: Error,

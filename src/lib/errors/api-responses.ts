@@ -451,6 +451,7 @@ export class ResponseTransformer {
       meta: {
         ...response.meta,
         ...metadata,
+        timestamp: response.meta?.timestamp || new Date().toISOString(),
       },
     };
   }
