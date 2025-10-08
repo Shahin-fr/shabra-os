@@ -291,13 +291,13 @@ async function main() {
     const statusRand = Math.random();
     
     if (statusRand < 0.3) {
-      status = 'Done';
+      status = 'DONE';
       dueDate = new Date(today.getTime() - Math.floor(Math.random() * 30) * 24 * 60 * 60 * 1000);
     } else if (statusRand < 0.6) {
-      status = 'InProgress';
+      status = 'IN_PROGRESS';
       dueDate = new Date(today.getTime() + Math.floor(Math.random() * 7) * 24 * 60 * 60 * 1000);
     } else {
-      status = 'Todo';
+      status = 'TODO';
       // Create some "Tasks at Risk" - overdue or due soon
       if (i < 5) {
         // Overdue tasks
@@ -315,7 +315,7 @@ async function main() {
       data: {
         title: taskTitle,
         description: `توضیحات کامل برای ${taskTitle}`,
-        status: status as any,
+        status: status,
         dueDate: dueDate,
         createdBy: Math.random() < 0.7 ? manager1.id : manager2.id,
         assignedTo: assignee.id,
@@ -385,7 +385,7 @@ async function main() {
     await prisma.leaveRequest.create({
       data: {
         userId: employee.id,
-        leaveType: ['ANNUAL', 'SICK', 'EMERGENCY'][Math.floor(Math.random() * 3)] as any,
+        leaveType: ['ANNUAL', 'SICK', 'EMERGENCY'][Math.floor(Math.random() * 3)],
         startDate: startDate,
         endDate: endDate,
         reason: requestReasons[Math.floor(Math.random() * requestReasons.length)] || 'درخواست عمومی',
@@ -407,7 +407,7 @@ async function main() {
     await prisma.leaveRequest.create({
       data: {
         userId: employee.id,
-        leaveType: ['ANNUAL', 'SICK', 'EMERGENCY'][Math.floor(Math.random() * 3)] as any,
+        leaveType: ['ANNUAL', 'SICK', 'EMERGENCY'][Math.floor(Math.random() * 3)],
         startDate: startDate,
         endDate: endDate,
         reason: requestReasons[Math.floor(Math.random() * requestReasons.length)] || 'درخواست عمومی',
@@ -444,9 +444,9 @@ async function main() {
     await prisma.request.create({
       data: {
         userId: employee.id,
-        type: type as any,
+        type: type,
         reason: requestReasons[Math.floor(Math.random() * requestReasons.length)] || 'درخواست عمومی',
-        status: status as any,
+        status: status,
         reviewedBy: reviewedBy,
         reviewedAt: reviewedAt,
         details: {
@@ -466,7 +466,7 @@ async function main() {
       data: {
         title: announcementTitles[i] || `اعلان ${i + 1}`,
         content: announcementContents[i] || `محتوای اعلان ${i + 1}`,
-        category: ['GENERAL', 'TECHNICAL', 'EVENT', 'IMPORTANT'][Math.floor(Math.random() * 4)] as any,
+        category: ['GENERAL', 'TECHNICAL', 'EVENT', 'IMPORTANT'][Math.floor(Math.random() * 4)],
         isPinned: i < 2, // First 2 announcements are pinned
         authorId: Math.random() < 0.5 ? manager1.id : manager2.id,
       },
@@ -617,7 +617,7 @@ async function main() {
     {
       title: 'تکمیل گزارش ماهانه',
       description: 'تهیه و ارسال گزارش عملکرد ماهانه',
-      status: 'InProgress' as any,
+      status: 'InProgress',
       dueDate: new Date(), // Due today
       createdBy: manager1.id,
       assignedTo: primaryEmployee.id,
@@ -626,7 +626,7 @@ async function main() {
     {
       title: 'بررسی درخواست‌های مشتریان',
       description: 'پاسخ به درخواست‌های دریافتی از مشتریان',
-      status: 'Todo' as any,
+      status: 'Todo',
       dueDate: new Date(), // Due today
       createdBy: manager1.id,
       assignedTo: primaryEmployee.id,
@@ -635,7 +635,7 @@ async function main() {
     {
       title: 'آپدیت مستندات پروژه',
       description: 'به‌روزرسانی مستندات فنی پروژه',
-      status: 'Todo' as any,
+      status: 'Todo',
       dueDate: new Date(), // Due today
       createdBy: manager1.id,
       assignedTo: primaryEmployee.id,
@@ -644,7 +644,7 @@ async function main() {
     {
       title: 'تست عملکرد سیستم',
       description: 'اجرای تست‌های عملکردی سیستم جدید',
-      status: 'Done' as any,
+      status: 'Done',
       dueDate: new Date(Date.now() - 24 * 60 * 60 * 1000), // Yesterday
       createdBy: manager1.id,
       assignedTo: primaryEmployee.id,
@@ -653,7 +653,7 @@ async function main() {
     {
       title: 'آماده‌سازی ارائه هفتگی',
       description: 'تهیه اسلایدهای ارائه هفتگی تیم',
-      status: 'Todo' as any,
+      status: 'Todo',
       dueDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000), // Day after tomorrow
       createdBy: manager1.id,
       assignedTo: primaryEmployee.id,
@@ -767,10 +767,10 @@ async function main() {
   ];
   
   if (employees.length > 0) {
-    meeting1Attendees.push({ meetingId: meeting1.id, userId: employees[0]!.id });
+    meeting1Attendees.push({ meetingId: meeting1.id, userId: employees[0].id });
   }
   if (employees.length > 1) {
-    meeting1Attendees.push({ meetingId: meeting1.id, userId: employees[1]!.id });
+    meeting1Attendees.push({ meetingId: meeting1.id, userId: employees[1].id });
   }
   
   await prisma.meetingAttendee.createMany({
@@ -831,10 +831,10 @@ async function main() {
   ];
   
   if (employees.length > 2) {
-    meeting3Attendees.push({ meetingId: meeting3.id, userId: employees[2]!.id });
+    meeting3Attendees.push({ meetingId: meeting3.id, userId: employees[2].id });
   }
   if (employees.length > 3) {
-    meeting3Attendees.push({ meetingId: meeting3.id, userId: employees[3]!.id });
+    meeting3Attendees.push({ meetingId: meeting3.id, userId: employees[3].id });
   }
   
   await prisma.meetingAttendee.createMany({

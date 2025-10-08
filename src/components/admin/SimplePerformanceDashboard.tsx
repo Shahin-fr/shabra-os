@@ -6,7 +6,7 @@
 
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -19,7 +19,7 @@ export default function SimplePerformanceDashboard() {
   const [loading, setLoading] = useState(false);
   const cacheStats = useCacheStats();
 
-  const refreshMetrics = () => {
+  const refreshMetrics = useCallback(() => {
     setLoading(true);
     const newMetrics = simplePerformanceMonitor.getMetrics();
     newMetrics.cacheHitRate = cacheStats.hitCount + cacheStats.missCount > 0 
@@ -27,7 +27,7 @@ export default function SimplePerformanceDashboard() {
       : 0;
     setMetrics(newMetrics);
     setLoading(false);
-  };
+  }, [cacheStats.hitCount, cacheStats.missCount]);
 
   useEffect(() => {
     simplePerformanceMonitor.startMonitoring();
@@ -35,7 +35,7 @@ export default function SimplePerformanceDashboard() {
     
     const interval = setInterval(refreshMetrics, 30000); // 30 seconds
     return () => clearInterval(interval);
-  }, []);
+  }, [refreshMetrics]);
 
   const formatTime = (ms: number | null) => {
     if (ms === null) return 'N/A';

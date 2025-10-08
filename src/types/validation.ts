@@ -30,7 +30,7 @@ export const BaseUpdateDTOSchema = z.object({
 
 // Common field validation schemas
 export const EmailSchema = z.string().email('Invalid email format');
-export const PhoneSchema = z.string().regex(/^\+?[\d\s\-\(\)]+$/, 'Invalid phone number format');
+export const PhoneSchema = z.string().regex(/^\+?[\d\s\-()]+$/, 'Invalid phone number format');
 export const URLSchema = z.string().url('Invalid URL format');
 export const SlugSchema = z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Invalid slug format');
 export const UuidSchema = z.string().uuid();

@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
     const priority = searchParams.get('priority');
 
     // Build the where clause for filtering based on user role
-    const where: any = {};
+    let where: any = {};
 
     if (projectId) {
       where.projectId = projectId;

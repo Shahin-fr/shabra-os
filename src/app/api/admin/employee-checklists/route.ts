@@ -190,7 +190,7 @@ export async function POST(request: NextRequest) {
             case 'MANAGER':
               assigneeId = employeeWithManager?.manager?.id || session.user.id;
               break;
-            case 'ADMIN':
+            case 'ADMIN': {
               // Find an admin user
               const adminUser = await tx.user.findFirst({
                 where: { roles: { contains: 'ADMIN' } },
@@ -198,6 +198,7 @@ export async function POST(request: NextRequest) {
               });
               assigneeId = adminUser?.id || session.user.id;
               break;
+            }
             default:
               assigneeId = employeeId;
           }

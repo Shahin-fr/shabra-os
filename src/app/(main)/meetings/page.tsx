@@ -138,7 +138,7 @@ export default function MeetingsPage() {
       handleError(error, { operation: 'calendar-render', component: 'MeetingsPage' });
       return [];
     }
-  }, [meetings]);
+  }, [meetings, handleError]);
 
   const handleSelectEvent = (event: CalendarEvent) => {
     setSelectedMeeting(event.resource);

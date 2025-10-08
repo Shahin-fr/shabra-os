@@ -839,30 +839,6 @@ export interface UpdateLeaveRequestDTO extends BaseUpdateDTO {
   reviewedAt?: Date;
 }
 
-// Request DTOs
-export interface RequestDTO extends BaseDTO {
-  userId: string;
-  type: 'LEAVE' | 'OVERTIME' | 'EXPENSE_CLAIM' | 'GENERAL';
-  details?: any;
-  reason: string;
-  status: 'PENDING' | 'APPROVED' | 'REJECTED' | 'CANCELLED';
-  rejectionReason?: string;
-  reviewedBy?: string;
-  reviewedAt?: Date;
-  user?: UserDTO;
-  reviewer?: UserDTO;
-}
-
-
-export interface UpdateRequestDTO extends BaseUpdateDTO {
-  type?: 'LEAVE' | 'OVERTIME' | 'EXPENSE_CLAIM' | 'GENERAL';
-  details?: any;
-  reason?: string;
-  status?: 'PENDING' | 'APPROVED' | 'REJECTED' | 'CANCELLED';
-  rejectionReason?: string;
-  reviewedBy?: string;
-  reviewedAt?: Date;
-}
 
 // EmployeeDocument DTOs
 export interface EmployeeDocumentDTO extends BaseDTO {

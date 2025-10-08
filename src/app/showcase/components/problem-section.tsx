@@ -174,7 +174,7 @@ export default function ProblemSection() {
     }
     
     setWaterfallElements(elements);
-  }, [isMobile]);
+  }, [isMobile, iconCollection]);
 
   // Animation variants
   const containerVariants = {

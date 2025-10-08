@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -60,9 +60,9 @@ export default function SecurityDashboard() {
 
   useEffect(() => {
     fetchSecurityData();
-  }, []);
+  }, [fetchSecurityData]);
 
-  const fetchSecurityData = async () => {
+  const fetchSecurityData = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -91,7 +91,7 @@ export default function SecurityDashboard() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filters]);
 
   const handleSecurityAction = async (action: string, identifier: string) => {
     try {

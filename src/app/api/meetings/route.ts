@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
     const status = searchParams.get('status');
 
     // Build where clause
-    const whereClause: any = {
+    let whereClause: any = {
       OR: [
         { creatorId: context.userId },
         { attendees: { some: { userId: context.userId } } }

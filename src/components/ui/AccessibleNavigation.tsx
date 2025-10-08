@@ -175,7 +175,7 @@ const AccessibleNavigation = forwardRef<HTMLElement, AccessibleNavigationProps>(
       if (onItemKeyDown) {
         onItemKeyDown(item, event);
       }
-    }, [items, orientation, expandable, expandedItems, focusFirstElement, focusLastElement, toggleExpanded, onItemKeyDown]);
+    }, [items, orientation, expandable, expandedItems, focusFirstElement, focusLastElement, toggleExpanded, onItemKeyDown, onItemClick]);
 
     // Render navigation item
     const renderItem = (item: NavigationItem, level: number = 0) => {

@@ -264,7 +264,7 @@ export const ActionCenterWidget = React.memo(function ActionCenterWidget({ class
                       {request.user?.avatar ? (
                         <img
                           src={request.user.avatar}
-                          alt={`${request.user.firstName} ${request.user.lastName}` || 'User'}
+                          alt={`${request.user.firstName} ${request.user.lastName}`}
                           className="w-16 h-16 rounded-full object-cover ring-2 ring-gray-100 shadow-sm"
                         />
                       ) : (
