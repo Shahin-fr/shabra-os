@@ -88,7 +88,7 @@ export function Header() {
   return (
     <header className='fixed top-0 start-0 end-0 z-50 bg-transparent'>
       <div className='flex items-center justify-between h-16 px-4 sm:px-6'>
-        {/* Mobile Layout - PDD Compliant */}
+            {/* Mobile Layout - PDD Compliant */}
         {isMobile ? (
           <>
             {/* Left: Hamburger Menu */}
@@ -97,6 +97,9 @@ export function Header() {
               size='sm'
               onClick={toggleMobileSidebar}
               className='p-2 hover:bg-[#ff0a54]/10 hover:text-[#ff0a54] transition-all duration-200 rounded-lg'
+              aria-label='باز کردن منوی اصلی'
+              aria-expanded={false}
+              aria-controls='mobile-sidebar'
             >
               <Menu className='h-5 w-5' />
             </Button>
@@ -109,10 +112,16 @@ export function Header() {
               variant='ghost'
               size='sm'
               className='p-2 hover:bg-[#ff0a54]/10 hover:text-[#ff0a54] transition-all duration-200 rounded-lg relative'
+              aria-label='اعلان‌ها'
+              aria-describedby='notification-count'
             >
               <Bell className='h-5 w-5' />
               {/* Notification Badge */}
-              <div className='absolute -top-1 -end-1 w-3 h-3 bg-red-500 rounded-full animate-pulse' />
+              <div 
+                id='notification-count'
+                className='absolute -top-1 -end-1 w-3 h-3 bg-red-500 rounded-full animate-pulse'
+                aria-hidden='true'
+              />
             </Button>
           </>
         ) : (
@@ -134,11 +143,14 @@ export function Header() {
                     <Button
                       variant='ghost'
                       className='p-2 hover:bg-[#ff0a54]/10 hover:scale-105 transition-all duration-200 rounded-full'
+                      aria-label={`پروفایل کاربر ${user.name || 'کاربر'}`}
+                      aria-haspopup='menu'
+                      aria-expanded={false}
                     >
                       <Avatar className='h-10 w-10 ring-2 ring-[#ff0a54]/20 hover:ring-[#ff0a54]/40 transition-all duration-200'>
                         <AvatarImage
                           src={user.avatar || ''}
-                          alt={user.name || ''}
+                          alt={`تصویر پروفایل ${user.name || 'کاربر'}`}
                         />
                         <AvatarFallback className='bg-[#ff0a54]/20 text-[#ff0a54] font-semibold'>
                           <UserCircle className='h-6 w-6' />
@@ -149,6 +161,8 @@ export function Header() {
                   <DropdownMenuContent
                     className='w-56 ms-4 mt-2'
                     align='end'
+                    role='menu'
+                    aria-label='منوی پروفایل کاربر'
                     style={{
                       background: 'rgba(255, 255, 255, 0.95)',
                       backdropFilter: 'blur(20px)',
@@ -178,20 +192,30 @@ export function Header() {
                       </div>
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem className='cursor-pointer'>
-                      <User className='me-2 h-4 w-4' />
+                    <DropdownMenuItem 
+                      className='cursor-pointer'
+                      role='menuitem'
+                      tabIndex={0}
+                    >
+                      <User className='me-2 h-4 w-4' aria-hidden='true' />
                       <span>پروفایل</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem className='cursor-pointer'>
-                      <Settings className='me-2 h-4 w-4' />
+                    <DropdownMenuItem 
+                      className='cursor-pointer'
+                      role='menuitem'
+                      tabIndex={0}
+                    >
+                      <Settings className='me-2 h-4 w-4' aria-hidden='true' />
                       <span>تنظیمات</span>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                       className='cursor-pointer text-red-600 focus:text-red-600'
                       onClick={handleSignOut}
+                      role='menuitem'
+                      tabIndex={0}
                     >
-                      <LogOut className='me-2 h-4 w-4' />
+                      <LogOut className='me-2 h-4 w-4' aria-hidden='true' />
                       <span>خروج</span>
                     </DropdownMenuItem>
                   </DropdownMenuContent>

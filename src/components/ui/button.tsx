@@ -4,9 +4,10 @@ import * as React from 'react';
 import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
+import { accessibility } from '@/lib/design-system';
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
+  'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2',
   {
     variants: {
       variant: {
@@ -38,17 +39,127 @@ export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
+  isLoading?: boolean;
+  loadingText?: string;
+  // Accessibility props
+  ariaLabel?: string;
+  ariaDescribedBy?: string;
+  ariaExpanded?: boolean;
+  ariaPressed?: boolean;
+  ariaControls?: string;
+  ariaHaspopup?: boolean | 'menu' | 'listbox' | 'tree' | 'grid' | 'dialog';
+  ariaLive?: 'off' | 'polite' | 'assertive';
+  // High contrast mode support
+  highContrast?: boolean;
+  // Reduced motion support
+  reducedMotion?: boolean;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
+  ({ 
+    className, 
+    variant, 
+    size, 
+    asChild = false, 
+    isLoading = false, 
+    loadingText, 
+    children, 
+    disabled, 
+    ariaLabel,
+    ariaDescribedBy,
+    ariaExpanded,
+    ariaPressed,
+    ariaControls,
+    ariaHaspopup,
+    ariaLive,
+    highContrast = false,
+    reducedMotion = false,
+    ...props 
+  }, ref) => {
     const Comp = asChild ? Slot : 'button';
+    const isDisabled = disabled || isLoading;
+    
+    // Generate unique IDs for accessibility
+    const buttonId = React.useId();
+    const loadingId = `${buttonId}-loading`;
+    
+    // Build ARIA attributes
+    const ariaAttributes = {
+      'aria-disabled': isDisabled,
+      'aria-busy': isLoading,
+      'aria-label': ariaLabel,
+      'aria-describedby': ariaDescribedBy,
+      'aria-expanded': ariaExpanded,
+      'aria-pressed': ariaPressed,
+      'aria-controls': ariaControls,
+      'aria-haspopup': ariaHaspopup,
+      'aria-live': ariaLive,
+    };
+
+    // Remove undefined values
+    const cleanAriaAttributes = Object.fromEntries(
+      Object.entries(ariaAttributes).filter(([_, value]) => value !== undefined)
+    );
+
+    // Build className with accessibility enhancements
+    const buttonClassName = cn(
+      buttonVariants({ variant, size, className }),
+      // High contrast mode support
+      highContrast && 'focus-visible:ring-4 focus-visible:ring-offset-1',
+      // Reduced motion support
+      reducedMotion && 'transition-none',
+      // Ensure minimum touch target size
+      'min-h-[44px] min-w-[44px]',
+      // Screen reader only content for loading state
+      isLoading && 'relative'
+    );
+    
     return (
       <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
+        className={buttonClassName}
         ref={ref}
+        disabled={isDisabled}
+        {...cleanAriaAttributes}
         {...props}
-      />
+      >
+        {isLoading ? (
+          <>
+            <svg
+              className={cn(
+                "animate-spin -ml-1 mr-2 h-4 w-4",
+                reducedMotion && "animate-none"
+              )}
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+              aria-labelledby={loadingId}
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              />
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              />
+            </svg>
+            <span id={loadingId} className="sr-only">
+              {loadingText || 'در حال بارگذاری...'}
+            </span>
+            <span aria-hidden="true">
+              {loadingText || 'در حال بارگذاری...'}
+            </span>
+          </>
+        ) : (
+          children
+        )}
+      </Comp>
     );
   }
 );

@@ -35,6 +35,9 @@ jobs:
     - name: Run unit tests
       run: npm run test:unit
       
+    - name: Run accessibility tests
+      run: npm run test:accessibility
+      
     - name: Check code formatting
       run: npm run format:check
       

@@ -16,4 +16,8 @@ npm run type-check
 echo "🧪 Running unit tests..."
 npm run test:unit
 
+# Run accessibility tests
+echo "♿ Running accessibility tests..."
+npm run test:accessibility
+
 echo "✅ All pre-commit checks passed!"

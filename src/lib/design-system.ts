@@ -277,3 +277,175 @@ export const zIndex = {
   toast: 1700,
   tooltip: 1800,
 } as const;
+
+// Accessibility design tokens
+export const accessibility = {
+  // Focus indicators
+  focus: {
+    ring: {
+      width: '2px',
+      offset: '2px',
+      color: colors.accent[500],
+      colorDark: colors.accent[400],
+    },
+    outline: {
+      width: '2px',
+      style: 'solid',
+      color: colors.accent[500],
+      colorDark: colors.accent[400],
+    },
+    // High contrast focus for better visibility
+    highContrast: {
+      ring: {
+        width: '3px',
+        offset: '1px',
+        color: colors.accent[600],
+        colorDark: colors.accent[300],
+      },
+    },
+  },
+
+  // ARIA live regions
+  liveRegions: {
+    polite: 'polite',
+    assertive: 'assertive',
+    off: 'off',
+  },
+
+  // Screen reader only content
+  srOnly: {
+    position: 'absolute',
+    width: '1px',
+    height: '1px',
+    padding: '0',
+    margin: '-1px',
+    overflow: 'hidden',
+    clip: 'rect(0, 0, 0, 0)',
+    whiteSpace: 'nowrap',
+    border: '0',
+  },
+
+  // Skip links
+  skipLinks: {
+    position: 'absolute',
+    top: '-40px',
+    left: '6px',
+    background: colors.accent[600],
+    color: 'white',
+    padding: '8px',
+    textDecoration: 'none',
+    borderRadius: '4px',
+    zIndex: zIndex.skipLink,
+    transition: transitions.fast,
+    '&:focus': {
+      top: '6px',
+    },
+  },
+
+  // High contrast mode support
+  highContrast: {
+    // Colors that work well in high contrast mode
+    text: {
+      primary: '#000000',
+      secondary: '#333333',
+      inverse: '#ffffff',
+    },
+    background: {
+      primary: '#ffffff',
+      secondary: '#f5f5f5',
+      inverse: '#000000',
+    },
+    border: {
+      primary: '#000000',
+      secondary: '#666666',
+    },
+  },
+
+  // Reduced motion support
+  reducedMotion: {
+    transition: 'none',
+    animation: 'none',
+  },
+
+  // Touch target sizes (minimum 44px for accessibility)
+  touchTargets: {
+    minimum: '44px',
+    recommended: '48px',
+    large: '56px',
+  },
+
+  // Color contrast ratios (WCAG AA compliance)
+  contrast: {
+    normal: 4.5, // WCAG AA normal text
+    large: 3.0,  // WCAG AA large text
+    enhanced: 7.0, // WCAG AAA normal text
+  },
+
+  // Keyboard navigation
+  keyboard: {
+    tabOrder: 'tabindex',
+    focusVisible: 'focus-visible',
+    focusWithin: 'focus-within',
+  },
+
+  // Semantic roles and states
+  roles: {
+    button: 'button',
+    link: 'link',
+    textbox: 'textbox',
+    checkbox: 'checkbox',
+    radio: 'radio',
+    switch: 'switch',
+    slider: 'slider',
+    progressbar: 'progressbar',
+    status: 'status',
+    alert: 'alert',
+    dialog: 'dialog',
+    menu: 'menu',
+    menuitem: 'menuitem',
+    tab: 'tab',
+    tabpanel: 'tabpanel',
+    heading: 'heading',
+    region: 'region',
+    navigation: 'navigation',
+    main: 'main',
+    complementary: 'complementary',
+    contentinfo: 'contentinfo',
+    banner: 'banner',
+  },
+
+  // ARIA states and properties
+  aria: {
+    states: {
+      expanded: 'aria-expanded',
+      selected: 'aria-selected',
+      checked: 'aria-checked',
+      disabled: 'aria-disabled',
+      hidden: 'aria-hidden',
+      pressed: 'aria-pressed',
+      invalid: 'aria-invalid',
+      required: 'aria-required',
+      busy: 'aria-busy',
+      live: 'aria-live',
+      atomic: 'aria-atomic',
+      relevant: 'aria-relevant',
+    },
+    properties: {
+      label: 'aria-label',
+      labelledby: 'aria-labelledby',
+      describedby: 'aria-describedby',
+      controls: 'aria-controls',
+      owns: 'aria-owns',
+      activedescendant: 'aria-activedescendant',
+      current: 'aria-current',
+      level: 'aria-level',
+      posinset: 'aria-posinset',
+      setsize: 'aria-setsize',
+      sort: 'aria-sort',
+      valuemin: 'aria-valuemin',
+      valuemax: 'aria-valuemax',
+      valuenow: 'aria-valuenow',
+      valuetext: 'aria-valuetext',
+    },
+  },
+} as const;

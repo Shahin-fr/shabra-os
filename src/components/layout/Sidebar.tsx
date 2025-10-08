@@ -205,6 +205,9 @@ export function Sidebar() {
             mass: 1.2,
             duration: 0.8,
           }}
+          role='navigation'
+          aria-label='منوی اصلی'
+          id='mobile-sidebar'
         >
           <div className='h-full bg-gradient-to-b from-slate-50/95 via-pink-50/95 to-purple-50/95 backdrop-blur-xl border-l border-white/20 shadow-2xl'>
             {/* Close Button for Mobile */}
@@ -228,8 +231,9 @@ export function Sidebar() {
                     backdropFilter: 'blur(20px)',
                     border: '1px solid rgba(255, 255, 255, 0.2)',
                   }}
+                  aria-label='بستن منوی اصلی'
                 >
-                  <X className='h-5 w-5' />
+                  <X className='h-5 w-5' aria-hidden='true' />
                 </Button>
               </div>
             </OptimizedMotion>
@@ -245,7 +249,7 @@ export function Sidebar() {
               }}
             >
               <div className='flex justify-center pt-4 pb-8'>
-              <Link href='/' className='block'>
+              <Link href='/' className='block' aria-label='برو به صفحه اصلی'>
                 <div
                   className='w-24 h-24 rounded-full overflow-hidden border-2 border-white/30 hover:border-[#ff0a54]/50 transition-all duration-200'
                   style={{
@@ -259,7 +263,7 @@ export function Sidebar() {
                   >
                     <Image
                       src='/images/shabra-logo.jpg'
-                      alt='Shabra Logo'
+                      alt='لوگوی شبرا'
                       width={96}
                       height={96}
                       className='w-full h-full object-cover'
@@ -291,7 +295,7 @@ export function Sidebar() {
                   boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
                 }}
               >
-                <nav className='flex flex-col gap-3'>
+                <nav className='flex flex-col gap-3' role='menubar'>
                   {navigationItems.map((item, index) => {
                     const isActive = pathname === item.href;
 
@@ -340,18 +344,23 @@ export function Sidebar() {
     if (isMobile) return null;
 
     return (
-      <div className='fixed start-0 top-0 h-full z-50 flex flex-col transition-all duration-300 ease-in-out w-16'>
+      <div 
+        className='fixed start-0 top-0 h-full z-50 flex flex-col transition-all duration-300 ease-in-out w-16'
+        role='navigation'
+        aria-label='منوی اصلی دسکتاپ'
+      >
         {/* Navigation - Icon-only with hover text */}
         <div className='flex-1 flex items-center justify-center px-2'>
-          <nav className='flex flex-col gap-3 w-full'>
+          <nav className='flex flex-col gap-3 w-full' role='menubar'>
             {/* + New Quick Action Button for Managers */}
             {userRole === 'MANAGER' && (
               <div className='relative group mb-2'>
                 <Button
                   className='w-12 h-12 rounded-xl bg-[#ff0a54] hover:bg-[#ff0a54]/90 text-white shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 active:scale-95'
                   title='اقدامات جدید'
+                  aria-label='اقدامات جدید'
                 >
-                  <Plus className='h-6 w-6' />
+                  <Plus className='h-6 w-6' aria-hidden='true' />
                 </Button>
                 
                 {/* Hover Text - Appears from left */}
@@ -382,6 +391,9 @@ export function Sidebar() {
                       isActive ? 'active' : ''
                     )}
                     title={item.label}
+                    aria-label={item.label}
+                    role='menuitem'
+                    tabIndex={0}
                   >
                     {/* Ripple effect for active state */}
                     {isActive && (
@@ -394,6 +406,7 @@ export function Sidebar() {
                         'group-hover:scale-110',
                         isActive ? 'text-[#fbddec]' : 'text-gray-500'
                       )}
+                      aria-hidden='true'
                     />
                   </Link>
 
