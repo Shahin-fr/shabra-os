@@ -8,6 +8,8 @@ import { widgetVariants, typography } from '@/lib/design-system';
 import { motion } from 'framer-motion';
 import { AlertCircle, RefreshCw, CheckCircle, XCircle } from 'lucide-react';
 import { Button } from './button';
+import { createComponentValidator, validateComponentProps } from '@/lib/validation/component-props';
+import { z } from 'zod';
 
 interface PerfectWidgetProps extends React.HTMLAttributes<HTMLDivElement> {
   title: string;
@@ -26,23 +28,48 @@ interface PerfectWidgetProps extends React.HTMLAttributes<HTMLDivElement> {
   size?: 'sm' | 'md' | 'lg' | 'xl';
 }
 
-export const PerfectWidget = React.forwardRef<HTMLDivElement, PerfectWidgetProps>(({
-  title,
-  children,
-  className,
-  headerAction,
-  loading = false,
-  error,
-  empty = false,
-  emptyMessage = 'هیچ داده‌ای موجود نیست',
-  emptyIcon,
-  variant = 'employee',
-  onRetry,
-  priority = 'medium',
-  animated = true,
-  size = 'lg',
-  ...props
-}, ref) => {
+// Validation schema for PerfectWidget props
+const PerfectWidgetSchema = z.object({
+  title: z.string().min(1, 'Title is required'),
+  children: z.unknown(),
+  className: z.string().optional(),
+  headerAction: z.unknown().optional(),
+  loading: z.boolean().optional(),
+  error: z.string().optional(),
+  empty: z.boolean().optional(),
+  emptyMessage: z.string().optional(),
+  emptyIcon: z.unknown().optional(),
+  variant: z.enum(['manager', 'employee', 'success', 'warning', 'error']).optional(),
+  onRetry: z.function().optional(),
+  priority: z.enum(['high', 'medium', 'low']).optional(),
+  animated: z.boolean().optional(),
+  size: z.enum(['sm', 'md', 'lg', 'xl']).optional(),
+});
+
+// Create validator for PerfectWidget
+const perfectWidgetValidator = createComponentValidator(PerfectWidgetSchema);
+
+export const PerfectWidget = React.forwardRef<HTMLDivElement, PerfectWidgetProps>((props, ref) => {
+  // Validate props in development
+  const validatedProps = validateComponentProps(props, perfectWidgetValidator, 'PerfectWidget');
+  
+  const {
+    title,
+    children,
+    className,
+    headerAction,
+    loading = false,
+    error,
+    empty = false,
+    emptyMessage = 'هیچ داده‌ای موجود نیست',
+    emptyIcon,
+    variant = 'employee',
+    onRetry,
+    priority = 'medium',
+    animated = true,
+    size = 'lg',
+    ...restProps
+  } = validatedProps;
   const widgetStyle = widgetVariants[variant];
   const priorityStyle = priority === 'high' ? 'ring-2 ring-red-200 ring-opacity-50' : '';
   
@@ -119,7 +146,7 @@ export const PerfectWidget = React.forwardRef<HTMLDivElement, PerfectWidgetProps
           background: widgetStyle.background,
           borderColor: widgetStyle.border,
         }}
-        {...props}
+        {...restProps}
       >
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
@@ -218,7 +245,7 @@ export const PerfectWidget = React.forwardRef<HTMLDivElement, PerfectWidgetProps
           background: widgetStyle.background,
           borderColor: widgetStyle.border,
         }}
-        {...props}
+        {...restProps}
       >
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">

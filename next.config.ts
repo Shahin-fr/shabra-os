@@ -174,9 +174,9 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: false, // ✅ Enforce TypeScript type checking in production
   },
 
-  // ESLint configuration - Temporarily disable for deployment
+  // ESLint configuration - Enable for production builds
   eslint: {
-    ignoreDuringBuilds: true, // Temporarily disable ESLint checks during build
+    ignoreDuringBuilds: false, // Enable ESLint checks during build
     dirs: ['src', 'pages', 'components', 'lib', 'app'], // Specify directories to lint
   },
 

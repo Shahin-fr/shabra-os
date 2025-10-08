@@ -41,6 +41,8 @@
     "test:all": "npm run test:unit && npm run test:e2e",
     "quality:check": "npm run lint && npm run type-check && npm run test:unit",
     "quality:fix": "npm run lint:fix && npm run format",
+    "validate:types": "tsx scripts/validate-types.ts",
+    "ci:validate": "npm run validate:types",
     "prepare-docs": "node scripts/prepare-docs.js",
     "seed:wiki": "node prisma/wiki-seed.js",
     "security:audit": "node scripts/security-audit.js",

@@ -12,7 +12,7 @@ import Link from 'next/link';
 interface PendingRequest {
   id: string;
   type: 'LEAVE' | 'OVERTIME' | 'EXPENSE_CLAIM' | 'GENERAL';
-  details?: any;
+  details?: Record<string, unknown>;
   reason: string;
   status: 'PENDING' | 'APPROVED' | 'REJECTED' | 'CANCELLED';
   createdAt: string;

@@ -6,37 +6,39 @@ import { ReactNode, forwardRef } from 'react';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { useOptimalAnimationSettings } from '@/hooks/useAnimationPerformance';
 
-interface OptimizedMotionProps {
+// Import motion types for proper typing
+import type { MotionProps, Variants, TargetAndTransition, Transition } from 'framer-motion';
+
+interface OptimizedMotionProps extends Omit<MotionProps, 'children'> {
   children: ReactNode;
   className?: string;
   style?: React.CSSProperties;
   as?: keyof React.JSX.IntrinsicElements;
-  initial?: any;
-  animate?: any;
-  exit?: any;
-  transition?: any;
-  whileHover?: any;
-  whileTap?: any;
-  whileInView?: any;
-  whileDrag?: any;
-  viewport?: any;
+  initial?: boolean | TargetAndTransition | Variants;
+  animate?: boolean | TargetAndTransition | Variants;
+  exit?: TargetAndTransition | Variants;
+  transition?: Transition;
+  whileHover?: TargetAndTransition | Variants;
+  whileTap?: TargetAndTransition | Variants;
+  whileInView?: TargetAndTransition | Variants;
+  whileDrag?: TargetAndTransition | Variants;
+  viewport?: { once?: boolean; amount?: number; margin?: string };
   layout?: boolean;
   layoutId?: string;
-  drag?: any;
-  dragConstraints?: any;
-  dragElastic?: any;
-  dragMomentum?: any;
-  dragPropagation?: any;
-  dragSnapToOrigin?: any;
-  dragTransition?: any;
-  onDrag?: any;
-  onDragStart?: any;
-  onDragEnd?: any;
-  onAnimationComplete?: () => void;
-  onAnimationStart?: () => void;
-  onHoverStart?: any;
-  onHoverEnd?: any;
-  [key: string]: any;
+  drag?: boolean | 'x' | 'y';
+  dragConstraints?: boolean | { left?: number; right?: number; top?: number; bottom?: number } | React.RefObject<Element>;
+  dragElastic?: number | { left?: number; right?: number; top?: number; bottom?: number };
+  dragMomentum?: boolean;
+  dragPropagation?: boolean;
+  dragSnapToOrigin?: boolean;
+  dragTransition?: Transition;
+  onDrag?: (event: MouseEvent | TouchEvent | PointerEvent, info: { point: { x: number; y: number }; delta: { x: number; y: number }; offset: { x: number; y: number }; velocity: { x: number; y: number } }) => void;
+  onDragStart?: (event: MouseEvent | TouchEvent | PointerEvent, info: { point: { x: number; y: number } }) => void;
+  onDragEnd?: (event: MouseEvent | TouchEvent | PointerEvent, info: { point: { x: number; y: number }; velocity: { x: number; y: number } }) => void;
+  onAnimationComplete?: (definition: TargetAndTransition) => void;
+  onAnimationStart?: (definition: TargetAndTransition) => void;
+  onHoverStart?: (event: MouseEvent, info: { point: { x: number; y: number } }) => void;
+  onHoverEnd?: (event: MouseEvent, info: { point: { x: number; y: number } }) => void;
 }
 
 /**
@@ -87,12 +89,35 @@ export const OptimizedMotion = forwardRef<HTMLDivElement, OptimizedMotionProps>(
 
     // If animations are disabled, return a regular element
     if (!shouldAnimate || !enableAnimations) {
-      const Component = as as any;
+      const Component = as as keyof React.JSX.IntrinsicElements;
       
       // Filter out motion-specific props that shouldn't be passed to regular HTML elements
       const {
         onHoverStart,
         onHoverEnd,
+        initial,
+        animate,
+        exit,
+        transition,
+        whileHover,
+        whileTap,
+        whileInView,
+        whileDrag,
+        viewport,
+        layout,
+        layoutId,
+        drag,
+        dragConstraints,
+        dragElastic,
+        dragMomentum,
+        dragPropagation,
+        dragSnapToOrigin,
+        dragTransition,
+        onDrag,
+        onDragStart,
+        onDragEnd,
+        onAnimationComplete,
+        onAnimationStart,
         ...htmlProps
       } = props;
       
@@ -130,8 +155,8 @@ export const OptimizedMotion = forwardRef<HTMLDivElement, OptimizedMotionProps>(
     // Use the correct motion component based on the 'as' prop
     const MotionComponent = motion[as as keyof typeof motion] || motion.div;
     
-    // Cast to any to avoid complex type inference issues
-    const SafeMotionComponent = MotionComponent as any;
+    // Type-safe motion component
+    const SafeMotionComponent = MotionComponent as React.ComponentType<MotionProps>;
     
     return (
       <SafeMotionComponent
