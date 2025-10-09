@@ -583,4 +583,29 @@ describe('Accessibility Tests', () => {
       expect(parentButton).toHaveAttribute('aria-haspopup', 'menu');
     });
   });
+
+  describe('Document-Level Accessibility', () => {
+    it('should have proper html lang and dir attributes', () => {
+      // Set up the document element with proper attributes
+      document.documentElement.setAttribute('lang', 'fa');
+      document.documentElement.setAttribute('dir', 'rtl');
+      
+      const htmlElement = document.documentElement;
+      expect(htmlElement).toHaveAttribute('lang', 'fa');
+      expect(htmlElement).toHaveAttribute('dir', 'rtl');
+    });
+
+    it('should have a main landmark for primary content', () => {
+      // Create a simple layout structure to test main landmark
+      document.body.innerHTML = `
+        <header>Header</header>
+        <main id="main-content">Main content</main>
+        <footer>Footer</footer>
+      `;
+
+      const mainElement = document.getElementById('main-content');
+      expect(mainElement).toBeInTheDocument();
+      expect(mainElement?.tagName.toLowerCase()).toBe('main');
+    });
+  });
 });

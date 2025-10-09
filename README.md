@@ -12,6 +12,7 @@ A modern, comprehensive project management and team collaboration platform built
 - [Environment Variables](#environment-variables)
 - [Deployment](#deployment)
 - [Contributing](#contributing)
+- [Developer Documentation](#developer-documentation)
 - [License](#license)
 
 ## About Shabra OS
@@ -308,6 +309,11 @@ We welcome contributions! Please follow these steps:
 - Update documentation for API changes
 - Follow the established code style (ESLint + Prettier)
 - Ensure all security best practices are followed
+
+## Developer Documentation
+
+- Coding Standards: see `content/docs/coding-standards.md`
+- Developer Handbook: see `content/docs/developer-handbook.md`
 
 ## License
 

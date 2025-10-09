@@ -9,7 +9,7 @@ export default defineConfig({
   reporter: 'html',
 
   use: {
-    baseURL: 'http://localhost:3000',
+    baseURL: process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:3000',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
@@ -39,6 +39,17 @@ export default defineConfig({
     {
       name: 'Mobile Safari',
       use: { ...devices['iPhone 12'] },
+    },
+    // Edge case testing projects
+    {
+      name: 'edge-cases',
+      testMatch: '**/edge-cases.e2e.spec.ts',
+      use: { ...devices['Desktop Chrome'] },
+    },
+    {
+      name: 'performance',
+      testMatch: '**/performance.e2e.spec.ts',
+      use: { ...devices['Desktop Chrome'] },
     },
   ],
 

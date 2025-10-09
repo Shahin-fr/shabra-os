@@ -156,12 +156,20 @@ function measureTestPerformance() {
   
   try {
     const testStart = Date.now();
+    
+    // Run unit tests
     execSync('npm run test:unit', {
       cwd: CONFIG.rootDir,
       stdio: CONFIG.verbose ? 'inherit' : 'pipe'
     });
-    const testTime = Date.now() - testStart;
     
+    // Run E2E performance tests
+    execSync('npm run test:e2e:performance', {
+      cwd: CONFIG.rootDir,
+      stdio: CONFIG.verbose ? 'inherit' : 'pipe'
+    });
+    
+    const testTime = Date.now() - testStart;
     metrics.testTime = testTime;
     log(`Tests completed in ${formatTime(testTime)}`, 'success');
     

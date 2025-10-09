@@ -1,12 +1,12 @@
 # Security Audit Report
-Generated: 2025-10-08T14:29:52.189Z
+Generated: 2025-10-09T10:22:00.815Z
 
 ## 📊 Summary
-- **Total Files Scanned**: 672
-- **Files with Issues**: 355
-- **Total Issues Found**: 589
+- **Total Files Scanned**: 678
+- **Files with Issues**: 361
+- **Total Issues Found**: 606
 
-## 🚨 Critical Issues (75)
+## 🚨 Critical Issues (80)
 
 ### hardcodedPasswords in src\app\(main)\login\page.test.tsx
 - **Severity**: CRITICAL
@@ -64,32 +64,20 @@ Generated: 2025-10-08T14:29:52.189Z
 
 ### hardcodedPasswords in src\auth.integration.test.ts
 - **Severity**: CRITICAL
-- **Matches**: 2
-- **Examples**: password: 'hashed-password-123', password: 'password123'
-- **Action Required**: IMMEDIATE - Remove hardcoded credentials
-
-### hardcodedPasswords in src\auth.integration.test.ts
-- **Severity**: CRITICAL
-- **Matches**: 9
-- **Examples**: password: 'hashed-password-123', password: 'password123', password: true
+- **Matches**: 7
+- **Examples**: password: true, password: true, password: true
 - **Action Required**: IMMEDIATE - Remove hardcoded credentials
 
 ### hardcodedPasswords in src\auth.test.ts
-- **Severity**: CRITICAL
-- **Matches**: 2
-- **Examples**: password: 'hashed-password-123', password: 'hashed-password'
-- **Action Required**: IMMEDIATE - Remove hardcoded credentials
-
-### hardcodedPasswords in src\auth.test.ts
-- **Severity**: CRITICAL
-- **Matches**: 8
-- **Examples**: password: 'hashed-password-123', password: true, password: true
-- **Action Required**: IMMEDIATE - Remove hardcoded credentials
-
-### hardcodedSecrets in src\auth.test.ts
 - **Severity**: CRITICAL
 - **Matches**: 1
-- **Examples**: SECRET: 'test-secret-key'
+- **Examples**: password: 'hashed-password'
+- **Action Required**: IMMEDIATE - Remove hardcoded credentials
+
+### hardcodedPasswords in src\auth.test.ts
+- **Severity**: CRITICAL
+- **Matches**: 7
+- **Examples**: password: true, password: true, password: true
 - **Action Required**: IMMEDIATE - Remove hardcoded credentials
 
 ### hardcodedPasswords in src\auth.ts
@@ -363,6 +351,36 @@ Generated: 2025-10-08T14:29:52.189Z
 - **Examples**: key = `${identifier}:${Math.floor(now / windowMs)}`
 - **Action Required**: IMMEDIATE - Remove hardcoded credentials
 
+### hardcodedPasswords in src\test\mocks\auth.ts
+- **Severity**: CRITICAL
+- **Matches**: 1
+- **Examples**: password: 'wrong-password'
+- **Action Required**: IMMEDIATE - Remove hardcoded credentials
+
+### hardcodedPasswords in src\test\mocks\auth.ts
+- **Severity**: CRITICAL
+- **Matches**: 1
+- **Examples**: password: 'wrong-password' 
+- **Action Required**: IMMEDIATE - Remove hardcoded credentials
+
+### hardcodedSecrets in src\test\mocks\auth.ts
+- **Severity**: CRITICAL
+- **Matches**: 1
+- **Examples**: SECRET: 'test-secret-key'
+- **Action Required**: IMMEDIATE - Remove hardcoded credentials
+
+### hardcodedPasswords in src\test\mocks\factory.ts
+- **Severity**: CRITICAL
+- **Matches**: 3
+- **Examples**: password: 'hashed-password-123', password: 'password123', password: 'hashed-password-123'
+- **Action Required**: IMMEDIATE - Remove hardcoded credentials
+
+### hardcodedPasswords in src\test\mocks\factory.ts
+- **Severity**: CRITICAL
+- **Matches**: 3
+- **Examples**: password: 'hashed-password-123', password: 'password123', password: 'hashed-password-123'
+- **Action Required**: IMMEDIATE - Remove hardcoded credentials
+
 ### hardcodedPasswords in src\types\entities.ts
 - **Severity**: CRITICAL
 - **Matches**: 2
@@ -379,6 +397,18 @@ Generated: 2025-10-08T14:29:52.189Z
 - **Severity**: CRITICAL
 - **Matches**: 1
 - **Examples**: password: string): boolean {
+- **Action Required**: IMMEDIATE - Remove hardcoded credentials
+
+### hardcodedPasswords in src\types\__tests__\type-system.test.ts
+- **Severity**: CRITICAL
+- **Matches**: 3
+- **Examples**: password: 'password123', password: 'password123', password: 'password123'
+- **Action Required**: IMMEDIATE - Remove hardcoded credentials
+
+### hardcodedPasswords in src\types\__tests__\type-system.test.ts
+- **Severity**: CRITICAL
+- **Matches**: 3
+- **Examples**: password: 'password123', password: 'password123', password: 'password123'
 - **Action Required**: IMMEDIATE - Remove hardcoded credentials
 
 ### hardcodedPasswords in prisma\seed-robust.ts
@@ -459,7 +489,7 @@ Generated: 2025-10-08T14:29:52.189Z
 - **Examples**: password: config.testing.userPassword, Password: 'wrongpassword'
 - **Action Required**: IMMEDIATE - Remove hardcoded credentials
 
-## ⚠️  High Priority Issues (382)
+## ⚠️  High Priority Issues (394)
 
 ### weakPasswords in src\app\(main)\action-center\page.tsx
 - **Severity**: HIGH
@@ -968,13 +998,13 @@ Generated: 2025-10-08T14:29:52.189Z
 ### weakPasswords in src\app\api\projects\route.test.ts
 - **Severity**: HIGH
 - **Matches**: 2
-- **Examples**: ADMIN, admin
+- **Examples**: admin, admin
 - **Action Required**: HIGH - Fix weak passwords and patterns
 
 ### weakPasswords in src\app\api\projects\route.test.ts
 - **Severity**: HIGH
-- **Matches**: 11
-- **Examples**: test, test, Test
+- **Matches**: 14
+- **Examples**: test, Test, test
 - **Action Required**: HIGH - Fix weak passwords and patterns
 
 ### weakPasswords in src\app\api\projects\route.ts
@@ -1045,8 +1075,14 @@ Generated: 2025-10-08T14:29:52.189Z
 
 ### weakPasswords in src\app\api\tasks\route.test.ts
 - **Severity**: HIGH
-- **Matches**: 22
-- **Examples**: test, test, Test
+- **Matches**: 27
+- **Examples**: test, Test, test
+- **Action Required**: HIGH - Fix weak passwords and patterns
+
+### weakPasswords in src\app\api\tasks\route.test.ts
+- **Severity**: HIGH
+- **Matches**: 132
+- **Examples**: 123456, 123456, 123456
 - **Action Required**: HIGH - Fix weak passwords and patterns
 
 ### weakPasswords in src\app\api\tasks\route.ts
@@ -1081,8 +1117,8 @@ Generated: 2025-10-08T14:29:52.189Z
 
 ### weakPasswords in src\app\api\users\route.test.ts
 - **Severity**: HIGH
-- **Matches**: 1
-- **Examples**: test
+- **Matches**: 8
+- **Examples**: test, Test, test
 - **Action Required**: HIGH - Fix weak passwords and patterns
 
 ### weakPasswords in src\app\api\users\route.ts
@@ -1117,8 +1153,8 @@ Generated: 2025-10-08T14:29:52.189Z
 
 ### weakPasswords in src\app\api\wiki\route.ts
 - **Severity**: HIGH
-- **Matches**: 1
-- **Examples**: test
+- **Matches**: 3
+- **Examples**: test, test, test
 - **Action Required**: HIGH - Fix weak passwords and patterns
 
 ### weakPasswords in src\app\api\wiki\upload\route.ts
@@ -1171,37 +1207,25 @@ Generated: 2025-10-08T14:29:52.189Z
 
 ### weakPasswords in src\auth.integration.test.ts
 - **Severity**: HIGH
-- **Matches**: 3
-- **Examples**: password123, password123, password123
+- **Matches**: 1
+- **Examples**: ADMIN
 - **Action Required**: HIGH - Fix weak passwords and patterns
 
 ### weakPasswords in src\auth.integration.test.ts
 - **Severity**: HIGH
-- **Matches**: 3
-- **Examples**: ADMIN, ADMIN, ADMIN
-- **Action Required**: HIGH - Fix weak passwords and patterns
-
-### weakPasswords in src\auth.integration.test.ts
-- **Severity**: HIGH
-- **Matches**: 11
+- **Matches**: 9
 - **Examples**: test, test, test
 - **Action Required**: HIGH - Fix weak passwords and patterns
 
 ### weakPasswords in src\auth.test.ts
 - **Severity**: HIGH
-- **Matches**: 3
-- **Examples**: password123, password123, password123
+- **Matches**: 1
+- **Examples**: ADMIN
 - **Action Required**: HIGH - Fix weak passwords and patterns
 
 ### weakPasswords in src\auth.test.ts
 - **Severity**: HIGH
-- **Matches**: 2
-- **Examples**: ADMIN, ADMIN
-- **Action Required**: HIGH - Fix weak passwords and patterns
-
-### weakPasswords in src\auth.test.ts
-- **Severity**: HIGH
-- **Matches**: 11
+- **Matches**: 9
 - **Examples**: test, test, test
 - **Action Required**: HIGH - Fix weak passwords and patterns
 
@@ -1778,13 +1802,13 @@ Generated: 2025-10-08T14:29:52.189Z
 ### weakPasswords in src\components\projects\CreateProject.test.tsx
 - **Severity**: HIGH
 - **Matches**: 3
-- **Examples**: Admin, ADMIN, admin
+- **Examples**: Admin, admin, admin
 - **Action Required**: HIGH - Fix weak passwords and patterns
 
 ### weakPasswords in src\components\projects\CreateProject.test.tsx
 - **Severity**: HIGH
-- **Matches**: 9
-- **Examples**: test, test, test
+- **Matches**: 12
+- **Examples**: test, test, Test
 - **Action Required**: HIGH - Fix weak passwords and patterns
 
 ### weakPasswords in src\components\projects\CreateProject.tsx
@@ -1927,19 +1951,7 @@ Generated: 2025-10-08T14:29:52.189Z
 
 ### weakPasswords in src\components\__tests__\Accessibility.test.tsx
 - **Severity**: HIGH
-- **Matches**: 16
-- **Examples**: test, test, test
-- **Action Required**: HIGH - Fix weak passwords and patterns
-
-### weakPasswords in src\components\__tests__\AdminDashboard.test.tsx
-- **Severity**: HIGH
-- **Matches**: 19
-- **Examples**: Admin, Admin, admin
-- **Action Required**: HIGH - Fix weak passwords and patterns
-
-### weakPasswords in src\components\__tests__\AdminDashboard.test.tsx
-- **Severity**: HIGH
-- **Matches**: 49
+- **Matches**: 17
 - **Examples**: test, test, test
 - **Action Required**: HIGH - Fix weak passwords and patterns
 
@@ -1969,7 +1981,7 @@ Generated: 2025-10-08T14:29:52.189Z
 
 ### weakPasswords in src\contexts\ErrorContext.test.tsx
 - **Severity**: HIGH
-- **Matches**: 41
+- **Matches**: 42
 - **Examples**: test, test, Test
 - **Action Required**: HIGH - Fix weak passwords and patterns
 
@@ -2191,8 +2203,8 @@ Generated: 2025-10-08T14:29:52.189Z
 
 ### weakPasswords in src\lib\auth-utils.test.ts
 - **Severity**: HIGH
-- **Matches**: 2
-- **Examples**: test, Test
+- **Matches**: 6
+- **Examples**: test, Test, test
 - **Action Required**: HIGH - Fix weak passwords and patterns
 
 ### weakPasswords in src\lib\auth-utils.ts
@@ -2335,8 +2347,8 @@ Generated: 2025-10-08T14:29:52.189Z
 
 ### weakPasswords in src\lib\queries.test.ts
 - **Severity**: HIGH
-- **Matches**: 8
-- **Examples**: test, test, Test
+- **Matches**: 11
+- **Examples**: test, test, test
 - **Action Required**: HIGH - Fix weak passwords and patterns
 
 ### weakPasswords in src\lib\security\credential-generator.ts
@@ -2401,7 +2413,7 @@ Generated: 2025-10-08T14:29:52.189Z
 
 ### weakPasswords in src\lib\security.test.ts
 - **Severity**: HIGH
-- **Matches**: 11
+- **Matches**: 12
 - **Examples**: test, Test, Test
 - **Action Required**: HIGH - Fix weak passwords and patterns
 
@@ -2467,8 +2479,8 @@ Generated: 2025-10-08T14:29:52.189Z
 
 ### weakPasswords in src\middleware.security.test.ts
 - **Severity**: HIGH
-- **Matches**: 1
-- **Examples**: test
+- **Matches**: 2
+- **Examples**: test, Test
 - **Action Required**: HIGH - Fix weak passwords and patterns
 
 ### weakPasswords in src\middleware.test.ts
@@ -2479,7 +2491,7 @@ Generated: 2025-10-08T14:29:52.189Z
 
 ### weakPasswords in src\middleware.test.ts
 - **Severity**: HIGH
-- **Matches**: 4
+- **Matches**: 5
 - **Examples**: test, test, Test
 - **Action Required**: HIGH - Fix weak passwords and patterns
 
@@ -2503,8 +2515,8 @@ Generated: 2025-10-08T14:29:52.189Z
 
 ### weakPasswords in src\services\project.service.test.ts
 - **Severity**: HIGH
-- **Matches**: 19
-- **Examples**: test, test, test
+- **Matches**: 22
+- **Examples**: test, Test, test
 - **Action Required**: HIGH - Fix weak passwords and patterns
 
 ### weakPasswords in src\services\story.service.test.ts
@@ -2525,10 +2537,94 @@ Generated: 2025-10-08T14:29:52.189Z
 - **Examples**: Admin, ADMIN, ADMIN
 - **Action Required**: HIGH - Fix weak passwords and patterns
 
+### weakPasswords in src\test\mocks\auth.ts
+- **Severity**: HIGH
+- **Matches**: 1
+- **Examples**: admin
+- **Action Required**: HIGH - Fix weak passwords and patterns
+
+### weakPasswords in src\test\mocks\auth.ts
+- **Severity**: HIGH
+- **Matches**: 8
+- **Examples**: test, Test, test
+- **Action Required**: HIGH - Fix weak passwords and patterns
+
+### weakPasswords in src\test\mocks\factory.ts
+- **Severity**: HIGH
+- **Matches**: 1
+- **Examples**: password123
+- **Action Required**: HIGH - Fix weak passwords and patterns
+
+### weakPasswords in src\test\mocks\factory.ts
+- **Severity**: HIGH
+- **Matches**: 5
+- **Examples**: ADMIN, admin, ADMIN
+- **Action Required**: HIGH - Fix weak passwords and patterns
+
+### weakPasswords in src\test\mocks\factory.ts
+- **Severity**: HIGH
+- **Matches**: 15
+- **Examples**: test, test, Test
+- **Action Required**: HIGH - Fix weak passwords and patterns
+
+### weakPasswords in src\test\mocks\factory.ts
+- **Severity**: HIGH
+- **Matches**: 12
+- **Examples**: 123456, 123456, 123456
+- **Action Required**: HIGH - Fix weak passwords and patterns
+
+### weakPasswords in src\test\mocks\index.ts
+- **Severity**: HIGH
+- **Matches**: 4
+- **Examples**: test, Test, teSt
+- **Action Required**: HIGH - Fix weak passwords and patterns
+
+### weakPasswords in src\test\mocks\prisma.ts
+- **Severity**: HIGH
+- **Matches**: 1
+- **Examples**: test
+- **Action Required**: HIGH - Fix weak passwords and patterns
+
+### weakPasswords in src\test\mocks\prisma.ts
+- **Severity**: HIGH
+- **Matches**: 2
+- **Examples**: 123456, 123456
+- **Action Required**: HIGH - Fix weak passwords and patterns
+
+### weakPasswords in src\test\mocks\services.ts
+- **Severity**: HIGH
+- **Matches**: 8
+- **Examples**: test, teSt, Test
+- **Action Required**: HIGH - Fix weak passwords and patterns
+
+### weakPasswords in src\test\README.md
+- **Severity**: HIGH
+- **Matches**: 4
+- **Examples**: admin, ADMIN, admin
+- **Action Required**: HIGH - Fix weak passwords and patterns
+
+### weakPasswords in src\test\README.md
+- **Severity**: HIGH
+- **Matches**: 43
+- **Examples**: Test, test, test
+- **Action Required**: HIGH - Fix weak passwords and patterns
+
 ### weakPasswords in src\test\setup.tsx
 - **Severity**: HIGH
-- **Matches**: 29
+- **Matches**: 7
 - **Examples**: test, test, test
+- **Action Required**: HIGH - Fix weak passwords and patterns
+
+### weakPasswords in src\test\utils\test-helpers.ts
+- **Severity**: HIGH
+- **Matches**: 2
+- **Examples**: admin, admin
+- **Action Required**: HIGH - Fix weak passwords and patterns
+
+### weakPasswords in src\test\utils\test-helpers.ts
+- **Severity**: HIGH
+- **Matches**: 14
+- **Examples**: test, Test, Test
 - **Action Required**: HIGH - Fix weak passwords and patterns
 
 ### weakPasswords in src\types\admin-dashboard.ts
@@ -2601,6 +2697,12 @@ Generated: 2025-10-08T14:29:52.189Z
 - **Severity**: HIGH
 - **Matches**: 1
 - **Examples**: teSt
+- **Action Required**: HIGH - Fix weak passwords and patterns
+
+### weakPasswords in src\types\__tests__\type-system.test.ts
+- **Severity**: HIGH
+- **Matches**: 3
+- **Examples**: password123, password123, password123
 - **Action Required**: HIGH - Fix weak passwords and patterns
 
 ### weakPasswords in src\types\__tests__\type-system.test.ts
@@ -2755,7 +2857,7 @@ Generated: 2025-10-08T14:29:52.189Z
 
 ## 🔧 Medium Priority Issues (0)
 
-## 📝 Low Priority Issues (89)
+## 📝 Low Priority Issues (90)
 
 ### consoleStatements in src\app\(main)\meetings\page.tsx
 - **Severity**: LOW
@@ -3015,6 +3117,12 @@ Generated: 2025-10-08T14:29:52.189Z
 - **Examples**: console.log, console.log, console.log
 - **Action Required**: LOW - Consider fixing for production
 
+### consoleStatements in src\app\api\tasks\route.test.ts
+- **Severity**: LOW
+- **Matches**: 2
+- **Examples**: console.log, console.log
+- **Action Required**: LOW - Consider fixing for production
+
 ### consoleStatements in src\app\api\team-status\whos-out\route.ts
 - **Severity**: LOW
 - **Matches**: 1
@@ -3167,8 +3275,8 @@ Generated: 2025-10-08T14:29:52.189Z
 
 ### consoleStatements in src\hooks\__tests__\useStoryManagement.test.ts
 - **Severity**: LOW
-- **Matches**: 4
-- **Examples**: console.error, console.error, console.error
+- **Matches**: 5
+- **Examples**: console.log, console.error, console.error
 - **Action Required**: LOW - Consider fixing for production
 
 ### consoleStatements in src\hooks\__tests__\useUpdateTaskStatus.test.ts
@@ -3614,7 +3722,7 @@ Generated: 2025-10-08T14:29:52.189Z
 
 ### src\app\api\projects\route.test.ts
 - **weakPasswords** (HIGH): 2 matches
-- **weakPasswords** (HIGH): 11 matches
+- **weakPasswords** (HIGH): 14 matches
 
 ### src\app\api\projects\route.ts
 - **weakPasswords** (HIGH): 4 matches
@@ -3648,7 +3756,9 @@ Generated: 2025-10-08T14:29:52.189Z
 - **weakPasswords** (HIGH): 1 matches
 
 ### src\app\api\tasks\route.test.ts
-- **weakPasswords** (HIGH): 22 matches
+- **weakPasswords** (HIGH): 27 matches
+- **weakPasswords** (HIGH): 132 matches
+- **consoleStatements** (LOW): 2 matches
 
 ### src\app\api\tasks\route.ts
 - **weakPasswords** (HIGH): 2 matches
@@ -3669,7 +3779,7 @@ Generated: 2025-10-08T14:29:52.189Z
 - **hardcodedPasswords** (CRITICAL): 2 matches
 - **weakPasswords** (HIGH): 2 matches
 - **weakPasswords** (HIGH): 3 matches
-- **weakPasswords** (HIGH): 1 matches
+- **weakPasswords** (HIGH): 8 matches
 
 ### src\app\api\users\route.ts
 - **hardcodedPasswords** (CRITICAL): 2 matches
@@ -3686,7 +3796,7 @@ Generated: 2025-10-08T14:29:52.189Z
 
 ### src\app\api\wiki\route.ts
 - **weakPasswords** (HIGH): 1 matches
-- **weakPasswords** (HIGH): 1 matches
+- **weakPasswords** (HIGH): 3 matches
 - **consoleStatements** (LOW): 12 matches
 
 ### src\app\api\wiki\upload\route.ts
@@ -3719,20 +3829,16 @@ Generated: 2025-10-08T14:29:52.189Z
 - **environmentVariables** (INFO): 1 matches
 
 ### src\auth.integration.test.ts
-- **hardcodedPasswords** (CRITICAL): 2 matches
-- **hardcodedPasswords** (CRITICAL): 9 matches
-- **weakPasswords** (HIGH): 3 matches
-- **weakPasswords** (HIGH): 3 matches
-- **weakPasswords** (HIGH): 11 matches
+- **hardcodedPasswords** (CRITICAL): 7 matches
+- **weakPasswords** (HIGH): 1 matches
+- **weakPasswords** (HIGH): 9 matches
 - **environmentVariables** (INFO): 3 matches
 
 ### src\auth.test.ts
-- **hardcodedPasswords** (CRITICAL): 2 matches
-- **hardcodedPasswords** (CRITICAL): 8 matches
-- **hardcodedSecrets** (CRITICAL): 1 matches
-- **weakPasswords** (HIGH): 3 matches
-- **weakPasswords** (HIGH): 2 matches
-- **weakPasswords** (HIGH): 11 matches
+- **hardcodedPasswords** (CRITICAL): 1 matches
+- **hardcodedPasswords** (CRITICAL): 7 matches
+- **weakPasswords** (HIGH): 1 matches
+- **weakPasswords** (HIGH): 9 matches
 - **environmentVariables** (INFO): 3 matches
 
 ### src\auth.ts
@@ -4034,7 +4140,7 @@ Generated: 2025-10-08T14:29:52.189Z
 
 ### src\components\projects\CreateProject.test.tsx
 - **weakPasswords** (HIGH): 3 matches
-- **weakPasswords** (HIGH): 9 matches
+- **weakPasswords** (HIGH): 12 matches
 
 ### src\components\projects\CreateProject.tsx
 - **weakPasswords** (HIGH): 2 matches
@@ -4126,11 +4232,7 @@ Generated: 2025-10-08T14:29:52.189Z
 - **consoleStatements** (LOW): 1 matches
 
 ### src\components\__tests__\Accessibility.test.tsx
-- **weakPasswords** (HIGH): 16 matches
-
-### src\components\__tests__\AdminDashboard.test.tsx
-- **weakPasswords** (HIGH): 19 matches
-- **weakPasswords** (HIGH): 49 matches
+- **weakPasswords** (HIGH): 17 matches
 
 ### src\components\__tests__\LoginForm.test.tsx
 - **hardcodedPasswords** (CRITICAL): 1 matches
@@ -4146,7 +4248,7 @@ Generated: 2025-10-08T14:29:52.189Z
 - **weakPasswords** (HIGH): 26 matches
 
 ### src\contexts\ErrorContext.test.tsx
-- **weakPasswords** (HIGH): 41 matches
+- **weakPasswords** (HIGH): 42 matches
 
 ### src\e2e\auth.e2e.spec.ts
 - **hardcodedPasswords** (CRITICAL): 2 matches
@@ -4250,7 +4352,7 @@ Generated: 2025-10-08T14:29:52.189Z
 
 ### src\hooks\__tests__\useStoryManagement.test.ts
 - **weakPasswords** (HIGH): 18 matches
-- **consoleStatements** (LOW): 4 matches
+- **consoleStatements** (LOW): 5 matches
 
 ### src\hooks\__tests__\useUpdateTaskStatus.test.ts
 - **weakPasswords** (HIGH): 10 matches
@@ -4276,7 +4378,7 @@ Generated: 2025-10-08T14:29:52.189Z
 
 ### src\lib\auth-utils.test.ts
 - **weakPasswords** (HIGH): 69 matches
-- **weakPasswords** (HIGH): 2 matches
+- **weakPasswords** (HIGH): 6 matches
 
 ### src\lib\auth-utils.ts
 - **weakPasswords** (HIGH): 14 matches
@@ -4393,7 +4495,7 @@ Generated: 2025-10-08T14:29:52.189Z
 - **environmentVariables** (INFO): 24 matches
 
 ### src\lib\queries.test.ts
-- **weakPasswords** (HIGH): 8 matches
+- **weakPasswords** (HIGH): 11 matches
 
 ### src\lib\security\credential-generator.ts
 - **hardcodedPasswords** (CRITICAL): 5 matches
@@ -4427,9 +4529,8 @@ Generated: 2025-10-08T14:29:52.189Z
 - **environmentVariables** (INFO): 2 matches
 
 ### src\lib\security.test.ts
-- **weakPasswords** (HIGH): 11 matches
+- **weakPasswords** (HIGH): 12 matches
 - **weakPasswords** (HIGH): 2 matches
-- **environmentVariables** (INFO): 3 matches
 
 ### src\lib\security.ts
 - **hardcodedSecrets** (CRITICAL): 1 matches
@@ -4470,11 +4571,11 @@ Generated: 2025-10-08T14:29:52.189Z
 - **weakPasswords** (HIGH): 3 matches
 
 ### src\middleware.security.test.ts
-- **weakPasswords** (HIGH): 1 matches
+- **weakPasswords** (HIGH): 2 matches
 
 ### src\middleware.test.ts
 - **weakPasswords** (HIGH): 6 matches
-- **weakPasswords** (HIGH): 4 matches
+- **weakPasswords** (HIGH): 5 matches
 
 ### src\middleware.ts
 - **weakPasswords** (HIGH): 1 matches
@@ -4487,7 +4588,7 @@ Generated: 2025-10-08T14:29:52.189Z
 - **weakPasswords** (HIGH): 2 matches
 
 ### src\services\project.service.test.ts
-- **weakPasswords** (HIGH): 19 matches
+- **weakPasswords** (HIGH): 22 matches
 
 ### src\services\story.service.test.ts
 - **weakPasswords** (HIGH): 26 matches
@@ -4504,8 +4605,41 @@ Generated: 2025-10-08T14:29:52.189Z
 ### src\stores\wiki.store.ts
 - **consoleStatements** (LOW): 19 matches
 
+### src\test\mocks\auth.ts
+- **hardcodedPasswords** (CRITICAL): 1 matches
+- **hardcodedPasswords** (CRITICAL): 1 matches
+- **hardcodedSecrets** (CRITICAL): 1 matches
+- **weakPasswords** (HIGH): 1 matches
+- **weakPasswords** (HIGH): 8 matches
+
+### src\test\mocks\factory.ts
+- **hardcodedPasswords** (CRITICAL): 3 matches
+- **hardcodedPasswords** (CRITICAL): 3 matches
+- **weakPasswords** (HIGH): 1 matches
+- **weakPasswords** (HIGH): 5 matches
+- **weakPasswords** (HIGH): 15 matches
+- **weakPasswords** (HIGH): 12 matches
+
+### src\test\mocks\index.ts
+- **weakPasswords** (HIGH): 4 matches
+
+### src\test\mocks\prisma.ts
+- **weakPasswords** (HIGH): 1 matches
+- **weakPasswords** (HIGH): 2 matches
+
+### src\test\mocks\services.ts
+- **weakPasswords** (HIGH): 8 matches
+
+### src\test\README.md
+- **weakPasswords** (HIGH): 4 matches
+- **weakPasswords** (HIGH): 43 matches
+
 ### src\test\setup.tsx
-- **weakPasswords** (HIGH): 29 matches
+- **weakPasswords** (HIGH): 7 matches
+
+### src\test\utils\test-helpers.ts
+- **weakPasswords** (HIGH): 2 matches
+- **weakPasswords** (HIGH): 14 matches
 
 ### src\types\admin-dashboard.ts
 - **weakPasswords** (HIGH): 1 matches
@@ -4543,6 +4677,9 @@ Generated: 2025-10-08T14:29:52.189Z
 - **hardcodedPasswords** (CRITICAL): 1 matches
 
 ### src\types\__tests__\type-system.test.ts
+- **hardcodedPasswords** (CRITICAL): 3 matches
+- **hardcodedPasswords** (CRITICAL): 3 matches
+- **weakPasswords** (HIGH): 3 matches
 - **weakPasswords** (HIGH): 21 matches
 - **weakPasswords** (HIGH): 58 matches
 - **weakPasswords** (HIGH): 6 matches

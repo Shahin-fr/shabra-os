@@ -156,7 +156,7 @@ describe('Security Middleware', () => {
 
       expect(result).toEqual(expect.objectContaining({ next: true }));
       expect(result.headers).toBeDefined();
-      expect(result.headers.size).toBeGreaterThan(5);
+      expect(result.headers.size || Object.keys(result.headers).length).toBeGreaterThan(5);
     });
 
     it('adds security headers to API responses', async () => {
@@ -447,4 +447,5 @@ describe('Security Middleware', () => {
       expect(result).toEqual(expect.objectContaining({ next: true }));
     });
   });
+});
 });

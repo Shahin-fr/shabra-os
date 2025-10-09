@@ -62,8 +62,8 @@ class SimplePerformanceMonitor {
     this.collectWebVitals();
     
     // Collect memory usage
-    if (performance.memory) {
-      this.metrics.memoryUsed = performance.memory.usedJSHeapSize;
+    if (typeof performance !== 'undefined' && 'memory' in performance) {
+      this.metrics.memoryUsed = (performance as any).memory.usedJSHeapSize;
     }
 
     // Update timestamp

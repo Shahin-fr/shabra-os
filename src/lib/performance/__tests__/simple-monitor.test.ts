@@ -31,7 +31,7 @@ Object.defineProperty(global, 'PerformanceObserver', {
 describe('SimplePerformanceMonitor', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockPerformanceObserver.mockImplementation((callback) => ({
+    mockPerformanceObserver.mockImplementation(() => ({
       observe: mockObserve,
       disconnect: mockDisconnect,
     }));

@@ -1,12 +1,9 @@
 import { test, expect } from '@playwright/test';
+import { TEST_CONFIG } from './test-config';
 
-// Test data for authentication
-const TEST_USER = {
-  email: 'test@shabra.com',
-  password: 'testpassword123',
-  invalidEmail: 'invalid-email',
-  invalidPassword: 'wrongpassword',
-};
+// Test data for authentication (using centralized config)
+const TEST_USER = TEST_CONFIG.users.valid;
+const INVALID_USER = TEST_CONFIG.users.invalid;
 
 test.describe('Authentication - Critical User Journey', () => {
   test.beforeEach(async ({ page }) => {
@@ -49,7 +46,7 @@ test.describe('Authentication - Critical User Journey', () => {
     page,
   }) => {
     // Fill in invalid email format
-    await page.getByLabel(/ایمیل/i).fill(TEST_USER.invalidEmail);
+    await page.getByLabel(/ایمیل/i).fill(INVALID_USER.email);
     await page.getByLabel(/رمز عبور/i).fill(TEST_USER.password);
 
     // Submit form
@@ -85,8 +82,8 @@ test.describe('Authentication - Critical User Journey', () => {
     page,
   }) => {
     // Fill in invalid credentials
-    await page.getByLabel(/ایمیل/i).fill(TEST_USER.invalidEmail);
-    await page.getByLabel(/رمز عبور/i).fill(TEST_USER.invalidPassword);
+    await page.getByLabel(/ایمیل/i).fill(INVALID_USER.email);
+    await page.getByLabel(/رمز عبور/i).fill(INVALID_USER.password);
 
     // Submit form
     await page.getByRole('button', { name: /ورود/i }).click();

@@ -89,6 +89,13 @@ const QUALITY_CHECKS = [
     timeout: 180000
   },
   {
+    id: 'performance-tests',
+    name: 'Performance Tests',
+    command: 'npm run test:performance:comprehensive',
+    critical: false,
+    timeout: 300000
+  },
+  {
     id: 'performance-monitor',
     name: 'Performance Monitoring',
     command: 'npm run performance:monitor',

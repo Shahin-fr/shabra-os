@@ -10,7 +10,6 @@ import {
   createSecureResponse,
   SecurityMiddleware,
   SecurityLogger,
-  SECURITY_HEADERS,
   RATE_LIMIT_CONFIG,
 } from './security';
 
@@ -263,16 +262,12 @@ describe('Security Utilities', () => {
 
   describe('Security Logging', () => {
     let consoleSpy: any;
-    let originalEnv: string | undefined;
 
     beforeEach(() => {
-      originalEnv = process.env.NODE_ENV;
-      process.env.NODE_ENV = 'production';
-      consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+      consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
     });
 
     afterEach(() => {
-      process.env.NODE_ENV = originalEnv;
       consoleSpy.mockRestore();
     });
 
@@ -281,7 +276,10 @@ describe('Security Utilities', () => {
 
       expect(consoleSpy).toHaveBeenCalledWith(
         'SECURITY_EVENT:',
-        expect.stringContaining('TEST_EVENT')
+        expect.objectContaining({
+          event: 'TEST_EVENT',
+          details: { test: 'data' }
+        })
       );
     });
 
@@ -290,7 +288,13 @@ describe('Security Utilities', () => {
 
       expect(consoleSpy).toHaveBeenCalledWith(
         'SECURITY_EVENT:',
-        expect.stringContaining('AUTH_FAILURE')
+        expect.objectContaining({
+          event: 'AUTH_FAILURE',
+          details: expect.objectContaining({
+            ip: '192.168.1.1',
+            reason: 'INVALID_CREDENTIALS'
+          })
+        })
       );
     });
 
@@ -299,7 +303,13 @@ describe('Security Utilities', () => {
 
       expect(consoleSpy).toHaveBeenCalledWith(
         'SECURITY_EVENT:',
-        expect.stringContaining('RATE_LIMIT_EXCEEDED')
+        expect.objectContaining({
+          event: 'RATE_LIMIT_EXCEEDED',
+          details: expect.objectContaining({
+            ip: '192.168.1.1',
+            endpoint: '/api/users'
+          })
+        })
       );
     });
 
@@ -308,8 +318,48 @@ describe('Security Utilities', () => {
 
       expect(consoleSpy).toHaveBeenCalledWith(
         'SECURITY_EVENT:',
-        expect.stringContaining('SUSPICIOUS_ACTIVITY')
+        expect.objectContaining({
+          event: 'SUSPICIOUS_ACTIVITY',
+          details: expect.objectContaining({
+            ip: '192.168.1.1',
+            activity: 'UNUSUAL_PATTERN',
+            details: { count: 100 }
+          })
+        })
       );
+    });
+  });
+
+  describe('Security Headers Integration', () => {
+    it('should apply all required security headers to responses', () => {
+      const mockResponse = {
+        headers: new Map(),
+        set: vi.fn((key: string, value: string) => {
+          mockResponse.headers.set(key, value);
+        }),
+      };
+
+      // Apply security headers
+      addSecurityHeaders(mockResponse as any);
+
+      // Verify all critical security headers are set
+      const criticalHeaders = [
+        'X-Frame-Options',
+        'X-Content-Type-Options', 
+        'X-XSS-Protection',
+        'Content-Security-Policy',
+        'Strict-Transport-Security',
+        'Referrer-Policy'
+      ];
+
+      criticalHeaders.forEach(header => {
+        expect(mockResponse.headers.has(header)).toBe(true);
+      });
+
+      // Verify specific header values
+      expect(mockResponse.headers.get('X-Frame-Options')).toBe('DENY');
+      expect(mockResponse.headers.get('X-Content-Type-Options')).toBe('nosniff');
+      expect(mockResponse.headers.get('X-XSS-Protection')).toBe('1; mode=block');
     });
   });
 });
