@@ -1,4 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { createMockResponse } from '../test/mocks';
+import { resetAllMocks } from '../test/utils/test-helpers';
 
 // Mock fetch globally
 global.fetch = vi.fn();
@@ -7,8 +9,6 @@ global.fetch = vi.fn();
 global.performance = {
   now: vi.fn(),
 } as any;
-
-// Console spies removed - focusing on core functionality
 
 // Import after mocking
 import {
@@ -28,34 +28,13 @@ describe('Queries Module', () => {
   const mockFetch = vi.mocked(fetch);
   const mockPerformanceNow = vi.mocked(performance.now);
 
-  // Helper function for creating mock responses
-  const mockResponse = (data: any, ok: boolean = true, status: number = 200) =>
-    ({
-      ok,
-      status,
-      statusText: ok ? 'OK' : 'Not Found',
-      json: vi.fn().mockResolvedValue(data),
-      headers: new Headers(),
-      redirected: false,
-      type: 'default',
-      url: '',
-      body: null,
-      bodyUsed: false,
-      arrayBuffer: vi.fn(),
-      blob: vi.fn(),
-      formData: vi.fn(),
-      text: vi.fn(),
-      clone: vi.fn(),
-      bytes: vi.fn(), // Added missing bytes method
-    }) as Response;
-
   beforeEach(() => {
-    vi.clearAllMocks();
+    resetAllMocks();
     mockPerformanceNow.mockReturnValue(0);
   });
 
   afterEach(() => {
-    vi.restoreAllMocks();
+    resetAllMocks();
   });
 
   describe('Query Keys', () => {
@@ -200,7 +179,7 @@ describe('Queries Module', () => {
     describe('fetchProjects', () => {
       it('fetches projects successfully', async () => {
         const mockData = { success: true, data: { projects: [], total: 0, page: 1 } };
-        mockFetch.mockResolvedValue(mockResponse(mockData));
+        mockFetch.mockResolvedValue(createMockResponse(mockData));
 
         const result = await fetchProjects(2);
 
@@ -218,7 +197,7 @@ describe('Queries Module', () => {
 
       it('uses default page when no page provided', async () => {
         const mockData = { success: true, data: { projects: [], total: 0, page: 1 } };
-        mockFetch.mockResolvedValue(mockResponse(mockData));
+        mockFetch.mockResolvedValue(createMockResponse(mockData));
 
         await fetchProjects();
 
@@ -231,7 +210,7 @@ describe('Queries Module', () => {
       // Performance timing test removed - focusing on core functionality
 
       it('handles HTTP errors', async () => {
-        mockFetch.mockResolvedValue(mockResponse({}, false, 404));
+        mockFetch.mockResolvedValue(createMockResponse({}, false, 404));
 
         await expect(fetchProjects()).rejects.toThrow(
           'HTTP 404: Not Found'
@@ -251,7 +230,7 @@ describe('Queries Module', () => {
     describe('fetchProject', () => {
       it('fetches project successfully', async () => {
         const mockData = { success: true, data: { id: 'project-123', name: 'Test Project' } };
-        mockFetch.mockResolvedValue(mockResponse(mockData));
+        mockFetch.mockResolvedValue(createMockResponse(mockData));
 
         const result = await fetchProject('project-123');
 
@@ -267,7 +246,7 @@ describe('Queries Module', () => {
       // Performance timing test removed - focusing on core functionality
 
       it('handles HTTP errors', async () => {
-        mockFetch.mockResolvedValue(mockResponse({}, false, 500));
+        mockFetch.mockResolvedValue(createMockResponse({}, false, 500));
 
         await expect(fetchProject('project-123')).rejects.toThrow(
           'HTTP 500: Not Found'
@@ -278,7 +257,7 @@ describe('Queries Module', () => {
     describe('fetchTasks', () => {
       it('fetches all tasks when no projectId provided', async () => {
         const mockData = [{ id: 'task-1', title: 'Task 1' }];
-        mockFetch.mockResolvedValue(mockResponse(mockData));
+        mockFetch.mockResolvedValue(createMockResponse(mockData));
 
         const result = await fetchTasks();
 
@@ -293,7 +272,7 @@ describe('Queries Module', () => {
 
       it('fetches tasks for specific project when projectId provided', async () => {
         const mockData = [{ id: 'task-1', title: 'Task 1' }];
-        mockFetch.mockResolvedValue(mockResponse(mockData));
+        mockFetch.mockResolvedValue(createMockResponse(mockData));
 
         const result = await fetchTasks('project-123');
 
@@ -315,7 +294,7 @@ describe('Queries Module', () => {
     describe('fetchStories', () => {
       it('fetches stories successfully', async () => {
         const mockData = [{ id: 'story-1', title: 'Story 1' }];
-        mockFetch.mockResolvedValue(mockResponse(mockData));
+        mockFetch.mockResolvedValue(createMockResponse(mockData));
 
         const result = await fetchStories();
 
@@ -334,7 +313,7 @@ describe('Queries Module', () => {
     describe('fetchStoriesByDay', () => {
       it('fetches stories for specific day successfully', async () => {
         const mockData = [{ id: 'story-1', title: 'Story 1' }];
-        mockFetch.mockResolvedValue(mockResponse(mockData));
+        mockFetch.mockResolvedValue(createMockResponse(mockData));
 
         const result = await fetchStoriesByDay('2024-01-15');
 
@@ -353,7 +332,7 @@ describe('Queries Module', () => {
     describe('fetchStoryTypes', () => {
       it('fetches story types successfully', async () => {
         const mockData = [{ id: 'type-1', name: 'News' }];
-        mockFetch.mockResolvedValue(mockResponse(mockData));
+        mockFetch.mockResolvedValue(createMockResponse(mockData));
 
         const result = await fetchStoryTypes();
 

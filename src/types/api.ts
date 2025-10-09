@@ -156,20 +156,21 @@ export type QueryParams = {
 // API response builders - simplified for NextResponse compatibility
 export class ApiResponseBuilder {
   static success<T>(data: T, message?: string, meta?: Record<string, any>) {
-    return NextResponse.json({
+    return {
       success: true,
       data,
       message,
       meta,
-    });
+    };
   }
 
   static created<T>(data: T, message?: string) {
-    return NextResponse.json({
+    return {
       success: true,
       data,
       message: message || 'Entity created successfully',
-    }, { status: HTTP_STATUS.CREATED });
+      status: 201,
+    };
   }
 
   static updated<T>(data: T, message?: string) {
@@ -189,24 +190,26 @@ export class ApiResponseBuilder {
   }
 
   static notFound(entity: string, id?: string) {
-    return NextResponse.json({
+    return {
       success: false,
       error: {
         code: 'ENTITY_NOT_FOUND',
-        message: `${entity}${id ? ` with ID ${id}` : ''} not found`,
+        message: `${entity}${id ? ` with id ${id}` : ''} not found`,
+        requestId: `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       },
-    }, { status: HTTP_STATUS.NOT_FOUND });
+    };
   }
 
-  static validationError(message: string, details?: { field: string; message: string }[]) {
-    return NextResponse.json({
+  static validationError(details: { field: string; message: string }[], message?: string) {
+    return {
       success: false,
       error: {
         code: 'VALIDATION_ERROR',
-        message,
+        message: message || 'Validation failed',
         details,
+        requestId: `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       },
-    }, { status: HTTP_STATUS.UNPROCESSABLE_ENTITY });
+    };
   }
 
   static unauthorized(message?: string) {

@@ -267,7 +267,7 @@ export function validatePaginationParams(params: Partial<PaginationParams>): Pag
     page: Math.max(1, params.page || 1),
     limit: Math.min(100, Math.max(1, params.limit || 10)),
     sortBy: params.sortBy,
-    sortOrder: params.sortOrder || 'desc',
+    sortOrder: (params.sortOrder === 'asc' || params.sortOrder === 'desc') ? params.sortOrder : 'desc',
     search: params.search,
     filters: params.filters,
   };

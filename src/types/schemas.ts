@@ -647,6 +647,12 @@ export const UpdateRequestDTOSchema = BaseUpdateDTOSchema.extend({
   reviewedAt: DateSchema.optional(),
 });
 
+// WikiItem schemas - alias for Document (matches Prisma Document model)
+export const WikiItemEntitySchema = DocumentEntitySchema;
+export const WikiItemDTOSchema = DocumentDTOSchema;
+export const CreateWikiItemDTOSchema = CreateDocumentDTOSchema;
+export const UpdateWikiItemDTOSchema = UpdateDocumentDTOSchema;
+
 // Schema registry for easy access - comprehensive list based on Prisma schema
 export const EntitySchemas = {
   User: UserEntitySchema,
@@ -654,6 +660,7 @@ export const EntitySchemas = {
   Project: ProjectEntitySchema,
   Task: TaskEntitySchema,
   Document: DocumentEntitySchema,
+  WikiItem: WikiItemEntitySchema,
   Story: StoryEntitySchema,
   StoryType: StoryTypeEntitySchema,
   StoryIdea: StoryIdeaEntitySchema,
@@ -672,6 +679,7 @@ export const DTOSchemas = {
   Project: ProjectDTOSchema,
   Task: TaskDTOSchema,
   Document: DocumentDTOSchema,
+  WikiItem: WikiItemDTOSchema,
   Story: StoryDTOSchema,
   StoryType: StoryTypeDTOSchema,
   StoryIdea: StoryIdeaDTOSchema,
@@ -690,6 +698,7 @@ export const CreateDTOSchemas = {
   Project: CreateProjectDTOSchema,
   Task: CreateTaskDTOSchema,
   Document: CreateDocumentDTOSchema,
+  WikiItem: CreateWikiItemDTOSchema,
   Story: CreateStoryDTOSchema,
   StoryType: CreateStoryTypeDTOSchema,
   StoryIdea: CreateStoryIdeaDTOSchema,
@@ -708,6 +717,7 @@ export const UpdateDTOSchemas = {
   Project: UpdateProjectDTOSchema,
   Task: UpdateTaskDTOSchema,
   Document: UpdateDocumentDTOSchema,
+  WikiItem: UpdateWikiItemDTOSchema,
   Story: UpdateStoryDTOSchema,
   StoryType: UpdateStoryTypeDTOSchema,
   StoryIdea: UpdateStoryIdeaDTOSchema,

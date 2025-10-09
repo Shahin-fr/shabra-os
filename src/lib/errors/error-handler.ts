@@ -10,6 +10,8 @@ import {
   ErrorSeverity, 
   ErrorCategorizer,
   InternalServerError,
+  NetworkError,
+  TimeoutError,
   ValidationError,
   AuthenticationError,
   AuthorizationError,
@@ -180,7 +182,7 @@ export class ErrorHandler {
 
     // Handle network errors
     if (error.name === 'FetchError' || error.name === 'NetworkError') {
-      return new InternalServerError(
+      return new NetworkError(
         'Network request failed',
         { originalError: error.name, message: error.message, stack: error.stack }
       );
@@ -188,7 +190,7 @@ export class ErrorHandler {
 
     // Handle timeout errors
     if (error.name === 'TimeoutError' || error.message.includes('timeout')) {
-      return new InternalServerError(
+      return new TimeoutError(
         'Request timeout',
         { originalError: error.name, message: error.message, stack: error.stack }
       );
@@ -350,7 +352,7 @@ export class ErrorHandler {
         category: ErrorCategorizer.getCategory(error),
         severity: ErrorCategorizer.getSeverity(error),
         timestamp: error.timestamp.toISOString(),
-        requestId: error.context?.request?.id,
+        requestId: error.context?.request?.id || `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         details: this.sanitizeDetails(error.context),
       },
     };

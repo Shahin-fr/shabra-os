@@ -1,5 +1,7 @@
 import type { Session } from 'next-auth';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
+import { createMockSession, createTestUsers } from '@/test/mocks';
+import { resetAllMocks } from '@/test/utils/test-helpers';
 
 import {
   hasRole,
@@ -12,15 +14,8 @@ import {
 } from './auth-utils';
 
 describe('Authentication Utilities', () => {
-  // Helper function to create valid session objects
-  const createMockSession = (userData: any): Session =>
-    ({
-      user: userData,
-      expires: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 24 hours from now
-    }) as Session;
-
   beforeEach(() => {
-    vi.clearAllMocks();
+    resetAllMocks();
   });
 
   describe('hasRole', () => {
@@ -30,40 +25,40 @@ describe('Authentication Utilities', () => {
     });
 
     it('returns false when session has no user', () => {
-      const session = createMockSession({});
+      const session = createMockSession({ user: {} });
       const result = hasRole(session, ['ADMIN']);
       expect(result).toBe(false);
     });
 
     it('returns false when user has no roles', () => {
-      const session = createMockSession({});
+      const session = createMockSession({ user: {} });
       const result = hasRole(session, ['ADMIN']);
       expect(result).toBe(false);
     });
 
     it('returns true when user has one of the required roles', () => {
-      const session = createMockSession({ roles: ['MANAGER', 'EMPLOYEE'] });
+      const session = createMockSession({ user: { roles: ['MANAGER', 'EMPLOYEE'] } });
 
       const result = hasRole(session, ['ADMIN', 'MANAGER']);
       expect(result).toBe(true);
     });
 
     it('returns false when user has none of the required roles', () => {
-      const session = createMockSession({ roles: ['EMPLOYEE'] });
+      const session = createMockSession({ user: { roles: ['EMPLOYEE'] } });
 
       const result = hasRole(session, ['ADMIN', 'MANAGER']);
       expect(result).toBe(false);
     });
 
     it('handles single role requirement', () => {
-      const session = createMockSession({ roles: ['ADMIN'] });
+      const session = createMockSession({ user: { roles: ['ADMIN'] } });
 
       const result = hasRole(session, ['ADMIN']);
       expect(result).toBe(true);
     });
 
     it('handles empty roles array', () => {
-      const session = createMockSession({ roles: [] });
+      const session = createMockSession({ user: { roles: [] } });
 
       const result = hasRole(session, ['ADMIN']);
       expect(result).toBe(false);
@@ -72,35 +67,35 @@ describe('Authentication Utilities', () => {
 
   describe('isAdminOrManager', () => {
     it('returns true for admin user', () => {
-      const session = createMockSession({ roles: ['ADMIN'] });
+      const session = createMockSession({ user: { roles: ['ADMIN'] } });
 
       const result = isAdminOrManager(session);
       expect(result).toBe(true);
     });
 
     it('returns true for manager user', () => {
-      const session = createMockSession({ roles: ['MANAGER'] });
+      const session = createMockSession({ user: { roles: ['MANAGER'] } });
 
       const result = isAdminOrManager(session);
       expect(result).toBe(true);
     });
 
     it('returns true for user with both admin and manager roles', () => {
-      const session = createMockSession({ roles: ['ADMIN', 'MANAGER'] });
+      const session = createMockSession({ user: { roles: ['ADMIN', 'MANAGER'] } });
 
       const result = isAdminOrManager(session);
       expect(result).toBe(true);
     });
 
     it('returns false for employee user', () => {
-      const session = createMockSession({ roles: ['EMPLOYEE'] });
+      const session = createMockSession({ user: { roles: ['EMPLOYEE'] } });
 
       const result = isAdminOrManager(session);
       expect(result).toBe(false);
     });
 
     it('returns false for user with no roles', () => {
-      const session = createMockSession({ roles: [] });
+      const session = createMockSession({ user: { roles: [] } });
 
       const result = isAdminOrManager(session);
       expect(result).toBe(false);
@@ -114,28 +109,28 @@ describe('Authentication Utilities', () => {
 
   describe('isAdmin', () => {
     it('returns true for admin user', () => {
-      const session = createMockSession({ roles: ['ADMIN'] });
+      const session = createMockSession({ user: { roles: ['ADMIN'] } });
 
       const result = isAdmin(session);
       expect(result).toBe(true);
     });
 
     it('returns false for manager user', () => {
-      const session = createMockSession({ roles: ['MANAGER'] });
+      const session = createMockSession({ user: { roles: ['MANAGER'] } });
 
       const result = isAdmin(session);
       expect(result).toBe(false);
     });
 
     it('returns false for employee user', () => {
-      const session = createMockSession({ roles: ['EMPLOYEE'] });
+      const session = createMockSession({ user: { roles: ['EMPLOYEE'] } });
 
       const result = isAdmin(session);
       expect(result).toBe(false);
     });
 
     it('returns false for user with multiple roles including admin', () => {
-      const session = createMockSession({ roles: ['ADMIN', 'MANAGER'] });
+      const session = createMockSession({ user: { roles: ['ADMIN', 'MANAGER'] } });
 
       const result = isAdmin(session);
       expect(result).toBe(true);
@@ -149,28 +144,28 @@ describe('Authentication Utilities', () => {
 
   describe('isManager', () => {
     it('returns true for manager user', () => {
-      const session = createMockSession({ roles: ['MANAGER'] });
+      const session = createMockSession({ user: { roles: ['MANAGER'] } });
 
       const result = isManager(session);
       expect(result).toBe(true);
     });
 
     it('returns false for admin user', () => {
-      const session = createMockSession({ roles: ['ADMIN'] });
+      const session = createMockSession({ user: { roles: ['ADMIN'] } });
 
       const result = isManager(session);
       expect(result).toBe(false);
     });
 
     it('returns false for employee user', () => {
-      const session = createMockSession({ roles: ['EMPLOYEE'] });
+      const session = createMockSession({ user: { roles: ['EMPLOYEE'] } });
 
       const result = isManager(session);
       expect(result).toBe(false);
     });
 
     it('returns true for user with multiple roles including manager', () => {
-      const session = createMockSession({ roles: ['ADMIN', 'MANAGER'] });
+      const session = createMockSession({ user: { roles: ['ADMIN', 'MANAGER'] } });
 
       const result = isManager(session);
       expect(result).toBe(true);
@@ -184,28 +179,28 @@ describe('Authentication Utilities', () => {
 
   describe('isEmployee', () => {
     it('returns true for employee user', () => {
-      const session = createMockSession({ roles: ['EMPLOYEE'] });
+      const session = createMockSession({ user: { roles: ['EMPLOYEE'] } });
 
       const result = isEmployee(session);
       expect(result).toBe(true);
     });
 
     it('returns false for admin user', () => {
-      const session = createMockSession({ roles: ['ADMIN'] });
+      const session = createMockSession({ user: { roles: ['ADMIN'] } });
 
       const result = isEmployee(session);
       expect(result).toBe(false);
     });
 
     it('returns false for manager user', () => {
-      const session = createMockSession({ roles: ['MANAGER'] });
+      const session = createMockSession({ user: { roles: ['MANAGER'] } });
 
       const result = isEmployee(session);
       expect(result).toBe(false);
     });
 
     it('returns true for user with multiple roles including employee', () => {
-      const session = createMockSession({ roles: ['ADMIN', 'EMPLOYEE'] });
+      const session = createMockSession({ user: { roles: ['ADMIN', 'EMPLOYEE'] } });
 
       const result = isEmployee(session);
       expect(result).toBe(true);
@@ -219,23 +214,21 @@ describe('Authentication Utilities', () => {
 
   describe('getUserPrivilegeLevel', () => {
     it('returns ADMIN for admin user', () => {
-      const session = {
-        user: { roles: ['ADMIN'] },
-      } as Session;
+      const session = createMockSession({ user: { roles: ['ADMIN'] } });
 
       const result = getUserPrivilegeLevel(session);
       expect(result).toBe('ADMIN');
     });
 
     it('returns MANAGER for manager user', () => {
-      const session = createMockSession({ roles: ['MANAGER'] });
+      const session = createMockSession({ user: { roles: ['MANAGER'] } });
 
       const result = getUserPrivilegeLevel(session);
       expect(result).toBe('MANAGER');
     });
 
     it('returns EMPLOYEE for employee user', () => {
-      const session = createMockSession({ roles: ['EMPLOYEE'] });
+      const session = createMockSession({ user: { roles: ['EMPLOYEE'] } });
 
       const result = getUserPrivilegeLevel(session);
       expect(result).toBe('EMPLOYEE');
@@ -243,7 +236,7 @@ describe('Authentication Utilities', () => {
 
     it('returns ADMIN when user has multiple roles including admin', () => {
       const session = createMockSession({
-        roles: ['MANAGER', 'ADMIN', 'EMPLOYEE'],
+        user: { roles: ['MANAGER', 'ADMIN', 'EMPLOYEE'] },
       });
 
       const result = getUserPrivilegeLevel(session);
@@ -251,14 +244,14 @@ describe('Authentication Utilities', () => {
     });
 
     it('returns MANAGER when user has manager and employee roles', () => {
-      const session = createMockSession({ roles: ['MANAGER', 'EMPLOYEE'] });
+      const session = createMockSession({ user: { roles: ['MANAGER', 'EMPLOYEE'] } });
 
       const result = getUserPrivilegeLevel(session);
       expect(result).toBe('MANAGER');
     });
 
     it('returns NONE for user with no roles', () => {
-      const session = createMockSession({ roles: [] });
+      const session = createMockSession({ user: { roles: [] } });
 
       const result = getUserPrivilegeLevel(session);
       expect(result).toBe('NONE');
@@ -278,7 +271,7 @@ describe('Authentication Utilities', () => {
 
   describe('canPerformAction', () => {
     it('allows admin to perform any action', () => {
-      const session = createMockSession({ roles: ['ADMIN'] });
+      const session = createMockSession({ user: { roles: ['ADMIN'] } });
 
       expect(canPerformAction(session, 'ADMIN')).toBe(true);
       expect(canPerformAction(session, 'MANAGER')).toBe(true);
@@ -286,7 +279,7 @@ describe('Authentication Utilities', () => {
     });
 
     it('allows manager to perform manager and employee actions', () => {
-      const session = createMockSession({ roles: ['MANAGER'] });
+      const session = createMockSession({ user: { roles: ['MANAGER'] } });
 
       expect(canPerformAction(session, 'ADMIN')).toBe(false);
       expect(canPerformAction(session, 'MANAGER')).toBe(true);
@@ -294,7 +287,7 @@ describe('Authentication Utilities', () => {
     });
 
     it('allows employee to perform only employee actions', () => {
-      const session = createMockSession({ roles: ['EMPLOYEE'] });
+      const session = createMockSession({ user: { roles: ['EMPLOYEE'] } });
 
       expect(canPerformAction(session, 'ADMIN')).toBe(false);
       expect(canPerformAction(session, 'MANAGER')).toBe(false);
@@ -302,7 +295,7 @@ describe('Authentication Utilities', () => {
     });
 
     it('denies access for user with no roles', () => {
-      const session = createMockSession({ roles: [] });
+      const session = createMockSession({ user: { roles: [] } });
 
       expect(canPerformAction(session, 'ADMIN')).toBe(false);
       expect(canPerformAction(session, 'MANAGER')).toBe(false);
@@ -316,9 +309,9 @@ describe('Authentication Utilities', () => {
     });
 
     it('handles privilege hierarchy correctly', () => {
-      const adminSession = createMockSession({ roles: ['ADMIN'] });
-      const managerSession = createMockSession({ roles: ['MANAGER'] });
-      const employeeSession = createMockSession({ roles: ['EMPLOYEE'] });
+      const adminSession = createMockSession({ user: { roles: ['ADMIN'] } });
+      const managerSession = createMockSession({ user: { roles: ['MANAGER'] } });
+      const employeeSession = createMockSession({ user: { roles: ['EMPLOYEE'] } });
 
       // Test privilege hierarchy
       expect(canPerformAction(adminSession, 'MANAGER')).toBe(true);
@@ -364,14 +357,14 @@ describe('Authentication Utilities', () => {
     });
 
     it('handles empty string roles', () => {
-      const session = createMockSession({ roles: ['', 'ADMIN', ''] });
+      const session = createMockSession({ user: { roles: ['', 'ADMIN', ''] } });
 
       expect(hasRole(session, ['ADMIN'])).toBe(true);
       expect(hasRole(session, ['MANAGER'])).toBe(false);
     });
 
     it('handles case-sensitive role matching', () => {
-      const session = createMockSession({ roles: ['admin'] }); // lowercase
+      const session = createMockSession({ user: { roles: ['admin'] } }); // lowercase
 
       expect(hasRole(session, ['ADMIN'])).toBe(false); // uppercase
       expect(hasRole(session, ['admin'])).toBe(true); // lowercase

@@ -82,7 +82,7 @@ describe('LoginForm Integration Tests', () => {
     it('should render login form when not authenticated', () => {
       renderLoginForm();
 
-      expect(screen.getByText('ورود به شبرا OS')).toBeInTheDocument();
+      expect(screen.getByText('ورود به سیستم عامل شبرا')).toBeInTheDocument();
       expect(screen.getByText('برای دسترسی به پنل مدیریت وارد شوید')).toBeInTheDocument();
       expect(screen.getByLabelText('ایمیل')).toBeInTheDocument();
       expect(screen.getByLabelText('رمز عبور')).toBeInTheDocument();
@@ -249,7 +249,7 @@ describe('LoginForm Integration Tests', () => {
       renderLoginForm();
 
       // The heading is a div, not a proper heading element, so we check for the text content
-      expect(screen.getByText('ورود به شبرا OS')).toBeInTheDocument();
+      expect(screen.getByText('ورود به سیستم عامل شبرا')).toBeInTheDocument();
     });
 
     it('should have proper ARIA attributes', () => {

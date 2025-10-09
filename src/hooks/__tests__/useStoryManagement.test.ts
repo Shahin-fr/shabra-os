@@ -21,6 +21,21 @@ vi.mock('sonner', () => ({
 const mockFetch = vi.fn();
 global.fetch = mockFetch;
 
+// Helper to create mock Response
+const createMockResponse = (data: any, ok: boolean = true, status: number = 200) => ({
+  ok,
+  status,
+  json: vi.fn().mockResolvedValue(data),
+});
+
+// Add debugging to see what's happening
+beforeEach(() => {
+  console.log('Setting up mock fetch');
+  mockFetch.mockClear();
+  // Set a default mock response to prevent undefined responses
+  mockFetch.mockResolvedValue(createMockResponse({ success: true }));
+});
+
 // Mock the useStoryIdeas hook
 vi.mock('../useStoryIdeas', () => ({
   useStoryIdeas: () => ({
@@ -34,10 +49,6 @@ vi.mock('../useStoryIdeas', () => ({
 
 // Mock console.error to avoid noise in tests
 const originalConsoleError = console.error;
-beforeEach(() => {
-  console.error = vi.fn();
-});
-
 afterEach(() => {
   console.error = originalConsoleError;
 });
@@ -101,7 +112,7 @@ describe('useStoryManagement', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    mockFetch.mockClear();
+    console.error = vi.fn();
   });
 
   it('should initialize with correct default state', () => {
@@ -141,10 +152,7 @@ describe('useStoryManagement', () => {
     });
 
     // Mock successful API response
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({ success: true }),
-    });
+    mockFetch.mockResolvedValueOnce(createMockResponse({ success: true }));
 
     await act(async () => {
       result.current.actions.handleStoryTypeSelect(mockStoryTypes[0]!);
@@ -165,10 +173,7 @@ describe('useStoryManagement', () => {
     });
 
     // Mock successful API response
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({ success: true }),
-    });
+    mockFetch.mockResolvedValueOnce(createMockResponse({ success: true }));
 
     await act(async () => {
       result.current.actions.handleDeleteStory('story-1');
@@ -191,10 +196,7 @@ describe('useStoryManagement', () => {
     });
 
     // Mock successful API response
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({ success: true }),
-    });
+    mockFetch.mockResolvedValueOnce(createMockResponse({ success: true }));
 
     const storyData = {
       title: 'New Story',
@@ -225,10 +227,7 @@ describe('useStoryManagement', () => {
     });
 
     // Mock successful API response
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({ success: true }),
-    });
+    mockFetch.mockResolvedValueOnce(createMockResponse({ success: true }));
 
     const storyData = {
       title: 'Updated Story',
@@ -291,10 +290,7 @@ describe('useStoryManagement', () => {
     });
 
     // Mock successful API response
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({ success: true }),
-    });
+    mockFetch.mockResolvedValueOnce(createMockResponse({ success: true }));
 
     await act(async () => {
       result.current.actions.handleReorderStories(0, 1);

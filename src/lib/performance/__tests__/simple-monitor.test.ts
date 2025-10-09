@@ -104,6 +104,8 @@ describe('SimplePerformanceMonitor', () => {
         },
       });
 
+      // Start monitoring to trigger memory collection
+      simplePerformanceMonitor.startMonitoring();
       const metrics = simplePerformanceMonitor.getMetrics();
       expect(metrics.memoryUsed).toBe(0);
     });

@@ -1,0 +1,30 @@
+{
+  "timestamp": "2025-10-08T14-30-06-932Z",
+  "duration": 22544,
+  "metrics": {
+    "startTime": 1759933806932,
+    "bundleSize": {},
+    "buildTime": 0,
+    "testTime": 0,
+    "memoryUsage": {
+      "rss": 38526976,
+      "heapTotal": 6901760,
+      "heapUsed": 5448232,
+      "external": 2349615,
+      "arrayBuffers": 738293
+    },
+    "thresholds": {
+      "maxBundleSize": 2097152,
+      "maxBuildTime": 120000,
+      "maxTestTime": 300000,
+      "maxMemoryUsage": 1073741824
+    }
+  },
+  "issues": [],
+  "thresholds": {
+    "maxBundleSize": 2097152,
+    "maxBuildTime": 120000,
+    "maxTestTime": 300000,
+    "maxMemoryUsage": 1073741824
+  }
+}

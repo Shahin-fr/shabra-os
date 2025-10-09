@@ -191,7 +191,8 @@ export default function EcosystemSection() {
         </motion.div>
 
         {/* Responsive layout - Desktop: Side by side, Mobile: Accordion */}
-        {false && (
+        {/* eslint-disable-next-line no-constant-condition */}
+        {false ? (
           /* Mobile Accordion Layout */
           <div className="space-y-4">
             {modules.map((module) => (
@@ -351,10 +352,9 @@ export default function EcosystemSection() {
               </motion.div>
             ))}
           </div>
-        )}
-
-        {/* Desktop Grid Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 min-h-[80vh]">
+        ) : (
+          /* Desktop Grid Layout */
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 min-h-[80vh]">
             {/* Left side - Module list */}
             <motion.div 
               className="space-y-4"

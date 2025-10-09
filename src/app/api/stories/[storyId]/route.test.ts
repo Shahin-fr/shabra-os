@@ -409,7 +409,8 @@ describe('Individual Story API Route', () => {
       };
 
       mockStoryService.getStoryById.mockResolvedValue(existingStory);
-      mockStoryService.updateStory.mockRejectedValue(new Error('Database error'));
+      const { DatabaseError } = await import('@/lib/utils/error-handler');
+      mockStoryService.updateStory.mockRejectedValue(new DatabaseError('Database error'));
 
       const request = new NextRequest(
         `http://localhost:3000/api/stories/${storyId}`,
@@ -552,7 +553,8 @@ describe('Individual Story API Route', () => {
       };
 
       mockStoryService.getStoryById.mockResolvedValue(existingStory);
-      mockStoryService.deleteStory.mockRejectedValue(new Error('Database error'));
+      const { DatabaseError } = await import('@/lib/utils/error-handler');
+      mockStoryService.deleteStory.mockRejectedValue(new DatabaseError('Database error'));
 
       const request = new NextRequest(
         `http://localhost:3000/api/stories/${storyId}`,

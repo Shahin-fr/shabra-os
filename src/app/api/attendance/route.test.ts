@@ -211,8 +211,9 @@ describe('Attendance API Route', () => {
 
     it('handles database errors gracefully', async () => {
       const { prisma } = await import('@/lib/prisma');
+      const { DatabaseError } = await import('@/lib/utils/error-handler');
       vi.mocked(prisma.attendance.findFirst).mockRejectedValue(
-        new Error('Database error')
+        new DatabaseError('Database error')
       );
 
       const request = new NextRequest('http://localhost:3000/api/attendance', {
@@ -228,9 +229,10 @@ describe('Attendance API Route', () => {
 
     it('handles attendance creation errors gracefully', async () => {
       const { prisma } = await import('@/lib/prisma');
+      const { DatabaseError } = await import('@/lib/utils/error-handler');
       vi.mocked(prisma.attendance.findFirst).mockResolvedValue(null);
       vi.mocked(prisma.attendance.create).mockRejectedValue(
-        new Error('Creation failed')
+        new DatabaseError('Creation failed')
       );
 
       const request = new NextRequest('http://localhost:3000/api/attendance', {
@@ -246,11 +248,12 @@ describe('Attendance API Route', () => {
 
     it('handles attendance update errors gracefully', async () => {
       const { prisma } = await import('@/lib/prisma');
+      const { DatabaseError } = await import('@/lib/utils/error-handler');
       vi.mocked(prisma.attendance.findFirst).mockResolvedValue(
         mockClockInRecord
       );
       vi.mocked(prisma.attendance.update).mockRejectedValue(
-        new Error('Update failed')
+        new DatabaseError('Update failed')
       );
 
       const request = new NextRequest('http://localhost:3000/api/attendance', {
@@ -405,8 +408,9 @@ describe('Attendance API Route', () => {
 
     it('handles database errors gracefully', async () => {
       const { prisma } = await import('@/lib/prisma');
+      const { DatabaseError } = await import('@/lib/utils/error-handler');
       vi.mocked(prisma.attendance.findFirst).mockRejectedValue(
-        new Error('Database error')
+        new DatabaseError('Database error')
       );
 
       const request = new NextRequest('http://localhost:3000/api/attendance');

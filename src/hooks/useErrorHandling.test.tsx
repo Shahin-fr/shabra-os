@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { ErrorProvider } from '@/components/providers/ErrorProvider';
+import { ErrorProvider } from '@/contexts/ErrorContext';
 import { useErrorHandling } from './useErrorHandling';
 
 // Mock dependencies

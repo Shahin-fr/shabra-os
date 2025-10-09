@@ -144,8 +144,9 @@ describe('Attendance Stats API Route', () => {
 
     it('handles database errors gracefully', async () => {
       const { prisma } = await import('@/lib/prisma');
+      const { DatabaseError } = await import('@/lib/utils/error-handler');
       vi.mocked(prisma.attendance.findMany).mockRejectedValue(
-        new Error('Database error')
+        new DatabaseError('Database error')
       );
 
       const request = new NextRequest('http://localhost:3000/api/attendance/stats');

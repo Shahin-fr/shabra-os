@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ProjectService } from '@/services/project.service';
+import { createMockProject, createMockSession, createTestUsers } from '@/test/mocks';
 
 // Mock the dependencies
 // Note: We don't mock next/server - we use the real NextRequest constructor
@@ -55,16 +56,12 @@ import { prisma } from '@/lib/prisma';
 import { GET, POST } from './route';
 
 describe('Projects API Route', () => {
-  const mockSession = {
-    user: {
-      id: '1',
-      email: 'test@example.com',
-      roles: ['ADMIN'],
-    },
-  };
+  const mockSession = createMockSession({
+    user: createTestUsers.admin({ id: '1', email: 'test@example.com' })
+  });
 
   const mockProjects = [
-    {
+    createMockProject({
       id: '1',
       name: 'Test Project 1',
       description: 'Test Description 1',
@@ -72,8 +69,8 @@ describe('Projects API Route', () => {
       createdAt: new Date('2024-01-01'),
       updatedAt: new Date('2024-01-01'),
       _count: { stories: 5, tasks: 10 },
-    },
-    {
+    }),
+    createMockProject({
       id: '2',
       name: 'Test Project 2',
       description: 'Test Description 2',
@@ -81,7 +78,7 @@ describe('Projects API Route', () => {
       createdAt: new Date('2024-01-02'),
       updatedAt: new Date('2024-01-02'),
       _count: { stories: 3, tasks: 7 },
-    },
+    }),
   ];
 
   beforeEach(async () => {

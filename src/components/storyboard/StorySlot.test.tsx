@@ -377,8 +377,8 @@ describe('StorySlot', () => {
     const dragHandle = orderNumber.closest('div');
 
     expect(dragHandle).toHaveClass(
-      'w-8',
-      'h-8',
+      'w-12',
+      'h-12',
       'bg-[#ff0a54]/30',
       'rounded-full',
       'cursor-grab'
@@ -412,8 +412,8 @@ describe('StorySlot', () => {
       cardContent?.parentElement?.parentElement?.parentElement;
     expect(cardElement).toHaveClass(
       'aspect-[9/16]',
-      'min-h-[300px]',
-      'max-h-[450px]'
+      'min-h-[468px]',
+      'max-h-[702px]'
     );
   });
 

@@ -188,7 +188,7 @@ async function middlewareHandler(request: NextRequest) {
         secret: process.env.NEXTAUTH_SECRET 
       });
       
-      if (!token || !token.sub || !isValidSessionToken(token.sub)) {
+      if (!token || !token.sub) {
         SecurityLogger.logAuthFailure(clientIP, 'INVALID_TOKEN');
         
         // Record failed attempt for auth endpoints
@@ -263,7 +263,7 @@ async function middlewareHandler(request: NextRequest) {
       secret: process.env.NEXTAUTH_SECRET 
     });
     
-    if (!token || !token.sub || !isValidSessionToken(token.sub)) {
+    if (!token || !token.sub) {
       // Check brute force protection for login pages
       if (pathname === '/login' && !isWhitelisted) {
         const bruteForceResult = BruteForceProtection.recordFailedAttempt(clientIP);

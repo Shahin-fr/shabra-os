@@ -1,9 +1,18 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { 
+  createMockAuthUser, 
+  createMockCredentials, 
+  createBcryptMock, 
+  createNextAuthMock, 
+  createMockEnv
+} from '@/test/mocks';
+import { resetAllMocks } from '@/test/utils/test-helpers';
 
 // Mock the dependencies before importing
 vi.mock('bcryptjs', () => ({
   default: {
-    compare: vi.fn(),
+    compare: vi.fn().mockResolvedValue(true),
+    hash: vi.fn().mockResolvedValue('hashed-password'),
   },
 }));
 
@@ -16,52 +25,24 @@ vi.mock('@/lib/prisma', () => ({
 }));
 
 // Mock environment variables
-const mockEnv = {
-  NEXTAUTH_SECRET: 'test-secret-key',
-  NODE_ENV: 'development',
-};
-
+const mockEnv = createMockEnv();
 vi.stubEnv('NEXTAUTH_SECRET', mockEnv.NEXTAUTH_SECRET);
 vi.stubEnv('NODE_ENV', mockEnv.NODE_ENV);
 
 // Mock NextAuth to avoid module resolution issues
-vi.mock('next-auth', () => ({
-  default: vi.fn(() => ({
-    handlers: {},
-    auth: {
-      authorize: vi.fn(),
-      callbacks: {
-        jwt: vi.fn(),
-        session: vi.fn(),
-      },
-    },
-    signIn: vi.fn(),
-    signOut: vi.fn(),
-  })),
-}));
+const nextAuthMock = createNextAuthMock();
+vi.mock('next-auth', () => nextAuthMock);
 
 // Import after mocking
 import bcrypt from 'bcryptjs';
-
 import { prisma } from '@/lib/prisma';
 
 describe('Authentication System', () => {
-  const mockUser = {
-    id: 'user-123',
-    email: 'test@example.com',
-    password: 'hashed-password-123',
-    firstName: 'John',
-    lastName: 'Doe',
-    avatar: 'https://example.com/avatar.jpg',
-    isActive: true,
-    roles: ['USER', 'ADMIN'],
-    createdAt: '2024-01-01T00:00:00.000Z',
-    updatedAt: '2024-01-01T00:00:00.000Z',
-  };
+  const mockUser = createMockAuthUser();
+  const mockCredentials = createMockCredentials();
 
   beforeEach(() => {
-    vi.clearAllMocks();
-    vi.resetModules();
+    resetAllMocks();
 
     // Reset environment variables
     vi.stubEnv('NEXTAUTH_SECRET', mockEnv.NEXTAUTH_SECRET);
@@ -91,7 +72,7 @@ describe('Authentication System', () => {
 
     it('queries user by email correctly', async () => {
       await prisma.user.findUnique({
-        where: { email: 'test@example.com' },
+        where: { email: mockCredentials.email },
         select: {
           id: true,
           email: true,
@@ -104,7 +85,7 @@ describe('Authentication System', () => {
       });
 
       expect(prisma.user.findUnique).toHaveBeenCalledWith({
-        where: { email: 'test@example.com' },
+        where: { email: mockCredentials.email },
         select: {
           id: true,
           email: true,
@@ -143,7 +124,7 @@ describe('Authentication System', () => {
 
       await expect(
         prisma.user.findUnique({
-          where: { email: 'test@example.com' },
+          where: { email: mockCredentials.email },
           select: {
             id: true,
             email: true,
@@ -162,12 +143,12 @@ describe('Authentication System', () => {
     it('uses bcrypt for password comparison', async () => {
       vi.mocked(bcrypt.compare).mockResolvedValue(true as any);
 
-      const result = await bcrypt.compare('password123', 'hashed-password-123');
+      const result = await bcrypt.compare(mockCredentials.password, mockUser.password);
 
       expect(result).toBe(true);
       expect(bcrypt.compare).toHaveBeenCalledWith(
-        'password123',
-        'hashed-password-123'
+        mockCredentials.password,
+        mockUser.password
       );
     });
 
@@ -176,7 +157,7 @@ describe('Authentication System', () => {
 
       const result = await bcrypt.compare(
         'wrong-password',
-        'hashed-password-123'
+        mockUser.password
       );
 
       expect(result).toBe(false);
@@ -186,7 +167,7 @@ describe('Authentication System', () => {
       vi.mocked(bcrypt.compare).mockRejectedValue(new Error('Bcrypt error'));
 
       await expect(
-        bcrypt.compare('password123', 'hashed-password-123')
+        bcrypt.compare(mockCredentials.password, mockUser.password)
       ).rejects.toThrow('Bcrypt error');
     });
   });

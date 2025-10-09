@@ -3,6 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { createMockSession, createTestUsers } from '@/test/mocks';
 
 // Mock the dependencies
 vi.mock('next/navigation', () => ({
@@ -59,13 +60,9 @@ describe('CreateProject', () => {
     error: null,
   };
 
-  const mockSession = {
-    user: {
-      id: '1',
-      email: 'test@example.com',
-      roles: ['ADMIN'],
-    },
-  };
+  const mockSession = createMockSession({
+    user: createTestUsers.admin({ id: '1', email: 'test@example.com' })
+  });
 
   beforeEach(() => {
     vi.clearAllMocks();

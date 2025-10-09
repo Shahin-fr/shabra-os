@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma';
 import { logger } from '@/lib/logger';
 import { DatabasePerformanceMonitor } from '@/lib/database/query-optimizer';
 import { StoryQueryOptimizer } from '@/lib/database/query-optimizer';
+import { ProjectIdResolver } from '@/lib/utils/ProjectIdResolver';
 
 // Unmock StoryService for this test file
 vi.unmock('@/services/story.service');
@@ -43,14 +44,24 @@ vi.mock('@/lib/database/query-optimizer', () => ({
   },
 }));
 
+// Mock ProjectIdResolver
+vi.mock('@/lib/utils/project-id-resolver', () => ({
+  ProjectIdResolver: {
+    resolve: vi.fn(),
+  },
+}));
+
 describe('StoryService', () => {
   const mockPrisma = vi.mocked(prisma);
   const mockLogger = vi.mocked(logger);
   const mockDatabasePerformanceMonitor = vi.mocked(DatabasePerformanceMonitor);
   const mockStoryQueryOptimizer = vi.mocked(StoryQueryOptimizer);
+  const mockProjectIdResolver = vi.mocked(ProjectIdResolver);
 
   beforeEach(() => {
     vi.clearAllMocks();
+    // Set up default mock for ProjectIdResolver
+    mockProjectIdResolver.resolve.mockResolvedValue('cmf5o9m110001u35cldria860');
   });
 
   afterEach(() => {

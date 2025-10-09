@@ -282,6 +282,36 @@ export class InternalServerError extends BaseError {
   }
 }
 
+export class NetworkError extends BaseError {
+  constructor(
+    message: string,
+    context?: Record<string, any>
+  ) {
+    super(
+      message,
+      502,
+      ErrorType.NETWORK_ERROR,
+      true,
+      context
+    );
+  }
+}
+
+export class TimeoutError extends BaseError {
+  constructor(
+    message: string,
+    context?: Record<string, any>
+  ) {
+    super(
+      message,
+      408,
+      ErrorType.TIMEOUT,
+      true,
+      context
+    );
+  }
+}
+
 // Error factory for creating errors based on type
 export class ErrorFactory {
   static createValidationError(

@@ -160,7 +160,8 @@ describe('Stories API Route', () => {
     });
 
     it('handles database errors gracefully', async () => {
-      (StoryService.getStoriesByDay as any).mockRejectedValue(new Error('Database error'));
+      const { DatabaseError } = await import('@/lib/utils/error-handler');
+      (StoryService.getStoriesByDay as any).mockRejectedValue(new DatabaseError('Database error'));
 
       const request = new NextRequest(
         'http://localhost:3000/api/stories?day=2024-01-01'
@@ -365,7 +366,7 @@ describe('Stories API Route', () => {
 
       expect(response.status).toBe(400);
       expect(data.success).toBe(false);
-      expect(data.error.message).toContain('Validation failed');
+      expect(data.error.message).toContain('Create DTO validation failed');
       expect(StoryService.createStory).not.toHaveBeenCalled();
     });
 
@@ -386,7 +387,7 @@ describe('Stories API Route', () => {
 
       expect(response.status).toBe(400);
       expect(data.success).toBe(false);
-      expect(data.error.message).toContain('Validation failed');
+      expect(data.error.message).toContain('Create DTO validation failed');
       expect(StoryService.createStory).not.toHaveBeenCalled();
     });
 
@@ -407,7 +408,7 @@ describe('Stories API Route', () => {
 
       expect(response.status).toBe(400);
       expect(data.success).toBe(false);
-      expect(data.error.message).toContain('Validation failed');
+      expect(data.error.message).toContain('Create DTO validation failed');
       expect(StoryService.createStory).not.toHaveBeenCalled();
     });
 
@@ -427,7 +428,7 @@ describe('Stories API Route', () => {
 
       expect(response.status).toBe(400);
       expect(data.success).toBe(false);
-      expect(data.error.message).toContain('Validation failed');
+      expect(data.error.message).toContain('Create DTO validation failed');
       expect(StoryService.createStory).not.toHaveBeenCalled();
     });
 
@@ -448,7 +449,7 @@ describe('Stories API Route', () => {
 
       expect(response.status).toBe(400);
       expect(data.success).toBe(false);
-      expect(data.error.message).toContain('Validation failed');
+      expect(data.error.message).toContain('Create DTO validation failed');
       expect(StoryService.createStory).not.toHaveBeenCalled();
     });
 

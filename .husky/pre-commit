@@ -2,22 +2,14 @@
 . "$(dirname -- "$0")/_/husky.sh"
 
 # Run comprehensive quality checks on staged files
-echo "🔍 Running pre-commit checks..."
+echo "🔍 Running comprehensive pre-commit checks..."
 
-# Run linting on staged files
-echo "📝 Running ESLint..."
-npm run lint
+# Run lint-staged for staged files
+echo "📝 Running lint-staged on staged files..."
+npx lint-staged
 
-# Run type checking
-echo "🔧 Running TypeScript type checking..."
-npm run type-check
-
-# Run unit tests
-echo "🧪 Running unit tests..."
-npm run test:unit
-
-# Run accessibility tests
-echo "♿ Running accessibility tests..."
-npm run test:accessibility
+# Run comprehensive quality check
+echo "🔧 Running comprehensive quality check..."
+npm run quality:check
 
 echo "✅ All pre-commit checks passed!"

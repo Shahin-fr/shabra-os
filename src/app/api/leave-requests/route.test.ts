@@ -97,7 +97,8 @@ describe('Leave Requests API Route', () => {
 
     it('handles database errors gracefully', async () => {
       const { prisma } = await import('@/lib/prisma');
-      vi.mocked(prisma.leaveRequest.findMany).mockRejectedValue(new Error('DB Error'));
+      const { DatabaseError } = await import('@/lib/utils/error-handler');
+      vi.mocked(prisma.leaveRequest.findMany).mockRejectedValue(new DatabaseError('DB Error'));
 
       const request = new NextRequest('http://localhost:3000/api/leave-requests');
       const response = await GET(request);
@@ -182,7 +183,7 @@ describe('Leave Requests API Route', () => {
 
       expect(response.status).toBe(400);
       expect(data.success).toBe(false);
-      expect(data.error.message).toBe('Validation failed');
+      expect(data.error.message).toBe('Create DTO validation failed: Required, Required');
     });
 
     it('prevents overlapping leave requests', async () => {
@@ -233,7 +234,7 @@ describe('Leave Requests API Route', () => {
 
       expect(response.status).toBe(400);
       expect(data.success).toBe(false);
-      expect(data.error.message).toBe('Validation failed');
+      expect(data.error.message).toBe('Create DTO validation failed: Required, Required');
     });
   });
 });

@@ -207,6 +207,7 @@ describe('Validation', () => {
         firstName: 'John',
         lastName: 'Doe',
         email: 'john.doe@example.com',
+        password: 'password123',
         roles: 'ADMIN',
         isActive: true,
         createdAt: new Date(),
@@ -272,6 +273,7 @@ describe('Validation', () => {
         firstName: 'John',
         lastName: 'Doe',
         email: 'john.doe@example.com',
+        password: 'password123',
         roles: 'ADMIN',
         isActive: true,
       };
@@ -299,6 +301,7 @@ describe('Validation', () => {
         firstName: 'John',
         lastName: 'Doe',
         email: 'john.doe@example.com',
+        password: 'password123',
         roles: 'ADMIN',
         isActive: true,
         createdAt: new Date(),

@@ -1,13 +1,23 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { 
+  createMockAuthUser, 
+  createMockCredentials, 
+  createBcryptMock, 
+  createNextAuthMock, 
+  createMockEnv
+} from '@/test/mocks';
+import { resetAllMocks } from '@/test/utils/test-helpers';
 
 // Mock environment variables before importing
-vi.stubEnv('NEXTAUTH_SECRET', 'test-secret-key');
-vi.stubEnv('NODE_ENV', 'development');
+const mockEnv = createMockEnv();
+vi.stubEnv('NEXTAUTH_SECRET', mockEnv.NEXTAUTH_SECRET);
+vi.stubEnv('NODE_ENV', mockEnv.NODE_ENV);
 
 // Mock dependencies
 vi.mock('bcryptjs', () => ({
   default: {
     compare: vi.fn().mockResolvedValue(true),
+    hash: vi.fn().mockResolvedValue('hashed-password'),
   },
 }));
 
@@ -20,51 +30,23 @@ vi.mock('@/lib/prisma', () => ({
 }));
 
 // Mock NextAuth to return our testable functions
-const mockNextAuth = vi.fn(() => ({
-  handlers: {},
-  auth: {
-    authorize: vi.fn(),
-    callbacks: {
-      jwt: vi.fn(),
-      session: vi.fn(),
-    },
-  },
-  signIn: vi.fn(),
-  signOut: vi.fn(),
-}));
-
-vi.mock('next-auth', () => ({
-  default: mockNextAuth,
-}));
+const nextAuthMock = createNextAuthMock();
+vi.mock('next-auth', () => nextAuthMock);
 
 // Import after mocking
 import bcrypt from 'bcryptjs';
-
 import { prisma } from '@/lib/prisma';
 
 describe('Authentication System Integration', () => {
-  const mockUser = {
-    id: 'user-123',
-    email: 'test@example.com',
-    firstName: 'John',
-    lastName: 'Doe',
-    avatar: 'https://example.com/avatar.jpg',
-    roles: ['USER', 'ADMIN'],
-    password: 'hashed-password-123',
-  };
-
-  const mockCredentials = {
-    email: 'test@example.com',
-    password: 'password123',
-  };
+  const mockUser = createMockAuthUser();
+  const mockCredentials = createMockCredentials();
 
   beforeEach(() => {
-    vi.clearAllMocks();
-    vi.resetModules();
+    resetAllMocks();
 
     // Reset environment variables
-    vi.stubEnv('NEXTAUTH_SECRET', 'test-secret-key');
-    vi.stubEnv('NODE_ENV', 'development');
+    vi.stubEnv('NEXTAUTH_SECRET', mockEnv.NEXTAUTH_SECRET);
+    vi.stubEnv('NODE_ENV', mockEnv.NODE_ENV);
   });
 
   afterEach(() => {
@@ -126,8 +108,8 @@ describe('Authentication System Integration', () => {
 
         expect(isPasswordValid).toBe(true);
         expect(bcrypt.compare).toHaveBeenCalledWith(
-          'password123',
-          'hashed-password-123'
+          mockCredentials.password,
+          mockUser.password
         );
 
         // Step 3: User data processing
@@ -140,11 +122,11 @@ describe('Authentication System Integration', () => {
         };
 
         expect(processedUser).toEqual({
-          id: 'user-123',
-          email: 'test@example.com',
-          name: 'John Doe',
-          avatar: 'https://example.com/avatar.jpg',
-          roles: ['USER', 'ADMIN'],
+          id: mockUser.id,
+          email: mockUser.email,
+          name: `${mockUser.firstName} ${mockUser.lastName}`,
+          avatar: mockUser.avatar,
+          roles: mockUser.roles,
         });
       }
     });
@@ -265,7 +247,7 @@ describe('Authentication System Integration', () => {
   describe('Security Features', () => {
     it('implements secure password handling', () => {
       // Password is hashed
-      expect(mockUser.password).not.toBe('password123');
+      expect(mockUser.password).not.toBe(mockCredentials.password);
       expect(mockUser.password).toBe('hashed-password-123');
 
       // Password is not exposed in user object

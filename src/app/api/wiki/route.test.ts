@@ -194,7 +194,28 @@ describe('Wiki API Route', () => {
         where: {
           isPublic: true, // API only queries for public documents
         },
-        orderBy: [{ type: 'asc' }, { title: 'asc' }],
+        orderBy: [
+          { type: 'asc' }, // Folders first
+          { order: 'asc' }, // Then by custom order
+          { title: 'asc' }, // Finally by title
+        ],
+        select: {
+          id: true,
+          title: true,
+          content: true,
+          type: true,
+          parentId: true,
+          authorId: true,
+          createdAt: true,
+          updatedAt: true,
+          isPublic: true,
+          fileUrl: true,
+          fileType: true,
+          fileSize: true,
+          filePublicId: true,
+          originalName: true,
+          order: true,
+        },
       });
     });
 
@@ -205,7 +226,11 @@ describe('Wiki API Route', () => {
 
       expect(prisma.document.findMany).toHaveBeenCalledWith(
         expect.objectContaining({
-          orderBy: [{ type: 'asc' }, { title: 'asc' }],
+          orderBy: [
+            { type: 'asc' }, // Folders first
+            { order: 'asc' }, // Then by custom order
+            { title: 'asc' }, // Finally by title
+          ],
         })
       );
     });
@@ -308,15 +333,16 @@ describe('Wiki API Route', () => {
 
     it('handles database errors gracefully', async () => {
       const { prisma } = await import('@/lib/prisma');
+      const { DatabaseError } = await import('@/lib/utils/error-handler');
       vi.mocked(prisma.document.findMany).mockRejectedValue(
-        new Error('Database error')
+        new DatabaseError('Database error')
       );
 
       const response = await GET();
       const data = await response.json();
 
       expect(response.status).toBe(500);
-      expect(data.error.message).toBe('Internal server error');
+      expect(data.error.message).toBe('Database error');
     });
 
     it('filters items based on user access rights', async () => {
@@ -691,8 +717,9 @@ describe('Wiki API Route', () => {
 
     it('handles database errors gracefully', async () => {
       const { prisma } = await import('@/lib/prisma');
+      const { DatabaseError } = await import('@/lib/utils/error-handler');
       vi.mocked(prisma.document.create).mockRejectedValue(
-        new Error('Database error')
+        new DatabaseError('Database error')
       );
 
       const documentData = {

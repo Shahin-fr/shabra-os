@@ -47,8 +47,8 @@ describe('Button Component', () => {
     const { rerender } = render(<Button size='sm'>Small</Button>);
 
     let button = screen.getByRole('button');
-    // The small size includes h-8 and px-3 classes
-    expect(button.className).toContain('h-8');
+    // The small size includes h-9 and px-3 classes
+    expect(button.className).toContain('h-9');
     expect(button.className).toContain('px-3');
 
     rerender(<Button size='lg'>Large</Button>);

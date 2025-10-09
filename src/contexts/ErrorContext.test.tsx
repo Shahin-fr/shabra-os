@@ -42,9 +42,11 @@ function TestErrorComponent() {
 // Test component that uses error handler hook
 function TestErrorHandler() {
   const { handleError, handleAsyncError, clearError, retry } = useErrorHandler();
+  const { state } = useErrorContext();
 
   return (
     <div>
+      <div data-testid="error-count">{state.errors.length}</div>
       <button onClick={() => handleError(new Error('Test error'), { type: 'validation' })}>
         Handle Error
       </button>

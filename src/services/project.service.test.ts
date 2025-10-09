@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ProjectService } from './project.service';
 import { prisma } from '@/lib/prisma';
 import { logger } from '@/lib/logger';
+import { createMockProject, createTestUsers } from '@/test/mocks';
 
 // Unmock ProjectService to test the actual implementation
 vi.unmock('@/services/project.service');
@@ -58,7 +59,7 @@ describe('ProjectService', () => {
       };
 
       const mockProjects = [
-        {
+        createMockProject({
           id: 'project-1',
           name: 'Test Project 1',
           description: 'Test description 1',
@@ -67,8 +68,8 @@ describe('ProjectService', () => {
             stories: 5,
             tasks: 10,
           },
-        },
-        {
+        }),
+        createMockProject({
           id: 'project-2',
           name: 'Test Project 2',
           description: 'Test description 2',
@@ -77,7 +78,7 @@ describe('ProjectService', () => {
             stories: 3,
             tasks: 7,
           },
-        },
+        }),
       ];
 
       mockPrisma.project.findMany.mockResolvedValue(mockProjects);
@@ -119,12 +120,12 @@ describe('ProjectService', () => {
       };
 
       const mockProjects = [
-        {
+        createMockProject({
           id: 'project-1',
           name: 'Test Project 1',
           status: 'ACTIVE',
           _count: { stories: 0, tasks: 0 },
-        },
+        }),
       ];
 
       mockPrisma.project.findMany.mockResolvedValue(mockProjects);
@@ -162,7 +163,7 @@ describe('ProjectService', () => {
     it('should return project with related data for valid ID', async () => {
       // Arrange
       const projectId = 'project-123';
-      const mockProject = {
+      const mockProject = createMockProject({
         id: projectId,
         name: 'Test Project',
         description: 'Test description',
@@ -171,7 +172,7 @@ describe('ProjectService', () => {
           stories: 5,
           tasks: 10,
         },
-      };
+      });
 
       mockPrisma.project.findUnique.mockResolvedValue(mockProject);
 
@@ -214,12 +215,12 @@ describe('ProjectService', () => {
         status: 'ACTIVE' as const,
       };
 
-      const mockCreatedProject = {
+      const mockCreatedProject = createMockProject({
         id: 'new-project-id',
         ...projectData,
         createdAt: new Date(),
         updatedAt: new Date(),
-      };
+      });
 
       mockPrisma.$transaction.mockImplementation(async (callback) => {
         const mockTx = {
@@ -252,14 +253,14 @@ describe('ProjectService', () => {
         name: 'Minimal Project',
       };
 
-      const mockCreatedProject = {
+      const mockCreatedProject = createMockProject({
         id: 'minimal-project-id',
         name: 'Minimal Project',
         description: null,
         status: 'ACTIVE',
         createdAt: new Date(),
         updatedAt: new Date(),
-      };
+      });
 
       mockPrisma.$transaction.mockImplementation(async (callback) => {
         const mockTx = {
@@ -290,11 +291,11 @@ describe('ProjectService', () => {
         status: 'COMPLETED' as const,
       };
 
-      const mockUpdatedProject = {
+      const mockUpdatedProject = createMockProject({
         id: projectId,
         ...updateData,
         updatedAt: new Date(),
-      };
+      });
 
       mockPrisma.project.findUnique.mockResolvedValue({ id: projectId });
       mockPrisma.project.update.mockResolvedValue(mockUpdatedProject);
@@ -338,7 +339,7 @@ describe('ProjectService', () => {
     it('should delete project with valid ID', async () => {
       // Arrange
       const projectId = 'project-123';
-      const mockExistingProject = { id: projectId };
+      const mockExistingProject = createMockProject({ id: projectId });
 
       mockPrisma.project.findUnique.mockResolvedValue(mockExistingProject);
       mockPrisma.project.delete.mockResolvedValue(mockExistingProject);
@@ -382,7 +383,7 @@ describe('ProjectService', () => {
     it('should return project statistics', async () => {
       // Arrange
       const projectId = 'project-123';
-      const mockProject = { 
+      const mockProject = createMockProject({ 
         id: projectId, 
         name: 'Test Project',
         _count: {
@@ -399,7 +400,7 @@ describe('ProjectService', () => {
           { status: 'IN_PROGRESS' },
           { status: 'COMPLETED' },
         ],
-      };
+      });
 
       mockPrisma.project.findUnique.mockResolvedValue(mockProject);
 
@@ -432,13 +433,13 @@ describe('ProjectService', () => {
         project: {
           id: projectId,
           name: 'Test Project',
-          description: undefined,
-          status: undefined,
+          description: 'Test Project Description',
+          status: 'ACTIVE',
           startDate: undefined,
           endDate: undefined,
           accessLevel: undefined,
-          createdAt: undefined,
-          updatedAt: undefined,
+          createdAt: new Date('2024-01-01'),
+          updatedAt: new Date('2024-01-01'),
         },
         counts: {
           totalStories: 15,
@@ -473,18 +474,18 @@ describe('ProjectService', () => {
       // Arrange
       const status = 'ACTIVE';
       const mockProjects = [
-        {
+        createMockProject({
           id: 'project-1',
           name: 'Active Project 1',
           status: 'ACTIVE',
           _count: { stories: 5, tasks: 10 },
-        },
-        {
+        }),
+        createMockProject({
           id: 'project-2',
           name: 'Active Project 2',
           status: 'ACTIVE',
           _count: { stories: 3, tasks: 7 },
-        },
+        }),
       ];
 
       mockPrisma.project.findMany.mockResolvedValue(mockProjects);
@@ -527,20 +528,20 @@ describe('ProjectService', () => {
       const searchTerm = 'test project';
       const limit = 5;
       const mockProjects = [
-        {
+        createMockProject({
           id: 'project-1',
           name: 'Test Project 1',
           description: 'A test project',
           status: 'ACTIVE',
           _count: { stories: 2, tasks: 5 },
-        },
-        {
+        }),
+        createMockProject({
           id: 'project-2',
           name: 'Another Test Project',
           description: 'Another test project',
           status: 'ACTIVE',
           _count: { stories: 1, tasks: 3 },
-        },
+        }),
       ];
 
       mockPrisma.project.findMany.mockResolvedValue(mockProjects);
@@ -574,12 +575,12 @@ describe('ProjectService', () => {
       // Arrange
       const searchTerm = 'test';
       const mockProjects = [
-        {
+        createMockProject({
           id: 'project-1',
           name: 'Test Project',
           status: 'ACTIVE',
           _count: { stories: 0, tasks: 0 },
-        },
+        }),
       ];
 
       mockPrisma.project.findMany.mockResolvedValue(mockProjects);
